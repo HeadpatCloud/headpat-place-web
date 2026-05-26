@@ -1,0 +1,40 @@
+{
+  "name": "headpat-place-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "imports": {
+    "#/*": "./src/*"
+  },
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview --port 3000",
+    "start": "node start.mjs",
+    "lint:fix": "biome format --write . && biome lint --fix ."
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.90.0",
+    "@tanstack/react-query-devtools": "^5.90.0",
+    "@tanstack/react-router": "^1.166.0",
+    "@tanstack/react-router-devtools": "^1.166.0",
+    "@tanstack/react-router-ssr-query": "^1.166.0",
+    "@tanstack/react-start": "^1.166.0",
+    "@tanstack/router-plugin": "^1.166.0",
+    "better-auth": "^1.6.11",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.4",
+    "@tailwindcss/vite": "^4.3.0",
+    "@types/node": "^25.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^6.0.0",
+    "tailwindcss": "^4.2.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.0"
+  }
+}
