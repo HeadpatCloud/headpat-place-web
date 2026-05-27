@@ -1,41 +1,68 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import {
-	HeadContent,
-	Outlet,
-	Scripts,
-	createRootRoute,
-} from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import "../styles/globals.css";
+  HeadContent,
+  Outlet,
+  Scripts,
+  createRootRoute,
+} from "@tanstack/react-router"
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools"
+import { ThemeProvider } from "next-themes"
+import { Toaster } from "@/components/ui/sonner"
+import "../styles/globals.css"
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60 * 1000,
+      retry: 1,
+    },
+  },
+})
 
 export const Route = createRootRoute({
-	head: () => ({
-		meta: [
-			{ charSet: "utf-8" },
-			{ name: "viewport", content: "width=device-width, initial-scale=1" },
-			{ title: "headpat.place" },
-		],
-	}),
-	component: RootComponent,
-});
+  head: () => ({
+    meta: [
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { title: "Headpat" },
+      {
+        name: "description",
+        content: "Headpat.place — a social media platform for the next generation.",
+      },
+    ],
+  }),
+  component: RootComponent,
+})
 
 function RootComponent() {
-	return (
-		<html lang="en">
-			<head>
-				<HeadContent />
-			</head>
-			<body>
-				<QueryClientProvider client={queryClient}>
-					<Outlet />
-					<ReactQueryDevtools initialIsOpen={false} />
-					<TanStackRouterDevtools position="bottom-right" />
-				</QueryClientProvider>
-				<Scripts />
-			</body>
-		</html>
-	);
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <HeadContent />
+      </head>
+      <body className="bg-background flex min-h-screen antialiased font-sans">
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="w-full">
+              <Outlet />
+            </div>
+            <Toaster />
+          </ThemeProvider>
+          {import.meta.env.DEV ? (
+            <>
+              <ReactQueryDevtools initialIsOpen={false} />
+              <TanStackRouterDevtools position="bottom-right" />
+            </>
+          ) : null}
+        </QueryClientProvider>
+        <Scripts />
+      </body>
+    </html>
+  )
 }
