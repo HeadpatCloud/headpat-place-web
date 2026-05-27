@@ -33,12 +33,13 @@ import { TeamSwitcher } from "./team-switcher"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pageNames = useTranslations("PageNames")
-  const { theme, systemTheme } = useTheme()
+  const { resolvedTheme } = useTheme()
+  const [mounted, setMounted] = React.useState(false)
+  React.useEffect(() => setMounted(true), [])
 
   const getLogo = (name: string) => {
-    const isDarkMode =
-      theme === "dark" || (theme === "system" && systemTheme === "dark")
-    return `/logos/${name}_${isDarkMode ? "dark" : "light"}_x250.webp`
+    const variant = mounted && resolvedTheme === "dark" ? "dark" : "light"
+    return `/logos/${name}_${variant}_x250.webp`
   }
 
   const data = {
