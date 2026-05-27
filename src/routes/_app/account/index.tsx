@@ -1,12 +1,18 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 import InputField from "@/components/fields/InputField"
 import { Button } from "@/components/ui/button"
+import { Switch } from "@/components/ui/switch"
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -344,6 +350,39 @@ function AccountPage() {
             </Form>
           </div>
 
+          {/* Privacy toggles */}
+          <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-12 sm:px-6 md:grid-cols-3 lg:px-8">
+            <div>
+              <h4 className="text-base font-semibold">Privacy</h4>
+              <p className="mt-1 text-sm leading-6 text-gray-400">
+                Control whether your profile is indexed and whether NSFW content
+                is shown to you.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-y-4 sm:max-w-xl">
+              <PrivacyToggles
+                indexing={profileQuery.data?.indexingEnabled ?? true}
+                nsfw={profileQuery.data?.nsfwEnabled ?? false}
+                onChange={(field, value) =>
+                  updateProfile.mutate({ [field]: value } as never)
+                }
+              />
+            </div>
+          </div>
+
+          {/* Two-factor */}
+          <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-12 sm:px-6 md:grid-cols-3 lg:px-8">
+            <div>
+              <h4 className="text-base font-semibold">Two-factor auth</h4>
+              <p className="mt-1 text-sm leading-6 text-gray-400">
+                Add a second factor with an authenticator app (TOTP).
+              </p>
+            </div>
+            <div className="grid grid-cols-1 gap-y-4 sm:max-w-xl">
+              <TwoFactorSection />
+            </div>
+          </div>
+
           {/* Delete */}
           <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8">
             <div>
@@ -508,5 +547,182 @@ function AccountPage() {
         </Form>
       </TabsContent>
     </Tabs>
+  )
+}
+
+function PrivacyToggles({
+  indexing,
+  nsfw,
+  onChange,
+}: {
+  indexing: boolean
+  nsfw: boolean
+  onChange: (field: "indexingEnabled" | "nsfwEnabled", value: boolean) => void
+}) {
+  return (
+    <div className="space-y-4">
+      <label className="flex items-center justify-between gap-4">
+        <span className="text-sm">
+          <span className="font-medium">Allow profile indexing</span>
+          <br />
+          <span className="text-muted-foreground text-xs">
+            Search engines and the user discovery page can find you.
+          </span>
+        </span>
+        <Switch
+          checked={indexing}
+          onCheckedChange={(v) => onChange("indexingEnabled", v)}
+        />
+      </label>
+      <label className="flex items-center justify-between gap-4">
+        <span className="text-sm">
+          <span className="font-medium">Show NSFW content</span>
+          <br />
+          <span className="text-muted-foreground text-xs">
+            Reveal posts and gallery items flagged as NSFW.
+          </span>
+        </span>
+        <Switch
+          checked={nsfw}
+          onCheckedChange={(v) => onChange("nsfwEnabled", v)}
+        />
+      </label>
+    </div>
+  )
+}
+
+function TwoFactorSection() {
+  const { data: session, refetch } = useSession()
+  const enabled = session?.user?.twoFactorEnabled
+  const [password, setPassword] = useState("")
+  const [setupUri, setSetupUri] = useState<string | null>(null)
+  const [verifyCode, setVerifyCode] = useState("")
+  const [backupCodes, setBackupCodes] = useState<string[] | null>(null)
+  const [busy, setBusy] = useState(false)
+
+  async function startEnroll() {
+    setBusy(true)
+    const r = await authClient.twoFactor.enable({ password })
+    setBusy(false)
+    if (r.error) {
+      toast.error(r.error.message ?? "Failed to start 2FA setup")
+      return
+    }
+    setSetupUri(r.data?.totpURI ?? null)
+    setBackupCodes(r.data?.backupCodes ?? null)
+  }
+
+  async function confirmEnroll() {
+    setBusy(true)
+    const r = await authClient.twoFactor.verifyTotp({ code: verifyCode })
+    setBusy(false)
+    if (r.error) {
+      toast.error(r.error.message ?? "Invalid code")
+      return
+    }
+    toast.success("2FA enabled.")
+    setSetupUri(null)
+    setVerifyCode("")
+    await refetch()
+  }
+
+  async function disable() {
+    setBusy(true)
+    const r = await authClient.twoFactor.disable({ password })
+    setBusy(false)
+    if (r.error) {
+      toast.error(r.error.message ?? "Failed to disable 2FA")
+      return
+    }
+    toast.success("2FA disabled.")
+    setPassword("")
+    await refetch()
+  }
+
+  if (enabled) {
+    return (
+      <div className="space-y-3">
+        <p className="text-sm">
+          Two-factor authentication is <strong>enabled</strong>.
+        </p>
+        <div className="space-y-2">
+          <Label>Confirm password to disable</Label>
+          <Input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <Button
+          variant="destructive"
+          disabled={busy || password.length < 6}
+          onClick={disable}
+        >
+          Disable 2FA
+        </Button>
+      </div>
+    )
+  }
+
+  if (setupUri) {
+    return (
+      <div className="space-y-3">
+        <p className="text-sm">
+          Scan this URI in your authenticator app, then enter the 6-digit code:
+        </p>
+        <code className="block break-all rounded bg-muted px-2 py-1 text-xs">
+          {setupUri}
+        </code>
+        {backupCodes && backupCodes.length > 0 ? (
+          <div>
+            <p className="text-sm font-medium">Backup codes (save these):</p>
+            <ul className="grid grid-cols-2 gap-1 font-mono text-sm">
+              {backupCodes.map((c) => (
+                <li key={c}>{c}</li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+        <div className="space-y-2">
+          <Label>6-digit code</Label>
+          <InputOTP
+            maxLength={6}
+            value={verifyCode}
+            onChange={setVerifyCode}
+          >
+            <InputOTPGroup>
+              {Array.from({ length: 6 }).map((_, i) => (
+                <InputOTPSlot key={i} index={i} />
+              ))}
+            </InputOTPGroup>
+          </InputOTP>
+        </div>
+        <Button
+          disabled={busy || verifyCode.length !== 6}
+          onClick={confirmEnroll}
+        >
+          Confirm
+        </Button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-3">
+      <p className="text-sm">
+        Two-factor authentication is <strong>not enabled</strong>.
+      </p>
+      <div className="space-y-2">
+        <Label>Confirm password</Label>
+        <Input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
+      <Button disabled={busy || password.length < 6} onClick={startEnroll}>
+        Enable 2FA
+      </Button>
+    </div>
   )
 }

@@ -1,22 +1,28 @@
 import { createFileRoute } from "@tanstack/react-router"
+import { MapIcon } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export const Route = createFileRoute("/_app/map")({
   component: MapPage,
+  head: () => ({ meta: [{ title: "Map" }] }),
 })
 
 function MapPage() {
   return (
-    <main className="mx-auto max-w-4xl">
+    <main className="mx-auto max-w-4xl space-y-4 px-4 py-8">
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-row items-center gap-3">
+          <MapIcon className="h-5 w-5" />
           <CardTitle>Map</CardTitle>
         </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">
-            Live user locations on a Google Map. Coming soon — needs Google Maps
-            API key + the `location.publish` / `location.list` oRPC procedures
-            (planned for a separate phase).
+        <CardContent className="space-y-3">
+          <p>
+            Once enabled, the map shows live status and approximate location of
+            other users and community events you follow.
+          </p>
+          <p className="text-muted-foreground text-sm">
+            This page is not wired up yet — the location publish/list APIs are
+            still on the backlog. Drop a note in <a className="underline" href="/support">Support</a> if you want this prioritized.
           </p>
         </CardContent>
       </Card>
