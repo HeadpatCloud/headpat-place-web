@@ -39,7 +39,7 @@ export function NavProjects({
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton asChild>
               <Link
-                href={item.url}
+                to={item.url}
                 onClick={isMobile ? toggleSidebar : undefined}
               >
                 <item.icon />

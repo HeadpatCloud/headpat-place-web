@@ -1,4 +1,4 @@
-﻿import * as React from "react"
+﻿import type * as React from "react"
 import type { LucideIcon } from "lucide-react"
 
 import {
@@ -7,9 +7,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "@/components/ui/sidebar"
-import { Link } from "@tanstack/react-router"
 
 export function NavSecondary({
   items,
@@ -21,7 +19,6 @@ export function NavSecondary({
     icon: LucideIcon
   }[]
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
-  const { toggleSidebar, isMobile } = useSidebar()
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
@@ -29,13 +26,10 @@ export function NavSecondary({
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton asChild size="sm">
-                <Link
-                  href={item.url}
-                  onClick={isMobile ? toggleSidebar : undefined}
-                >
+                <a href={item.url} target="_blank" rel="noreferrer">
                   <item.icon />
                   <span>{item.title}</span>
-                </Link>
+                </a>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}

@@ -45,7 +45,7 @@ export function NavMain({
             <SidebarMenuItem>
               <SidebarMenuButton asChild tooltip={item.title}>
                 <Link
-                  href={item.url}
+                  to={item.url}
                   onClick={isMobile ? toggleSidebar : undefined}
                 >
                   <item.icon />
@@ -66,7 +66,7 @@ export function NavMain({
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton asChild>
                             <Link
-                              href={subItem.url}
+                              to={subItem.url}
                               onClick={isMobile ? toggleSidebar : undefined}
                             >
                               <span>{subItem.title}</span>
