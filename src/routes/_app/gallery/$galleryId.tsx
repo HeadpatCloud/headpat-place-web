@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
+import { StorageImage } from "@/components/StorageImage"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { orpc } from "@/lib/orpc"
@@ -18,7 +19,14 @@ function GalleryItemPage() {
 
   return (
     <main className="mx-auto max-w-4xl">
-      <Card>
+      <Card className="overflow-hidden">
+        <StorageImage
+          kind="gallery"
+          fileId={g.fileId}
+          alt={g.name}
+          className="w-full max-h-[80vh] object-contain bg-muted"
+          fallback={<div className="h-96 w-full bg-muted" />}
+        />
         <CardHeader>
           <CardTitle>{g.name}</CardTitle>
         </CardHeader>

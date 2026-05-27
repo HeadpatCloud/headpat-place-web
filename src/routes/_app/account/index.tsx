@@ -27,6 +27,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { AvatarBannerUpload } from "@/components/AvatarBannerUpload"
 import { authClient, useSession } from "@/lib/auth-client"
 import { client, orpc } from "@/lib/orpc"
 
@@ -385,6 +386,24 @@ function AccountPage() {
       </TabsContent>
 
       <TabsContent value="frontpage">
+        <div className="mx-auto max-w-4xl space-y-6 p-6">
+          <div className="flex flex-wrap gap-8">
+            <AvatarBannerUpload
+              kind="avatar"
+              currentFileId={profileQuery.data?.avatarFileId}
+              onUploaded={async (fileId) => {
+                await updateProfile.mutateAsync({ avatarFileId: fileId })
+              }}
+            />
+            <AvatarBannerUpload
+              kind="banner"
+              currentFileId={profileQuery.data?.bannerFileId}
+              onUploaded={async (fileId) => {
+                await updateProfile.mutateAsync({ bannerFileId: fileId })
+              }}
+            />
+          </div>
+        </div>
         <Form {...profileFieldsForm}>
           <form
             onSubmit={profileFieldsForm.handleSubmit((v) =>

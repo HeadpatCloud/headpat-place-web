@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
+import { StorageImage, useStorageUrl } from "@/components/StorageImage"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -19,13 +20,22 @@ function UserProfilePage() {
   if (profile.isError || !profile.data) return <p className="p-4">Profile not found.</p>
   const p = profile.data
 
+  const bannerUrl = useStorageUrl("banner", p.bannerFileId)
+  const avatarUrl = useStorageUrl("avatar", p.avatarFileId)
+
   return (
     <main className="mx-auto max-w-4xl space-y-6">
+      {bannerUrl.data ? (
+        <div
+          className="h-48 w-full overflow-hidden rounded-lg bg-muted bg-cover bg-center"
+          style={{ backgroundImage: `url(${bannerUrl.data.url})` }}
+        />
+      ) : null}
       <Card>
         <CardHeader>
           <div className="flex items-center gap-4">
             <Avatar className="h-16 w-16">
-              <AvatarImage src={undefined} alt={p.displayName ?? p.userId} />
+              <AvatarImage src={avatarUrl.data?.url} alt={p.displayName ?? p.userId} />
               <AvatarFallback>{(p.displayName ?? "?").charAt(0)}</AvatarFallback>
             </Avatar>
             <div>

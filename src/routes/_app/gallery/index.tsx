@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
+import { StorageImage } from "@/components/StorageImage"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { orpc } from "@/lib/orpc"
@@ -27,13 +28,21 @@ function GalleryPage() {
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {(items.data ?? []).map((g) => (
             <Link key={g.id} to={`/gallery/${g.id}` as never}>
-              <Card className="hover:bg-accent transition-colors">
+              <Card className="hover:bg-accent transition-colors overflow-hidden">
+                <StorageImage
+                  kind="gallery"
+                  fileId={g.fileId}
+                  alt={g.name}
+                  className="h-48 w-full object-cover bg-muted"
+                  fallback={<div className="h-48 w-full bg-muted" />}
+                />
                 <CardHeader>
                   <CardTitle className="text-base truncate">{g.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-xs text-muted-foreground">
-                    {g.nsfw ? "NSFW" : ""} {(g.tags ?? []).join(", ")}
+                    {g.nsfw ? "NSFW " : ""}
+                    {(g.tags ?? []).join(", ")}
                   </p>
                 </CardContent>
               </Card>

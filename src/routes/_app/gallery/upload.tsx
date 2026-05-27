@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import { useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
@@ -21,25 +22,59 @@ const schema = z.object({
   tags: z.string().optional(),
 })
 
+function makeFileId(): string {
+  return crypto.randomUUID().replace(/-/g, "").slice(0, 20)
+}
+
 function UploadPage() {
   const navigate = useNavigate()
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [file, setFile] = useState<File | null>(null)
+  const [progress, setProgress] = useState<string>("")
+
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: { name: "", longText: "", nsfw: false, tags: "" },
   })
-  const createMut = useMutation({
-    mutationFn: async (v: z.infer<typeof schema>) =>
-      client.gallery.create({
+
+  const submit = useMutation({
+    mutationFn: async (v: z.infer<typeof schema>) => {
+      if (!file) throw new Error("Pick a file first")
+      const fileId = makeFileId()
+
+      setProgress("Requesting upload URL…")
+      const { uploadUrl } = await client.storage.uploadInit({
+        kind: "gallery",
+        fileId,
+        contentType: file.type || "application/octet-stream",
+      })
+
+      setProgress("Uploading to S3…")
+      const put = await fetch(uploadUrl, {
+        method: "PUT",
+        headers: { "Content-Type": file.type || "application/octet-stream" },
+        body: file,
+      })
+      if (!put.ok) throw new Error(`S3 upload failed: ${put.status}`)
+
+      setProgress("Saving metadata…")
+      const g = await client.gallery.create({
         name: v.name,
         longText: v.longText || undefined,
         nsfw: v.nsfw ?? false,
         tags: v.tags ? v.tags.split(",").map((t) => t.trim()).filter(Boolean) : [],
-      }),
+        fileId,
+      })
+      return g
+    },
     onSuccess: (g) => {
       toast.success("Uploaded.")
       navigate({ to: `/gallery/${g.id}` as never })
     },
-    onError: (e: Error) => toast.error(e.message),
+    onError: (e: Error) => {
+      setProgress("")
+      toast.error(e.message)
+    },
   })
 
   return (
@@ -47,16 +82,28 @@ function UploadPage() {
       <Card>
         <CardHeader>
           <CardTitle>Upload to gallery</CardTitle>
-          <p className="text-muted-foreground text-sm">
-            Metadata only — file upload via presigned S3 URL coming in Phase 4.
-          </p>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form
-              onSubmit={form.handleSubmit((v) => createMut.mutate(v))}
+              onSubmit={form.handleSubmit((v) => submit.mutate(v))}
               className="space-y-4"
             >
+              <div className="space-y-2">
+                <p className="text-sm font-medium">Image file</p>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                  className="block w-full text-sm"
+                />
+                {file ? (
+                  <p className="text-xs text-muted-foreground">
+                    {file.name} — {(file.size / 1024).toFixed(0)} KB
+                  </p>
+                ) : null}
+              </div>
               <FormField
                 control={form.control}
                 name="name"
@@ -83,8 +130,11 @@ function UploadPage() {
                   />
                 )}
               />
-              <Button type="submit" disabled={createMut.isPending}>
-                Create
+              {progress ? (
+                <p className="text-sm text-muted-foreground">{progress}</p>
+              ) : null}
+              <Button type="submit" disabled={submit.isPending || !file}>
+                {submit.isPending ? "Uploading…" : "Upload"}
               </Button>
             </form>
           </Form>

@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
+import { StorageImage } from "@/components/StorageImage"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -37,8 +38,20 @@ function CommunitiesPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {(list.data ?? []).map((c) => (
             <Link key={c.id} to={`/community/${c.id}` as never}>
-              <Card className="hover:bg-accent transition-colors">
-                <CardHeader>
+              <Card className="hover:bg-accent transition-colors overflow-hidden">
+                <StorageImage
+                  kind="community-banner"
+                  fileId={c.bannerFileId}
+                  className="h-24 w-full object-cover"
+                  fallback={<div className="h-24 w-full bg-muted" />}
+                />
+                <CardHeader className="flex flex-row items-center gap-3">
+                  <StorageImage
+                    kind="community-avatar"
+                    fileId={c.avatarFileId}
+                    className="h-10 w-10 rounded-full object-cover bg-muted"
+                    fallback={<div className="h-10 w-10 rounded-full bg-muted" />}
+                  />
                   <CardTitle>{c.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
