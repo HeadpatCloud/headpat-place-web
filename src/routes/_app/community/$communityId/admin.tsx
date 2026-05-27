@@ -5,6 +5,7 @@ import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
+import { AvatarBannerUpload } from "@/components/AvatarBannerUpload"
 import InputField from "@/components/fields/InputField"
 import {
   AlertDialog,
@@ -87,6 +88,36 @@ function AdminPage() {
 
   return (
     <main className="mx-auto max-w-4xl space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Branding</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-wrap gap-8">
+          <AvatarBannerUpload
+            kind="community-avatar"
+            currentFileId={community.data.avatarFileId}
+            label="Change avatar"
+            onUploaded={async (fileId) => {
+              await client.community.update({ communityId, avatarFileId: fileId })
+              qc.invalidateQueries({
+                queryKey: orpc.community.byId.queryKey({ input: { communityId } }),
+              })
+            }}
+          />
+          <AvatarBannerUpload
+            kind="community-banner"
+            currentFileId={community.data.bannerFileId}
+            label="Change banner"
+            onUploaded={async (fileId) => {
+              await client.community.update({ communityId, bannerFileId: fileId })
+              qc.invalidateQueries({
+                queryKey: orpc.community.byId.queryKey({ input: { communityId } }),
+              })
+            }}
+          />
+        </CardContent>
+      </Card>
+
       <Card>
         <CardHeader>
           <CardTitle>Edit community</CardTitle>

@@ -10,18 +10,23 @@ function makeFileId(): string {
 }
 
 type Props = {
-  kind: Extract<StorageKind, "avatar" | "banner">
+  kind: Extract<
+    StorageKind,
+    "avatar" | "banner" | "community-avatar" | "community-banner"
+  >
   currentFileId: string | null | undefined
   /** Receives the new fileId after successful upload. */
   onUploaded: (fileId: string) => Promise<void> | void
   aspect?: "square" | "wide"
+  label?: string
 }
 
 export function AvatarBannerUpload({
   kind,
   currentFileId,
   onUploaded,
-  aspect = kind === "avatar" ? "square" : "wide",
+  aspect = kind.endsWith("avatar") ? "square" : "wide",
+  label,
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
   const queryClient = useQueryClient()
@@ -85,7 +90,7 @@ export function AvatarBannerUpload({
         disabled={busy}
         onClick={() => inputRef.current?.click()}
       >
-        {busy ? "Uploading…" : `Change ${kind}`}
+        {busy ? "Uploading…" : (label ?? `Change ${kind}`)}
       </Button>
     </div>
   )

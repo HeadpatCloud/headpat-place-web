@@ -1,5 +1,6 @@
 import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
+import mdx from "@mdx-js/rollup"
 import tailwindcss from "@tailwindcss/vite"
 import { tanstackStart } from "@tanstack/react-start/plugin/vite"
 import viteReact from "@vitejs/plugin-react"
@@ -13,6 +14,7 @@ export default defineConfig({
       target: "node-server",
       tsr: { srcDirectory: "src", routesDirectory: "src/routes" },
     }),
+    { enforce: "pre", ...mdx() },
     viteReact(),
     tailwindcss(),
   ],

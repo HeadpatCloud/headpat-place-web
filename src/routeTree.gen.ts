@@ -21,9 +21,9 @@ import { Route as AppSupportRouteImport } from './routes/_app/support'
 import { Route as AppProfileRouteImport } from './routes/_app/profile'
 import { Route as AppPawcraftRouteImport } from './routes/_app/pawcraft'
 import { Route as AppNotificationsRouteImport } from './routes/_app/notifications'
-import { Route as AppMessagesRouteImport } from './routes/_app/messages'
 import { Route as AppMapRouteImport } from './routes/_app/map'
 import { Route as AppChangelogRouteImport } from './routes/_app/changelog'
+import { Route as AppMessagesIndexRouteImport } from './routes/_app/messages/index'
 import { Route as AppLegalIndexRouteImport } from './routes/_app/legal/index'
 import { Route as AppGalleryIndexRouteImport } from './routes/_app/gallery/index'
 import { Route as AppEventsIndexRouteImport } from './routes/_app/events/index'
@@ -33,6 +33,7 @@ import { Route as AppAccountIndexRouteImport } from './routes/_app/account/index
 import { Route as AuthLoginMfaRouteImport } from './routes/_auth/login/mfa'
 import { Route as AuthIVerifyEmailRouteImport } from './routes/_auth/i/verify-email'
 import { Route as AuthIResetPasswordRouteImport } from './routes/_auth/i/reset-password'
+import { Route as AppMessagesConversationIdRouteImport } from './routes/_app/messages/$conversationId'
 import { Route as AppLegalPrivacypolicyRouteImport } from './routes/_app/legal/privacypolicy'
 import { Route as AppLegalImpressumRouteImport } from './routes/_app/legal/impressum'
 import { Route as AppLegalEulaRouteImport } from './routes/_app/legal/eula'
@@ -107,11 +108,6 @@ const AppNotificationsRoute = AppNotificationsRouteImport.update({
   path: '/notifications',
   getParentRoute: () => AppRoute,
 } as any)
-const AppMessagesRoute = AppMessagesRouteImport.update({
-  id: '/messages',
-  path: '/messages',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppMapRoute = AppMapRouteImport.update({
   id: '/map',
   path: '/map',
@@ -120,6 +116,11 @@ const AppMapRoute = AppMapRouteImport.update({
 const AppChangelogRoute = AppChangelogRouteImport.update({
   id: '/changelog',
   path: '/changelog',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMessagesIndexRoute = AppMessagesIndexRouteImport.update({
+  id: '/messages/',
+  path: '/messages/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppLegalIndexRoute = AppLegalIndexRouteImport.update({
@@ -167,6 +168,12 @@ const AuthIResetPasswordRoute = AuthIResetPasswordRouteImport.update({
   path: '/i/reset-password',
   getParentRoute: () => AuthRoute,
 } as any)
+const AppMessagesConversationIdRoute =
+  AppMessagesConversationIdRouteImport.update({
+    id: '/messages/$conversationId',
+    path: '/messages/$conversationId',
+    getParentRoute: () => AppRoute,
+  } as any)
 const AppLegalPrivacypolicyRoute = AppLegalPrivacypolicyRouteImport.update({
   id: '/legal/privacypolicy',
   path: '/legal/privacypolicy',
@@ -254,7 +261,6 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/changelog': typeof AppChangelogRoute
   '/map': typeof AppMapRoute
-  '/messages': typeof AppMessagesRoute
   '/notifications': typeof AppNotificationsRoute
   '/pawcraft': typeof AppPawcraftRoute
   '/profile': typeof AppProfileRoute
@@ -272,6 +278,7 @@ export interface FileRoutesByFullPath {
   '/legal/eula': typeof AppLegalEulaRoute
   '/legal/impressum': typeof AppLegalImpressumRoute
   '/legal/privacypolicy': typeof AppLegalPrivacypolicyRoute
+  '/messages/$conversationId': typeof AppMessagesConversationIdRoute
   '/i/reset-password': typeof AuthIResetPasswordRoute
   '/i/verify-email': typeof AuthIVerifyEmailRoute
   '/login/mfa': typeof AuthLoginMfaRoute
@@ -281,6 +288,7 @@ export interface FileRoutesByFullPath {
   '/events/': typeof AppEventsIndexRoute
   '/gallery/': typeof AppGalleryIndexRoute
   '/legal/': typeof AppLegalIndexRoute
+  '/messages/': typeof AppMessagesIndexRoute
   '/community/$communityId/admin': typeof AppCommunityCommunityIdAdminRoute
   '/community/$communityId/followers': typeof AppCommunityCommunityIdFollowersRoute
   '/user/$profileUrl/followers': typeof AppUserProfileUrlFollowersRoute
@@ -293,7 +301,6 @@ export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
   '/changelog': typeof AppChangelogRoute
   '/map': typeof AppMapRoute
-  '/messages': typeof AppMessagesRoute
   '/notifications': typeof AppNotificationsRoute
   '/pawcraft': typeof AppPawcraftRoute
   '/profile': typeof AppProfileRoute
@@ -311,6 +318,7 @@ export interface FileRoutesByTo {
   '/legal/eula': typeof AppLegalEulaRoute
   '/legal/impressum': typeof AppLegalImpressumRoute
   '/legal/privacypolicy': typeof AppLegalPrivacypolicyRoute
+  '/messages/$conversationId': typeof AppMessagesConversationIdRoute
   '/i/reset-password': typeof AuthIResetPasswordRoute
   '/i/verify-email': typeof AuthIVerifyEmailRoute
   '/login/mfa': typeof AuthLoginMfaRoute
@@ -320,6 +328,7 @@ export interface FileRoutesByTo {
   '/events': typeof AppEventsIndexRoute
   '/gallery': typeof AppGalleryIndexRoute
   '/legal': typeof AppLegalIndexRoute
+  '/messages': typeof AppMessagesIndexRoute
   '/community/$communityId/admin': typeof AppCommunityCommunityIdAdminRoute
   '/community/$communityId/followers': typeof AppCommunityCommunityIdFollowersRoute
   '/user/$profileUrl/followers': typeof AppUserProfileUrlFollowersRoute
@@ -334,7 +343,6 @@ export interface FileRoutesById {
   '/_auth': typeof AuthRouteWithChildren
   '/_app/changelog': typeof AppChangelogRoute
   '/_app/map': typeof AppMapRoute
-  '/_app/messages': typeof AppMessagesRoute
   '/_app/notifications': typeof AppNotificationsRoute
   '/_app/pawcraft': typeof AppPawcraftRoute
   '/_app/profile': typeof AppProfileRoute
@@ -353,6 +361,7 @@ export interface FileRoutesById {
   '/_app/legal/eula': typeof AppLegalEulaRoute
   '/_app/legal/impressum': typeof AppLegalImpressumRoute
   '/_app/legal/privacypolicy': typeof AppLegalPrivacypolicyRoute
+  '/_app/messages/$conversationId': typeof AppMessagesConversationIdRoute
   '/_auth/i/reset-password': typeof AuthIResetPasswordRoute
   '/_auth/i/verify-email': typeof AuthIVerifyEmailRoute
   '/_auth/login/mfa': typeof AuthLoginMfaRoute
@@ -362,6 +371,7 @@ export interface FileRoutesById {
   '/_app/events/': typeof AppEventsIndexRoute
   '/_app/gallery/': typeof AppGalleryIndexRoute
   '/_app/legal/': typeof AppLegalIndexRoute
+  '/_app/messages/': typeof AppMessagesIndexRoute
   '/_app/community/$communityId/admin': typeof AppCommunityCommunityIdAdminRoute
   '/_app/community/$communityId/followers': typeof AppCommunityCommunityIdFollowersRoute
   '/_app/user/$profileUrl/followers': typeof AppUserProfileUrlFollowersRoute
@@ -376,7 +386,6 @@ export interface FileRouteTypes {
     | '/'
     | '/changelog'
     | '/map'
-    | '/messages'
     | '/notifications'
     | '/pawcraft'
     | '/profile'
@@ -394,6 +403,7 @@ export interface FileRouteTypes {
     | '/legal/eula'
     | '/legal/impressum'
     | '/legal/privacypolicy'
+    | '/messages/$conversationId'
     | '/i/reset-password'
     | '/i/verify-email'
     | '/login/mfa'
@@ -403,6 +413,7 @@ export interface FileRouteTypes {
     | '/events/'
     | '/gallery/'
     | '/legal/'
+    | '/messages/'
     | '/community/$communityId/admin'
     | '/community/$communityId/followers'
     | '/user/$profileUrl/followers'
@@ -415,7 +426,6 @@ export interface FileRouteTypes {
     | '/'
     | '/changelog'
     | '/map'
-    | '/messages'
     | '/notifications'
     | '/pawcraft'
     | '/profile'
@@ -433,6 +443,7 @@ export interface FileRouteTypes {
     | '/legal/eula'
     | '/legal/impressum'
     | '/legal/privacypolicy'
+    | '/messages/$conversationId'
     | '/i/reset-password'
     | '/i/verify-email'
     | '/login/mfa'
@@ -442,6 +453,7 @@ export interface FileRouteTypes {
     | '/events'
     | '/gallery'
     | '/legal'
+    | '/messages'
     | '/community/$communityId/admin'
     | '/community/$communityId/followers'
     | '/user/$profileUrl/followers'
@@ -455,7 +467,6 @@ export interface FileRouteTypes {
     | '/_auth'
     | '/_app/changelog'
     | '/_app/map'
-    | '/_app/messages'
     | '/_app/notifications'
     | '/_app/pawcraft'
     | '/_app/profile'
@@ -474,6 +485,7 @@ export interface FileRouteTypes {
     | '/_app/legal/eula'
     | '/_app/legal/impressum'
     | '/_app/legal/privacypolicy'
+    | '/_app/messages/$conversationId'
     | '/_auth/i/reset-password'
     | '/_auth/i/verify-email'
     | '/_auth/login/mfa'
@@ -483,6 +495,7 @@ export interface FileRouteTypes {
     | '/_app/events/'
     | '/_app/gallery/'
     | '/_app/legal/'
+    | '/_app/messages/'
     | '/_app/community/$communityId/admin'
     | '/_app/community/$communityId/followers'
     | '/_app/user/$profileUrl/followers'
@@ -583,13 +596,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppNotificationsRouteImport
       parentRoute: typeof AppRoute
     }
-    '/_app/messages': {
-      id: '/_app/messages'
-      path: '/messages'
-      fullPath: '/messages'
-      preLoaderRoute: typeof AppMessagesRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/_app/map': {
       id: '/_app/map'
       path: '/map'
@@ -602,6 +608,13 @@ declare module '@tanstack/react-router' {
       path: '/changelog'
       fullPath: '/changelog'
       preLoaderRoute: typeof AppChangelogRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/messages/': {
+      id: '/_app/messages/'
+      path: '/messages'
+      fullPath: '/messages/'
+      preLoaderRoute: typeof AppMessagesIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/legal/': {
@@ -666,6 +679,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/i/reset-password'
       preLoaderRoute: typeof AuthIResetPasswordRouteImport
       parentRoute: typeof AuthRoute
+    }
+    '/_app/messages/$conversationId': {
+      id: '/_app/messages/$conversationId'
+      path: '/messages/$conversationId'
+      fullPath: '/messages/$conversationId'
+      preLoaderRoute: typeof AppMessagesConversationIdRouteImport
+      parentRoute: typeof AppRoute
     }
     '/_app/legal/privacypolicy': {
       id: '/_app/legal/privacypolicy'
@@ -778,7 +798,6 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppChangelogRoute: typeof AppChangelogRoute
   AppMapRoute: typeof AppMapRoute
-  AppMessagesRoute: typeof AppMessagesRoute
   AppNotificationsRoute: typeof AppNotificationsRoute
   AppPawcraftRoute: typeof AppPawcraftRoute
   AppProfileRoute: typeof AppProfileRoute
@@ -793,12 +812,14 @@ interface AppRouteChildren {
   AppLegalEulaRoute: typeof AppLegalEulaRoute
   AppLegalImpressumRoute: typeof AppLegalImpressumRoute
   AppLegalPrivacypolicyRoute: typeof AppLegalPrivacypolicyRoute
+  AppMessagesConversationIdRoute: typeof AppMessagesConversationIdRoute
   AppAccountIndexRoute: typeof AppAccountIndexRoute
   AppAnnouncementsIndexRoute: typeof AppAnnouncementsIndexRoute
   AppCommunityIndexRoute: typeof AppCommunityIndexRoute
   AppEventsIndexRoute: typeof AppEventsIndexRoute
   AppGalleryIndexRoute: typeof AppGalleryIndexRoute
   AppLegalIndexRoute: typeof AppLegalIndexRoute
+  AppMessagesIndexRoute: typeof AppMessagesIndexRoute
   AppCommunityCommunityIdAdminRoute: typeof AppCommunityCommunityIdAdminRoute
   AppCommunityCommunityIdFollowersRoute: typeof AppCommunityCommunityIdFollowersRoute
   AppUserProfileUrlFollowersRoute: typeof AppUserProfileUrlFollowersRoute
@@ -811,7 +832,6 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppChangelogRoute: AppChangelogRoute,
   AppMapRoute: AppMapRoute,
-  AppMessagesRoute: AppMessagesRoute,
   AppNotificationsRoute: AppNotificationsRoute,
   AppPawcraftRoute: AppPawcraftRoute,
   AppProfileRoute: AppProfileRoute,
@@ -826,12 +846,14 @@ const AppRouteChildren: AppRouteChildren = {
   AppLegalEulaRoute: AppLegalEulaRoute,
   AppLegalImpressumRoute: AppLegalImpressumRoute,
   AppLegalPrivacypolicyRoute: AppLegalPrivacypolicyRoute,
+  AppMessagesConversationIdRoute: AppMessagesConversationIdRoute,
   AppAccountIndexRoute: AppAccountIndexRoute,
   AppAnnouncementsIndexRoute: AppAnnouncementsIndexRoute,
   AppCommunityIndexRoute: AppCommunityIndexRoute,
   AppEventsIndexRoute: AppEventsIndexRoute,
   AppGalleryIndexRoute: AppGalleryIndexRoute,
   AppLegalIndexRoute: AppLegalIndexRoute,
+  AppMessagesIndexRoute: AppMessagesIndexRoute,
   AppCommunityCommunityIdAdminRoute: AppCommunityCommunityIdAdminRoute,
   AppCommunityCommunityIdFollowersRoute: AppCommunityCommunityIdFollowersRoute,
   AppUserProfileUrlFollowersRoute: AppUserProfileUrlFollowersRoute,

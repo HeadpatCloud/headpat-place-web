@@ -332,3 +332,40 @@ pre {
   animation: none;
   mix-blend-mode: normal;
 }
+
+.prose-headpat {
+  @apply text-foreground leading-7;
+}
+.prose-headpat h1 {
+  @apply mt-2 mb-6 text-3xl font-bold tracking-tight sm:text-4xl;
+}
+.prose-headpat h2 {
+  @apply mt-10 mb-3 text-2xl font-semibold tracking-tight;
+}
+.prose-headpat h3 {
+  @apply mt-6 mb-2 text-xl font-semibold tracking-tight;
+}
+.prose-headpat p {
+  @apply mb-4;
+}
+.prose-headpat ul {
+  @apply mb-4 list-disc pl-6;
+}
+.prose-headpat ol {
+  @apply mb-4 list-decimal pl-6;
+}
+.prose-headpat li {
+  @apply mb-1;
+}
+.prose-headpat a {
+  @apply text-primary underline-offset-2 hover:underline;
+}
+.prose-headpat strong {
+  @apply font-semibold;
+}
+.prose-headpat code {
+  @apply bg-muted rounded px-1 py-0.5 text-sm;
+}
+.prose-headpat hr {
+  @apply my-8 border-border;
+}
