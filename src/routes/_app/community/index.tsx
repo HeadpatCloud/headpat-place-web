@@ -1,0 +1,59 @@
+import { useQuery } from "@tanstack/react-query"
+import { Link, createFileRoute } from "@tanstack/react-router"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { orpc } from "@/lib/orpc"
+
+export const Route = createFileRoute("/_app/community/")({
+  component: CommunitiesPage,
+})
+
+function CommunitiesPage() {
+  const [search, setSearch] = useState("")
+  const list = useQuery(
+    orpc.community.list.queryOptions({
+      input: search ? { search } : {},
+    }),
+  )
+
+  return (
+    <main className="mx-auto max-w-6xl space-y-4">
+      <div className="flex items-center justify-between gap-4">
+        <h2 className="text-2xl font-bold">Communities</h2>
+        <Button asChild>
+          <Link to={"/community/new" as never}>+ Create</Link>
+        </Button>
+      </div>
+      <Input
+        placeholder="Search communities…"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+      {list.isPending ? (
+        <p className="text-muted-foreground">Loading…</p>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {(list.data ?? []).map((c) => (
+            <Link key={c.id} to={`/community/${c.id}` as never}>
+              <Card className="hover:bg-accent transition-colors">
+                <CardHeader>
+                  <CardTitle>{c.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground line-clamp-2">
+                    {c.description ?? "No description"}
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    {c.followersCount} followers
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      )}
+    </main>
+  )
+}

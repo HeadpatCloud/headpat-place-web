@@ -1,0 +1,43 @@
+import { useQuery } from "@tanstack/react-query"
+import { Link, createFileRoute } from "@tanstack/react-router"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { orpc } from "@/lib/orpc"
+
+export const Route = createFileRoute("/_app/announcements/")({
+  component: AnnouncementsPage,
+})
+
+function AnnouncementsPage() {
+  const list = useQuery(orpc.announcement.list.queryOptions({ input: undefined }))
+
+  return (
+    <main className="mx-auto max-w-3xl space-y-4">
+      <h2 className="text-2xl font-bold">Announcements</h2>
+      {list.isPending ? (
+        <p className="text-muted-foreground">Loading…</p>
+      ) : (list.data ?? []).length === 0 ? (
+        <p className="text-muted-foreground">No announcements right now.</p>
+      ) : (
+        <div className="space-y-3">
+          {(list.data ?? []).map((a) => (
+            <Link key={a.id} to={`/announcements/${a.id}` as never}>
+              <Card className="hover:bg-accent transition-colors">
+                {a.title ? (
+                  <CardHeader>
+                    <CardTitle>{a.title}</CardTitle>
+                  </CardHeader>
+                ) : null}
+                <CardContent>
+                  <p className="line-clamp-3">{a.description}</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {new Date(a.createdAt).toLocaleDateString()}
+                  </p>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      )}
+    </main>
+  )
+}

@@ -9,11 +9,50 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
+import { Route as AuthLogoutRouteImport } from './routes/_auth/logout'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
+import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
+import { Route as AppUsersRouteImport } from './routes/_app/users'
+import { Route as AppSupportRouteImport } from './routes/_app/support'
+import { Route as AppProfileRouteImport } from './routes/_app/profile'
+import { Route as AppPawcraftRouteImport } from './routes/_app/pawcraft'
+import { Route as AppNotificationsRouteImport } from './routes/_app/notifications'
+import { Route as AppMessagesRouteImport } from './routes/_app/messages'
+import { Route as AppMapRouteImport } from './routes/_app/map'
+import { Route as AppChangelogRouteImport } from './routes/_app/changelog'
+import { Route as AppLegalIndexRouteImport } from './routes/_app/legal/index'
+import { Route as AppGalleryIndexRouteImport } from './routes/_app/gallery/index'
+import { Route as AppEventsIndexRouteImport } from './routes/_app/events/index'
+import { Route as AppCommunityIndexRouteImport } from './routes/_app/community/index'
+import { Route as AppAnnouncementsIndexRouteImport } from './routes/_app/announcements/index'
+import { Route as AppAccountIndexRouteImport } from './routes/_app/account/index'
+import { Route as AuthLoginMfaRouteImport } from './routes/_auth/login/mfa'
+import { Route as AuthIVerifyEmailRouteImport } from './routes/_auth/i/verify-email'
+import { Route as AuthIResetPasswordRouteImport } from './routes/_auth/i/reset-password'
+import { Route as AppLegalPrivacypolicyRouteImport } from './routes/_app/legal/privacypolicy'
+import { Route as AppLegalImpressumRouteImport } from './routes/_app/legal/impressum'
+import { Route as AppLegalEulaRouteImport } from './routes/_app/legal/eula'
+import { Route as AppGalleryUploadRouteImport } from './routes/_app/gallery/upload'
+import { Route as AppGalleryGalleryIdRouteImport } from './routes/_app/gallery/$galleryId'
+import { Route as AppEventsEventIdRouteImport } from './routes/_app/events/$eventId'
+import { Route as AppCommunityNewRouteImport } from './routes/_app/community/new'
+import { Route as AppAnnouncementsAnnouncementIdRouteImport } from './routes/_app/announcements/$announcementId'
+import { Route as AppUserProfileUrlIndexRouteImport } from './routes/_app/user/$profileUrl/index'
+import { Route as AppCommunityCommunityIdIndexRouteImport } from './routes/_app/community/$communityId/index'
+import { Route as AppUserProfileUrlFollowingRouteImport } from './routes/_app/user/$profileUrl/following'
+import { Route as AppUserProfileUrlFollowersRouteImport } from './routes/_app/user/$profileUrl/followers'
+import { Route as AppCommunityCommunityIdFollowersRouteImport } from './routes/_app/community/$communityId/followers'
+import { Route as AppCommunityCommunityIdAdminRouteImport } from './routes/_app/community/$communityId/admin'
+import { Route as AppCommunityCommunityIdEventsIndexRouteImport } from './routes/_app/community/$communityId/events/index'
 
+const AuthRoute = AuthRouteImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
@@ -24,49 +63,449 @@ const AppIndexRoute = AppIndexRouteImport.update({
   getParentRoute: () => AppRoute,
 } as any)
 const AuthRegisterRoute = AuthRegisterRouteImport.update({
-  id: '/_auth/register',
+  id: '/register',
   path: '/register',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthLogoutRoute = AuthLogoutRouteImport.update({
+  id: '/logout',
+  path: '/logout',
+  getParentRoute: () => AuthRoute,
 } as any)
 const AuthLoginRoute = AuthLoginRouteImport.update({
-  id: '/_auth/login',
+  id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthRoute,
 } as any)
+const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AppUsersRoute = AppUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSupportRoute = AppSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProfileRoute = AppProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPawcraftRoute = AppPawcraftRouteImport.update({
+  id: '/pawcraft',
+  path: '/pawcraft',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppNotificationsRoute = AppNotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMessagesRoute = AppMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMapRoute = AppMapRouteImport.update({
+  id: '/map',
+  path: '/map',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppChangelogRoute = AppChangelogRouteImport.update({
+  id: '/changelog',
+  path: '/changelog',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLegalIndexRoute = AppLegalIndexRouteImport.update({
+  id: '/legal/',
+  path: '/legal/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppGalleryIndexRoute = AppGalleryIndexRouteImport.update({
+  id: '/gallery/',
+  path: '/gallery/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEventsIndexRoute = AppEventsIndexRouteImport.update({
+  id: '/events/',
+  path: '/events/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCommunityIndexRoute = AppCommunityIndexRouteImport.update({
+  id: '/community/',
+  path: '/community/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAnnouncementsIndexRoute = AppAnnouncementsIndexRouteImport.update({
+  id: '/announcements/',
+  path: '/announcements/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAccountIndexRoute = AppAccountIndexRouteImport.update({
+  id: '/account/',
+  path: '/account/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AuthLoginMfaRoute = AuthLoginMfaRouteImport.update({
+  id: '/mfa',
+  path: '/mfa',
+  getParentRoute: () => AuthLoginRoute,
+} as any)
+const AuthIVerifyEmailRoute = AuthIVerifyEmailRouteImport.update({
+  id: '/i/verify-email',
+  path: '/i/verify-email',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthIResetPasswordRoute = AuthIResetPasswordRouteImport.update({
+  id: '/i/reset-password',
+  path: '/i/reset-password',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AppLegalPrivacypolicyRoute = AppLegalPrivacypolicyRouteImport.update({
+  id: '/legal/privacypolicy',
+  path: '/legal/privacypolicy',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLegalImpressumRoute = AppLegalImpressumRouteImport.update({
+  id: '/legal/impressum',
+  path: '/legal/impressum',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppLegalEulaRoute = AppLegalEulaRouteImport.update({
+  id: '/legal/eula',
+  path: '/legal/eula',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppGalleryUploadRoute = AppGalleryUploadRouteImport.update({
+  id: '/gallery/upload',
+  path: '/gallery/upload',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppGalleryGalleryIdRoute = AppGalleryGalleryIdRouteImport.update({
+  id: '/gallery/$galleryId',
+  path: '/gallery/$galleryId',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEventsEventIdRoute = AppEventsEventIdRouteImport.update({
+  id: '/events/$eventId',
+  path: '/events/$eventId',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCommunityNewRoute = AppCommunityNewRouteImport.update({
+  id: '/community/new',
+  path: '/community/new',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAnnouncementsAnnouncementIdRoute =
+  AppAnnouncementsAnnouncementIdRouteImport.update({
+    id: '/announcements/$announcementId',
+    path: '/announcements/$announcementId',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppUserProfileUrlIndexRoute = AppUserProfileUrlIndexRouteImport.update({
+  id: '/user/$profileUrl/',
+  path: '/user/$profileUrl/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCommunityCommunityIdIndexRoute =
+  AppCommunityCommunityIdIndexRouteImport.update({
+    id: '/community/$communityId/',
+    path: '/community/$communityId/',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppUserProfileUrlFollowingRoute =
+  AppUserProfileUrlFollowingRouteImport.update({
+    id: '/user/$profileUrl/following',
+    path: '/user/$profileUrl/following',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppUserProfileUrlFollowersRoute =
+  AppUserProfileUrlFollowersRouteImport.update({
+    id: '/user/$profileUrl/followers',
+    path: '/user/$profileUrl/followers',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppCommunityCommunityIdFollowersRoute =
+  AppCommunityCommunityIdFollowersRouteImport.update({
+    id: '/community/$communityId/followers',
+    path: '/community/$communityId/followers',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppCommunityCommunityIdAdminRoute =
+  AppCommunityCommunityIdAdminRouteImport.update({
+    id: '/community/$communityId/admin',
+    path: '/community/$communityId/admin',
+    getParentRoute: () => AppRoute,
+  } as any)
+const AppCommunityCommunityIdEventsIndexRoute =
+  AppCommunityCommunityIdEventsIndexRouteImport.update({
+    id: '/community/$communityId/events/',
+    path: '/community/$communityId/events/',
+    getParentRoute: () => AppRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
-  '/login': typeof AuthLoginRoute
+  '/changelog': typeof AppChangelogRoute
+  '/map': typeof AppMapRoute
+  '/messages': typeof AppMessagesRoute
+  '/notifications': typeof AppNotificationsRoute
+  '/pawcraft': typeof AppPawcraftRoute
+  '/profile': typeof AppProfileRoute
+  '/support': typeof AppSupportRoute
+  '/users': typeof AppUsersRoute
+  '/forgot-password': typeof AuthForgotPasswordRoute
+  '/login': typeof AuthLoginRouteWithChildren
+  '/logout': typeof AuthLogoutRoute
   '/register': typeof AuthRegisterRoute
+  '/announcements/$announcementId': typeof AppAnnouncementsAnnouncementIdRoute
+  '/community/new': typeof AppCommunityNewRoute
+  '/events/$eventId': typeof AppEventsEventIdRoute
+  '/gallery/$galleryId': typeof AppGalleryGalleryIdRoute
+  '/gallery/upload': typeof AppGalleryUploadRoute
+  '/legal/eula': typeof AppLegalEulaRoute
+  '/legal/impressum': typeof AppLegalImpressumRoute
+  '/legal/privacypolicy': typeof AppLegalPrivacypolicyRoute
+  '/i/reset-password': typeof AuthIResetPasswordRoute
+  '/i/verify-email': typeof AuthIVerifyEmailRoute
+  '/login/mfa': typeof AuthLoginMfaRoute
+  '/account/': typeof AppAccountIndexRoute
+  '/announcements/': typeof AppAnnouncementsIndexRoute
+  '/community/': typeof AppCommunityIndexRoute
+  '/events/': typeof AppEventsIndexRoute
+  '/gallery/': typeof AppGalleryIndexRoute
+  '/legal/': typeof AppLegalIndexRoute
+  '/community/$communityId/admin': typeof AppCommunityCommunityIdAdminRoute
+  '/community/$communityId/followers': typeof AppCommunityCommunityIdFollowersRoute
+  '/user/$profileUrl/followers': typeof AppUserProfileUrlFollowersRoute
+  '/user/$profileUrl/following': typeof AppUserProfileUrlFollowingRoute
+  '/community/$communityId/': typeof AppCommunityCommunityIdIndexRoute
+  '/user/$profileUrl/': typeof AppUserProfileUrlIndexRoute
+  '/community/$communityId/events/': typeof AppCommunityCommunityIdEventsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/login': typeof AuthLoginRoute
-  '/register': typeof AuthRegisterRoute
   '/': typeof AppIndexRoute
+  '/changelog': typeof AppChangelogRoute
+  '/map': typeof AppMapRoute
+  '/messages': typeof AppMessagesRoute
+  '/notifications': typeof AppNotificationsRoute
+  '/pawcraft': typeof AppPawcraftRoute
+  '/profile': typeof AppProfileRoute
+  '/support': typeof AppSupportRoute
+  '/users': typeof AppUsersRoute
+  '/forgot-password': typeof AuthForgotPasswordRoute
+  '/login': typeof AuthLoginRouteWithChildren
+  '/logout': typeof AuthLogoutRoute
+  '/register': typeof AuthRegisterRoute
+  '/announcements/$announcementId': typeof AppAnnouncementsAnnouncementIdRoute
+  '/community/new': typeof AppCommunityNewRoute
+  '/events/$eventId': typeof AppEventsEventIdRoute
+  '/gallery/$galleryId': typeof AppGalleryGalleryIdRoute
+  '/gallery/upload': typeof AppGalleryUploadRoute
+  '/legal/eula': typeof AppLegalEulaRoute
+  '/legal/impressum': typeof AppLegalImpressumRoute
+  '/legal/privacypolicy': typeof AppLegalPrivacypolicyRoute
+  '/i/reset-password': typeof AuthIResetPasswordRoute
+  '/i/verify-email': typeof AuthIVerifyEmailRoute
+  '/login/mfa': typeof AuthLoginMfaRoute
+  '/account': typeof AppAccountIndexRoute
+  '/announcements': typeof AppAnnouncementsIndexRoute
+  '/community': typeof AppCommunityIndexRoute
+  '/events': typeof AppEventsIndexRoute
+  '/gallery': typeof AppGalleryIndexRoute
+  '/legal': typeof AppLegalIndexRoute
+  '/community/$communityId/admin': typeof AppCommunityCommunityIdAdminRoute
+  '/community/$communityId/followers': typeof AppCommunityCommunityIdFollowersRoute
+  '/user/$profileUrl/followers': typeof AppUserProfileUrlFollowersRoute
+  '/user/$profileUrl/following': typeof AppUserProfileUrlFollowingRoute
+  '/community/$communityId': typeof AppCommunityCommunityIdIndexRoute
+  '/user/$profileUrl': typeof AppUserProfileUrlIndexRoute
+  '/community/$communityId/events': typeof AppCommunityCommunityIdEventsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
-  '/_auth/login': typeof AuthLoginRoute
+  '/_auth': typeof AuthRouteWithChildren
+  '/_app/changelog': typeof AppChangelogRoute
+  '/_app/map': typeof AppMapRoute
+  '/_app/messages': typeof AppMessagesRoute
+  '/_app/notifications': typeof AppNotificationsRoute
+  '/_app/pawcraft': typeof AppPawcraftRoute
+  '/_app/profile': typeof AppProfileRoute
+  '/_app/support': typeof AppSupportRoute
+  '/_app/users': typeof AppUsersRoute
+  '/_auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/_auth/login': typeof AuthLoginRouteWithChildren
+  '/_auth/logout': typeof AuthLogoutRoute
   '/_auth/register': typeof AuthRegisterRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/announcements/$announcementId': typeof AppAnnouncementsAnnouncementIdRoute
+  '/_app/community/new': typeof AppCommunityNewRoute
+  '/_app/events/$eventId': typeof AppEventsEventIdRoute
+  '/_app/gallery/$galleryId': typeof AppGalleryGalleryIdRoute
+  '/_app/gallery/upload': typeof AppGalleryUploadRoute
+  '/_app/legal/eula': typeof AppLegalEulaRoute
+  '/_app/legal/impressum': typeof AppLegalImpressumRoute
+  '/_app/legal/privacypolicy': typeof AppLegalPrivacypolicyRoute
+  '/_auth/i/reset-password': typeof AuthIResetPasswordRoute
+  '/_auth/i/verify-email': typeof AuthIVerifyEmailRoute
+  '/_auth/login/mfa': typeof AuthLoginMfaRoute
+  '/_app/account/': typeof AppAccountIndexRoute
+  '/_app/announcements/': typeof AppAnnouncementsIndexRoute
+  '/_app/community/': typeof AppCommunityIndexRoute
+  '/_app/events/': typeof AppEventsIndexRoute
+  '/_app/gallery/': typeof AppGalleryIndexRoute
+  '/_app/legal/': typeof AppLegalIndexRoute
+  '/_app/community/$communityId/admin': typeof AppCommunityCommunityIdAdminRoute
+  '/_app/community/$communityId/followers': typeof AppCommunityCommunityIdFollowersRoute
+  '/_app/user/$profileUrl/followers': typeof AppUserProfileUrlFollowersRoute
+  '/_app/user/$profileUrl/following': typeof AppUserProfileUrlFollowingRoute
+  '/_app/community/$communityId/': typeof AppCommunityCommunityIdIndexRoute
+  '/_app/user/$profileUrl/': typeof AppUserProfileUrlIndexRoute
+  '/_app/community/$communityId/events/': typeof AppCommunityCommunityIdEventsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/register'
+  fullPaths:
+    | '/'
+    | '/changelog'
+    | '/map'
+    | '/messages'
+    | '/notifications'
+    | '/pawcraft'
+    | '/profile'
+    | '/support'
+    | '/users'
+    | '/forgot-password'
+    | '/login'
+    | '/logout'
+    | '/register'
+    | '/announcements/$announcementId'
+    | '/community/new'
+    | '/events/$eventId'
+    | '/gallery/$galleryId'
+    | '/gallery/upload'
+    | '/legal/eula'
+    | '/legal/impressum'
+    | '/legal/privacypolicy'
+    | '/i/reset-password'
+    | '/i/verify-email'
+    | '/login/mfa'
+    | '/account/'
+    | '/announcements/'
+    | '/community/'
+    | '/events/'
+    | '/gallery/'
+    | '/legal/'
+    | '/community/$communityId/admin'
+    | '/community/$communityId/followers'
+    | '/user/$profileUrl/followers'
+    | '/user/$profileUrl/following'
+    | '/community/$communityId/'
+    | '/user/$profileUrl/'
+    | '/community/$communityId/events/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/register' | '/'
-  id: '__root__' | '/_app' | '/_auth/login' | '/_auth/register' | '/_app/'
+  to:
+    | '/'
+    | '/changelog'
+    | '/map'
+    | '/messages'
+    | '/notifications'
+    | '/pawcraft'
+    | '/profile'
+    | '/support'
+    | '/users'
+    | '/forgot-password'
+    | '/login'
+    | '/logout'
+    | '/register'
+    | '/announcements/$announcementId'
+    | '/community/new'
+    | '/events/$eventId'
+    | '/gallery/$galleryId'
+    | '/gallery/upload'
+    | '/legal/eula'
+    | '/legal/impressum'
+    | '/legal/privacypolicy'
+    | '/i/reset-password'
+    | '/i/verify-email'
+    | '/login/mfa'
+    | '/account'
+    | '/announcements'
+    | '/community'
+    | '/events'
+    | '/gallery'
+    | '/legal'
+    | '/community/$communityId/admin'
+    | '/community/$communityId/followers'
+    | '/user/$profileUrl/followers'
+    | '/user/$profileUrl/following'
+    | '/community/$communityId'
+    | '/user/$profileUrl'
+    | '/community/$communityId/events'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/_auth'
+    | '/_app/changelog'
+    | '/_app/map'
+    | '/_app/messages'
+    | '/_app/notifications'
+    | '/_app/pawcraft'
+    | '/_app/profile'
+    | '/_app/support'
+    | '/_app/users'
+    | '/_auth/forgot-password'
+    | '/_auth/login'
+    | '/_auth/logout'
+    | '/_auth/register'
+    | '/_app/'
+    | '/_app/announcements/$announcementId'
+    | '/_app/community/new'
+    | '/_app/events/$eventId'
+    | '/_app/gallery/$galleryId'
+    | '/_app/gallery/upload'
+    | '/_app/legal/eula'
+    | '/_app/legal/impressum'
+    | '/_app/legal/privacypolicy'
+    | '/_auth/i/reset-password'
+    | '/_auth/i/verify-email'
+    | '/_auth/login/mfa'
+    | '/_app/account/'
+    | '/_app/announcements/'
+    | '/_app/community/'
+    | '/_app/events/'
+    | '/_app/gallery/'
+    | '/_app/legal/'
+    | '/_app/community/$communityId/admin'
+    | '/_app/community/$communityId/followers'
+    | '/_app/user/$profileUrl/followers'
+    | '/_app/user/$profileUrl/following'
+    | '/_app/community/$communityId/'
+    | '/_app/user/$profileUrl/'
+    | '/_app/community/$communityId/events/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
-  AuthLoginRoute: typeof AuthLoginRoute
-  AuthRegisterRoute: typeof AuthRegisterRoute
+  AuthRoute: typeof AuthRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app': {
       id: '/_app'
       path: ''
@@ -86,32 +525,360 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof AuthRegisterRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/logout': {
+      id: '/_auth/logout'
+      path: '/logout'
+      fullPath: '/logout'
+      preLoaderRoute: typeof AuthLogoutRouteImport
+      parentRoute: typeof AuthRoute
     }
     '/_auth/login': {
       id: '/_auth/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof AuthLoginRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/forgot-password': {
+      id: '/_auth/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_app/users': {
+      id: '/_app/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof AppUsersRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/support': {
+      id: '/_app/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof AppSupportRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/profile': {
+      id: '/_app/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AppProfileRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/pawcraft': {
+      id: '/_app/pawcraft'
+      path: '/pawcraft'
+      fullPath: '/pawcraft'
+      preLoaderRoute: typeof AppPawcraftRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/notifications': {
+      id: '/_app/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AppNotificationsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/messages': {
+      id: '/_app/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof AppMessagesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/map': {
+      id: '/_app/map'
+      path: '/map'
+      fullPath: '/map'
+      preLoaderRoute: typeof AppMapRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/changelog': {
+      id: '/_app/changelog'
+      path: '/changelog'
+      fullPath: '/changelog'
+      preLoaderRoute: typeof AppChangelogRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/legal/': {
+      id: '/_app/legal/'
+      path: '/legal'
+      fullPath: '/legal/'
+      preLoaderRoute: typeof AppLegalIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/gallery/': {
+      id: '/_app/gallery/'
+      path: '/gallery'
+      fullPath: '/gallery/'
+      preLoaderRoute: typeof AppGalleryIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/events/': {
+      id: '/_app/events/'
+      path: '/events'
+      fullPath: '/events/'
+      preLoaderRoute: typeof AppEventsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/community/': {
+      id: '/_app/community/'
+      path: '/community'
+      fullPath: '/community/'
+      preLoaderRoute: typeof AppCommunityIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/announcements/': {
+      id: '/_app/announcements/'
+      path: '/announcements'
+      fullPath: '/announcements/'
+      preLoaderRoute: typeof AppAnnouncementsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/account/': {
+      id: '/_app/account/'
+      path: '/account'
+      fullPath: '/account/'
+      preLoaderRoute: typeof AppAccountIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_auth/login/mfa': {
+      id: '/_auth/login/mfa'
+      path: '/mfa'
+      fullPath: '/login/mfa'
+      preLoaderRoute: typeof AuthLoginMfaRouteImport
+      parentRoute: typeof AuthLoginRoute
+    }
+    '/_auth/i/verify-email': {
+      id: '/_auth/i/verify-email'
+      path: '/i/verify-email'
+      fullPath: '/i/verify-email'
+      preLoaderRoute: typeof AuthIVerifyEmailRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_auth/i/reset-password': {
+      id: '/_auth/i/reset-password'
+      path: '/i/reset-password'
+      fullPath: '/i/reset-password'
+      preLoaderRoute: typeof AuthIResetPasswordRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_app/legal/privacypolicy': {
+      id: '/_app/legal/privacypolicy'
+      path: '/legal/privacypolicy'
+      fullPath: '/legal/privacypolicy'
+      preLoaderRoute: typeof AppLegalPrivacypolicyRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/legal/impressum': {
+      id: '/_app/legal/impressum'
+      path: '/legal/impressum'
+      fullPath: '/legal/impressum'
+      preLoaderRoute: typeof AppLegalImpressumRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/legal/eula': {
+      id: '/_app/legal/eula'
+      path: '/legal/eula'
+      fullPath: '/legal/eula'
+      preLoaderRoute: typeof AppLegalEulaRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/gallery/upload': {
+      id: '/_app/gallery/upload'
+      path: '/gallery/upload'
+      fullPath: '/gallery/upload'
+      preLoaderRoute: typeof AppGalleryUploadRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/gallery/$galleryId': {
+      id: '/_app/gallery/$galleryId'
+      path: '/gallery/$galleryId'
+      fullPath: '/gallery/$galleryId'
+      preLoaderRoute: typeof AppGalleryGalleryIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/events/$eventId': {
+      id: '/_app/events/$eventId'
+      path: '/events/$eventId'
+      fullPath: '/events/$eventId'
+      preLoaderRoute: typeof AppEventsEventIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/community/new': {
+      id: '/_app/community/new'
+      path: '/community/new'
+      fullPath: '/community/new'
+      preLoaderRoute: typeof AppCommunityNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/announcements/$announcementId': {
+      id: '/_app/announcements/$announcementId'
+      path: '/announcements/$announcementId'
+      fullPath: '/announcements/$announcementId'
+      preLoaderRoute: typeof AppAnnouncementsAnnouncementIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/user/$profileUrl/': {
+      id: '/_app/user/$profileUrl/'
+      path: '/user/$profileUrl'
+      fullPath: '/user/$profileUrl/'
+      preLoaderRoute: typeof AppUserProfileUrlIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/community/$communityId/': {
+      id: '/_app/community/$communityId/'
+      path: '/community/$communityId'
+      fullPath: '/community/$communityId/'
+      preLoaderRoute: typeof AppCommunityCommunityIdIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/user/$profileUrl/following': {
+      id: '/_app/user/$profileUrl/following'
+      path: '/user/$profileUrl/following'
+      fullPath: '/user/$profileUrl/following'
+      preLoaderRoute: typeof AppUserProfileUrlFollowingRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/user/$profileUrl/followers': {
+      id: '/_app/user/$profileUrl/followers'
+      path: '/user/$profileUrl/followers'
+      fullPath: '/user/$profileUrl/followers'
+      preLoaderRoute: typeof AppUserProfileUrlFollowersRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/community/$communityId/followers': {
+      id: '/_app/community/$communityId/followers'
+      path: '/community/$communityId/followers'
+      fullPath: '/community/$communityId/followers'
+      preLoaderRoute: typeof AppCommunityCommunityIdFollowersRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/community/$communityId/admin': {
+      id: '/_app/community/$communityId/admin'
+      path: '/community/$communityId/admin'
+      fullPath: '/community/$communityId/admin'
+      preLoaderRoute: typeof AppCommunityCommunityIdAdminRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/community/$communityId/events/': {
+      id: '/_app/community/$communityId/events/'
+      path: '/community/$communityId/events'
+      fullPath: '/community/$communityId/events/'
+      preLoaderRoute: typeof AppCommunityCommunityIdEventsIndexRouteImport
+      parentRoute: typeof AppRoute
     }
   }
 }
 
 interface AppRouteChildren {
+  AppChangelogRoute: typeof AppChangelogRoute
+  AppMapRoute: typeof AppMapRoute
+  AppMessagesRoute: typeof AppMessagesRoute
+  AppNotificationsRoute: typeof AppNotificationsRoute
+  AppPawcraftRoute: typeof AppPawcraftRoute
+  AppProfileRoute: typeof AppProfileRoute
+  AppSupportRoute: typeof AppSupportRoute
+  AppUsersRoute: typeof AppUsersRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppAnnouncementsAnnouncementIdRoute: typeof AppAnnouncementsAnnouncementIdRoute
+  AppCommunityNewRoute: typeof AppCommunityNewRoute
+  AppEventsEventIdRoute: typeof AppEventsEventIdRoute
+  AppGalleryGalleryIdRoute: typeof AppGalleryGalleryIdRoute
+  AppGalleryUploadRoute: typeof AppGalleryUploadRoute
+  AppLegalEulaRoute: typeof AppLegalEulaRoute
+  AppLegalImpressumRoute: typeof AppLegalImpressumRoute
+  AppLegalPrivacypolicyRoute: typeof AppLegalPrivacypolicyRoute
+  AppAccountIndexRoute: typeof AppAccountIndexRoute
+  AppAnnouncementsIndexRoute: typeof AppAnnouncementsIndexRoute
+  AppCommunityIndexRoute: typeof AppCommunityIndexRoute
+  AppEventsIndexRoute: typeof AppEventsIndexRoute
+  AppGalleryIndexRoute: typeof AppGalleryIndexRoute
+  AppLegalIndexRoute: typeof AppLegalIndexRoute
+  AppCommunityCommunityIdAdminRoute: typeof AppCommunityCommunityIdAdminRoute
+  AppCommunityCommunityIdFollowersRoute: typeof AppCommunityCommunityIdFollowersRoute
+  AppUserProfileUrlFollowersRoute: typeof AppUserProfileUrlFollowersRoute
+  AppUserProfileUrlFollowingRoute: typeof AppUserProfileUrlFollowingRoute
+  AppCommunityCommunityIdIndexRoute: typeof AppCommunityCommunityIdIndexRoute
+  AppUserProfileUrlIndexRoute: typeof AppUserProfileUrlIndexRoute
+  AppCommunityCommunityIdEventsIndexRoute: typeof AppCommunityCommunityIdEventsIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppChangelogRoute: AppChangelogRoute,
+  AppMapRoute: AppMapRoute,
+  AppMessagesRoute: AppMessagesRoute,
+  AppNotificationsRoute: AppNotificationsRoute,
+  AppPawcraftRoute: AppPawcraftRoute,
+  AppProfileRoute: AppProfileRoute,
+  AppSupportRoute: AppSupportRoute,
+  AppUsersRoute: AppUsersRoute,
   AppIndexRoute: AppIndexRoute,
+  AppAnnouncementsAnnouncementIdRoute: AppAnnouncementsAnnouncementIdRoute,
+  AppCommunityNewRoute: AppCommunityNewRoute,
+  AppEventsEventIdRoute: AppEventsEventIdRoute,
+  AppGalleryGalleryIdRoute: AppGalleryGalleryIdRoute,
+  AppGalleryUploadRoute: AppGalleryUploadRoute,
+  AppLegalEulaRoute: AppLegalEulaRoute,
+  AppLegalImpressumRoute: AppLegalImpressumRoute,
+  AppLegalPrivacypolicyRoute: AppLegalPrivacypolicyRoute,
+  AppAccountIndexRoute: AppAccountIndexRoute,
+  AppAnnouncementsIndexRoute: AppAnnouncementsIndexRoute,
+  AppCommunityIndexRoute: AppCommunityIndexRoute,
+  AppEventsIndexRoute: AppEventsIndexRoute,
+  AppGalleryIndexRoute: AppGalleryIndexRoute,
+  AppLegalIndexRoute: AppLegalIndexRoute,
+  AppCommunityCommunityIdAdminRoute: AppCommunityCommunityIdAdminRoute,
+  AppCommunityCommunityIdFollowersRoute: AppCommunityCommunityIdFollowersRoute,
+  AppUserProfileUrlFollowersRoute: AppUserProfileUrlFollowersRoute,
+  AppUserProfileUrlFollowingRoute: AppUserProfileUrlFollowingRoute,
+  AppCommunityCommunityIdIndexRoute: AppCommunityCommunityIdIndexRoute,
+  AppUserProfileUrlIndexRoute: AppUserProfileUrlIndexRoute,
+  AppCommunityCommunityIdEventsIndexRoute:
+    AppCommunityCommunityIdEventsIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
+interface AuthLoginRouteChildren {
+  AuthLoginMfaRoute: typeof AuthLoginMfaRoute
+}
+
+const AuthLoginRouteChildren: AuthLoginRouteChildren = {
+  AuthLoginMfaRoute: AuthLoginMfaRoute,
+}
+
+const AuthLoginRouteWithChildren = AuthLoginRoute._addFileChildren(
+  AuthLoginRouteChildren,
+)
+
+interface AuthRouteChildren {
+  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
+  AuthLoginRoute: typeof AuthLoginRouteWithChildren
+  AuthLogoutRoute: typeof AuthLogoutRoute
+  AuthRegisterRoute: typeof AuthRegisterRoute
+  AuthIResetPasswordRoute: typeof AuthIResetPasswordRoute
+  AuthIVerifyEmailRoute: typeof AuthIVerifyEmailRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
+  AuthLoginRoute: AuthLoginRouteWithChildren,
+  AuthLogoutRoute: AuthLogoutRoute,
+  AuthRegisterRoute: AuthRegisterRoute,
+  AuthIResetPasswordRoute: AuthIResetPasswordRoute,
+  AuthIVerifyEmailRoute: AuthIVerifyEmailRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
-  AuthLoginRoute: AuthLoginRoute,
-  AuthRegisterRoute: AuthRegisterRoute,
+  AuthRoute: AuthRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
