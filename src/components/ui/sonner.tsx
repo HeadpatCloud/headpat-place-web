@@ -1,5 +1,4 @@
-"use client"
-
+﻿
 import { Toaster as Sonner } from "sonner"
 import React from "react"
 import { AlertCircle, CheckCircle, Loader2 } from "lucide-react"

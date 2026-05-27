@@ -1,5 +1,4 @@
-"use client"
-
+﻿
 import { motion, useMotionTemplate, useMotionValue } from "framer-motion"
 import type { MouseEvent as ReactMouseEvent } from "react"
 import React, { useState } from "react"

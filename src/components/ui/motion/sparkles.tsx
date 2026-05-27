@@ -1,5 +1,4 @@
-"use client"
-import React, { useEffect, useId, useState } from "react"
+﻿import React, { useEffect, useId, useState } from "react"
 import Particles, { initParticlesEngine } from "@tsparticles/react"
 import type { Container, SingleOrMultiple } from "@tsparticles/engine"
 import { loadSlim } from "@tsparticles/slim"
