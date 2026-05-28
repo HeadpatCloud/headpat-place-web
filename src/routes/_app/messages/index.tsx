@@ -2,8 +2,24 @@ import { useQuery } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
 import { Pager } from "@/components/Pager"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { StorageImage } from "@/components/StorageImage"
+import { Card } from "@/components/ui/card"
 import { orpc } from "@/lib/orpc"
+
+type Other = {
+  userId: string
+  profileUrl: string
+  displayName: string | null
+  name: string | null
+  avatarFileId: string | null
+}
+
+function conversationTitle(others: Other[]): string {
+  if (others.length === 0) return "Just you"
+  const names = others.map((o) => o.displayName || o.name || o.profileUrl)
+  if (names.length <= 2) return names.join(", ")
+  return `${names[0]}, ${names[1]} +${names.length - 2}`
+}
 
 export const Route = createFileRoute("/_app/messages/")({
   component: MessagesPage,
@@ -34,22 +50,24 @@ function MessagesPage() {
                 to={`/messages/${c.id}` as never}
                 className="block"
               >
-                <Card className="hover:bg-accent transition-colors">
-                  <CardHeader>
-                    <CardTitle className="text-base">
-                      Conversation {c.id.slice(0, 8)}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    {c.lastMessageAt ? (
-                      <p className="text-xs text-muted-foreground">
-                        Last message:{" "}
-                        {new Date(c.lastMessageAt).toLocaleString()}
-                      </p>
-                    ) : (
-                      <p className="text-xs text-muted-foreground">No messages yet</p>
-                    )}
-                  </CardContent>
+                <Card className="hover:bg-accent flex flex-row items-center gap-3 p-3 transition-colors">
+                  <StorageImage
+                    kind="avatar"
+                    fileId={c.others[0]?.avatarFileId}
+                    variant="sm"
+                    className="h-11 w-11 shrink-0 rounded-lg border border-border object-cover bg-muted"
+                    fallback={<div className="h-11 w-11 shrink-0 rounded-lg border border-border bg-muted" />}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-semibold">
+                      {conversationTitle(c.others)}
+                    </p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {c.lastMessageAt
+                        ? `Last message: ${new Date(c.lastMessageAt).toLocaleString()}`
+                        : "No messages yet"}
+                    </p>
+                  </div>
                 </Card>
               </Link>
             ))}

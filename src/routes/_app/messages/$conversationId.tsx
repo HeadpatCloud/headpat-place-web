@@ -57,9 +57,13 @@ function ConversationPage() {
     return <p className="p-4">Not found or not a participant.</p>
   }
 
-  const others = (participants.data ?? []).filter(
-    (p) => p.userId !== session?.user?.id,
-  )
+  const parts = participants.data ?? []
+  const others = parts.filter((p) => p.userId !== session?.user?.id)
+  const byUser = new Map(parts.map((p) => [p.userId, p]))
+  const nameOf = (userId: string) => {
+    const p = byUser.get(userId)
+    return p ? p.displayName || p.name || p.profileUrl : userId.slice(0, 8)
+  }
 
   return (
     <main className="mx-auto max-w-3xl">
@@ -68,7 +72,7 @@ function ConversationPage() {
           <CardTitle className="text-base">
             {others.length === 0
               ? "Just you"
-              : others.map((p) => p.userId.slice(0, 8)).join(", ")}
+              : others.map((p) => p.displayName || p.name || p.profileUrl).join(", ")}
           </CardTitle>
         </CardHeader>
         <Separator />
@@ -93,7 +97,8 @@ function ConversationPage() {
                   {!mine && (
                     <StorageImage
                       kind="avatar"
-                      fileId={null}
+                      fileId={byUser.get(m.senderId)?.avatarFileId}
+                      variant="sm"
                       className="h-6 w-6 shrink-0 rounded-md border border-border bg-muted"
                       fallback={<div className="h-6 w-6 shrink-0 rounded-md border border-border bg-muted" />}
                     />
@@ -107,7 +112,7 @@ function ConversationPage() {
                   >
                     {!mine ? (
                       <div className="text-xs font-medium opacity-70 mb-0.5">
-                        {m.senderId.slice(0, 8)}
+                        {nameOf(m.senderId)}
                       </div>
                     ) : null}
                     <div className="whitespace-pre-wrap break-words">{m.body}</div>
