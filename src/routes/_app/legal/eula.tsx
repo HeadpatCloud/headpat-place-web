@@ -8,7 +8,7 @@ export const Route = createFileRoute("/_app/legal/eula")({
 
 function EulaPage() {
   return (
-    <main className="mx-auto max-w-3xl px-6 py-12">
+    <main className="mx-auto max-w-3xl">
       <article className="prose-headpat">
         <Eula />
       </article>

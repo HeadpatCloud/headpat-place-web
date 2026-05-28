@@ -46,7 +46,7 @@ function GalleryItemPage() {
   const isOwner = session?.user?.id === g.userId
 
   return (
-    <main className="mx-auto max-w-4xl">
+    <main>
       <Card className="overflow-hidden">
         <StorageImage
           kind="gallery"

@@ -20,7 +20,7 @@ function CommunityFollowersPage() {
   const items = followers.data?.items ?? []
 
   return (
-    <main className="mx-auto max-w-4xl">
+    <main>
       <Card>
         <CardHeader>
           <CardTitle>Followers</CardTitle>

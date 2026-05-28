@@ -54,7 +54,7 @@ function HeaderProvider({ children }: { children: React.ReactNode }) {
             </>
           )}
         </header>
-        <div className="p-4">{children}</div>
+        <div className="mx-auto w-full max-w-5xl xl:max-w-6xl 2xl:max-w-screen-2xl px-4 py-6">{children}</div>
       </SidebarInset>
     </HeaderContext.Provider>
   )

@@ -22,7 +22,7 @@ function UserProfilePage() {
   const p = profile.data
 
   return (
-    <main className="mx-auto max-w-4xl space-y-6 px-4 py-6">
+    <main className="space-y-6">
       <div className="overflow-hidden rounded-2xl border">
         <GradientBanner kind="banner" fileId={p.bannerFileId} className="h-48 w-full" />
         <div className="px-6 pb-6">

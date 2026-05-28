@@ -19,7 +19,7 @@ function MessagesPage() {
   const items = conversations.data?.items ?? []
 
   return (
-    <main className="mx-auto max-w-4xl space-y-4">
+    <main className="space-y-4">
       <h2 className="text-2xl font-bold">Messages</h2>
       {conversations.isPending ? (
         <p className="text-muted-foreground">Loading…</p>

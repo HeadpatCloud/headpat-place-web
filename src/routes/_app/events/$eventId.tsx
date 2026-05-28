@@ -35,7 +35,7 @@ function EventDetailPage() {
   const e = event.data
 
   return (
-    <main className="mx-auto max-w-4xl space-y-6">
+    <main className="space-y-6">
       <div className="bg-sunset-hero rounded-2xl p-8 text-white space-y-2">
         <h1 className="text-2xl sm:text-3xl font-extrabold">{e.title}</h1>
         <p className="text-sm opacity-90">

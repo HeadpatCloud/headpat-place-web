@@ -9,7 +9,7 @@ export const Route = createFileRoute("/_app/map")({
 
 function MapPage() {
   return (
-    <main className="mx-auto max-w-4xl space-y-4 px-4 py-8">
+    <main className="space-y-4">
       <Card>
         <CardHeader className="flex flex-row items-center gap-3">
           <MapIcon className="h-5 w-5" />

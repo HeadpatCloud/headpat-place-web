@@ -18,7 +18,7 @@ function EventsPage() {
   const items = events.data?.items ?? []
 
   return (
-    <main className="mx-auto max-w-6xl space-y-4">
+    <main className="space-y-4">
       <h2 className="text-2xl font-bold">Events</h2>
       {events.isPending ? (
         <p className="text-muted-foreground">Loading…</p>

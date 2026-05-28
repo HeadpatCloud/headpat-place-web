@@ -7,7 +7,7 @@ export const Route = createFileRoute("/_app/legal/impressum")({
 
 function ImpressumPage() {
   return (
-    <div className="px-6 py-32 lg:px-8">
+    <div>
       <div className="mx-auto max-w-3xl text-base leading-7">
         <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
           Impressum

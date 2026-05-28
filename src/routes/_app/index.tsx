@@ -17,7 +17,7 @@ function Landing() {
   const topUsers = (users.data?.items ?? []).slice(0, 3)
 
   return (
-    <main className="mx-auto max-w-5xl space-y-8 px-4 py-6">
+    <main className="space-y-8">
       <section className="bg-sunset-hero relative overflow-hidden rounded-2xl p-8 text-white">
         <h1 className="text-3xl font-extrabold tracking-tight">
           {session?.user ? `Welcome back, ${session.user.name || "friend"} ✨` : "Welcome to Headpat"}

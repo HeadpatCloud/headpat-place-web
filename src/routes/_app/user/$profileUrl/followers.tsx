@@ -15,7 +15,7 @@ function FollowersPage() {
   if (profile.isError || !profile.data) return <p className="p-4">Profile not found.</p>
 
   return (
-    <main className="mx-auto max-w-4xl">
+    <main>
       <Card>
         <CardHeader>
           <CardTitle>{profile.data.displayName || profile.data.profileUrl}'s followers</CardTitle>
