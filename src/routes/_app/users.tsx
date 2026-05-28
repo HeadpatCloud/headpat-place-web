@@ -14,7 +14,7 @@ function UsersPage() {
   const [search, setSearch] = useState("")
   const users = useQuery(
     orpc.profile.list.queryOptions({
-      input: search.trim() ? { search: search.trim(), limit: 40 } : { limit: 40 },
+      input: search.trim() ? { search: search.trim(), limit: 250 } : { limit: 250 },
     }),
   )
 
