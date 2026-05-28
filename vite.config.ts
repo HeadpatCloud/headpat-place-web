@@ -10,10 +10,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   plugins: [
-    tanstackStart({
-      target: "node-server",
-      tsr: { srcDirectory: "src", routesDirectory: "src/routes" },
-    }),
+    tanstackStart(),
     { enforce: "pre", ...mdx() },
     viteReact(),
     tailwindcss(),
