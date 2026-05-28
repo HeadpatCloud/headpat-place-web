@@ -42,6 +42,12 @@
 
   --color-link: var(--link);
 
+  --color-brand: var(--primary);
+  --color-brand-foreground: var(--primary-foreground);
+  --color-sunset-1: #fbbf24;
+  --color-sunset-2: #fb7185;
+  --color-sunset-3: #a855f7;
+
   --color-loading: var(--loading);
 
   --min-width-0: 0;
@@ -368,4 +374,31 @@ pre {
 }
 .prose-headpat hr {
   @apply my-8 border-border;
+}
+
+.bg-sunset {
+  background-image: linear-gradient(
+    135deg,
+    var(--color-sunset-1),
+    var(--color-sunset-2) 50%,
+    var(--color-sunset-3)
+  );
+}
+
+.card-hover {
+  transition: transform 150ms ease, filter 150ms ease;
+}
+.card-hover:hover {
+  transform: scale(1.01);
+  filter: brightness(1.05);
+}
+
+.zoom-parent { overflow: hidden; }
+.zoom-img { transition: transform 200ms ease; }
+.zoom-parent:hover .zoom-img { transform: scale(1.04); }
+
+@media (prefers-reduced-motion: reduce) {
+  .card-hover, .zoom-img { transition: none; }
+  .card-hover:hover { transform: none; filter: none; }
+  .zoom-parent:hover .zoom-img { transform: none; }
 }
