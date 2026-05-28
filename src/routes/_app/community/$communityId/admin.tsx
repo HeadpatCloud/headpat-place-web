@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
 import { AvatarBannerUpload } from "@/components/AvatarBannerUpload"
+import { UserCard } from "@/components/UserCard"
 import InputField from "@/components/fields/InputField"
 import {
   AlertDialog,
@@ -153,14 +154,15 @@ function AdminPage() {
           <CardTitle>Members & roles</CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="divide-y">
+          <div className="space-y-2">
             {(members.data?.items ?? []).map((m) => (
-              <li key={m.userId} className="flex items-center justify-between py-2">
-                <span>{m.userId}</span>
-                <span className="text-muted-foreground text-sm">{m.role}</span>
-              </li>
+              <UserCard
+                key={m.userId}
+                user={m}
+                trailing={<span className="text-xs text-muted-foreground capitalize">{m.role}</span>}
+              />
             ))}
-          </ul>
+          </div>
         </CardContent>
       </Card>
 

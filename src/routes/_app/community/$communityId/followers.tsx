@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
 import { Pager } from "@/components/Pager"
+import { UserCard } from "@/components/UserCard"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { orpc } from "@/lib/orpc"
 
@@ -28,15 +29,15 @@ function CommunityFollowersPage() {
         <CardContent>
           {followers.isPending ? (
             <p className="text-muted-foreground">Loading…</p>
+          ) : items.length === 0 ? (
+            <p className="text-muted-foreground">No followers yet.</p>
           ) : (
             <>
-              <ul className="divide-y">
-                {items.map((f) => (
-                  <li key={f.userId} className="py-2">
-                    {f.userId}
-                  </li>
+              <div className="space-y-2">
+                {items.map((u) => (
+                  <UserCard key={u.userId} user={u} />
                 ))}
-              </ul>
+              </div>
               <Pager page={page} total={followers.data?.total ?? 0} pageSize={PAGE_SIZE} onPageChange={setPage} />
             </>
           )}
