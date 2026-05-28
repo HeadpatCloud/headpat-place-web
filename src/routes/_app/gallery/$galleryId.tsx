@@ -52,6 +52,7 @@ function GalleryItemPage() {
           kind="gallery"
           fileId={g.fileId}
           alt={g.name}
+          variant="lg"
           className="w-full max-h-[80vh] object-contain bg-muted"
           fallback={<div className="h-96 w-full bg-muted" />}
         />

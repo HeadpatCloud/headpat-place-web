@@ -62,6 +62,8 @@ function UploadPage() {
       })
       if (!put.ok) throw new Error(`S3 upload failed: ${put.status}`)
 
+      await client.storage.finalize({ kind: "gallery", fileId })
+
       setProgress("Saving metadata…")
       const g = await client.gallery.create({
         name: v.name,

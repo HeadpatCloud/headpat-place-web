@@ -4,10 +4,11 @@ type Props = {
   kind: Extract<StorageKind, "banner" | "community-banner">
   fileId: string | null | undefined
   className?: string
+  variant?: string
 }
 
-export function GradientBanner({ kind, fileId, className }: Props) {
-  const q = useStorageUrl(kind, fileId)
+export function GradientBanner({ kind, fileId, className, variant = "wide" }: Props) {
+  const q = useStorageUrl(kind, fileId, variant)
   const base = className ?? "h-48 w-full rounded-lg"
   if (fileId && q.data) {
     return (

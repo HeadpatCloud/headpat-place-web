@@ -47,6 +47,7 @@ export function AvatarBannerUpload({
         body: file,
       })
       if (!put.ok) throw new Error(`S3 upload failed: ${put.status}`)
+      await client.storage.finalize({ kind, fileId })
       await onUploaded(fileId)
       await queryClient.invalidateQueries({ queryKey: ["storage", "url"] })
       toast.success(`${kind} updated`)

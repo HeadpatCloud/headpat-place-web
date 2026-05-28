@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_app/user/$profileUrl/")({
 function UserProfilePage() {
   const { profileUrl } = Route.useParams()
   const profile = useQuery(orpc.profile.byUrl.queryOptions({ input: { profileUrl } }))
-  const avatarUrl = useStorageUrl("avatar", profile.data?.avatarFileId)
+  const avatarUrl = useStorageUrl("avatar", profile.data?.avatarFileId, "md")
 
   if (profile.isPending) return <p className="p-4 text-muted-foreground">Loading…</p>
   if (profile.isError || !profile.data) return <p className="p-4">Profile not found.</p>

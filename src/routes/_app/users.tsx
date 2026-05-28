@@ -52,6 +52,7 @@ function UsersPage() {
                   <StorageImage
                     kind="avatar"
                     fileId={u.avatarFileId}
+                    variant="sm"
                     className="h-12 w-12 shrink-0 rounded-lg border border-border object-cover bg-muted"
                     fallback={<div className="h-12 w-12 shrink-0 rounded-lg border border-border bg-muted" />}
                   />

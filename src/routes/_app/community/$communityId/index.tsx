@@ -57,6 +57,7 @@ function CommunityDetailPage() {
               kind="community-avatar"
               fileId={c.avatarFileId}
               alt={c.name}
+              variant="md"
               className="h-20 w-20 shrink-0 rounded-xl border border-border object-cover bg-muted ring-4 ring-background"
               fallback={<div className="h-20 w-20 shrink-0 rounded-xl border border-border bg-muted ring-4 ring-background" />}
             />

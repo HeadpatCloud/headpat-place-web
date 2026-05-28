@@ -53,6 +53,7 @@ function CommunitiesPage() {
                     <StorageImage
                       kind="community-avatar"
                       fileId={c.avatarFileId}
+                      variant="sm"
                       className="h-10 w-10 shrink-0 rounded-lg border border-border object-cover bg-muted"
                       fallback={<div className="h-10 w-10 shrink-0 rounded-lg border border-border bg-muted" />}
                     />

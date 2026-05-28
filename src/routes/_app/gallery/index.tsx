@@ -39,6 +39,7 @@ function GalleryPage() {
                     kind="gallery"
                     fileId={g.fileId}
                     alt={g.name}
+                    variant="thumb"
                     className="zoom-img h-56 w-full object-cover bg-muted"
                     fallback={<div className="h-56 w-full bg-muted" />}
                   />
