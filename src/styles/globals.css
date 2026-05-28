@@ -385,15 +385,15 @@ pre {
   );
 }
 
-/* Hero variant: dark in the top-left, brightening to amber in the bottom-right.
+/* Hero variant: dark in the top-left, brightening toward green in the bottom-right.
    Improves white-text contrast in the top-left where the heading sits. */
 .bg-sunset-hero {
   background-image: linear-gradient(
     135deg,
     #1e1b3a 0%,
-    var(--color-sunset-3) 45%,
-    var(--color-sunset-2) 72%,
-    var(--color-sunset-1) 100%
+    var(--color-sunset-3) 40%,
+    var(--color-sunset-2) 65%,
+    #10b981 100%
   );
 }
 
