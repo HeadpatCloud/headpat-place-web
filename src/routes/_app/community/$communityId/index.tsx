@@ -52,14 +52,14 @@ function CommunityDetailPage() {
       <div className="overflow-hidden rounded-2xl border">
         <GradientBanner kind="community-banner" fileId={c.bannerFileId} aspect="3/1" />
         <div className="px-6 pb-6">
-          <div className="flex items-end justify-between gap-4 -mt-10 mb-4">
+          <div className="flex items-end justify-between gap-4 -mt-16 mb-4">
             <StorageImage
               kind="community-avatar"
               fileId={c.avatarFileId}
               alt={c.name}
               variant="md"
-              className="h-20 w-20 shrink-0 rounded-xl border border-border object-cover bg-muted ring-4 ring-background"
-              fallback={<div className="h-20 w-20 shrink-0 rounded-xl border border-border bg-muted ring-4 ring-background" />}
+              className="h-32 w-32 shrink-0 rounded-2xl border border-border object-cover bg-muted ring-4 ring-background"
+              fallback={<div className="h-32 w-32 shrink-0 rounded-2xl border border-border bg-muted ring-4 ring-background" />}
             />
             <div className="flex gap-2 pb-1">
               <Button
