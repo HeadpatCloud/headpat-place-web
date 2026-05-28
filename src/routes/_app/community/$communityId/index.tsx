@@ -1,11 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
 import { toast } from "sonner"
-import { StorageImage, useStorageUrl } from "@/components/StorageImage"
+import { GradientBanner } from "@/components/GradientBanner"
+import { StorageImage } from "@/components/StorageImage"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
 import { client, orpc } from "@/lib/orpc"
 
 export const Route = createFileRoute("/_app/community/$communityId/")({
@@ -43,8 +42,6 @@ function CommunityDetailPage() {
     onError: (e: Error) => toast.error(e.message),
   })
 
-  const bannerUrl = useStorageUrl("community-banner", community.data?.bannerFileId)
-
   if (community.isPending) return <p className="p-4 text-muted-foreground">Loading…</p>
   if (community.isError || !community.data) return <p className="p-4">Community not found.</p>
   const c = community.data
@@ -52,33 +49,27 @@ function CommunityDetailPage() {
 
   return (
     <main className="mx-auto max-w-4xl space-y-6">
-      {bannerUrl.data ? (
-        <div
-          className="h-48 w-full overflow-hidden rounded-lg bg-muted bg-cover bg-center"
-          style={{ backgroundImage: `url(${bannerUrl.data.url})` }}
-        />
-      ) : null}
-      <Card>
-        <CardHeader>
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <StorageImage
-                kind="community-avatar"
-                fileId={c.avatarFileId}
-                alt={c.name}
-                className="h-14 w-14 rounded-full object-cover bg-muted"
-                fallback={<div className="h-14 w-14 rounded-full bg-muted" />}
-              />
-              <div>
-                <CardTitle className="text-2xl">{c.name}</CardTitle>
-                <p className="text-muted-foreground">@{c.slug}</p>
-              </div>
-            </div>
-            <div className="flex gap-2">
+      <div className="overflow-hidden rounded-2xl border">
+        <GradientBanner kind="community-banner" fileId={c.bannerFileId} className="h-48 w-full" />
+        <div className="px-6 pb-6">
+          <div className="flex items-end justify-between gap-4 -mt-10 mb-4">
+            <StorageImage
+              kind="community-avatar"
+              fileId={c.avatarFileId}
+              alt={c.name}
+              className="h-20 w-20 rounded-full object-cover bg-muted ring-4 ring-background"
+              fallback={<div className="h-20 w-20 rounded-full bg-muted ring-4 ring-background" />}
+            />
+            <div className="flex gap-2 pb-1">
               <Button
-                variant={followStatus.data?.iFollow ? "outline" : "default"}
                 onClick={() => toggleFollow.mutate()}
                 disabled={toggleFollow.isPending}
+                className={
+                  followStatus.data?.iFollow
+                    ? undefined
+                    : "bg-primary text-primary-foreground hover:bg-primary/90"
+                }
+                variant={followStatus.data?.iFollow ? "outline" : "default"}
               >
                 {followStatus.data?.iFollow ? "Following" : "Follow"}
               </Button>
@@ -89,26 +80,29 @@ function CommunityDetailPage() {
               ) : null}
             </div>
           </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {c.description ? <p>{c.description}</p> : null}
-          <div className="flex gap-2 flex-wrap">
-            {(c.tags ?? []).map((t) => (
-              <Badge key={t} variant="secondary">{t}</Badge>
-            ))}
+          <div className="space-y-1 mb-4">
+            <h1 className="text-2xl font-extrabold tracking-tight">{c.name}</h1>
+            <p className="text-muted-foreground">@{c.slug}</p>
           </div>
-          <Separator />
-          <div className="flex gap-6 text-sm">
+          <div className="flex gap-6 text-sm mb-4">
             <Link to={`/community/${communityId}/followers` as never} className="hover:underline">
-              <span className="font-medium">{c.followersCount}</span>
+              <b>{c.followersCount}</b>
               <span className="text-muted-foreground"> followers</span>
             </Link>
-            <Link to={`/community/${communityId}/events` as never} className="hover:underline">
-              <span className="text-muted-foreground">View events →</span>
+            <Link to={`/community/${communityId}/events` as never} className="text-muted-foreground hover:underline">
+              View events →
             </Link>
           </div>
-        </CardContent>
-      </Card>
+          {c.description ? <p className="mb-4">{c.description}</p> : null}
+          <div className="flex gap-2 flex-wrap">
+            {(c.tags ?? []).map((t) => (
+              <Badge key={t} className="rounded-full bg-primary/15 text-primary border-transparent">
+                {t}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      </div>
     </main>
   )
 }
