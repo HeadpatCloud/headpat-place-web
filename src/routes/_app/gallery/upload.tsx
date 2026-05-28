@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
@@ -30,7 +30,12 @@ function UploadPage() {
   const navigate = useNavigate()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [file, setFile] = useState<File | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [progress, setProgress] = useState<string>("")
+
+  useEffect(() => {
+    return () => { if (previewUrl) URL.revokeObjectURL(previewUrl) }
+  }, [previewUrl])
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -91,12 +96,25 @@ function UploadPage() {
             >
               <div className="space-y-2">
                 <p className="text-sm font-medium">Image file</p>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-input p-8 hover:border-primary hover:bg-primary/5 transition-colors"
+                >
+                  {previewUrl
+                    ? <img src={previewUrl} alt="preview" className="max-h-48 rounded-lg object-contain" />
+                    : <span className="text-muted-foreground text-sm">Click to choose an image</span>}
+                </button>
                 <input
                   ref={fileInputRef}
                   type="file"
                   accept="image/*"
-                  onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                  className="block w-full text-sm"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0] ?? null
+                    setFile(f)
+                    setPreviewUrl(f ? URL.createObjectURL(f) : null)
+                  }}
                 />
                 {file ? (
                   <p className="text-xs text-muted-foreground">
@@ -133,7 +151,7 @@ function UploadPage() {
               {progress ? (
                 <p className="text-sm text-muted-foreground">{progress}</p>
               ) : null}
-              <Button type="submit" disabled={submit.isPending || !file}>
+              <Button type="submit" disabled={submit.isPending || !file} className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
                 {submit.isPending ? "Uploading…" : "Upload"}
               </Button>
             </form>
