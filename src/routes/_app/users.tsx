@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { Pager } from "@/components/Pager"
 import { StorageImage } from "@/components/StorageImage"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -10,13 +11,22 @@ export const Route = createFileRoute("/_app/users")({
   component: UsersPage,
 })
 
+const PAGE_SIZE = 24
+
 function UsersPage() {
   const [search, setSearch] = useState("")
+  const [page, setPage] = useState(1)
+  // Reset to page 1 whenever the search changes.
+  useEffect(() => setPage(1), [search])
+
   const users = useQuery(
     orpc.profile.list.queryOptions({
-      input: search.trim() ? { search: search.trim(), limit: 250 } : { limit: 250 },
+      input: search.trim()
+        ? { search: search.trim(), page, pageSize: PAGE_SIZE }
+        : { page, pageSize: PAGE_SIZE },
     }),
   )
+  const items = users.data?.items ?? []
 
   return (
     <main className="mx-auto max-w-6xl space-y-4">
@@ -30,11 +40,12 @@ function UsersPage() {
       />
       {users.isPending ? (
         <p className="text-muted-foreground">Loading…</p>
-      ) : (users.data ?? []).length === 0 ? (
+      ) : items.length === 0 ? (
         <p className="text-muted-foreground">No users found.</p>
       ) : (
+        <>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {(users.data ?? []).map((u) => (
+          {items.map((u) => (
             <Link key={u.userId} to={`/user/${u.profileUrl}` as never}>
               <Card className="card-hover">
                 <CardHeader className="flex flex-row items-center gap-3">
@@ -67,6 +78,13 @@ function UsersPage() {
             </Link>
           ))}
         </div>
+        <Pager
+          page={page}
+          total={users.data?.total ?? 0}
+          pageSize={PAGE_SIZE}
+          onPageChange={setPage}
+        />
+        </>
       )}
     </main>
   )
