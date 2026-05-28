@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute } from "@tanstack/react-router"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { client, orpc } from "@/lib/orpc"
 
 export const Route = createFileRoute("/_app/notifications")({
@@ -34,19 +33,20 @@ function NotificationsPage() {
       ) : (list.data ?? []).length === 0 ? (
         <p className="text-muted-foreground">No notifications.</p>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-1">
           {(list.data ?? []).map((n) => (
-            <Card key={n.id} className={n.read ? "opacity-60" : ""}>
-              <CardHeader>
-                <CardTitle className="text-sm">{n.type}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p>{n.message}</p>
-                <p className="text-xs text-muted-foreground mt-1">
+            <div
+              key={n.id}
+              className={`flex items-start gap-3 rounded-lg p-3 ${!n.read ? "bg-primary/5" : ""}`}
+            >
+              <div className="h-9 w-9 shrink-0 rounded-full bg-primary/15" />
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold leading-snug">{n.message}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
                   {new Date(n.createdAt).toLocaleString()}
                 </p>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
       )}
