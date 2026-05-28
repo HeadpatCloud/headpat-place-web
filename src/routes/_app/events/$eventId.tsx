@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { client, orpc } from "@/lib/orpc"
 
 export const Route = createFileRoute("/_app/events/$eventId")({
@@ -36,54 +36,65 @@ function EventDetailPage() {
 
   return (
     <main className="mx-auto max-w-4xl space-y-6">
+      <div className="bg-sunset rounded-2xl p-8 text-white space-y-2">
+        <h1 className="text-2xl sm:text-3xl font-extrabold">{e.title}</h1>
+        <p className="text-sm opacity-90">
+          {new Date(e.startsAt).toLocaleString()}
+          {e.endsAt ? ` — ${new Date(e.endsAt).toLocaleString()}` : ""}
+        </p>
+        {e.locationText ? (
+          <p className="text-sm opacity-90">{e.locationText}</p>
+        ) : null}
+      </div>
+
       <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">{e.title}</CardTitle>
-          {e.label ? <p className="text-muted-foreground">{e.label}</p> : null}
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-6">
           <div className="flex gap-2 flex-wrap">
             {(e.tags ?? []).map((t) => (
               <Badge key={t} variant="secondary">{t}</Badge>
             ))}
             {e.isPaid ? <Badge variant="default">Paid</Badge> : null}
           </div>
+          {e.label ? <p className="text-muted-foreground">{e.label}</p> : null}
           {e.description ? <p>{e.description}</p> : null}
-          <div className="text-sm">
-            <p>
-              <span className="font-medium">Starts:</span>{" "}
-              {new Date(e.startsAt).toLocaleString()}
+          {e.website ? (
+            <p className="text-sm">
+              <a href={e.website} className="text-link hover:underline">
+                Website
+              </a>
             </p>
-            {e.endsAt ? (
-              <p>
-                <span className="font-medium">Ends:</span>{" "}
-                {new Date(e.endsAt).toLocaleString()}
-              </p>
-            ) : null}
-            {e.locationText ? (
-              <p>
-                <span className="font-medium">Location:</span> {e.locationText}
-              </p>
-            ) : null}
-            {e.website ? (
-              <p>
-                <a href={e.website} className="text-link hover:underline">
-                  Website
-                </a>
-              </p>
-            ) : null}
-          </div>
+          ) : null}
           <Button
-            variant={isAttending ? "outline" : "default"}
             onClick={() => toggle.mutate()}
             disabled={toggle.isPending}
+            className={
+              isAttending
+                ? undefined
+                : "bg-primary text-primary-foreground hover:bg-primary/90"
+            }
+            variant={isAttending ? "outline" : "default"}
           >
             {isAttending ? "Attending — cancel" : "Attend"}
           </Button>
-          <p className="text-xs text-muted-foreground">
-            {e.attendeesCount} attending
-            {e.visitorCapacity ? ` / ${e.visitorCapacity} max` : ""}
-          </p>
+          {e.visitorCapacity ? (
+            <div className="space-y-1">
+              <div className="h-2 w-full rounded-full bg-muted">
+                <div
+                  className="h-2 rounded-full bg-primary"
+                  style={{
+                    width: `${Math.min(100, Math.round((e.attendeesCount / e.visitorCapacity) * 100))}%`,
+                  }}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {e.attendeesCount} / {e.visitorCapacity} attending
+              </p>
+            </div>
+          ) : (
+            <p className="text-xs text-muted-foreground">
+              {e.attendeesCount} attending
+            </p>
+          )}
         </CardContent>
       </Card>
     </main>
