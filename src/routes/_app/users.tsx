@@ -36,16 +36,16 @@ function UsersPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {(users.data ?? []).map((u) => (
             <Link key={u.userId} to={`/user/${u.profileUrl}` as never}>
-              <Card className="hover:bg-accent transition-colors">
+              <Card className="card-hover">
                 <CardHeader className="flex flex-row items-center gap-3">
                   <StorageImage
                     kind="avatar"
                     fileId={u.avatarFileId}
-                    className="h-10 w-10 rounded-full object-cover bg-muted"
-                    fallback={<div className="h-10 w-10 rounded-full bg-muted" />}
+                    className="h-12 w-12 rounded-full object-cover bg-muted"
+                    fallback={<div className="h-12 w-12 rounded-full bg-muted" />}
                   />
                   <div className="min-w-0">
-                    <CardTitle className="text-base truncate">
+                    <CardTitle className="text-base font-semibold truncate">
                       {u.displayName || u.profileUrl}
                     </CardTitle>
                     <p className="text-xs text-muted-foreground truncate">

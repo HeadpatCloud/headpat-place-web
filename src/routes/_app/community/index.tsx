@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
+import { GradientBanner } from "@/components/GradientBanner"
 import { StorageImage } from "@/components/StorageImage"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -38,13 +39,8 @@ function CommunitiesPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {(list.data ?? []).map((c) => (
             <Link key={c.id} to={`/community/${c.id}` as never}>
-              <Card className="hover:bg-accent transition-colors overflow-hidden">
-                <StorageImage
-                  kind="community-banner"
-                  fileId={c.bannerFileId}
-                  className="h-24 w-full object-cover"
-                  fallback={<div className="h-24 w-full bg-muted" />}
-                />
+              <Card className="card-hover overflow-hidden">
+                <GradientBanner kind="community-banner" fileId={c.bannerFileId} className="h-24 w-full" />
                 <CardHeader className="flex flex-row items-center gap-3">
                   <StorageImage
                     kind="community-avatar"
@@ -52,7 +48,7 @@ function CommunitiesPage() {
                     className="h-10 w-10 rounded-full object-cover bg-muted"
                     fallback={<div className="h-10 w-10 rounded-full bg-muted" />}
                   />
-                  <CardTitle>{c.name}</CardTitle>
+                  <CardTitle className="font-bold">{c.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground line-clamp-2">
@@ -61,6 +57,18 @@ function CommunitiesPage() {
                   <p className="text-xs text-muted-foreground mt-2">
                     {c.followersCount} followers
                   </p>
+                  {c.tags && c.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {c.tags.map((tag: string) => (
+                        <span
+                          key={tag}
+                          className="rounded-full bg-primary/15 text-primary border-transparent text-xs px-2 py-0.5"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </Link>
