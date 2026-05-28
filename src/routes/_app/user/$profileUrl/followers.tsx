@@ -42,7 +42,7 @@ function FollowersPage() {
             <p className="text-muted-foreground">No followers yet.</p>
           ) : (
             <>
-              <div className="space-y-2">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {items.map((u) => (
                   <UserCard key={u.userId} user={u} />
                 ))}

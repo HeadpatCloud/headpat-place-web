@@ -154,7 +154,7 @@ function AdminPage() {
           <CardTitle>Members & roles</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {(members.data?.items ?? []).map((m) => (
               <UserCard
                 key={m.userId}
