@@ -9,7 +9,7 @@ export const Route = createFileRoute("/_app/gallery/")({
 })
 
 function GalleryPage() {
-  const items = useQuery(orpc.gallery.list.queryOptions({ input: {} }))
+  const items = useQuery(orpc.gallery.list.queryOptions({ input: { limit: 250 } }))
 
   return (
     <main className="mx-auto max-w-6xl space-y-4">
