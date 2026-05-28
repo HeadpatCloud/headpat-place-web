@@ -46,8 +46,8 @@ function UsersPage() {
         <>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((u) => (
-            <Link key={u.userId} to={`/user/${u.profileUrl}` as never}>
-              <Card className="card-hover">
+            <Link key={u.userId} to={`/user/${u.profileUrl}` as never} className="block h-full">
+              <Card className="card-hover h-full">
                 <CardHeader className="flex flex-row items-center gap-3">
                   <StorageImage
                     kind="avatar"
