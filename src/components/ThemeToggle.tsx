@@ -6,7 +6,7 @@ import { flushSync } from "react-dom"
 import { Button } from "./ui/button"
 
 export const ThemeToggle = () => {
-  const { theme, setTheme } = useTheme()
+  const { setTheme } = useTheme()
   const buttonRef = useRef<HTMLButtonElement | null>(null)
   const changeTheme = async () => {
     if (!buttonRef.current) return
@@ -56,11 +56,8 @@ export const ThemeToggle = () => {
       variant={"ghost"}
       size={"icon"}
     >
-      {theme === "dark" ? (
-        <SunDim className="size-5" aria-description="Light mode" />
-      ) : (
-        <Moon className="size-5" aria-description="Dark mode" />
-      )}
+      <SunDim className="hidden size-5 dark:block" aria-description="Light mode" />
+      <Moon className="block size-5 dark:hidden" aria-description="Dark mode" />
     </Button>
   )
 }

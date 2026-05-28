@@ -43,8 +43,8 @@ function Landing() {
                   <StorageImage
                     kind="community-avatar"
                     fileId={c.avatarFileId}
-                    className="h-9 w-9 rounded-full object-cover bg-muted"
-                    fallback={<div className="h-9 w-9 rounded-full bg-muted" />}
+                    className="h-9 w-9 shrink-0 rounded-lg border border-border object-cover bg-muted"
+                    fallback={<div className="h-9 w-9 shrink-0 rounded-lg border border-border bg-muted" />}
                   />
                   <div className="min-w-0">
                     <p className="truncate font-semibold">{c.name}</p>
@@ -67,11 +67,11 @@ function Landing() {
                   <StorageImage
                     kind="avatar"
                     fileId={u.avatarFileId}
-                    className="h-10 w-10 rounded-full object-cover bg-muted"
-                    fallback={<div className="h-10 w-10 rounded-full bg-muted" />}
+                    className="h-10 w-10 shrink-0 rounded-lg border border-border object-cover bg-muted"
+                    fallback={<div className="h-10 w-10 shrink-0 rounded-lg border border-border bg-muted" />}
                   />
                   <div className="min-w-0">
-                    <p className="truncate font-semibold">{u.displayName || u.profileUrl}</p>
+                    <p className="truncate font-semibold">{u.displayName || u.name || u.profileUrl}</p>
                     <p className="truncate text-xs text-muted-foreground">@{u.profileUrl}</p>
                   </div>
                 </CardContent>

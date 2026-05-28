@@ -39,7 +39,7 @@ function NotificationsPage() {
               key={n.id}
               className={`flex items-start gap-3 rounded-lg p-3 ${!n.read ? "bg-primary/5" : ""}`}
             >
-              <div className="h-9 w-9 shrink-0 rounded-full bg-primary/15" />
+              <div className="h-9 w-9 shrink-0 rounded-lg border border-border bg-primary/15" />
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold leading-snug">{n.message}</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">

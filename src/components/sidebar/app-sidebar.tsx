@@ -26,21 +26,12 @@ import {
 } from "@/components/ui/sidebar"
 import { SiDiscord, SiGithub } from "@icons-pack/react-simple-icons"
 import { useTranslations } from "@/lib/i18n"
-import { useTheme } from "next-themes"
 import { Separator } from "../ui/separator"
 import { NavList } from "./nav-list"
 import { TeamSwitcher } from "./team-switcher"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pageNames = useTranslations("PageNames")
-  const { resolvedTheme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
-  React.useEffect(() => setMounted(true), [])
-
-  const getLogo = (name: string) => {
-    const variant = mounted && resolvedTheme === "dark" ? "dark" : "light"
-    return `/logos/${name}_${variant}_x250.webp`
-  }
 
   const data = {
     navMain: [
@@ -125,17 +116,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       {
         name: "Place",
         activeName: "Headpat Place",
-        logo: getLogo("place"),
+        logoLight: "/logos/place_light_x250.webp",
+        logoDark: "/logos/place_dark_x250.webp",
         href: "https://headpat.place",
       },
       {
         name: "Space",
-        logo: getLogo("space"),
+        logoLight: "/logos/space_light_x250.webp",
+        logoDark: "/logos/space_dark_x250.webp",
         href: "https://headpat.space",
       },
       {
         name: "Developer",
-        logo: getLogo("developer"),
+        logoLight: "/logos/developer_light_x250.webp",
+        logoDark: "/logos/developer_dark_x250.webp",
         href: "https://headpat.dev",
       },
     ],

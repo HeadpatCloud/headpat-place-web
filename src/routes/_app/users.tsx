@@ -41,12 +41,12 @@ function UsersPage() {
                   <StorageImage
                     kind="avatar"
                     fileId={u.avatarFileId}
-                    className="h-12 w-12 rounded-full object-cover bg-muted"
-                    fallback={<div className="h-12 w-12 rounded-full bg-muted" />}
+                    className="h-12 w-12 shrink-0 rounded-lg border border-border object-cover bg-muted"
+                    fallback={<div className="h-12 w-12 shrink-0 rounded-lg border border-border bg-muted" />}
                   />
                   <div className="min-w-0">
                     <CardTitle className="text-base font-semibold truncate">
-                      {u.displayName || u.profileUrl}
+                      {u.displayName || u.name || u.profileUrl}
                     </CardTitle>
                     <p className="text-xs text-muted-foreground truncate">
                       @{u.profileUrl}

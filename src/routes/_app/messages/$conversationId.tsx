@@ -94,8 +94,8 @@ function ConversationPage() {
                     <StorageImage
                       kind="avatar"
                       fileId={null}
-                      className="h-6 w-6 shrink-0 rounded-full bg-muted"
-                      fallback={<div className="h-6 w-6 shrink-0 rounded-full bg-muted" />}
+                      className="h-6 w-6 shrink-0 rounded-md border border-border bg-muted"
+                      fallback={<div className="h-6 w-6 shrink-0 rounded-md border border-border bg-muted" />}
                     />
                   )}
                   <div

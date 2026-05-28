@@ -57,8 +57,8 @@ function CommunityDetailPage() {
               kind="community-avatar"
               fileId={c.avatarFileId}
               alt={c.name}
-              className="h-20 w-20 rounded-full object-cover bg-muted ring-4 ring-background"
-              fallback={<div className="h-20 w-20 rounded-full bg-muted ring-4 ring-background" />}
+              className="h-20 w-20 shrink-0 rounded-xl border border-border object-cover bg-muted ring-4 ring-background"
+              fallback={<div className="h-20 w-20 shrink-0 rounded-xl border border-border bg-muted ring-4 ring-background" />}
             />
             <div className="flex gap-2 pb-1">
               <Button

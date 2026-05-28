@@ -27,12 +27,12 @@ function UserProfilePage() {
         <GradientBanner kind="banner" fileId={p.bannerFileId} className="h-48 w-full" />
         <div className="px-6 pb-6">
           <div className="-mt-10 flex items-end gap-4">
-            <Avatar className="h-20 w-20 ring-4 ring-background">
-              <AvatarImage src={avatarUrl.data?.url} alt={p.displayName ?? p.userId} />
-              <AvatarFallback>{(p.displayName ?? "?").charAt(0)}</AvatarFallback>
+            <Avatar className="h-20 w-20 rounded-xl border border-border ring-4 ring-background">
+              <AvatarImage src={avatarUrl.data?.url} alt={p.displayName ?? p.name ?? p.userId} className="rounded-xl" />
+              <AvatarFallback className="rounded-xl">{(p.displayName ?? p.name ?? "?").charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="flex-1 pb-1">
-              <h1 className="text-2xl font-extrabold tracking-tight">{p.displayName || p.profileUrl}</h1>
+              <h1 className="text-2xl font-extrabold tracking-tight">{p.displayName || p.name || p.profileUrl}</h1>
               {p.status ? <p className="text-muted-foreground">{p.status}</p> : null}
             </div>
             <FollowButton targetUserId={p.userId} />
