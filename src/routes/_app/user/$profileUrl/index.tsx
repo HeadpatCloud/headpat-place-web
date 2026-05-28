@@ -26,10 +26,10 @@ function UserProfilePage() {
       <div className="overflow-hidden rounded-2xl border">
         <GradientBanner kind="banner" fileId={p.bannerFileId} aspect="3/1" />
         <div className="px-6 pb-6">
-          <div className="-mt-10 flex items-end gap-4">
-            <Avatar className="h-20 w-20 rounded-xl border border-border ring-4 ring-background">
-              <AvatarImage src={avatarUrl.data?.url} alt={p.displayName ?? p.name ?? p.userId} className="rounded-xl" />
-              <AvatarFallback className="rounded-xl">{(p.displayName ?? p.name ?? "?").charAt(0)}</AvatarFallback>
+          <div className="-mt-16 flex items-end gap-4">
+            <Avatar className="h-32 w-32 rounded-2xl border border-border ring-4 ring-background">
+              <AvatarImage src={avatarUrl.data?.url} alt={p.displayName ?? p.name ?? p.userId} className="rounded-2xl" />
+              <AvatarFallback className="rounded-2xl text-3xl">{(p.displayName ?? p.name ?? "?").charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="flex-1 pb-1">
               <h1 className="text-2xl font-extrabold tracking-tight">{p.displayName || p.name || p.profileUrl}</h1>
