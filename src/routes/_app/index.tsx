@@ -11,10 +11,10 @@ export const Route = createFileRoute("/_app/")({ component: Landing })
 
 function Landing() {
   const { data: session } = useSession()
-  const communities = useQuery(orpc.community.list.queryOptions({ input: {} }))
-  const users = useQuery(orpc.profile.list.queryOptions({ input: { limit: 3 } }))
-  const topCommunities = (communities.data ?? []).slice(0, 3)
-  const topUsers = (users.data ?? []).slice(0, 3)
+  const communities = useQuery(orpc.community.list.queryOptions({ input: { pageSize: 3 } }))
+  const users = useQuery(orpc.profile.list.queryOptions({ input: { pageSize: 3 } }))
+  const topCommunities = (communities.data?.items ?? []).slice(0, 3)
+  const topUsers = (users.data?.items ?? []).slice(0, 3)
 
   return (
     <main className="mx-auto max-w-5xl space-y-8 px-4 py-6">

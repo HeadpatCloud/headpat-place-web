@@ -154,7 +154,7 @@ function AdminPage() {
         </CardHeader>
         <CardContent>
           <ul className="divide-y">
-            {(members.data ?? []).map((m) => (
+            {(members.data?.items ?? []).map((m) => (
               <li key={m.userId} className="flex items-center justify-between py-2">
                 <span>{m.userId}</span>
                 <span className="text-muted-foreground text-sm">{m.role}</span>

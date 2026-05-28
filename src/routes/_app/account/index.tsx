@@ -86,7 +86,7 @@ function AccountPage() {
     ...orpc.notification.list.queryOptions({ input: {} }),
     enabled: !!session?.user,
   })
-  const unreadCount = (notifications.data ?? []).filter((n: { read: boolean }) => !n.read).length
+  const unreadCount = (notifications.data?.items ?? []).filter((n: { read: boolean }) => !n.read).length
 
   const updateProfile = useMutation({
     mutationFn: async (
