@@ -47,7 +47,7 @@ function UsersPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((u) => (
             <Link key={u.userId} to={`/user/${u.profileUrl}` as never} className="block h-full">
-              <Card className="card-hover h-full">
+              <Card className="card-hover flex h-full flex-col">
                 <CardHeader className="flex flex-row items-center gap-3">
                   <StorageImage
                     kind="avatar"
@@ -65,13 +65,13 @@ function UsersPage() {
                     </p>
                   </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex flex-1 flex-col">
                   {u.bio ? (
                     <p className="text-sm line-clamp-2">{u.bio}</p>
                   ) : (
                     <p className="text-xs text-muted-foreground">No bio</p>
                   )}
-                  <p className="text-xs text-muted-foreground mt-2">
+                  <p className="mt-auto pt-2 text-xs text-muted-foreground">
                     {u.followersCount} followers
                   </p>
                 </CardContent>
