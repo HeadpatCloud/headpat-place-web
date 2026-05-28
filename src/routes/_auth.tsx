@@ -6,8 +6,9 @@ export const Route = createFileRoute("/_auth")({
 
 function AuthLayout() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12">
-      <div className="w-full max-w-md">
+    <div className="relative flex min-h-screen items-center justify-center bg-background px-4 py-12">
+      <div aria-hidden className="bg-sunset pointer-events-none absolute inset-0 opacity-15 blur-3xl" />
+      <div className="relative z-10 w-full max-w-md">
         <Outlet />
       </div>
     </div>

@@ -191,7 +191,7 @@ function LoginPage() {
                         />
                       )}
                     />
-                    <Button className="w-full">Register</Button>
+                    <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">Register</Button>
                     <Link to={"/forgot-password" as never}>
                       <Button variant="link" type="button" className="p-0">
                         Forgot password?
@@ -234,7 +234,7 @@ function LoginPage() {
                         />
                       )}
                     />
-                    <Button className="w-full">Login</Button>
+                    <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">Login</Button>
                     <Link to={"/forgot-password" as never}>
                       <Button variant="link" type="button" className="p-0">
                         Forgot password?
