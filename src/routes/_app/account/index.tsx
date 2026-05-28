@@ -82,6 +82,12 @@ function AccountPage() {
     enabled: !!session?.user,
   })
 
+  const notifications = useQuery({
+    ...orpc.notification.list.queryOptions({ input: {} }),
+    enabled: !!session?.user,
+  })
+  const unreadCount = (notifications.data ?? []).filter((n: { read: boolean }) => !n.read).length
+
   const updateProfile = useMutation({
     mutationFn: async (
       input: Parameters<typeof client.profile.update>[0],
@@ -196,6 +202,11 @@ function AccountPage() {
       </div>
 
       <TabsContent value="general">
+        <div className="mx-auto grid max-w-4xl grid-cols-3 gap-3 px-4 pt-6">
+          <StatCard label="Followers" value={profileQuery.data?.followersCount ?? 0} accent="brand" />
+          <StatCard label="Following" value={profileQuery.data?.followingCount ?? 0} />
+          <StatCard label="Unread" value={unreadCount} accent="warm" />
+        </div>
         <div className="divide-y divide-black/5 dark:divide-white/5">
           {/* Email */}
           <div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-8 sm:px-6 md:grid-cols-3 lg:px-8">
@@ -723,6 +734,16 @@ function TwoFactorSection() {
       <Button disabled={busy || password.length < 6} onClick={startEnroll}>
         Enable 2FA
       </Button>
+    </div>
+  )
+}
+
+function StatCard({ label, value, accent }: { label: string; value: number; accent?: "brand" | "warm" }) {
+  const color = accent === "brand" ? "text-primary" : accent === "warm" ? "text-[#fb7185]" : ""
+  return (
+    <div className="rounded-xl border bg-card p-4">
+      <div className={`text-2xl font-extrabold ${color}`}>{value}</div>
+      <div className="text-xs uppercase tracking-wide text-muted-foreground">{label}</div>
     </div>
   )
 }
