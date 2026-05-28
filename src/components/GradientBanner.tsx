@@ -1,22 +1,27 @@
-import { useStorageUrl, type StorageKind } from "@/components/StorageImage"
+import { ResponsiveImage } from "@/components/ResponsiveImage"
+import type { StorageKind } from "@/components/StorageImage"
 
 type Props = {
   kind: Extract<StorageKind, "banner" | "community-banner">
   fileId: string | null | undefined
   className?: string
-  variant?: string
+  aspect?: "3/1"
 }
 
-export function GradientBanner({ kind, fileId, className, variant = "wide" }: Props) {
-  const q = useStorageUrl(kind, fileId, variant)
-  const base = className ?? "h-48 w-full rounded-lg"
-  if (fileId && q.data) {
-    return (
-      <div
-        className={`${base} bg-cover bg-center bg-muted`}
-        style={{ backgroundImage: `url(${q.data.url})` }}
-      />
-    )
+export function GradientBanner({ kind, fileId, className, aspect }: Props) {
+  const aspectClass = aspect === "3/1" ? "aspect-[3/1] w-full" : (className ?? "h-48 w-full")
+  if (!fileId) {
+    return <div className={`${aspectClass} bg-sunset`} />
   }
-  return <div className={`${base} bg-sunset`} />
+  return (
+    <div className={`${aspectClass} overflow-hidden bg-muted`}>
+      <ResponsiveImage
+        kind={kind}
+        fileId={fileId}
+        sizes="100vw"
+        className="h-full w-full object-cover"
+        fallback={<div className="h-full w-full bg-sunset" />}
+      />
+    </div>
+  )
 }

@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { toast } from "sonner"
-import { StorageImage } from "@/components/StorageImage"
+import { ResponsiveImage } from "@/components/ResponsiveImage"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -48,11 +48,11 @@ function GalleryItemPage() {
   return (
     <main>
       <Card className="overflow-hidden">
-        <StorageImage
+        <ResponsiveImage
           kind="gallery"
           fileId={g.fileId}
           alt={g.name}
-          variant="lg"
+          sizes="(min-width:768px) 768px, 100vw"
           className="w-full max-h-[80vh] object-contain bg-muted"
           fallback={<div className="h-96 w-full bg-muted" />}
         />

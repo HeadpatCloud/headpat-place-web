@@ -24,7 +24,7 @@ function UserProfilePage() {
   return (
     <main className="space-y-6">
       <div className="overflow-hidden rounded-2xl border">
-        <GradientBanner kind="banner" fileId={p.bannerFileId} className="h-48 w-full" />
+        <GradientBanner kind="banner" fileId={p.bannerFileId} aspect="3/1" />
         <div className="px-6 pb-6">
           <div className="-mt-10 flex items-end gap-4">
             <Avatar className="h-20 w-20 rounded-xl border border-border ring-4 ring-background">

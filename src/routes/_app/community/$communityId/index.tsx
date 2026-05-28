@@ -50,7 +50,7 @@ function CommunityDetailPage() {
   return (
     <main className="space-y-6">
       <div className="overflow-hidden rounded-2xl border">
-        <GradientBanner kind="community-banner" fileId={c.bannerFileId} className="h-48 w-full" />
+        <GradientBanner kind="community-banner" fileId={c.bannerFileId} aspect="3/1" />
         <div className="px-6 pb-6">
           <div className="flex items-end justify-between gap-4 -mt-10 mb-4">
             <StorageImage

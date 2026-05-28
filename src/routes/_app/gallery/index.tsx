@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
 import { Pager } from "@/components/Pager"
-import { StorageImage } from "@/components/StorageImage"
+import { ResponsiveImage } from "@/components/ResponsiveImage"
 import { Button } from "@/components/ui/button"
 import { orpc } from "@/lib/orpc"
 
@@ -31,22 +31,20 @@ function GalleryPage() {
         <p className="text-muted-foreground">No images yet.</p>
       ) : (
         <>
-          <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          <div className="columns-2 gap-3 sm:columns-3 lg:columns-4 [&>*]:mb-3">
             {items.map((g) => (
-              <Link key={g.id} to={`/gallery/${g.id}` as never} className="zoom-parent block rounded-xl">
-                <div className="relative">
-                  <StorageImage
-                    kind="gallery"
-                    fileId={g.fileId}
-                    alt={g.name}
-                    variant="thumb"
-                    className="zoom-img h-56 w-full object-cover bg-muted"
-                    fallback={<div className="h-56 w-full bg-muted" />}
-                  />
-                  {g.nsfw ? <span className="absolute right-2 top-2 rounded-full bg-destructive px-2 py-0.5 text-xs text-white">NSFW</span> : null}
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3">
-                    <p className="truncate font-semibold text-white">{g.name}</p>
-                  </div>
+              <Link key={g.id} to={`/gallery/${g.id}` as never} className="zoom-parent block break-inside-avoid overflow-hidden rounded-xl relative">
+                <ResponsiveImage
+                  kind="gallery"
+                  fileId={g.fileId}
+                  alt={g.name}
+                  sizes="(min-width:1024px) 25vw, (min-width:640px) 33vw, 50vw"
+                  className="zoom-img w-full"
+                  fallback={<div className="aspect-square w-full bg-muted" />}
+                />
+                {g.nsfw ? <span className="absolute right-2 top-2 rounded-full bg-destructive px-2 py-0.5 text-xs text-white">NSFW</span> : null}
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3">
+                  <p className="truncate font-semibold text-white">{g.name}</p>
                 </div>
               </Link>
             ))}
