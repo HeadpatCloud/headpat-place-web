@@ -34,6 +34,7 @@ function EventDetailPage() {
   if (event.isError || !event.data) return <p className="p-4">Event not found.</p>
   const e = event.data
   const isPast = new Date(e.endsAt ?? e.startsAt).getTime() < Date.now()
+  const attendWord = isPast ? "attended" : "attending"
 
   return (
     <main className="space-y-6">
@@ -92,12 +93,12 @@ function EventDetailPage() {
                 />
               </div>
               <p className="text-xs text-muted-foreground">
-                {e.attendeesCount} / {e.visitorCapacity} attending
+                {e.attendeesCount} / {e.visitorCapacity} {attendWord}
               </p>
             </div>
           ) : (
             <p className="text-xs text-muted-foreground">
-              {e.attendeesCount} attending
+              {e.attendeesCount} {attendWord}
             </p>
           )}
         </CardContent>
