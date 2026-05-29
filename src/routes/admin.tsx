@@ -3,7 +3,7 @@ import { Link, Outlet, createFileRoute, useNavigate } from "@tanstack/react-rout
 import { useEffect } from "react"
 import { orpc } from "@/lib/orpc"
 
-export const Route = createFileRoute("/_admin")({ component: AdminLayout })
+export const Route = createFileRoute("/admin")({ component: AdminLayout })
 
 const NAV = {
   Access: [
