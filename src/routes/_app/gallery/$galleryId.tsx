@@ -2,6 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { toast } from "sonner"
 import { ResponsiveImage } from "@/components/ResponsiveImage"
+import { useStorageUrl } from "@/components/StorageImage"
+import { UserCard } from "@/components/UserCard"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -44,18 +46,23 @@ function GalleryItemPage() {
   if (item.isError || !item.data) return <p className="p-4">Not found.</p>
   const g = item.data
   const isOwner = session?.user?.id === g.userId
+  const isVideo = g.mimeType?.startsWith("video/") ?? false
 
   return (
     <main>
       <Card className="overflow-hidden">
-        <ResponsiveImage
-          kind="gallery"
-          fileId={g.fileId}
-          alt={g.name}
-          sizes="(min-width:768px) 768px, 100vw"
-          className="w-full max-h-[80vh] object-contain bg-muted"
-          fallback={<div className="h-96 w-full bg-muted" />}
-        />
+        {isVideo ? (
+          <GalleryVideo fileId={g.fileId} mimeType={g.mimeType} />
+        ) : (
+          <ResponsiveImage
+            kind="gallery"
+            fileId={g.fileId}
+            alt={g.name}
+            sizes="(min-width:768px) 768px, 100vw"
+            className="w-full max-h-[80vh] object-contain bg-muted"
+            fallback={<div className="h-96 w-full bg-muted" />}
+          />
+        )}
         <CardHeader className="flex flex-row items-start justify-between gap-4">
           <CardTitle>{g.name}</CardTitle>
           {isOwner ? (
@@ -86,8 +93,14 @@ function GalleryItemPage() {
             </AlertDialog>
           ) : null}
         </CardHeader>
-        <CardContent className="space-y-3">
-          {g.longText ? <p>{g.longText}</p> : null}
+        <CardContent className="space-y-4">
+          {g.author ? (
+            <div className="space-y-1.5">
+              <p className="text-xs font-medium text-muted-foreground">Posted by</p>
+              <UserCard user={g.author} />
+            </div>
+          ) : null}
+          {g.longText ? <p className="whitespace-pre-wrap">{g.longText}</p> : null}
           <div className="flex gap-2 flex-wrap">
             {g.nsfw ? <Badge variant="destructive">NSFW</Badge> : null}
             {(g.tags ?? []).map((t) => (
@@ -95,10 +108,37 @@ function GalleryItemPage() {
             ))}
           </div>
           <p className="text-xs text-muted-foreground">
-            Uploaded {new Date(g.createdAt).toLocaleDateString()}
+            Uploaded {new Date(g.createdAt).toLocaleString()}
+            {g.updatedAt && new Date(g.updatedAt).getTime() !== new Date(g.createdAt).getTime()
+              ? ` · edited ${new Date(g.updatedAt).toLocaleString()}`
+              : ""}
           </p>
         </CardContent>
       </Card>
     </main>
+  )
+}
+
+function GalleryVideo({
+  fileId,
+  mimeType,
+}: {
+  fileId: string | null | undefined
+  mimeType: string | null | undefined
+}) {
+  const src = useStorageUrl("gallery", fileId)
+  const poster = useStorageUrl("gallery", fileId, "1280")
+  if (!fileId || !src.data) return <div className="aspect-video w-full animate-pulse bg-muted" />
+  return (
+    <video
+      controls
+      controlsList="nodownload"
+      playsInline
+      loop
+      poster={poster.data?.url}
+      className="max-h-[80vh] w-full bg-black object-contain"
+    >
+      <source src={src.data.url} type={mimeType ?? undefined} />
+    </video>
   )
 }
