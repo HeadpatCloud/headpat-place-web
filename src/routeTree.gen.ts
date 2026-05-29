@@ -29,6 +29,7 @@ import { Route as AdminUsersIndexRouteImport } from './routes/admin/users/index'
 import { Route as AdminTicketsIndexRouteImport } from './routes/admin/tickets/index'
 import { Route as AdminRolesIndexRouteImport } from './routes/admin/roles/index'
 import { Route as AdminReportsIndexRouteImport } from './routes/admin/reports/index'
+import { Route as AdminChangelogIndexRouteImport } from './routes/admin/changelog/index'
 import { Route as AppMessagesIndexRouteImport } from './routes/_app/messages/index'
 import { Route as AppLegalIndexRouteImport } from './routes/_app/legal/index'
 import { Route as AppGalleryIndexRouteImport } from './routes/_app/gallery/index'
@@ -39,6 +40,7 @@ import { Route as AppAccountIndexRouteImport } from './routes/_app/account/index
 import { Route as AdminUsersUserIdRouteImport } from './routes/admin/users/$userId'
 import { Route as AdminTicketsTicketIdRouteImport } from './routes/admin/tickets/$ticketId'
 import { Route as AdminRolesRoleIdRouteImport } from './routes/admin/roles/$roleId'
+import { Route as AdminChangelogChangelogIdRouteImport } from './routes/admin/changelog/$changelogId'
 import { Route as AuthLoginMfaRouteImport } from './routes/_auth/login/mfa'
 import { Route as AuthIVerifyEmailRouteImport } from './routes/_auth/i/verify-email'
 import { Route as AuthIResetPasswordRouteImport } from './routes/_auth/i/reset-password'
@@ -157,6 +159,11 @@ const AdminReportsIndexRoute = AdminReportsIndexRouteImport.update({
   path: '/reports/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminChangelogIndexRoute = AdminChangelogIndexRouteImport.update({
+  id: '/changelog/',
+  path: '/changelog/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AppMessagesIndexRoute = AppMessagesIndexRouteImport.update({
   id: '/messages/',
   path: '/messages/',
@@ -207,6 +214,12 @@ const AdminRolesRoleIdRoute = AdminRolesRoleIdRouteImport.update({
   path: '/roles/$roleId',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminChangelogChangelogIdRoute =
+  AdminChangelogChangelogIdRouteImport.update({
+    id: '/changelog/$changelogId',
+    path: '/changelog/$changelogId',
+    getParentRoute: () => AdminRoute,
+  } as any)
 const AuthLoginMfaRoute = AuthLoginMfaRouteImport.update({
   id: '/mfa',
   path: '/mfa',
@@ -338,6 +351,7 @@ export interface FileRoutesByFullPath {
   '/i/reset-password': typeof AuthIResetPasswordRoute
   '/i/verify-email': typeof AuthIVerifyEmailRoute
   '/login/mfa': typeof AuthLoginMfaRoute
+  '/admin/changelog/$changelogId': typeof AdminChangelogChangelogIdRoute
   '/admin/roles/$roleId': typeof AdminRolesRoleIdRoute
   '/admin/tickets/$ticketId': typeof AdminTicketsTicketIdRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
@@ -348,6 +362,7 @@ export interface FileRoutesByFullPath {
   '/gallery/': typeof AppGalleryIndexRoute
   '/legal/': typeof AppLegalIndexRoute
   '/messages/': typeof AppMessagesIndexRoute
+  '/admin/changelog/': typeof AdminChangelogIndexRoute
   '/admin/reports/': typeof AdminReportsIndexRoute
   '/admin/roles/': typeof AdminRolesIndexRoute
   '/admin/tickets/': typeof AdminTicketsIndexRoute
@@ -386,6 +401,7 @@ export interface FileRoutesByTo {
   '/i/reset-password': typeof AuthIResetPasswordRoute
   '/i/verify-email': typeof AuthIVerifyEmailRoute
   '/login/mfa': typeof AuthLoginMfaRoute
+  '/admin/changelog/$changelogId': typeof AdminChangelogChangelogIdRoute
   '/admin/roles/$roleId': typeof AdminRolesRoleIdRoute
   '/admin/tickets/$ticketId': typeof AdminTicketsTicketIdRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
@@ -396,6 +412,7 @@ export interface FileRoutesByTo {
   '/gallery': typeof AppGalleryIndexRoute
   '/legal': typeof AppLegalIndexRoute
   '/messages': typeof AppMessagesIndexRoute
+  '/admin/changelog': typeof AdminChangelogIndexRoute
   '/admin/reports': typeof AdminReportsIndexRoute
   '/admin/roles': typeof AdminRolesIndexRoute
   '/admin/tickets': typeof AdminTicketsIndexRoute
@@ -438,6 +455,7 @@ export interface FileRoutesById {
   '/_auth/i/reset-password': typeof AuthIResetPasswordRoute
   '/_auth/i/verify-email': typeof AuthIVerifyEmailRoute
   '/_auth/login/mfa': typeof AuthLoginMfaRoute
+  '/admin/changelog/$changelogId': typeof AdminChangelogChangelogIdRoute
   '/admin/roles/$roleId': typeof AdminRolesRoleIdRoute
   '/admin/tickets/$ticketId': typeof AdminTicketsTicketIdRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
@@ -448,6 +466,7 @@ export interface FileRoutesById {
   '/_app/gallery/': typeof AppGalleryIndexRoute
   '/_app/legal/': typeof AppLegalIndexRoute
   '/_app/messages/': typeof AppMessagesIndexRoute
+  '/admin/changelog/': typeof AdminChangelogIndexRoute
   '/admin/reports/': typeof AdminReportsIndexRoute
   '/admin/roles/': typeof AdminRolesIndexRoute
   '/admin/tickets/': typeof AdminTicketsIndexRoute
@@ -489,6 +508,7 @@ export interface FileRouteTypes {
     | '/i/reset-password'
     | '/i/verify-email'
     | '/login/mfa'
+    | '/admin/changelog/$changelogId'
     | '/admin/roles/$roleId'
     | '/admin/tickets/$ticketId'
     | '/admin/users/$userId'
@@ -499,6 +519,7 @@ export interface FileRouteTypes {
     | '/gallery/'
     | '/legal/'
     | '/messages/'
+    | '/admin/changelog/'
     | '/admin/reports/'
     | '/admin/roles/'
     | '/admin/tickets/'
@@ -537,6 +558,7 @@ export interface FileRouteTypes {
     | '/i/reset-password'
     | '/i/verify-email'
     | '/login/mfa'
+    | '/admin/changelog/$changelogId'
     | '/admin/roles/$roleId'
     | '/admin/tickets/$ticketId'
     | '/admin/users/$userId'
@@ -547,6 +569,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/legal'
     | '/messages'
+    | '/admin/changelog'
     | '/admin/reports'
     | '/admin/roles'
     | '/admin/tickets'
@@ -588,6 +611,7 @@ export interface FileRouteTypes {
     | '/_auth/i/reset-password'
     | '/_auth/i/verify-email'
     | '/_auth/login/mfa'
+    | '/admin/changelog/$changelogId'
     | '/admin/roles/$roleId'
     | '/admin/tickets/$ticketId'
     | '/admin/users/$userId'
@@ -598,6 +622,7 @@ export interface FileRouteTypes {
     | '/_app/gallery/'
     | '/_app/legal/'
     | '/_app/messages/'
+    | '/admin/changelog/'
     | '/admin/reports/'
     | '/admin/roles/'
     | '/admin/tickets/'
@@ -759,6 +784,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminReportsIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/changelog/': {
+      id: '/admin/changelog/'
+      path: '/changelog'
+      fullPath: '/admin/changelog/'
+      preLoaderRoute: typeof AdminChangelogIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/_app/messages/': {
       id: '/_app/messages/'
       path: '/messages'
@@ -827,6 +859,13 @@ declare module '@tanstack/react-router' {
       path: '/roles/$roleId'
       fullPath: '/admin/roles/$roleId'
       preLoaderRoute: typeof AdminRolesRoleIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/changelog/$changelogId': {
+      id: '/admin/changelog/$changelogId'
+      path: '/changelog/$changelogId'
+      fullPath: '/admin/changelog/$changelogId'
+      preLoaderRoute: typeof AdminChangelogChangelogIdRouteImport
       parentRoute: typeof AdminRoute
     }
     '/_auth/login/mfa': {
@@ -1070,9 +1109,11 @@ const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 interface AdminRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminChangelogChangelogIdRoute: typeof AdminChangelogChangelogIdRoute
   AdminRolesRoleIdRoute: typeof AdminRolesRoleIdRoute
   AdminTicketsTicketIdRoute: typeof AdminTicketsTicketIdRoute
   AdminUsersUserIdRoute: typeof AdminUsersUserIdRoute
+  AdminChangelogIndexRoute: typeof AdminChangelogIndexRoute
   AdminReportsIndexRoute: typeof AdminReportsIndexRoute
   AdminRolesIndexRoute: typeof AdminRolesIndexRoute
   AdminTicketsIndexRoute: typeof AdminTicketsIndexRoute
@@ -1081,9 +1122,11 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
+  AdminChangelogChangelogIdRoute: AdminChangelogChangelogIdRoute,
   AdminRolesRoleIdRoute: AdminRolesRoleIdRoute,
   AdminTicketsTicketIdRoute: AdminTicketsTicketIdRoute,
   AdminUsersUserIdRoute: AdminUsersUserIdRoute,
+  AdminChangelogIndexRoute: AdminChangelogIndexRoute,
   AdminReportsIndexRoute: AdminReportsIndexRoute,
   AdminRolesIndexRoute: AdminRolesIndexRoute,
   AdminTicketsIndexRoute: AdminTicketsIndexRoute,

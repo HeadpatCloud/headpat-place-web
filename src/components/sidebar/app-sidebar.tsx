@@ -112,6 +112,11 @@ export function AppSidebar({
 				icon: BadgeHelpIcon,
 			},
 			{
+				name: "Changelog",
+				url: "/admin/changelog",
+				icon: PencilIcon,
+			},
+			{
 				name: "Announcements",
 				url: "/admin/announcements",
 				icon: MegaphoneIcon,
