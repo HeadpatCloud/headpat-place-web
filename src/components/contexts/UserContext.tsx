@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query"
-import { useNavigate } from "@tanstack/react-router"
 import { useCallback } from "react"
 import { signIn, signOut, signUp, useSession } from "@/lib/auth-client"
 import { orpc } from "@/lib/orpc"
@@ -32,7 +31,6 @@ export type UserDataDocumentsType = {
 
 export function useUser() {
   const { data: session } = useSession()
-  const navigate = useNavigate()
 
   const current: AccountPrefs | null = session?.user
     ? {
@@ -78,13 +76,12 @@ export function useUser() {
     [],
   )
 
-  const logout = useCallback(
-    async (redirect: boolean) => {
-      await signOut()
-      if (redirect) navigate({ to: "/" })
-    },
-    [navigate],
-  )
+  const logout = useCallback(async (redirect: boolean) => {
+    await signOut()
+    // Hard navigation clears the session atom and all cached query data so no
+    // stale signed-in state (or the previous user's data) survives the sign-out.
+    if (redirect) window.location.href = "/"
+  }, [])
 
   return {
     current,
