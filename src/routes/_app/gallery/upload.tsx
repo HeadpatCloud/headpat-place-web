@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
@@ -9,7 +9,7 @@ import InputField from "@/components/fields/InputField"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form, FormField } from "@/components/ui/form"
-import { client } from "@/lib/orpc"
+import { client, orpc } from "@/lib/orpc"
 
 export const Route = createFileRoute("/_app/gallery/upload")({
   component: UploadPage,
@@ -26,6 +26,26 @@ function makeFileId(): string {
   return crypto.randomUUID().replace(/-/g, "").slice(0, 20)
 }
 
+const MIME_LABELS: Record<string, string> = {
+  "image/jpeg": "JPG",
+  "image/png": "PNG",
+  "image/webp": "WebP",
+  "image/gif": "GIF",
+  "video/mp4": "MP4",
+  "video/webm": "WebM",
+  "video/quicktime": "MOV",
+}
+
+function mimeLabel(mime: string): string {
+  return MIME_LABELS[mime] ?? mime.split("/")[1]?.toUpperCase() ?? mime
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`
+  const mb = bytes / (1024 * 1024)
+  return `${Number.isInteger(mb) ? mb : mb.toFixed(1)} MB`
+}
+
 function UploadPage() {
   const navigate = useNavigate()
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -33,9 +53,30 @@ function UploadPage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [progress, setProgress] = useState<string>("")
 
+  const policy = useQuery(orpc.storage.policy.queryOptions({ input: undefined }))
+  const isVideo = file?.type.startsWith("video/") ?? false
+
   useEffect(() => {
     return () => { if (previewUrl) URL.revokeObjectURL(previewUrl) }
   }, [previewUrl])
+
+  function pickFile(f: File | null) {
+    if (f && policy.data) {
+      if (!policy.data.allowedMime.includes(f.type)) {
+        toast.error(`${f.type || "This file type"} isn't allowed.`)
+        return
+      }
+      if (f.size > policy.data.maxBytes) {
+        toast.error(`File is too large (max ${formatBytes(policy.data.maxBytes)}).`)
+        return
+      }
+    }
+    setPreviewUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev)
+      return f ? URL.createObjectURL(f) : null
+    })
+    setFile(f)
+  }
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -97,30 +138,41 @@ function UploadPage() {
               className="space-y-4"
             >
               <div className="space-y-2">
-                <p className="text-sm font-medium">Image file</p>
+                <p className="text-sm font-medium">Media file</p>
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-input p-8 hover:border-primary hover:bg-primary/5 transition-colors"
                 >
-                  {previewUrl
-                    ? <img src={previewUrl} alt="preview" className="max-h-48 rounded-lg object-contain" />
-                    : <span className="text-muted-foreground text-sm">Click to choose an image</span>}
+                  {previewUrl ? (
+                    isVideo ? (
+                      <video src={previewUrl} className="max-h-48 rounded-lg" controls muted />
+                    ) : (
+                      <img src={previewUrl} alt="preview" className="max-h-48 rounded-lg object-contain" />
+                    )
+                  ) : (
+                    <span className="text-muted-foreground text-sm">Click to choose a file</span>
+                  )}
                 </button>
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept="image/*"
+                  accept={policy.data?.allowedMime.join(",")}
                   className="hidden"
                   onChange={(e) => {
-                    const f = e.target.files?.[0] ?? null
-                    setFile(f)
-                    setPreviewUrl(f ? URL.createObjectURL(f) : null)
+                    pickFile(e.target.files?.[0] ?? null)
+                    e.target.value = ""
                   }}
                 />
+                {policy.data ? (
+                  <p className="text-xs text-muted-foreground">
+                    Allowed: {policy.data.allowedMime.map(mimeLabel).join(", ")} · max{" "}
+                    {formatBytes(policy.data.maxBytes)}
+                  </p>
+                ) : null}
                 {file ? (
                   <p className="text-xs text-muted-foreground">
-                    {file.name} — {(file.size / 1024).toFixed(0)} KB
+                    {file.name} — {formatBytes(file.size)}
                   </p>
                 ) : null}
               </div>
