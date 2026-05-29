@@ -120,7 +120,6 @@ export function AppSidebar({
 				name: "Announcements",
 				url: "/admin/announcements",
 				icon: MegaphoneIcon,
-				disabled: true,
 			},
 		],
 		adminBack: [{ name: "Back to Headpat", url: "/", icon: HomeIcon }],
