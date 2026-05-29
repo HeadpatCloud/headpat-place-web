@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
+import { FadeIn } from "@/components/FadeIn"
 import { GradientBanner } from "@/components/GradientBanner"
 import { StorageImage } from "@/components/StorageImage"
 import { Button } from "@/components/ui/button"
@@ -13,8 +14,10 @@ function Landing() {
   const { data: session } = useSession()
   const communities = useQuery(orpc.community.list.queryOptions({ input: { pageSize: 3 } }))
   const users = useQuery(orpc.profile.list.queryOptions({ input: { pageSize: 3 } }))
+  const events = useQuery(orpc.event.upcoming.queryOptions({ input: { limit: 3 } }))
   const topCommunities = (communities.data?.items ?? []).slice(0, 3)
   const topUsers = (users.data?.items ?? []).slice(0, 3)
+  const upcoming = events.data ?? []
 
   return (
     <main className="space-y-8">
@@ -32,11 +35,46 @@ function Landing() {
         </Button>
       </section>
 
+      {upcoming.length > 0 ? (
+        <section>
+          <h2 className="mb-3 text-xl font-bold">Upcoming events</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
+            {upcoming.map((e, i) => {
+              const d = new Date(e.startsAt)
+              const location =
+                e.locationText || (e.locationZoneMethod === "virtual" ? "Online" : "")
+              const meta = [e.community?.name, location].filter(Boolean).join(" · ")
+              return (
+                <Link key={e.id} to={`/events/${e.id}` as never}>
+                  <FadeIn index={i}>
+                    <Card className="card-hover">
+                      <CardContent className="flex items-center gap-3 pt-6">
+                        <div className="flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-lg bg-primary/15 leading-none text-primary">
+                          <span className="text-[10px] font-bold tracking-wide">
+                            {d.toLocaleDateString("en-GB", { month: "short" }).toUpperCase()}
+                          </span>
+                          <span className="text-xl font-extrabold">{d.getDate()}</span>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="truncate font-semibold">{e.title}</p>
+                          <p className="truncate text-xs text-muted-foreground">{meta}</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </FadeIn>
+                </Link>
+              )
+            })}
+          </div>
+        </section>
+      ) : null}
+
       <section>
         <h2 className="mb-3 text-xl font-bold">Popular communities</h2>
         <div className="grid gap-4 sm:grid-cols-3">
-          {topCommunities.map((c) => (
+          {topCommunities.map((c, i) => (
             <Link key={c.id} to={`/community/${c.id}` as never}>
+              <FadeIn index={upcoming.length + i}>
               <Card className="card-hover overflow-hidden">
                 <GradientBanner kind="community-banner" fileId={c.bannerFileId} className="h-20 w-full" />
                 <CardContent className="flex items-center gap-3 pt-3">
@@ -53,6 +91,7 @@ function Landing() {
                   </div>
                 </CardContent>
               </Card>
+              </FadeIn>
             </Link>
           ))}
         </div>
@@ -61,8 +100,9 @@ function Landing() {
       <section>
         <h2 className="mb-3 text-xl font-bold">Suggested users</h2>
         <div className="grid gap-4 sm:grid-cols-3">
-          {topUsers.map((u) => (
+          {topUsers.map((u, i) => (
             <Link key={u.userId} to={`/user/${u.profileUrl}` as never}>
+              <FadeIn index={upcoming.length + topCommunities.length + i}>
               <Card className="card-hover">
                 <CardContent className="flex items-center gap-3 pt-6">
                   <StorageImage
@@ -78,6 +118,7 @@ function Landing() {
                   </div>
                 </CardContent>
               </Card>
+              </FadeIn>
             </Link>
           ))}
         </div>
