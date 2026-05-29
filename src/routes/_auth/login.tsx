@@ -317,18 +317,6 @@ function LoginPage() {
               </button>
 
               <button
-                onClick={() => startOAuth("microsoft")}
-                className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#01A6F0] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#24292F] dark:border-white/20"
-              >
-                <img
-                  src="/logos/Microsoft_logo.svg.png"
-                  alt="Microsoft"
-                  className="h-5"
-                />
-                <span className="text-sm font-semibold leading-6">Microsoft</span>
-              </button>
-
-              <button
                 onClick={() => startOAuth("twitch")}
                 className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#6441A5] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#24292F] dark:border-white/20"
               >
