@@ -3,7 +3,6 @@ import {
   SiDiscord,
   SiGithub,
   SiGoogle,
-  SiSpotify,
   SiTwitch,
 } from "@icons-pack/react-simple-icons"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -306,14 +305,6 @@ function LoginPage() {
               >
                 <SiGoogle className="h-4" />
                 <span className="text-sm font-semibold leading-6">Google</span>
-              </button>
-
-              <button
-                onClick={() => startOAuth("spotify")}
-                className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#1DB954] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#24292F] dark:border-white/20"
-              >
-                <SiSpotify className="h-5" />
-                <span className="text-sm font-semibold leading-6">Spotify</span>
               </button>
 
               <button
