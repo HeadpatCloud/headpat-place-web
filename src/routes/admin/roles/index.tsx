@@ -25,14 +25,27 @@ function RolesList() {
     onError: (e: Error) => toast.error(e.message),
   })
 
+  function submit() {
+    if (!name.trim()) {
+      toast.error("Enter a role name first.")
+      return
+    }
+    create.mutate()
+  }
+
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-extrabold tracking-tight">Roles</h1>
       <div className="flex gap-2">
-        <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="New role name" />
+        <Input
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && submit()}
+          placeholder="New role name"
+        />
         <Button
-          disabled={!name.trim() || create.isPending}
-          onClick={() => create.mutate()}
+          disabled={create.isPending}
+          onClick={submit}
           className="bg-primary text-primary-foreground hover:bg-primary/90 shrink-0"
         >
           + New role
