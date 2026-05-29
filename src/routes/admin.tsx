@@ -1,11 +1,36 @@
 import { useQuery } from "@tanstack/react-query"
-import { Outlet, createFileRoute, useNavigate } from "@tanstack/react-router"
+import { Link, Outlet, createFileRoute, useNavigate } from "@tanstack/react-router"
+import { ShieldAlertIcon } from "lucide-react"
 import { useEffect } from "react"
 import { AppSidebar } from "@/components/sidebar/app-sidebar"
 import HeaderClient from "@/components/sidebar/header-client"
+import { Button } from "@/components/ui/button"
 import { orpc } from "@/lib/orpc"
 
 export const Route = createFileRoute("/admin")({ component: AdminLayout })
+
+function NotAuthorized() {
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center px-6 text-center">
+      <div className="flex size-16 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+        <ShieldAlertIcon className="size-8" />
+      </div>
+      <h1 className="mt-5 text-2xl font-extrabold tracking-tight">Paws off — staff only 🐾</h1>
+      <p className="mt-2 max-w-sm text-muted-foreground">
+        This corner of Headpat is gated behind admin permissions, and yours don't reach this far
+        (yet). If that seems wrong, poke an admin to sort you out.
+      </p>
+      <div className="mt-6 flex gap-2">
+        <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
+          <Link to={"/login" as never}>Log in</Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link to={"/" as never}>Back to safety</Link>
+        </Button>
+      </div>
+    </div>
+  )
+}
 
 function AdminLayout() {
   const navigate = useNavigate()
@@ -17,8 +42,14 @@ function AdminLayout() {
     }
   }, [perms.isSuccess, perms.data, navigate])
 
-  if (perms.isPending) return <p className="p-4 text-muted-foreground">Loading…</p>
-  if (!perms.data || perms.data.length === 0) return <p className="p-4">Not authorized.</p>
+  if (perms.isPending) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <p className="text-muted-foreground">Checking your clearance…</p>
+      </div>
+    )
+  }
+  if (!perms.data || perms.data.length === 0) return <NotAuthorized />
 
   return (
     <HeaderClient
