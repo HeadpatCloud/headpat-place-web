@@ -33,6 +33,7 @@ function EventDetailPage() {
   if (event.isPending) return <p className="p-4 text-muted-foreground">Loading…</p>
   if (event.isError || !event.data) return <p className="p-4">Event not found.</p>
   const e = event.data
+  const isPast = new Date(e.endsAt ?? e.startsAt).getTime() < Date.now()
 
   return (
     <main className="space-y-6">
@@ -64,18 +65,22 @@ function EventDetailPage() {
               </a>
             </p>
           ) : null}
-          <Button
-            onClick={() => toggle.mutate()}
-            disabled={toggle.isPending}
-            className={
-              isAttending
-                ? undefined
-                : "bg-primary text-primary-foreground hover:bg-primary/90"
-            }
-            variant={isAttending ? "outline" : "default"}
-          >
-            {isAttending ? "Attending — cancel" : "Attend"}
-          </Button>
+          {isPast && !isAttending ? (
+            <Button disabled variant="outline">Event has ended</Button>
+          ) : (
+            <Button
+              onClick={() => toggle.mutate()}
+              disabled={toggle.isPending}
+              className={
+                isAttending
+                  ? undefined
+                  : "bg-primary text-primary-foreground hover:bg-primary/90"
+              }
+              variant={isAttending ? "outline" : "default"}
+            >
+              {isAttending ? "Attending — cancel" : "Attend"}
+            </Button>
+          )}
           {e.visitorCapacity ? (
             <div className="space-y-1">
               <div className="h-2 w-full rounded-full bg-muted">
