@@ -33,7 +33,10 @@ import { Separator } from "../ui/separator"
 import { NavList } from "./nav-list"
 import { TeamSwitcher } from "./team-switcher"
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({
+  mode = "app",
+  ...props
+}: React.ComponentProps<typeof Sidebar> & { mode?: "app" | "admin" }) {
   const pageNames = useTranslations("PageNames")
 
   const adminPerms = useQuery(
@@ -91,6 +94,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         icon: HeartHandshakeIcon,
       },
     ],
+    adminAccess: [
+      { name: "Roles", url: "/admin/roles", icon: ShieldIcon },
+      { name: "Users", url: "/admin/users", icon: UserSearchIcon, disabled: true },
+    ],
+    adminOps: [
+      { name: "Reports", url: "/admin/reports", icon: FileCheckIcon, disabled: true },
+      { name: "Tickets", url: "/admin/tickets", icon: BadgeHelpIcon, disabled: true },
+      { name: "Announcements", url: "/admin/announcements", icon: MegaphoneIcon, disabled: true },
+    ],
+    adminBack: [{ name: "Back to Headpat", url: "/", icon: HomeIcon }],
     navSecondary: [
       {
         title: "Discord",
@@ -149,18 +162,31 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavList projects={data.navMain} />
-        <Separator />
-        <NavList projects={data.secondMain} />
-        {isStaff ? (
+        {mode === "admin" ? (
           <>
+            <NavList label="Access" projects={data.adminAccess} />
             <Separator />
-            <NavList projects={[{ name: "Admin", url: "/admin", icon: ShieldIcon }]} />
+            <NavList label="Operations" projects={data.adminOps} />
+            <Separator />
+            <NavList projects={data.adminBack} />
+            <NavSecondary items={data.navSecondary} className="mt-auto" />
           </>
-        ) : null}
-        <Separator />
-        <NavList projects={data.thirdMain} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
+        ) : (
+          <>
+            <NavList projects={data.navMain} />
+            <Separator />
+            <NavList projects={data.secondMain} />
+            {isStaff ? (
+              <>
+                <Separator />
+                <NavList projects={[{ name: "Admin", url: "/admin", icon: ShieldIcon }]} />
+              </>
+            ) : null}
+            <Separator />
+            <NavList projects={data.thirdMain} />
+            <NavSecondary items={data.navSecondary} className="mt-auto" />
+          </>
+        )}
       </SidebarContent>
       <SidebarFooter>
         <Separator />

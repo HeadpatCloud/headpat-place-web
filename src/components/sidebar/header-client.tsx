@@ -18,7 +18,15 @@ export const HeaderContext = React.createContext<{
 })
 
 // Create a provider component
-function HeaderProvider({ children }: { children: React.ReactNode }) {
+function HeaderProvider({
+  children,
+  sidebar,
+  containerClassName,
+}: {
+  children: React.ReactNode
+  sidebar?: React.ReactNode
+  containerClassName?: string
+}) {
   const [headerComponents, setHeaderComponents] = React.useState<
     React.ReactNode[]
   >([])
@@ -38,7 +46,7 @@ function HeaderProvider({ children }: { children: React.ReactNode }) {
     <HeaderContext.Provider
       value={{ addHeaderComponent, removeHeaderComponent }}
     >
-      <AppSidebar />
+      {sidebar ?? <AppSidebar />}
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2">
           <div className="flex items-center gap-2 px-4">
@@ -54,7 +62,7 @@ function HeaderProvider({ children }: { children: React.ReactNode }) {
             </>
           )}
         </header>
-        <div className="mx-auto w-full max-w-5xl xl:max-w-6xl 2xl:max-w-screen-2xl px-4 py-6">{children}</div>
+        <div className={containerClassName ?? "mx-auto w-full max-w-5xl xl:max-w-6xl 2xl:max-w-screen-2xl px-4 py-6"}>{children}</div>
       </SidebarInset>
     </HeaderContext.Provider>
   )
@@ -62,12 +70,16 @@ function HeaderProvider({ children }: { children: React.ReactNode }) {
 
 interface HeaderClientProps {
   children: React.ReactNode
+  sidebar?: React.ReactNode
+  containerClassName?: string
 }
 
-export default function HeaderClient({ children }: HeaderClientProps) {
+export default function HeaderClient({ children, sidebar, containerClassName }: HeaderClientProps) {
   return (
     <SidebarProvider>
-      <HeaderProvider>{children}</HeaderProvider>
+      <HeaderProvider sidebar={sidebar} containerClassName={containerClassName}>
+        {children}
+      </HeaderProvider>
     </SidebarProvider>
   )
 }
