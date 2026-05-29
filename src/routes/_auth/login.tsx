@@ -135,7 +135,7 @@ function LoginPage() {
 
         <div className="mt-4">
           {isRegistering ? (
-            <Form {...registerForm}>
+            <Form key="register" {...registerForm}>
               <form
                 className="space-y-6"
                 onSubmit={registerForm.handleSubmit(submitRegister)}
@@ -201,7 +201,7 @@ function LoginPage() {
               </form>
             </Form>
           ) : (
-            <Form {...loginForm}>
+            <Form key="login" {...loginForm}>
               <form
                 className="space-y-6"
                 onSubmit={loginForm.handleSubmit(submitLogin)}
