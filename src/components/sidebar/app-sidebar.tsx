@@ -12,12 +12,15 @@ import {
   MegaphoneIcon,
   PencilIcon,
   RocketIcon,
+  ShieldIcon,
   UserSearchIcon,
 } from "lucide-react"
 import * as React from "react"
 
+import { useQuery } from "@tanstack/react-query"
 import { NavSecondary } from "@/components/sidebar/nav-secondary"
 import { NavUser } from "@/components/sidebar/nav-user"
+import { orpc } from "@/lib/orpc"
 import {
   Sidebar,
   SidebarContent,
@@ -32,6 +35,11 @@ import { TeamSwitcher } from "./team-switcher"
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pageNames = useTranslations("PageNames")
+
+  const adminPerms = useQuery(
+    orpc.adminRole.myPermissions.queryOptions({ input: undefined })
+  )
+  const isStaff = (adminPerms.data?.length ?? 0) > 0
 
   const data = {
     navMain: [
@@ -144,6 +152,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavList projects={data.navMain} />
         <Separator />
         <NavList projects={data.secondMain} />
+        {isStaff ? (
+          <>
+            <Separator />
+            <NavList projects={[{ name: "Admin", url: "/admin", icon: ShieldIcon }]} />
+          </>
+        ) : null}
         <Separator />
         <NavList projects={data.thirdMain} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
