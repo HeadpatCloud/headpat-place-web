@@ -102,7 +102,16 @@ function ChangelogEditor() {
   })
 
   if (entry.isPending) return <p className="text-muted-foreground">Loading…</p>
-  if (entry.isError || !entry.data) return <p>Entry not found.</p>
+  if (entry.isError || !entry.data) {
+    const notFound = (entry.error as { code?: string } | null)?.code === "NOT_FOUND"
+    return (
+      <p className="text-muted-foreground">
+        {notFound
+          ? "Entry not found."
+          : "Couldn't load this entry — your session may have expired. Try signing in again."}
+      </p>
+    )
+  }
 
   return (
     <div className="space-y-4">
