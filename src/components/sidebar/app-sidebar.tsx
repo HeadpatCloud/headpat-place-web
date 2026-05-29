@@ -98,7 +98,6 @@ export function AppSidebar({
 				name: "Users",
 				url: "/admin/users",
 				icon: UserSearchIcon,
-				disabled: true,
 			},
 		],
 		adminOps: [
@@ -106,13 +105,11 @@ export function AppSidebar({
 				name: "Reports",
 				url: "/admin/reports",
 				icon: FileCheckIcon,
-				disabled: true,
 			},
 			{
 				name: "Tickets",
 				url: "/admin/tickets",
 				icon: BadgeHelpIcon,
-				disabled: true,
 			},
 			{
 				name: "Announcements",
