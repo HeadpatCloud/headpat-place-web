@@ -39,7 +39,7 @@ const loginSchema = z.object({
 })
 
 const registerSchema = z.object({
-  username: z.string().trim().min(3, "Username must be at least 3 characters"),
+  username: z.string().trim().min(3, "Display name must be at least 3 characters"),
   email: z.string().email("Invalid email").trim(),
   password: z
     .string()
@@ -147,7 +147,7 @@ function LoginPage() {
                       name="username"
                       render={({ field }) => (
                         <InputField
-                          label="Username"
+                          label="Display name"
                           description=""
                           placeholder=""
                           field={field}
