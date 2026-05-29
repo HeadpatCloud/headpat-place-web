@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AppRouteImport } from './routes/_app'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as AuthLogoutRouteImport } from './routes/_auth/logout'
@@ -24,6 +25,7 @@ import { Route as AppPawcraftRouteImport } from './routes/_app/pawcraft'
 import { Route as AppNotificationsRouteImport } from './routes/_app/notifications'
 import { Route as AppMapRouteImport } from './routes/_app/map'
 import { Route as AppChangelogRouteImport } from './routes/_app/changelog'
+import { Route as AdminRolesIndexRouteImport } from './routes/admin/roles/index'
 import { Route as AppMessagesIndexRouteImport } from './routes/_app/messages/index'
 import { Route as AppLegalIndexRouteImport } from './routes/_app/legal/index'
 import { Route as AppGalleryIndexRouteImport } from './routes/_app/gallery/index'
@@ -31,6 +33,7 @@ import { Route as AppEventsIndexRouteImport } from './routes/_app/events/index'
 import { Route as AppCommunityIndexRouteImport } from './routes/_app/community/index'
 import { Route as AppAnnouncementsIndexRouteImport } from './routes/_app/announcements/index'
 import { Route as AppAccountIndexRouteImport } from './routes/_app/account/index'
+import { Route as AdminRolesRoleIdRouteImport } from './routes/admin/roles/$roleId'
 import { Route as AuthLoginMfaRouteImport } from './routes/_auth/login/mfa'
 import { Route as AuthIVerifyEmailRouteImport } from './routes/_auth/i/verify-email'
 import { Route as AuthIResetPasswordRouteImport } from './routes/_auth/i/reset-password'
@@ -63,6 +66,11 @@ const AuthRoute = AuthRouteImport.update({
 const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
@@ -124,6 +132,11 @@ const AppChangelogRoute = AppChangelogRouteImport.update({
   path: '/changelog',
   getParentRoute: () => AppRoute,
 } as any)
+const AdminRolesIndexRoute = AdminRolesIndexRouteImport.update({
+  id: '/roles/',
+  path: '/roles/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AppMessagesIndexRoute = AppMessagesIndexRouteImport.update({
   id: '/messages/',
   path: '/messages/',
@@ -158,6 +171,11 @@ const AppAccountIndexRoute = AppAccountIndexRouteImport.update({
   id: '/account/',
   path: '/account/',
   getParentRoute: () => AppRoute,
+} as any)
+const AdminRolesRoleIdRoute = AdminRolesRoleIdRouteImport.update({
+  id: '/roles/$roleId',
+  path: '/roles/$roleId',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AuthLoginMfaRoute = AuthLoginMfaRouteImport.update({
   id: '/mfa',
@@ -265,7 +283,7 @@ const AppCommunityCommunityIdEventsIndexRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/changelog': typeof AppChangelogRoute
   '/map': typeof AppMapRoute
   '/notifications': typeof AppNotificationsRoute
@@ -277,6 +295,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof AuthLoginRouteWithChildren
   '/logout': typeof AuthLogoutRoute
   '/register': typeof AuthRegisterRoute
+  '/admin/': typeof AdminIndexRoute
   '/announcements/$announcementId': typeof AppAnnouncementsAnnouncementIdRoute
   '/community/new': typeof AppCommunityNewRoute
   '/events/$eventId': typeof AppEventsEventIdRoute
@@ -289,6 +308,7 @@ export interface FileRoutesByFullPath {
   '/i/reset-password': typeof AuthIResetPasswordRoute
   '/i/verify-email': typeof AuthIVerifyEmailRoute
   '/login/mfa': typeof AuthLoginMfaRoute
+  '/admin/roles/$roleId': typeof AdminRolesRoleIdRoute
   '/account/': typeof AppAccountIndexRoute
   '/announcements/': typeof AppAnnouncementsIndexRoute
   '/community/': typeof AppCommunityIndexRoute
@@ -296,6 +316,7 @@ export interface FileRoutesByFullPath {
   '/gallery/': typeof AppGalleryIndexRoute
   '/legal/': typeof AppLegalIndexRoute
   '/messages/': typeof AppMessagesIndexRoute
+  '/admin/roles/': typeof AdminRolesIndexRoute
   '/community/$communityId/admin': typeof AppCommunityCommunityIdAdminRoute
   '/community/$communityId/followers': typeof AppCommunityCommunityIdFollowersRoute
   '/user/$profileUrl/followers': typeof AppUserProfileUrlFollowersRoute
@@ -306,7 +327,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
-  '/admin': typeof AdminRoute
   '/changelog': typeof AppChangelogRoute
   '/map': typeof AppMapRoute
   '/notifications': typeof AppNotificationsRoute
@@ -318,6 +338,7 @@ export interface FileRoutesByTo {
   '/login': typeof AuthLoginRouteWithChildren
   '/logout': typeof AuthLogoutRoute
   '/register': typeof AuthRegisterRoute
+  '/admin': typeof AdminIndexRoute
   '/announcements/$announcementId': typeof AppAnnouncementsAnnouncementIdRoute
   '/community/new': typeof AppCommunityNewRoute
   '/events/$eventId': typeof AppEventsEventIdRoute
@@ -330,6 +351,7 @@ export interface FileRoutesByTo {
   '/i/reset-password': typeof AuthIResetPasswordRoute
   '/i/verify-email': typeof AuthIVerifyEmailRoute
   '/login/mfa': typeof AuthLoginMfaRoute
+  '/admin/roles/$roleId': typeof AdminRolesRoleIdRoute
   '/account': typeof AppAccountIndexRoute
   '/announcements': typeof AppAnnouncementsIndexRoute
   '/community': typeof AppCommunityIndexRoute
@@ -337,6 +359,7 @@ export interface FileRoutesByTo {
   '/gallery': typeof AppGalleryIndexRoute
   '/legal': typeof AppLegalIndexRoute
   '/messages': typeof AppMessagesIndexRoute
+  '/admin/roles': typeof AdminRolesIndexRoute
   '/community/$communityId/admin': typeof AppCommunityCommunityIdAdminRoute
   '/community/$communityId/followers': typeof AppCommunityCommunityIdFollowersRoute
   '/user/$profileUrl/followers': typeof AppUserProfileUrlFollowersRoute
@@ -349,7 +372,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/_auth': typeof AuthRouteWithChildren
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/_app/changelog': typeof AppChangelogRoute
   '/_app/map': typeof AppMapRoute
   '/_app/notifications': typeof AppNotificationsRoute
@@ -362,6 +385,7 @@ export interface FileRoutesById {
   '/_auth/logout': typeof AuthLogoutRoute
   '/_auth/register': typeof AuthRegisterRoute
   '/_app/': typeof AppIndexRoute
+  '/admin/': typeof AdminIndexRoute
   '/_app/announcements/$announcementId': typeof AppAnnouncementsAnnouncementIdRoute
   '/_app/community/new': typeof AppCommunityNewRoute
   '/_app/events/$eventId': typeof AppEventsEventIdRoute
@@ -374,6 +398,7 @@ export interface FileRoutesById {
   '/_auth/i/reset-password': typeof AuthIResetPasswordRoute
   '/_auth/i/verify-email': typeof AuthIVerifyEmailRoute
   '/_auth/login/mfa': typeof AuthLoginMfaRoute
+  '/admin/roles/$roleId': typeof AdminRolesRoleIdRoute
   '/_app/account/': typeof AppAccountIndexRoute
   '/_app/announcements/': typeof AppAnnouncementsIndexRoute
   '/_app/community/': typeof AppCommunityIndexRoute
@@ -381,6 +406,7 @@ export interface FileRoutesById {
   '/_app/gallery/': typeof AppGalleryIndexRoute
   '/_app/legal/': typeof AppLegalIndexRoute
   '/_app/messages/': typeof AppMessagesIndexRoute
+  '/admin/roles/': typeof AdminRolesIndexRoute
   '/_app/community/$communityId/admin': typeof AppCommunityCommunityIdAdminRoute
   '/_app/community/$communityId/followers': typeof AppCommunityCommunityIdFollowersRoute
   '/_app/user/$profileUrl/followers': typeof AppUserProfileUrlFollowersRoute
@@ -405,6 +431,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/register'
+    | '/admin/'
     | '/announcements/$announcementId'
     | '/community/new'
     | '/events/$eventId'
@@ -417,6 +444,7 @@ export interface FileRouteTypes {
     | '/i/reset-password'
     | '/i/verify-email'
     | '/login/mfa'
+    | '/admin/roles/$roleId'
     | '/account/'
     | '/announcements/'
     | '/community/'
@@ -424,6 +452,7 @@ export interface FileRouteTypes {
     | '/gallery/'
     | '/legal/'
     | '/messages/'
+    | '/admin/roles/'
     | '/community/$communityId/admin'
     | '/community/$communityId/followers'
     | '/user/$profileUrl/followers'
@@ -434,7 +463,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
     | '/changelog'
     | '/map'
     | '/notifications'
@@ -446,6 +474,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/register'
+    | '/admin'
     | '/announcements/$announcementId'
     | '/community/new'
     | '/events/$eventId'
@@ -458,6 +487,7 @@ export interface FileRouteTypes {
     | '/i/reset-password'
     | '/i/verify-email'
     | '/login/mfa'
+    | '/admin/roles/$roleId'
     | '/account'
     | '/announcements'
     | '/community'
@@ -465,6 +495,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/legal'
     | '/messages'
+    | '/admin/roles'
     | '/community/$communityId/admin'
     | '/community/$communityId/followers'
     | '/user/$profileUrl/followers'
@@ -489,6 +520,7 @@ export interface FileRouteTypes {
     | '/_auth/logout'
     | '/_auth/register'
     | '/_app/'
+    | '/admin/'
     | '/_app/announcements/$announcementId'
     | '/_app/community/new'
     | '/_app/events/$eventId'
@@ -501,6 +533,7 @@ export interface FileRouteTypes {
     | '/_auth/i/reset-password'
     | '/_auth/i/verify-email'
     | '/_auth/login/mfa'
+    | '/admin/roles/$roleId'
     | '/_app/account/'
     | '/_app/announcements/'
     | '/_app/community/'
@@ -508,6 +541,7 @@ export interface FileRouteTypes {
     | '/_app/gallery/'
     | '/_app/legal/'
     | '/_app/messages/'
+    | '/admin/roles/'
     | '/_app/community/$communityId/admin'
     | '/_app/community/$communityId/followers'
     | '/_app/user/$profileUrl/followers'
@@ -520,7 +554,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -545,6 +579,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/_app/': {
       id: '/_app/'
@@ -630,6 +671,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppChangelogRouteImport
       parentRoute: typeof AppRoute
     }
+    '/admin/roles/': {
+      id: '/admin/roles/'
+      path: '/roles'
+      fullPath: '/admin/roles/'
+      preLoaderRoute: typeof AdminRolesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/_app/messages/': {
       id: '/_app/messages/'
       path: '/messages'
@@ -678,6 +726,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/account/'
       preLoaderRoute: typeof AppAccountIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/admin/roles/$roleId': {
+      id: '/admin/roles/$roleId'
+      path: '/roles/$roleId'
+      fullPath: '/admin/roles/$roleId'
+      preLoaderRoute: typeof AdminRolesRoleIdRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/_auth/login/mfa': {
       id: '/_auth/login/mfa'
@@ -918,10 +973,24 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface AdminRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminRolesRoleIdRoute: typeof AdminRolesRoleIdRoute
+  AdminRolesIndexRoute: typeof AdminRolesIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+  AdminRolesRoleIdRoute: AdminRolesRoleIdRoute,
+  AdminRolesIndexRoute: AdminRolesIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
