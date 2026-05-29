@@ -10,9 +10,17 @@ export type UserSummary = {
   avatarFileId: string | null
 }
 
-export function UserCard({ user, trailing }: { user: UserSummary; trailing?: React.ReactNode }) {
+export function UserCard({
+  user,
+  trailing,
+  to,
+}: {
+  user: UserSummary
+  trailing?: React.ReactNode
+  to?: string
+}) {
   return (
-    <Link to={`/user/${user.profileUrl}` as never} className="block">
+    <Link to={(to ?? `/user/${user.profileUrl}`) as never} className="block">
       <Card className="card-hover flex flex-row items-center gap-3 p-3">
         <StorageImage
           kind="avatar"

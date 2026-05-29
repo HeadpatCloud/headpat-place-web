@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
-import { Link, createFileRoute } from "@tanstack/react-router"
+import { createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
 import { Pager } from "@/components/Pager"
 import { UserCard, type UserSummary } from "@/components/UserCard"
@@ -36,12 +36,12 @@ function UsersList() {
         <>
           <div className="space-y-2">
             {users.data.items.map((u) => (
-              <Link key={u.userId} to={`/admin/users/${u.userId}` as never} className="block">
-                <UserCard
-                  user={u as UserSummary}
-                  trailing={u.banned ? <Badge variant="destructive">banned</Badge> : null}
-                />
-              </Link>
+              <UserCard
+                key={u.userId}
+                user={u as UserSummary}
+                to={`/admin/users/${u.userId}`}
+                trailing={u.banned ? <Badge variant="destructive">banned</Badge> : null}
+              />
             ))}
             {users.data.items.length === 0 ? (
               <p className="text-muted-foreground text-sm">No users.</p>
