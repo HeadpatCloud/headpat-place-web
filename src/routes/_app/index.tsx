@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { Link, createFileRoute } from "@tanstack/react-router"
 import { FadeIn } from "@/components/FadeIn"
-import { GradientBanner } from "@/components/GradientBanner"
 import { StorageImage } from "@/components/StorageImage"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -75,9 +74,8 @@ function Landing() {
           {topCommunities.map((c, i) => (
             <Link key={c.id} to={`/community/${c.id}` as never}>
               <FadeIn index={upcoming.length + i}>
-              <Card className="card-hover overflow-hidden">
-                <GradientBanner kind="community-banner" fileId={c.bannerFileId} className="h-20 w-full" />
-                <CardContent className="flex items-center gap-3 pt-3">
+              <Card className="card-hover">
+                <CardContent className="flex items-center gap-3 pt-6">
                   <StorageImage
                     kind="community-avatar"
                     fileId={c.avatarFileId}
