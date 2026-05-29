@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
+import { X } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
@@ -9,6 +10,8 @@ import InputField from "@/components/fields/InputField"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Form, FormField } from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Progress } from "@/components/ui/progress"
 import { client, orpc } from "@/lib/orpc"
 
 export const Route = createFileRoute("/_app/gallery/upload")({
@@ -19,7 +22,6 @@ const schema = z.object({
   name: z.string().min(1).max(200),
   longText: z.string().max(10000).optional(),
   nsfw: z.boolean().optional(),
-  tags: z.string().optional(),
 })
 
 function makeFileId(): string {
@@ -46,12 +48,34 @@ function formatBytes(bytes: number): string {
   return `${Number.isInteger(mb) ? mb : mb.toFixed(1)} MB`
 }
 
+function uploadToS3(url: string, file: File, onProgress: (pct: number) => void): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest()
+    xhr.open("PUT", url)
+    xhr.setRequestHeader("Content-Type", file.type || "application/octet-stream")
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable) onProgress(Math.round((e.loaded / e.total) * 100))
+    }
+    xhr.onload = () =>
+      xhr.status >= 200 && xhr.status < 300
+        ? resolve()
+        : reject(new Error(`S3 upload failed: ${xhr.status}`))
+    xhr.onerror = () => reject(new Error("S3 upload failed"))
+    xhr.send(file)
+  })
+}
+
+type Phase = "idle" | "init" | "upload" | "processing" | "save"
+
 function UploadPage() {
   const navigate = useNavigate()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [file, setFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
-  const [progress, setProgress] = useState<string>("")
+  const [tags, setTags] = useState<string[]>([])
+  const [tagInput, setTagInput] = useState("")
+  const [phase, setPhase] = useState<Phase>("idle")
+  const [uploadPct, setUploadPct] = useState(0)
 
   const policy = useQuery(orpc.storage.policy.queryOptions({ input: undefined }))
   const isVideo = file?.type.startsWith("video/") ?? false
@@ -78,9 +102,15 @@ function UploadPage() {
     setFile(f)
   }
 
+  function addTag(raw: string) {
+    const t = raw.trim().replace(/,+$/, "").trim().slice(0, 40)
+    if (t && !tags.includes(t) && tags.length < 20) setTags([...tags, t])
+    setTagInput("")
+  }
+
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
-    defaultValues: { name: "", longText: "", nsfw: false, tags: "" },
+    defaultValues: { name: "", longText: "", nsfw: false },
   })
 
   const submit = useMutation({
@@ -88,30 +118,28 @@ function UploadPage() {
       if (!file) throw new Error("Pick a file first")
       const fileId = makeFileId()
 
-      setProgress("Requesting upload URL…")
+      setPhase("init")
       const { uploadUrl } = await client.storage.uploadInit({
         kind: "gallery",
         fileId,
         contentType: file.type || "application/octet-stream",
       })
 
-      setProgress("Uploading to S3…")
-      const put = await fetch(uploadUrl, {
-        method: "PUT",
-        headers: { "Content-Type": file.type || "application/octet-stream" },
-        body: file,
-      })
-      if (!put.ok) throw new Error(`S3 upload failed: ${put.status}`)
+      setPhase("upload")
+      setUploadPct(0)
+      await uploadToS3(uploadUrl, file, setUploadPct)
 
+      setPhase("processing")
       await client.storage.finalize({ kind: "gallery", fileId })
 
-      setProgress("Saving metadata…")
+      setPhase("save")
       const g = await client.gallery.create({
         name: v.name,
         longText: v.longText || undefined,
         nsfw: v.nsfw ?? false,
-        tags: v.tags ? v.tags.split(",").map((t) => t.trim()).filter(Boolean) : [],
+        tags,
         fileId,
+        mimeType: file.type || undefined,
       })
       return g
     },
@@ -120,10 +148,21 @@ function UploadPage() {
       navigate({ to: `/gallery/${g.id}` as never })
     },
     onError: (e: Error) => {
-      setProgress("")
+      setPhase("idle")
       toast.error(e.message)
     },
   })
+
+  const phaseLabel =
+    phase === "init"
+      ? "Preparing…"
+      : phase === "upload"
+        ? `Uploading… ${uploadPct}%`
+        : phase === "processing"
+          ? "Processing…"
+          : phase === "save"
+            ? "Saving…"
+            : ""
 
   return (
     <main className="mx-auto max-w-2xl">
@@ -190,20 +229,51 @@ function UploadPage() {
                   <InputField label="Description" description="" placeholder="" field={field} />
                 )}
               />
-              <FormField
-                control={form.control}
-                name="tags"
-                render={({ field }) => (
-                  <InputField
-                    label="Tags (comma-separated)"
-                    description=""
-                    placeholder="art, ref"
-                    field={field}
-                  />
-                )}
-              />
-              {progress ? (
-                <p className="text-sm text-muted-foreground">{progress}</p>
+              <div className="space-y-2">
+                <p className="text-sm font-medium">Tags</p>
+                {tags.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {tags.map((t) => (
+                      <span
+                        key={t}
+                        className="inline-flex items-center gap-1 rounded-full bg-primary/15 py-1 pl-3 pr-1.5 text-sm text-primary"
+                      >
+                        {t}
+                        <button
+                          type="button"
+                          onClick={() => setTags(tags.filter((x) => x !== t))}
+                          className="rounded-full p-0.5 hover:bg-primary/20"
+                          aria-label={`Remove ${t}`}
+                        >
+                          <X className="size-3.5" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
+                <Input
+                  value={tagInput}
+                  placeholder="Type a tag and press Enter"
+                  disabled={tags.length >= 20}
+                  onChange={(e) => {
+                    if (e.target.value.includes(",")) addTag(e.target.value)
+                    else setTagInput(e.target.value)
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault()
+                      addTag(tagInput)
+                    } else if (e.key === "Backspace" && !tagInput && tags.length) {
+                      setTags(tags.slice(0, -1))
+                    }
+                  }}
+                />
+              </div>
+              {submit.isPending ? (
+                <div className="space-y-1">
+                  <Progress value={phase === "upload" ? uploadPct : phase === "init" ? 0 : 100} />
+                  <p className="text-xs text-muted-foreground">{phaseLabel}</p>
+                </div>
               ) : null}
               <Button type="submit" disabled={submit.isPending || !file} className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
                 {submit.isPending ? "Uploading…" : "Upload"}
