@@ -10,4 +10,4 @@ bun.lockb
 .claude
 .tmp-*
 .superpowers/
-docs
+docs/*
