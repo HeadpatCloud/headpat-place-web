@@ -42,7 +42,7 @@ function ChangelogEditor() {
   const { changelogId } = Route.useParams()
   const qc = useQueryClient()
   const navigate = useNavigate()
-  const entry = useQuery(orpc.changelog.byId.queryOptions({ input: { changelogId } }))
+  const entry = useQuery(orpc.changelog.adminById.queryOptions({ input: { changelogId } }))
 
   const [title, setTitle] = useState("")
   const [version, setVersion] = useState("")
@@ -84,7 +84,7 @@ function ChangelogEditor() {
         bugfixesApp: toArr(cats.bugfixesApp),
       }),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: orpc.changelog.byId.queryKey({ input: { changelogId } }) })
+      qc.invalidateQueries({ queryKey: orpc.changelog.adminById.queryKey({ input: { changelogId } }) })
       qc.invalidateQueries({ queryKey: orpc.changelog.adminList.key() })
       toast.success("Saved.")
     },

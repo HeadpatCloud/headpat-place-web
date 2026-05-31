@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, Link } from "@tanstack/react-router"
 import { useState } from "react"
 import { toast } from "sonner"
 import { UserCard, type UserSummary } from "@/components/UserCard"
@@ -61,7 +61,15 @@ function ReportsList() {
               <Card key={r.id} className="space-y-3 p-3">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-sm font-semibold">
-                    {r.targetType} · {r.targetId}
+                    <span className="text-muted-foreground capitalize">{r.targetType}</span>{" "}
+                    ·{" "}
+                    {r.target?.href ? (
+                      <Link to={r.target.href as never} className="text-link hover:underline">
+                        {r.target.label}
+                      </Link>
+                    ) : (
+                      r.target?.label ?? r.targetId
+                    )}
                   </span>
                   <Badge variant={done ? "secondary" : "default"}>{r.status}</Badge>
                 </div>

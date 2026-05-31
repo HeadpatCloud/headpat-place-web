@@ -37,9 +37,10 @@ export function AppSidebar({
 }: React.ComponentProps<typeof Sidebar> & { mode?: "app" | "admin" }) {
 	const pageNames = useTranslations("PageNames");
 
-	const adminPerms = useQuery(
-		orpc.adminRole.myPermissions.queryOptions({ input: undefined }),
-	);
+	const adminPerms = useQuery({
+		...orpc.adminRole.myPermissions.queryOptions({ input: undefined }),
+		staleTime: 5 * 60_000,
+	});
 	const isStaff = (adminPerms.data?.length ?? 0) > 0;
 
 	const data = {

@@ -209,6 +209,7 @@ function Thread({ ticketId }: { ticketId: string }) {
 		onSuccess: () => {
 			setReply("")
 			qc.invalidateQueries({ queryKey: orpc.ticket.get.queryKey({ input: { ticketId } }) })
+			qc.invalidateQueries({ queryKey: orpc.ticket.myList.queryKey({ input: undefined }) })
 		},
 		onError: (e: Error) => toast.error(e.message),
 	})

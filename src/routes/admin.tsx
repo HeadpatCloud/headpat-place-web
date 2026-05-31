@@ -34,7 +34,10 @@ function NotAuthorized() {
 
 function AdminLayout() {
   const navigate = useNavigate()
-  const perms = useQuery(orpc.adminRole.myPermissions.queryOptions({ input: undefined }))
+  const perms = useQuery({
+    ...orpc.adminRole.myPermissions.queryOptions({ input: undefined }),
+    staleTime: 5 * 60_000,
+  })
 
   useEffect(() => {
     if (perms.isSuccess && perms.data.length === 0) {
