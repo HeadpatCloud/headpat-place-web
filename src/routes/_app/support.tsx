@@ -1,68 +1,89 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { createFileRoute } from "@tanstack/react-router"
-import { useState } from "react"
-import { toast } from "sonner"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { client, orpc } from "@/lib/orpc"
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { useDateFormat } from "@/lib/datetime";
+import { client, orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/_app/support")({
 	component: SupportPage,
-})
+});
 
-const categories = ["general", "account", "technical", "report", "other"] as const
-const priorities = ["low", "normal", "high"] as const
+const categories = [
+	"general",
+	"account",
+	"technical",
+	"report",
+	"other",
+] as const;
+const priorities = ["low", "normal", "high"] as const;
 
 function SupportPage() {
-	const qc = useQueryClient()
-	const [selected, setSelected] = useState<string | null>(null)
+	const qc = useQueryClient();
+	const fmt = useDateFormat();
+	const [selected, setSelected] = useState<string | null>(null);
 
-	const [subject, setSubject] = useState("")
-	const [category, setCategory] = useState<(typeof categories)[number]>("general")
-	const [priority, setPriority] = useState<(typeof priorities)[number]>("normal")
-	const [body, setBody] = useState("")
+	const [subject, setSubject] = useState("");
+	const [category, setCategory] =
+		useState<(typeof categories)[number]>("general");
+	const [priority, setPriority] =
+		useState<(typeof priorities)[number]>("normal");
+	const [body, setBody] = useState("");
 
-	const tickets = useQuery(orpc.ticket.myList.queryOptions({ input: undefined }))
+	const tickets = useQuery(
+		orpc.ticket.myList.queryOptions({ input: undefined }),
+	);
 
 	const create = useMutation({
 		mutationFn: () =>
-			client.ticket.create({ subject: subject.trim(), body: body.trim(), category, priority }),
+			client.ticket.create({
+				subject: subject.trim(),
+				body: body.trim(),
+				category,
+				priority,
+			}),
 		onSuccess: (t) => {
-			setSubject("")
-			setCategory("general")
-			setPriority("normal")
-			setBody("")
-			qc.invalidateQueries({ queryKey: orpc.ticket.myList.queryKey({ input: undefined }) })
-			setSelected(t.id)
+			setSubject("");
+			setCategory("general");
+			setPriority("normal");
+			setBody("");
+			qc.invalidateQueries({
+				queryKey: orpc.ticket.myList.queryKey({ input: undefined }),
+			});
+			setSelected(t.id);
 		},
 		onError: (e: Error) => toast.error(e.message),
-	})
+	});
 
 	function submitTicket() {
 		if (!subject.trim()) {
-			toast.error("Enter a subject first.")
-			return
+			toast.error("Enter a subject first.");
+			return;
 		}
 		if (!body.trim()) {
-			toast.error("Enter a message first.")
-			return
+			toast.error("Enter a message first.");
+			return;
 		}
-		create.mutate()
+		create.mutate();
 	}
 
 	return (
 		<div className="space-y-6">
-			<h3 className="text-2xl font-extrabold tracking-tight">Help &amp; support</h3>
+			<h3 className="text-2xl font-extrabold tracking-tight">
+				Help &amp; support
+			</h3>
 
 			<Card>
 				<CardHeader>
@@ -73,7 +94,10 @@ function SupportPage() {
 						<span className="font-medium">Discord</span>
 						<p className="text-black/80 dark:text-white/80">
 							For real-time help and chat with the community, join us on{" "}
-							<a className="text-link hover:text-link/80" href="https://discord.gg/EaQTEKRg2A">
+							<a
+								className="text-link hover:text-link/80"
+								href="https://discord.gg/EaQTEKRg2A"
+							>
 								https://discord.gg/EaQTEKRg2A
 							</a>
 							.
@@ -83,7 +107,10 @@ function SupportPage() {
 						<span className="font-medium">E-Mail</span>
 						<p className="text-black/80 dark:text-white/80">
 							Drop us a line at{" "}
-							<a className="text-link hover:text-link/80" href="mailto:help@headpat.place">
+							<a
+								className="text-link hover:text-link/80"
+								href="mailto:help@headpat.place"
+							>
 								help@headpat.place
 							</a>
 							.
@@ -93,7 +120,10 @@ function SupportPage() {
 						<span className="font-medium">GitHub</span>
 						<p className="text-black/80 dark:text-white/80">
 							File bugs and contribute at{" "}
-							<a className="text-link hover:text-link/80" href="https://github.com/headpatcloud">
+							<a
+								className="text-link hover:text-link/80"
+								href="https://github.com/headpatcloud"
+							>
 								https://github.com/headpatcloud
 							</a>
 							.
@@ -115,7 +145,9 @@ function SupportPage() {
 					<div className="flex flex-col gap-3 sm:flex-row">
 						<Select
 							value={category}
-							onValueChange={(v) => setCategory(v as (typeof categories)[number])}
+							onValueChange={(v) =>
+								setCategory(v as (typeof categories)[number])
+							}
 						>
 							<SelectTrigger className="sm:w-1/2">
 								<SelectValue placeholder="Category" />
@@ -130,7 +162,9 @@ function SupportPage() {
 						</Select>
 						<Select
 							value={priority}
-							onValueChange={(v) => setPriority(v as (typeof priorities)[number])}
+							onValueChange={(v) =>
+								setPriority(v as (typeof priorities)[number])
+							}
 						>
 							<SelectTrigger className="sm:w-1/2">
 								<SelectValue placeholder="Priority" />
@@ -168,7 +202,9 @@ function SupportPage() {
 					{tickets.isLoading ? (
 						<p className="text-muted-foreground text-sm">Loading…</p>
 					) : (tickets.data ?? []).length === 0 ? (
-						<p className="text-muted-foreground text-sm">You have no tickets yet.</p>
+						<p className="text-muted-foreground text-sm">
+							You have no tickets yet.
+						</p>
 					) : (
 						(tickets.data ?? []).map((t) => (
 							<button
@@ -181,12 +217,14 @@ function SupportPage() {
 							>
 								<div className="flex items-center justify-between gap-2">
 									<span className="font-semibold">{t.subject}</span>
-									<Badge variant={t.status === "open" ? "default" : "secondary"}>
+									<Badge
+										variant={t.status === "open" ? "default" : "secondary"}
+									>
 										{t.status}
 									</Badge>
 								</div>
 								<span className="text-muted-foreground text-xs">
-									{t.category} · {t.priority} · {new Date(t.createdAt).toLocaleDateString()}
+									{t.category} · {t.priority} · {fmt.date(t.createdAt)}
 								</span>
 							</button>
 						))
@@ -196,42 +234,51 @@ function SupportPage() {
 
 			{selected ? <Thread ticketId={selected} /> : null}
 		</div>
-	)
+	);
 }
 
 function Thread({ ticketId }: { ticketId: string }) {
-	const qc = useQueryClient()
-	const [reply, setReply] = useState("")
-	const ticket = useQuery(orpc.ticket.get.queryOptions({ input: { ticketId } }))
+	const qc = useQueryClient();
+	const fmt = useDateFormat();
+	const [reply, setReply] = useState("");
+	const ticket = useQuery(
+		orpc.ticket.get.queryOptions({ input: { ticketId } }),
+	);
 
 	const send = useMutation({
 		mutationFn: () => client.ticket.reply({ ticketId, body: reply.trim() }),
 		onSuccess: () => {
-			setReply("")
-			qc.invalidateQueries({ queryKey: orpc.ticket.get.queryKey({ input: { ticketId } }) })
-			qc.invalidateQueries({ queryKey: orpc.ticket.myList.queryKey({ input: undefined }) })
+			setReply("");
+			qc.invalidateQueries({
+				queryKey: orpc.ticket.get.queryKey({ input: { ticketId } }),
+			});
+			qc.invalidateQueries({
+				queryKey: orpc.ticket.myList.queryKey({ input: undefined }),
+			});
 		},
 		onError: (e: Error) => toast.error(e.message),
-	})
+	});
 
 	function submitReply() {
 		if (!reply.trim()) {
-			toast.error("Enter a reply first.")
-			return
+			toast.error("Enter a reply first.");
+			return;
 		}
-		send.mutate()
+		send.mutate();
 	}
 
 	if (ticket.isLoading) {
 		return (
 			<Card>
-				<CardContent className="p-6 text-muted-foreground text-sm">Loading…</CardContent>
+				<CardContent className="p-6 text-muted-foreground text-sm">
+					Loading…
+				</CardContent>
 			</Card>
-		)
+		);
 	}
-	if (!ticket.data) return null
+	if (!ticket.data) return null;
 
-	const isClosed = ticket.data.status === "closed"
+	const isClosed = ticket.data.status === "closed";
 
 	return (
 		<Card>
@@ -253,7 +300,7 @@ function Thread({ ticketId }: { ticketId: string }) {
 								}`}
 							>
 								<div className="mb-1 text-xs opacity-70">
-									{m.isStaff ? "Staff" : "You"} · {new Date(m.createdAt).toLocaleString()}
+									{m.isStaff ? "Staff" : "You"} · {fmt.dateTime(m.createdAt)}
 								</div>
 								<p className="whitespace-pre-wrap">{m.body}</p>
 							</div>
@@ -262,7 +309,9 @@ function Thread({ ticketId }: { ticketId: string }) {
 				</div>
 
 				{isClosed ? (
-					<p className="text-muted-foreground text-sm">This ticket is closed.</p>
+					<p className="text-muted-foreground text-sm">
+						This ticket is closed.
+					</p>
 				) : (
 					<div className="space-y-2">
 						<Textarea
@@ -281,5 +330,5 @@ function Thread({ ticketId }: { ticketId: string }) {
 				)}
 			</CardContent>
 		</Card>
-	)
+	);
 }

@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { AvatarBannerUpload } from "@/components/AvatarBannerUpload";
+import { TimezoneSelect } from "@/components/TimezoneSelect";
 import InputField from "@/components/fields/InputField";
 import {
 	AlertDialog,
@@ -394,6 +395,23 @@ function AccountPage() {
 								onChange={(field, value) =>
 									updateProfile.mutate({ [field]: value } as never)
 								}
+							/>
+						</div>
+					</div>
+
+					{/* Timezone */}
+					<div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-12 sm:px-6 md:grid-cols-3 lg:px-8">
+						<div>
+							<h4 className="text-base font-semibold">Timezone</h4>
+							<p className="mt-1 text-sm leading-6 text-gray-400">
+								Dates and times are shown in this timezone. Defaults to your
+								device's timezone.
+							</p>
+						</div>
+						<div className="grid grid-cols-1 gap-y-4 sm:max-w-xl">
+							<TimezoneSelect
+								value={profileQuery.data?.timezone ?? null}
+								onChange={(tz) => updateProfile.mutate({ timezone: tz })}
 							/>
 						</div>
 					</div>

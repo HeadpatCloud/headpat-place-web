@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useDateFormat } from "@/lib/datetime";
 import { client, orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/_app/events/$eventId")({
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/_app/events/$eventId")({
 function EventDetailPage() {
 	const { eventId } = Route.useParams();
 	const qc = useQueryClient();
+	const fmt = useDateFormat();
 	const event = useQuery(orpc.event.byId.queryOptions({ input: { eventId } }));
 	const myAttending = useQuery(
 		orpc.event.myAttending.queryOptions({ input: undefined }),
@@ -63,8 +65,8 @@ function EventDetailPage() {
 			<div className="bg-sunset-hero rounded-2xl p-8 text-white space-y-2">
 				<h1 className="text-2xl sm:text-3xl font-extrabold">{e.title}</h1>
 				<p className="text-sm opacity-90">
-					{new Date(e.startsAt).toLocaleString()}
-					{e.endsAt ? ` — ${new Date(e.endsAt).toLocaleString()}` : ""}
+					{fmt.dateTime(e.startsAt)}
+					{e.endsAt ? ` — ${fmt.dateTime(e.endsAt)}` : ""}
 				</p>
 				{e.locationText ? (
 					<p className="text-sm opacity-90">{e.locationText}</p>

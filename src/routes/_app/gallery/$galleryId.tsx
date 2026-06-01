@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "@/lib/auth-client";
+import { useDateFormat } from "@/lib/datetime";
 import { client, orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/_app/gallery/$galleryId")({
@@ -33,6 +34,7 @@ function GalleryItemPage() {
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
 	const { data: session } = useSession();
+	const fmt = useDateFormat();
 	const item = useQuery(
 		orpc.gallery.byId.queryOptions({ input: { itemId: galleryId } }),
 	);
@@ -150,10 +152,10 @@ function GalleryItemPage() {
 						))}
 					</div>
 					<p className="text-xs text-muted-foreground">
-						Uploaded {new Date(g.createdAt).toLocaleString()}
+						Uploaded {fmt.dateTime(g.createdAt)}
 						{g.updatedAt &&
 						new Date(g.updatedAt).getTime() !== new Date(g.createdAt).getTime()
-							? ` · edited ${new Date(g.updatedAt).toLocaleString()}`
+							? ` · edited ${fmt.dateTime(g.updatedAt)}`
 							: ""}
 					</p>
 				</CardContent>
@@ -179,6 +181,7 @@ function CommentsSection({
 }) {
 	const queryClient = useQueryClient();
 	const { data: session } = useSession();
+	const fmt = useDateFormat();
 	const [body, setBody] = useState("");
 	const comments = useQuery(
 		orpc.gallery.comments.queryOptions({ input: { itemId: galleryId } }),
@@ -260,7 +263,7 @@ function CommentsSection({
 										{c.author ? <UserCard user={c.author} /> : null}
 										<p className="whitespace-pre-wrap text-sm">{c.body}</p>
 										<p className="text-xs text-muted-foreground">
-											{new Date(c.createdAt).toLocaleString()}
+											{fmt.dateTime(c.createdAt)}
 										</p>
 									</div>
 									{canDelete ? (

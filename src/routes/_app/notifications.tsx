@@ -3,6 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Pager } from "@/components/Pager";
 import { Button } from "@/components/ui/button";
+import { useDateFormat } from "@/lib/datetime";
 import { client, orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/_app/notifications")({
@@ -15,6 +16,7 @@ function NotificationsPage() {
 	const [page, setPage] = useState(1);
 	const qc = useQueryClient();
 	const navigate = useNavigate();
+	const fmt = useDateFormat();
 	const list = useQuery(
 		orpc.notification.list.queryOptions({
 			input: { page, pageSize: PAGE_SIZE },
@@ -74,7 +76,7 @@ function NotificationsPage() {
 										{n.message}
 									</p>
 									<p className="mt-0.5 text-xs text-muted-foreground">
-										{new Date(n.createdAt).toLocaleString()}
+										{fmt.dateTime(n.createdAt)}
 									</p>
 								</div>
 								{!n.read ? (

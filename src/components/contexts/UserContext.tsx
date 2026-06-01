@@ -1,7 +1,7 @@
-import { useQuery } from "@tanstack/react-query"
-import { useCallback } from "react"
-import { signIn, signOut, signUp, useSession } from "@/lib/auth-client"
-import { orpc } from "@/lib/orpc"
+import { useQuery } from "@tanstack/react-query";
+import { useCallback } from "react";
+import { signIn, signOut, signUp, useSession } from "@/lib/auth-client";
+import { orpc } from "@/lib/orpc";
 
 /**
  * Compatibility shim that maps the existing `useUser()` shape to the new
@@ -10,90 +10,92 @@ import { orpc } from "@/lib/orpc"
  */
 
 export type AccountPrefs = {
-  $id: string
-  email: string
-  name: string
-  emailVerification: boolean
-  prefs: { nsfw: boolean; indexingEnabled: boolean }
-}
+	$id: string;
+	email: string;
+	name: string;
+	emailVerification: boolean;
+	prefs: { nsfw: boolean; indexingEnabled: boolean };
+};
 
 export type UserDataDocumentsType = {
-  $id: string
-  profileUrl: string
-  displayName: string | null
-  bio: string | null
-  avatarId: string | null
-  profileBannerId: string | null
-  followersCount: number
-  followingCount: number
-  badges: string[]
-}
+	$id: string;
+	profileUrl: string;
+	displayName: string | null;
+	bio: string | null;
+	avatarId: string | null;
+	profileBannerId: string | null;
+	followersCount: number;
+	followingCount: number;
+	badges: string[];
+	timezone: string | null;
+};
 
 export function useUser() {
-  const { data: session } = useSession()
+	const { data: session } = useSession();
 
-  const current: AccountPrefs | null = session?.user
-    ? {
-        $id: session.user.id,
-        email: session.user.email,
-        name: session.user.name ?? "",
-        emailVerification: Boolean(
-          (session.user as { emailVerified?: boolean }).emailVerified,
-        ),
-        prefs: { nsfw: false, indexingEnabled: true },
-      }
-    : null
+	const current: AccountPrefs | null = session?.user
+		? {
+				$id: session.user.id,
+				email: session.user.email,
+				name: session.user.name ?? "",
+				emailVerification: Boolean(
+					(session.user as { emailVerified?: boolean }).emailVerified,
+				),
+				prefs: { nsfw: false, indexingEnabled: true },
+			}
+		: null;
 
-  const profileQuery = useQuery({
-    ...orpc.profile.me.queryOptions({ input: undefined }),
-    enabled: !!session?.user,
-  })
+	const profileQuery = useQuery({
+		...orpc.profile.me.queryOptions({ input: undefined }),
+		enabled: !!session?.user,
+	});
 
-  const userData: UserDataDocumentsType | null = profileQuery.data
-    ? {
-        $id: profileQuery.data.userId,
-        profileUrl: profileQuery.data.profileUrl,
-        displayName: profileQuery.data.displayName,
-        bio: profileQuery.data.bio,
-        avatarId: profileQuery.data.avatarFileId,
-        profileBannerId: profileQuery.data.bannerFileId,
-        followersCount: profileQuery.data.followersCount,
-        followingCount: profileQuery.data.followingCount,
-        badges: profileQuery.data.badges ?? [],
-      }
-    : null
+	const userData: UserDataDocumentsType | null = profileQuery.data
+		? {
+				$id: profileQuery.data.userId,
+				profileUrl: profileQuery.data.profileUrl,
+				displayName: profileQuery.data.displayName,
+				bio: profileQuery.data.bio,
+				avatarId: profileQuery.data.avatarFileId,
+				profileBannerId: profileQuery.data.bannerFileId,
+				followersCount: profileQuery.data.followersCount,
+				followingCount: profileQuery.data.followingCount,
+				badges: profileQuery.data.badges ?? [],
+				timezone: profileQuery.data.timezone,
+			}
+		: null;
 
-  const login = useCallback(async (email: string, password: string) => {
-    const r = await signIn.email({ email, password })
-    if (r.error) throw new Error(r.error.message ?? "Login failed")
-  }, [])
+	const login = useCallback(async (email: string, password: string) => {
+		const r = await signIn.email({ email, password });
+		if (r.error) throw new Error(r.error.message ?? "Login failed");
+	}, []);
 
-  const register = useCallback(
-    async (email: string, password: string, name: string) => {
-      const r = await signUp.email({ email, password, name })
-      if (r.error) throw new Error(r.error.message ?? "Registration failed")
-    },
-    [],
-  )
+	const register = useCallback(
+		async (email: string, password: string, name: string) => {
+			const r = await signUp.email({ email, password, name });
+			if (r.error) throw new Error(r.error.message ?? "Registration failed");
+		},
+		[],
+	);
 
-  const logout = useCallback(async (redirect: boolean) => {
-    await signOut()
-    // Hard navigation clears the session atom and all cached query data so no
-    // stale signed-in state (or the previous user's data) survives the sign-out.
-    if (redirect) window.location.href = "/"
-  }, [])
+	const logout = useCallback(async (redirect: boolean) => {
+		await signOut();
+		// Hard navigation clears the session atom and all cached query data so no
+		// stale signed-in state (or the previous user's data) survives the sign-out.
+		if (redirect) window.location.href = "/";
+	}, []);
 
-  return {
-    current,
-    userData,
-    login,
-    logout,
-    register,
-    // The original surface had setUser/setUserData/init/loginOAuth — these are
-    // mostly unused in components we'll touch. Provide stubs to avoid crashes.
-    setUser: () => {},
-    setUserData: () => {},
-    init: async () => current,
-    loginOAuth: async () => {},
-  }
+	return {
+		current,
+		userData,
+		login,
+		logout,
+		register,
+		// The original surface had setUser/setUserData/init/loginOAuth — these are
+		// mostly unused in components we'll touch. Provide stubs to avoid crashes.
+		setUser: () => {},
+		setUserData: () => {},
+		init: async () => current,
+		loginOAuth: async () => {},
+	};
 }
