@@ -41,7 +41,8 @@ function ConversationPage() {
 		...orpc.message.list.queryOptions({
 			input: { conversationId, limit: 200 },
 		}),
-		refetchInterval: 3000,
+		// live delivery is the primary path (websocket); this is a slow safety net
+		refetchInterval: 15000,
 	});
 
 	const sendMut = useMutation({
