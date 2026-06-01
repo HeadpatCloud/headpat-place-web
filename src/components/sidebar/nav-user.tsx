@@ -1,6 +1,7 @@
 import { BadgeCheck, Bell, ChevronsUpDown, LogOut } from "lucide-react"
 
 import { useUser } from "@/components/contexts/UserContext"
+import { useStorageUrl } from "@/components/StorageImage"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -19,19 +20,10 @@ import {
 } from "@/components/ui/sidebar"
 import { Link } from "@tanstack/react-router"
 
-const getAvatar = (id: string | null | undefined): string | undefined => {
-  if (!id) return undefined
-  // TODO(phase-4): point at the storage_object proxy once S3 is migrated.
-  // For now return the original Appwrite URL so migrated profiles still render.
-  const apiUrl = import.meta.env.VITE_APPWRITE_URL
-  const projectId = import.meta.env.VITE_APPWRITE_PROJECT_ID
-  if (!apiUrl || !projectId) return undefined
-  return `${apiUrl}/v1/storage/buckets/avatars/files/${id}/preview?project=${projectId}&width=250&height=250&quality=50`
-}
-
 export function NavUser() {
   const { isMobile, toggleSidebar } = useSidebar()
   const { userData, current, logout } = useUser()
+  const avatarUrl = useStorageUrl("avatar", userData?.avatarId, "md").data?.url
 
   return (
     <SidebarMenu>
@@ -44,7 +36,7 @@ export function NavUser() {
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
-                  src={getAvatar(userData?.avatarId)}
+                  src={avatarUrl}
                   alt={userData?.displayName || userData?.$id || ""}
                 />
                 <AvatarFallback className="rounded-lg">
@@ -69,7 +61,7 @@ export function NavUser() {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
-                    src={getAvatar(userData?.avatarId)}
+                    src={avatarUrl}
                     alt={userData?.displayName || userData?.$id || ""}
                   />
                   <AvatarFallback className="rounded-lg">
