@@ -6,8 +6,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { AvatarBannerUpload } from "@/components/AvatarBannerUpload";
-import { TimezoneSelect } from "@/components/TimezoneSelect";
 import InputField from "@/components/fields/InputField";
+import { TimezoneSelect } from "@/components/TimezoneSelect";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -33,6 +33,13 @@ import {
 	InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { authClient, useSession } from "@/lib/auth-client";
@@ -416,6 +423,17 @@ function AccountPage() {
 						</div>
 					</div>
 
+					{/* Status */}
+					<div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-12 sm:px-6 md:grid-cols-3 lg:px-8">
+						<div>
+							<h4 className="text-base font-semibold">Status</h4>
+							<p className="mt-1 text-sm leading-6 text-gray-400">
+								Set your presence and an optional custom message.
+							</p>
+						</div>
+						<PresenceSettings />
+					</div>
+
 					{/* Two-factor */}
 					<div className="grid max-w-7xl grid-cols-1 gap-x-8 gap-y-10 px-4 py-12 sm:px-6 md:grid-cols-3 lg:px-8">
 						<div>
@@ -708,6 +726,60 @@ function PrivacyToggles({
 					onCheckedChange={(v) => onChange("emailNotifications", v)}
 				/>
 			</label>
+		</div>
+	);
+}
+
+const STATUSES = [
+	{ value: "online", label: "Online" },
+	{ value: "away", label: "Away" },
+	{ value: "dnd", label: "Do not disturb" },
+	{ value: "invisible", label: "Invisible" },
+] as const;
+
+function PresenceSettings() {
+	const [status, setStatus] =
+		useState<(typeof STATUSES)[number]["value"]>("online");
+	const [custom, setCustom] = useState("");
+	const save = useMutation({
+		mutationFn: () =>
+			client.presence.setStatus({
+				manualStatus: status,
+				customStatus: custom.trim() || null,
+			}),
+		onSuccess: () => toast.success("Status updated."),
+		onError: (e: Error) => toast.error(e.message),
+	});
+	return (
+		<div className="grid grid-cols-1 gap-y-4 sm:max-w-xl">
+			<Select
+				value={status}
+				onValueChange={(v) => setStatus(v as typeof status)}
+			>
+				<SelectTrigger>
+					<SelectValue />
+				</SelectTrigger>
+				<SelectContent>
+					{STATUSES.map((s) => (
+						<SelectItem key={s.value} value={s.value}>
+							{s.label}
+						</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
+			<Input
+				value={custom}
+				onChange={(e) => setCustom(e.target.value)}
+				placeholder="Custom status (optional)"
+				maxLength={140}
+			/>
+			<Button
+				onClick={() => save.mutate()}
+				disabled={save.isPending}
+				className="bg-primary text-primary-foreground hover:bg-primary/90 sm:w-fit"
+			>
+				Save status
+			</Button>
 		</div>
 	);
 }
