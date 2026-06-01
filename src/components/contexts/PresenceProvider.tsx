@@ -47,18 +47,35 @@ export function PresenceProvider({ children }: { children: React.ReactNode }) {
 				);
 			};
 			ws.onmessage = (e) => {
-				const msg = JSON.parse(e.data);
+				let msg: {
+					type?: string;
+					entries?: {
+						userId: string;
+						status: Status;
+						customStatus: string | null;
+						customStatusEmoji: string | null;
+					}[];
+					userId?: string;
+					status?: Status;
+					customStatus?: string | null;
+					customStatusEmoji?: string | null;
+				};
+				try {
+					msg = JSON.parse(e.data);
+				} catch {
+					return;
+				}
 				if (msg.type === "snapshot") {
 					const next: Record<string, Entry> = {};
-					for (const en of msg.entries) next[en.userId] = en;
+					for (const en of msg.entries ?? []) next[en.userId] = en;
 					setMap((prev) => ({ ...prev, ...next }));
-				} else if (msg.type === "presence") {
+				} else if (msg.type === "presence" && msg.userId) {
 					setMap((prev) => ({
 						...prev,
-						[msg.userId]: {
-							status: msg.status,
-							customStatus: msg.customStatus,
-							customStatusEmoji: msg.customStatusEmoji,
+						[msg.userId as string]: {
+							status: msg.status as Status,
+							customStatus: msg.customStatus ?? null,
+							customStatusEmoji: msg.customStatusEmoji ?? null,
 						},
 					}));
 				}
