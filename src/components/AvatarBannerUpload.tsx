@@ -50,7 +50,6 @@ export function AvatarBannerUpload({
       await client.storage.finalize({ kind, fileId })
       await onUploaded(fileId)
       await queryClient.invalidateQueries({ queryKey: ["storage", "url"] })
-      toast.success(`${kind} updated`)
     } catch (e) {
       toast.error((e as Error).message)
     } finally {
