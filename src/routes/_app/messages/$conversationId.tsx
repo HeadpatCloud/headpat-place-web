@@ -2,6 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { usePresence } from "@/components/contexts/PresenceProvider";
+import { StorageImage } from "@/components/StorageImage";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -12,7 +14,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { StorageImage } from "@/components/StorageImage";
 import { useSession } from "@/lib/auth-client";
 import { useDateFormat } from "@/lib/datetime";
 import { client, orpc } from "@/lib/orpc";
@@ -24,6 +25,7 @@ export const Route = createFileRoute("/_app/messages/$conversationId")({
 function ConversationPage() {
 	const { conversationId } = Route.useParams();
 	const { data: session } = useSession();
+	const { typingIn, sendTyping } = usePresence();
 	const qc = useQueryClient();
 	const fmt = useDateFormat();
 	const [draft, setDraft] = useState("");
@@ -147,7 +149,25 @@ function ConversationPage() {
 					)}
 				</CardContent>
 				<Separator />
-				<CardFooter className="py-3">
+				<CardFooter className="py-3 flex-col items-stretch">
+					{(() => {
+						const meId = session?.user?.id;
+						const typers = typingIn(conversationId).filter((id) => id !== meId);
+						if (typers.length === 0) return null;
+						const names = typers.map((id) => {
+							const p = (participants.data ?? []).find((u) => u.userId === id);
+							return p?.displayName || p?.name || "Someone";
+						});
+						const label =
+							names.length === 1
+								? `${names[0]} is typing…`
+								: `${names.join(", ")} are typing…`;
+						return (
+							<div className="px-1 pb-1 text-xs text-muted-foreground">
+								{label}
+							</div>
+						);
+					})()}
 					<form
 						className="flex w-full gap-2"
 						onSubmit={(e) => {
@@ -159,7 +179,10 @@ function ConversationPage() {
 						<Input
 							placeholder="Type a message…"
 							value={draft}
-							onChange={(e) => setDraft(e.target.value)}
+							onChange={(e) => {
+								setDraft(e.target.value);
+								sendTyping(conversationId);
+							}}
 							disabled={sendMut.isPending}
 						/>
 						<Button type="submit" disabled={sendMut.isPending || !draft.trim()}>
