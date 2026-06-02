@@ -10,6 +10,7 @@ import {
 	SearchIcon,
 	SendHorizontalIcon,
 	SmileIcon,
+	TrashIcon,
 	UserPlusIcon,
 	UsersIcon,
 } from "lucide-react";
@@ -57,6 +58,7 @@ type Msg = {
 	senderId: string;
 	body: string;
 	createdAt: string | Date;
+	editedAt?: string | Date | null;
 	author?: {
 		userId: string;
 		profileUrl: string | null;
@@ -85,6 +87,9 @@ export function MessagePane({ source }: { source: Source }) {
 	const [adding, setAdding] = useState(false);
 	const [toAdd, setToAdd] = useState<Set<string>>(new Set());
 	const [leaving, setLeaving] = useState(false);
+	const [editingId, setEditingId] = useState<string | null>(null);
+	const [editDraft, setEditDraft] = useState("");
+	const [deletingId, setDeletingId] = useState<string | null>(null);
 	const scrollRef = useRef<HTMLDivElement>(null);
 
 	const dmConversationId =
@@ -107,6 +112,16 @@ export function MessagePane({ source }: { source: Source }) {
 		...orpc.channel.byId.queryOptions({ input: { channelId } }),
 		enabled: source.kind === "channel",
 	});
+	const myChannelRole = useQuery({
+		...orpc.community.myRoleIn.queryOptions({
+			input: { communityId: channelInfo.data?.communityId ?? "" },
+		}),
+		enabled: source.kind === "channel" && !!channelInfo.data?.communityId,
+	});
+	const canModerate =
+		myChannelRole.data?.role === "owner" ||
+		myChannelRole.data?.role === "admin" ||
+		myChannelRole.data?.role === "moderator";
 
 	const dmMessages = useQuery({
 		...orpc.message.list.queryOptions({
@@ -144,6 +159,42 @@ export function MessagePane({ source }: { source: Source }) {
 					}),
 				});
 			}
+		},
+		onError: (e: Error) => toast.error(e.message),
+	});
+
+	const invalidateThread = async () => {
+		if (source.kind === "dm") {
+			await qc.invalidateQueries({
+				queryKey: orpc.message.list.queryKey({
+					input: { conversationId: source.conversationId, limit: 200 },
+				}),
+			});
+		} else {
+			await qc.invalidateQueries({
+				queryKey: orpc.channel.messages.queryKey({
+					input: { channelId: source.channelId, limit: 200 },
+				}),
+			});
+		}
+	};
+
+	const editMut = useMutation({
+		mutationFn: (vars: { id: string; body: string }) =>
+			client.message.edit({ messageId: vars.id, body: vars.body }),
+		onSuccess: async () => {
+			await invalidateThread();
+			setEditingId(null);
+			setEditDraft("");
+		},
+		onError: (e: Error) => toast.error(e.message),
+	});
+
+	const deleteMut = useMutation({
+		mutationFn: (id: string) => client.message.delete({ messageId: id }),
+		onSuccess: async () => {
+			await invalidateThread();
+			setDeletingId(null);
 		},
 		onError: (e: Error) => toast.error(e.message),
 	});
@@ -323,6 +374,9 @@ export function MessagePane({ source }: { source: Source }) {
 								const prev = list[i - 1];
 								const grouped = prev?.senderId === m.senderId;
 								const isMe = m.senderId === meId;
+								const isMine = m.senderId === meId;
+								const canDelete =
+									isMine || (source.kind === "channel" && canModerate);
 								const displayName = isMe
 									? (session?.user?.name ?? "You")
 									: m.author
@@ -336,10 +390,37 @@ export function MessagePane({ source }: { source: Source }) {
 								return (
 									<div
 										key={m.id}
-										className={`flex gap-4 rounded-md px-2 py-1 hover:bg-foreground/[0.015] ${
+										className={`group relative flex gap-4 rounded-md px-2 py-1 hover:bg-foreground/[0.015] ${
 											grouped ? "" : "mt-1.5"
 										}`}
 									>
+										{editingId === m.id ? null : (
+											<div className="absolute right-2 top-0 flex items-center gap-0.5 rounded-md border border-border bg-card opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
+												{isMine ? (
+													<button
+														type="button"
+														onClick={() => {
+															setEditingId(m.id);
+															setEditDraft(m.body);
+														}}
+														className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+														aria-label="Edit message"
+													>
+														<PencilIcon className="size-3.5" />
+													</button>
+												) : null}
+												{canDelete ? (
+													<button
+														type="button"
+														onClick={() => setDeletingId(m.id)}
+														className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+														aria-label="Delete message"
+													>
+														<TrashIcon className="size-3.5" />
+													</button>
+												) : null}
+											</div>
+										)}
 										<div className="w-10.5 shrink-0">
 											{grouped ? null : (
 												<StorageImage
@@ -369,9 +450,55 @@ export function MessagePane({ source }: { source: Source }) {
 													</span>
 												</div>
 											)}
-											<div className="whitespace-pre-wrap break-words text-sm leading-relaxed text-foreground">
-												{m.body}
-											</div>
+											{editingId === m.id ? (
+												<form
+													onSubmit={(e) => {
+														e.preventDefault();
+														const body = editDraft.trim();
+														if (body && body !== m.body)
+															editMut.mutate({ id: m.id, body });
+														else setEditingId(null);
+													}}
+													className="mt-0.5"
+												>
+													<input
+														className="w-full rounded-md border border-border bg-card px-2 py-1 text-sm text-foreground focus:border-ring focus:outline-none"
+														value={editDraft}
+														onChange={(e) => setEditDraft(e.target.value)}
+														onKeyDown={(e) => {
+															if (e.key === "Escape") setEditingId(null);
+														}}
+														maxLength={10000}
+														// biome-ignore lint/a11y/noAutofocus: inline editor focus is expected
+														autoFocus
+													/>
+													<div className="mt-1 flex gap-2 text-xs text-muted-foreground">
+														<button
+															type="button"
+															className="underline"
+															onClick={() => setEditingId(null)}
+														>
+															cancel
+														</button>
+														<button
+															type="submit"
+															className="underline"
+															disabled={editMut.isPending}
+														>
+															save
+														</button>
+													</div>
+												</form>
+											) : (
+												<div className="whitespace-pre-wrap break-words text-sm leading-relaxed text-foreground">
+													{m.body}
+													{m.editedAt ? (
+														<span className="ml-1.5 text-[10px] text-muted-foreground">
+															(edited)
+														</span>
+													) : null}
+												</div>
+											)}
 										</div>
 									</div>
 								);
@@ -635,6 +762,36 @@ export function MessagePane({ source }: { source: Source }) {
 							disabled={leaveMut.isPending}
 						>
 							Leave
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
+
+			<AlertDialog
+				open={!!deletingId}
+				onOpenChange={(o) => {
+					if (!o) setDeletingId(null);
+				}}
+			>
+				<AlertDialogContent className="chat-scope">
+					<AlertDialogHeader>
+						<AlertDialogTitle>Delete message?</AlertDialogTitle>
+						<AlertDialogDescription>
+							This permanently removes the message for everyone. This cannot be
+							undone.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogAction
+							className="bg-destructive text-white hover:bg-destructive/90"
+							onClick={(e) => {
+								e.preventDefault();
+								if (deletingId) deleteMut.mutate(deletingId);
+							}}
+							disabled={deleteMut.isPending}
+						>
+							Delete
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>
