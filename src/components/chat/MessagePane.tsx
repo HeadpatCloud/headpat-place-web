@@ -177,6 +177,9 @@ export function MessagePane({ source }: { source: Source }) {
 					input: { conversationId: dmConversationId },
 				}),
 			});
+			await qc.invalidateQueries({
+				queryKey: orpc.message.myConversations.key(),
+			});
 			setAdding(false);
 			setToAdd(new Set());
 			toast.success("Added to group");
