@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { client, orpc } from "@/lib/orpc";
+import { NewConversationDialog } from "./NewConversationDialog";
 
 function initials(name: string | null | undefined, fallback: string): string {
 	const source = name?.trim() || fallback;
@@ -382,6 +383,7 @@ export function ChatSidebar() {
 		[following.data],
 	);
 	const [activeServer, setActiveServer] = useState<string | null>(null);
+	const [composing, setComposing] = useState(false);
 	const activeChannel = useQuery({
 		...orpc.channel.byId.queryOptions({
 			input: { channelId: activeChannelId ?? "" },
@@ -405,8 +407,18 @@ export function ChatSidebar() {
 			</Link>
 
 			<div className="flex-1 overflow-y-auto px-3 pb-2 pt-3.5">
-				<div className="px-2.5 pb-2 pt-0.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-					Messages
+				<div className="flex items-center pl-2.5 pr-1 pb-2 pt-0.5">
+					<span className="flex-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+						Messages
+					</span>
+					<button
+						type="button"
+						onClick={() => setComposing(true)}
+						className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+						aria-label="New message"
+					>
+						<PlusIcon className="size-4" />
+					</button>
 				</div>
 				{conversations.data?.items.map((c) => {
 					const isGroup = c.others.length > 1;
@@ -472,6 +484,8 @@ export function ChatSidebar() {
 					/>
 				))}
 			</div>
+
+			<NewConversationDialog open={composing} onOpenChange={setComposing} />
 
 			<div className="flex h-15 shrink-0 items-center gap-3 border-t border-border bg-card px-3.5">
 				<span className="relative shrink-0">
