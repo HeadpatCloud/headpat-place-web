@@ -14,6 +14,7 @@ import {
 	TrashIcon,
 	UserPlusIcon,
 	UsersIcon,
+	XIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -342,7 +343,26 @@ export function MessagePane({ source }: { source: Source }) {
 				) : others.length > 1 ? (
 					<UsersIcon className="size-5 text-muted-foreground" />
 				) : null}
-				<span className="text-base font-semibold text-foreground">{title}</span>
+				{isGroup ? (
+					<button
+						type="button"
+						onClick={() => {
+							setRenameDraft(conversation.data?.name ?? "");
+							setRenaming(true);
+						}}
+						className="group/title flex min-w-0 items-center gap-1.5"
+						aria-label="Rename group"
+					>
+						<span className="truncate text-base font-semibold text-foreground">
+							{title}
+						</span>
+						<PencilIcon className="size-3.5 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover/title:opacity-100" />
+					</button>
+				) : (
+					<span className="truncate text-base font-semibold text-foreground">
+						{title}
+					</span>
+				)}
 				{topic ? (
 					<span className="ml-1 flex-1 truncate border-l border-border pl-3 text-sm text-muted-foreground">
 						{topic}
@@ -368,6 +388,14 @@ export function MessagePane({ source }: { source: Source }) {
 						<SearchIcon className="size-3.5 opacity-80" />
 						<span>Search</span>
 					</div>
+					<button
+						type="button"
+						onClick={() => navigate({ to: "/chat" })}
+						aria-label="Close conversation"
+						className="hidden size-8.5 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:flex"
+					>
+						<XIcon className="size-4" />
+					</button>
 				</div>
 			</header>
 

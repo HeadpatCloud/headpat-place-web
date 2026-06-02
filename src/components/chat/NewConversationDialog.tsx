@@ -39,11 +39,13 @@ export function NewConversationDialog({
 		setName("");
 	};
 
+	const isGroup = selected.size > 1;
+
 	const start = useMutation({
 		mutationFn: () =>
 			client.message.startConversation({
 				participantUserIds: [...selected],
-				name: name.trim() || undefined,
+				name: isGroup ? name.trim() || undefined : undefined,
 			}),
 		onSuccess: async (conv) => {
 			await qc.invalidateQueries({
@@ -72,21 +74,35 @@ export function NewConversationDialog({
 					<DialogTitle>New message</DialogTitle>
 				</DialogHeader>
 
-				<div className="flex flex-col gap-1">
-					<label
-						htmlFor="group-name"
-						className="text-xs font-medium text-muted-foreground"
-					>
-						Group name (optional)
-					</label>
-					<Input
-						id="group-name"
-						value={name}
-						onChange={(e) => setName(e.target.value)}
-						maxLength={100}
-						placeholder="e.g. Weekend crew"
-					/>
-				</div>
+				{isGroup ? (
+					<div className="flex flex-col gap-1">
+						<label
+							htmlFor="group-name"
+							className="text-xs font-medium text-muted-foreground"
+						>
+							Group name (optional)
+						</label>
+						<Input
+							id="group-name"
+							value={name}
+							onChange={(e) => setName(e.target.value)}
+							maxLength={100}
+							placeholder="e.g. Weekend crew"
+						/>
+					</div>
+				) : selected.size === 1 ? (
+					<p className="text-xs text-muted-foreground">
+						Direct message to{" "}
+						<span className="font-medium text-foreground">
+							{(() => {
+								const u = following.data?.items.find((i) =>
+									selected.has(i.userId),
+								);
+								return u?.displayName || u?.name || "this user";
+							})()}
+						</span>
+					</p>
+				) : null}
 
 				<div className="mt-1 max-h-72 overflow-y-auto rounded-md border border-border">
 					{following.data?.items.length ? (
