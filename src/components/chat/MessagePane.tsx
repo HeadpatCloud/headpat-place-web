@@ -390,8 +390,11 @@ export function MessagePane({ source }: { source: Source }) {
 					</div>
 					<button
 						type="button"
-						onClick={() => navigate({ to: "/chat" })}
-						aria-label="Close conversation"
+						onClick={() => {
+							if (isGroup) setLeaving(true);
+							else navigate({ to: "/chat" });
+						}}
+						aria-label={isGroup ? "Leave group" : "Close conversation"}
 						className="hidden size-8.5 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:flex"
 					>
 						<XIcon className="size-4" />
