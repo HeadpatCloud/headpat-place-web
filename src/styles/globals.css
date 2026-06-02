@@ -259,6 +259,26 @@
   --sidebar-ring: hsl(160 100% 45%);
 }
 
+.chat-scope {
+  --background: hsl(222 16% 12%);
+  --foreground: hsl(222 14% 81%);
+  --muted: hsl(220 15% 16%);
+  --muted-foreground: hsl(220 7% 52%);
+  --popover: hsl(225 16% 10%);
+  --popover-foreground: hsl(222 14% 81%);
+  --card: hsl(225 16% 10%);
+  --card-foreground: hsl(222 14% 81%);
+  --border: hsl(220 13% 20%);
+  --input: hsl(220 13% 20%);
+  --primary: hsl(235 57% 63%);
+  --primary-foreground: hsl(222 25% 92%);
+  --secondary: hsl(224 14% 15%);
+  --secondary-foreground: hsl(222 14% 81%);
+  --accent: hsl(235 57% 63%);
+  --accent-foreground: hsl(222 25% 92%);
+  --ring: hsl(235 57% 63%);
+}
+
 .blur {
   backdrop-filter: blur(10px);
 }
