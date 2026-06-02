@@ -40,6 +40,8 @@ import { Route as AppEventsIndexRouteImport } from './routes/_app/events/index'
 import { Route as AppCommunityIndexRouteImport } from './routes/_app/community/index'
 import { Route as AppAnnouncementsIndexRouteImport } from './routes/_app/announcements/index'
 import { Route as AppAccountIndexRouteImport } from './routes/_app/account/index'
+import { Route as ChatDmConversationIdRouteImport } from './routes/chat/dm/$conversationId'
+import { Route as ChatCChannelIdRouteImport } from './routes/chat/c/$channelId'
 import { Route as AdminUsersUserIdRouteImport } from './routes/admin/users/$userId'
 import { Route as AdminTicketsTicketIdRouteImport } from './routes/admin/tickets/$ticketId'
 import { Route as AdminRolesRoleIdRouteImport } from './routes/admin/roles/$roleId'
@@ -218,6 +220,16 @@ const AppAccountIndexRoute = AppAccountIndexRouteImport.update({
   path: '/account/',
   getParentRoute: () => AppRoute,
 } as any)
+const ChatDmConversationIdRoute = ChatDmConversationIdRouteImport.update({
+  id: '/dm/$conversationId',
+  path: '/dm/$conversationId',
+  getParentRoute: () => ChatRoute,
+} as any)
+const ChatCChannelIdRoute = ChatCChannelIdRouteImport.update({
+  id: '/c/$channelId',
+  path: '/c/$channelId',
+  getParentRoute: () => ChatRoute,
+} as any)
 const AdminUsersUserIdRoute = AdminUsersUserIdRouteImport.update({
   id: '/users/$userId',
   path: '/users/$userId',
@@ -383,6 +395,8 @@ export interface FileRoutesByFullPath {
   '/admin/roles/$roleId': typeof AdminRolesRoleIdRoute
   '/admin/tickets/$ticketId': typeof AdminTicketsTicketIdRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
+  '/chat/c/$channelId': typeof ChatCChannelIdRoute
+  '/chat/dm/$conversationId': typeof ChatDmConversationIdRoute
   '/account/': typeof AppAccountIndexRoute
   '/announcements/': typeof AppAnnouncementsIndexRoute
   '/community/': typeof AppCommunityIndexRoute
@@ -436,6 +450,8 @@ export interface FileRoutesByTo {
   '/admin/roles/$roleId': typeof AdminRolesRoleIdRoute
   '/admin/tickets/$ticketId': typeof AdminTicketsTicketIdRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
+  '/chat/c/$channelId': typeof ChatCChannelIdRoute
+  '/chat/dm/$conversationId': typeof ChatDmConversationIdRoute
   '/account': typeof AppAccountIndexRoute
   '/announcements': typeof AppAnnouncementsIndexRoute
   '/community': typeof AppCommunityIndexRoute
@@ -494,6 +510,8 @@ export interface FileRoutesById {
   '/admin/roles/$roleId': typeof AdminRolesRoleIdRoute
   '/admin/tickets/$ticketId': typeof AdminTicketsTicketIdRoute
   '/admin/users/$userId': typeof AdminUsersUserIdRoute
+  '/chat/c/$channelId': typeof ChatCChannelIdRoute
+  '/chat/dm/$conversationId': typeof ChatDmConversationIdRoute
   '/_app/account/': typeof AppAccountIndexRoute
   '/_app/announcements/': typeof AppAnnouncementsIndexRoute
   '/_app/community/': typeof AppCommunityIndexRoute
@@ -551,6 +569,8 @@ export interface FileRouteTypes {
     | '/admin/roles/$roleId'
     | '/admin/tickets/$ticketId'
     | '/admin/users/$userId'
+    | '/chat/c/$channelId'
+    | '/chat/dm/$conversationId'
     | '/account/'
     | '/announcements/'
     | '/community/'
@@ -604,6 +624,8 @@ export interface FileRouteTypes {
     | '/admin/roles/$roleId'
     | '/admin/tickets/$ticketId'
     | '/admin/users/$userId'
+    | '/chat/c/$channelId'
+    | '/chat/dm/$conversationId'
     | '/account'
     | '/announcements'
     | '/community'
@@ -661,6 +683,8 @@ export interface FileRouteTypes {
     | '/admin/roles/$roleId'
     | '/admin/tickets/$ticketId'
     | '/admin/users/$userId'
+    | '/chat/c/$channelId'
+    | '/chat/dm/$conversationId'
     | '/_app/account/'
     | '/_app/announcements/'
     | '/_app/community/'
@@ -908,6 +932,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/account/'
       preLoaderRoute: typeof AppAccountIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/chat/dm/$conversationId': {
+      id: '/chat/dm/$conversationId'
+      path: '/dm/$conversationId'
+      fullPath: '/chat/dm/$conversationId'
+      preLoaderRoute: typeof ChatDmConversationIdRouteImport
+      parentRoute: typeof ChatRoute
+    }
+    '/chat/c/$channelId': {
+      id: '/chat/c/$channelId'
+      path: '/c/$channelId'
+      fullPath: '/chat/c/$channelId'
+      preLoaderRoute: typeof ChatCChannelIdRouteImport
+      parentRoute: typeof ChatRoute
     }
     '/admin/users/$userId': {
       id: '/admin/users/$userId'
@@ -1217,10 +1255,14 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface ChatRouteChildren {
   ChatIndexRoute: typeof ChatIndexRoute
+  ChatCChannelIdRoute: typeof ChatCChannelIdRoute
+  ChatDmConversationIdRoute: typeof ChatDmConversationIdRoute
 }
 
 const ChatRouteChildren: ChatRouteChildren = {
   ChatIndexRoute: ChatIndexRoute,
+  ChatCChannelIdRoute: ChatCChannelIdRoute,
+  ChatDmConversationIdRoute: ChatDmConversationIdRoute,
 }
 
 const ChatRouteWithChildren = ChatRoute._addFileChildren(ChatRouteChildren)
