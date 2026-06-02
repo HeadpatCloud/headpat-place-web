@@ -423,9 +423,11 @@ export function ChatSidebar() {
 				{conversations.data?.items.map((c) => {
 					const isGroup = c.others.length > 1;
 					const other = c.others[0];
-					const label = isGroup
-						? c.others.map((o) => o.displayName || o.name || "?").join(", ")
-						: other?.displayName || other?.name || "Conversation";
+					const label = c.name
+						? c.name
+						: isGroup
+							? c.others.map((o) => o.displayName || o.name || "?").join(", ")
+							: other?.displayName || other?.name || "Conversation";
 					const isActive = c.id === activeConversationId;
 					return (
 						<Link

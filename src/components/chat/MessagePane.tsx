@@ -1,16 +1,40 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import {
+	CheckIcon,
 	HashIcon,
+	LogOutIcon,
+	PencilIcon,
 	PlusIcon,
 	SearchIcon,
 	SendHorizontalIcon,
 	SmileIcon,
+	UserPlusIcon,
 	UsersIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { usePresence } from "@/components/contexts/PresenceProvider";
 import { StorageImage } from "@/components/StorageImage";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import {
+	Dialog,
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { useSession } from "@/lib/auth-client";
 import { useDateFormat } from "@/lib/datetime";
 import { client, orpc } from "@/lib/orpc";
@@ -52,8 +76,14 @@ export function MessagePane({ source }: { source: Source }) {
 	const { typingIn, sendTyping, sendChannelTyping } = usePresence();
 	const qc = useQueryClient();
 	const fmt = useDateFormat();
+	const navigate = useNavigate();
 	const [draft, setDraft] = useState("");
 	const [showMembers, setShowMembers] = useState(false);
+	const [renaming, setRenaming] = useState(false);
+	const [renameDraft, setRenameDraft] = useState("");
+	const [adding, setAdding] = useState(false);
+	const [toAdd, setToAdd] = useState<Set<string>>(new Set());
+	const [leaving, setLeaving] = useState(false);
 	const scrollRef = useRef<HTMLDivElement>(null);
 
 	const dmConversationId =
@@ -62,6 +92,12 @@ export function MessagePane({ source }: { source: Source }) {
 
 	const participants = useQuery({
 		...orpc.message.participants.queryOptions({
+			input: { conversationId: dmConversationId },
+		}),
+		enabled: source.kind === "dm",
+	});
+	const conversation = useQuery({
+		...orpc.message.conversationById.queryOptions({
 			input: { conversationId: dmConversationId },
 		}),
 		enabled: source.kind === "dm",
@@ -111,6 +147,62 @@ export function MessagePane({ source }: { source: Source }) {
 		onError: (e: Error) => toast.error(e.message),
 	});
 
+	const renameMut = useMutation({
+		mutationFn: (name: string) =>
+			client.message.rename({ conversationId: dmConversationId, name }),
+		onSuccess: async () => {
+			await qc.invalidateQueries({
+				queryKey: orpc.message.conversationById.queryKey({
+					input: { conversationId: dmConversationId },
+				}),
+			});
+			await qc.invalidateQueries({
+				queryKey: orpc.message.myConversations.key(),
+			});
+			setRenaming(false);
+			toast.success("Group renamed");
+		},
+		onError: (e: Error) => toast.error(e.message),
+	});
+
+	const addMut = useMutation({
+		mutationFn: (userIds: string[]) =>
+			client.message.addParticipants({
+				conversationId: dmConversationId,
+				userIds,
+			}),
+		onSuccess: async () => {
+			await qc.invalidateQueries({
+				queryKey: orpc.message.participants.queryKey({
+					input: { conversationId: dmConversationId },
+				}),
+			});
+			setAdding(false);
+			setToAdd(new Set());
+			toast.success("Added to group");
+		},
+		onError: (e: Error) => toast.error(e.message),
+	});
+
+	const leaveMut = useMutation({
+		mutationFn: () =>
+			client.message.leave({ conversationId: dmConversationId }),
+		onSuccess: async () => {
+			await qc.invalidateQueries({
+				queryKey: orpc.message.myConversations.key(),
+			});
+			navigate({ to: "/chat" });
+		},
+		onError: (e: Error) => toast.error(e.message),
+	});
+
+	const followingQ = useQuery({
+		...orpc.follow.following.queryOptions({
+			input: { page: 1, pageSize: 100 },
+		}),
+		enabled: adding,
+	});
+
 	useEffect(() => {
 		scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
 	}, [messages.data]);
@@ -119,6 +211,11 @@ export function MessagePane({ source }: { source: Source }) {
 	const byUser = new Map(parts.map((p) => [p.userId, p]));
 	const meId = session?.user?.id;
 	const others = parts.filter((p) => p.userId !== meId);
+	const isGroup = source.kind === "dm" && others.length > 1;
+	const partIds = new Set(parts.map((p) => p.userId));
+	const candidates = (followingQ.data?.items ?? []).filter(
+		(u) => !partIds.has(u.userId),
+	);
 
 	const nameOf = (userId: string) => {
 		const p = byUser.get(userId);
@@ -130,9 +227,12 @@ export function MessagePane({ source }: { source: Source }) {
 	const title =
 		source.kind === "channel"
 			? (channelInfo.data?.name ?? "…")
-			: others.length === 0
-				? "Just you"
-				: others.map((p) => p.displayName || p.name || p.profileUrl).join(", ");
+			: conversation.data?.name ||
+				(others.length === 0
+					? "Just you"
+					: others
+							.map((p) => p.displayName || p.name || p.profileUrl)
+							.join(", "));
 	const topic =
 		source.kind === "channel" ? (channelInfo.data?.topic ?? null) : null;
 	const placeholder =
@@ -270,6 +370,37 @@ export function MessagePane({ source }: { source: Source }) {
 
 				{showMembers ? (
 					<aside className="w-56 shrink-0 overflow-y-auto border-l border-border px-3 py-4">
+						{isGroup ? (
+							<div className="mb-3 flex flex-col gap-1.5 border-b border-border px-2 pb-3">
+								<button
+									type="button"
+									onClick={() => {
+										setRenameDraft(conversation.data?.name ?? "");
+										setRenaming(true);
+									}}
+									className="flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+								>
+									<PencilIcon className="size-4 shrink-0" /> Rename group
+								</button>
+								<button
+									type="button"
+									onClick={() => {
+										setToAdd(new Set());
+										setAdding(true);
+									}}
+									className="flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+								>
+									<UserPlusIcon className="size-4 shrink-0" /> Add people
+								</button>
+								<button
+									type="button"
+									onClick={() => setLeaving(true)}
+									className="flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-destructive transition-colors hover:bg-destructive/10"
+								>
+									<LogOutIcon className="size-4 shrink-0" /> Leave group
+								</button>
+							</div>
+						) : null}
 						<div className="px-2 pb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
 							Members
 						</div>
@@ -358,6 +489,144 @@ export function MessagePane({ source }: { source: Source }) {
 					</div>
 				</form>
 			</div>
+
+			<Dialog open={renaming} onOpenChange={setRenaming}>
+				<DialogContent className="chat-scope max-w-sm">
+					<DialogHeader>
+						<DialogTitle>Rename group</DialogTitle>
+					</DialogHeader>
+					<form
+						onSubmit={(e) => {
+							e.preventDefault();
+							const trimmed = renameDraft.trim();
+							if (trimmed) renameMut.mutate(trimmed);
+						}}
+					>
+						<Input
+							value={renameDraft}
+							onChange={(e) => setRenameDraft(e.target.value)}
+							maxLength={100}
+							autoFocus
+							placeholder="Group name"
+						/>
+						<DialogFooter className="mt-4">
+							<Button
+								type="button"
+								variant="outline"
+								onClick={() => setRenaming(false)}
+							>
+								Cancel
+							</Button>
+							<Button
+								type="submit"
+								disabled={renameMut.isPending || !renameDraft.trim()}
+							>
+								Save
+							</Button>
+						</DialogFooter>
+					</form>
+				</DialogContent>
+			</Dialog>
+
+			<Dialog open={adding} onOpenChange={setAdding}>
+				<DialogContent className="chat-scope max-w-md">
+					<DialogHeader>
+						<DialogTitle>Add people</DialogTitle>
+					</DialogHeader>
+					<div className="max-h-72 overflow-y-auto">
+						{followingQ.isPending ? (
+							<p className="px-1 py-2 text-sm text-muted-foreground">
+								Loading…
+							</p>
+						) : candidates.length === 0 ? (
+							<p className="px-1 py-2 text-sm text-muted-foreground">
+								No one left to add.
+							</p>
+						) : (
+							candidates.map((u) => {
+								const selected = toAdd.has(u.userId);
+								const label = u.displayName || u.name || "User";
+								return (
+									<button
+										key={u.userId}
+										type="button"
+										onClick={() =>
+											setToAdd((prev) => {
+												const next = new Set(prev);
+												if (next.has(u.userId)) next.delete(u.userId);
+												else next.add(u.userId);
+												return next;
+											})
+										}
+										className={`flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-left text-sm transition-colors ${
+											selected
+												? "bg-primary/15 text-foreground"
+												: "text-foreground hover:bg-muted"
+										}`}
+									>
+										<StorageImage
+											kind="avatar"
+											fileId={u.avatarFileId}
+											variant="sm"
+											className="size-7 rounded-full object-cover bg-muted"
+											fallback={
+												<div className="flex size-7 items-center justify-center rounded-full bg-muted text-xs font-semibold">
+													{initials(label)}
+												</div>
+											}
+										/>
+										<span className="flex-1 truncate">{label}</span>
+										{selected ? (
+											<CheckIcon className="size-4 shrink-0 text-primary" />
+										) : null}
+									</button>
+								);
+							})
+						)}
+					</div>
+					<DialogFooter className="mt-4">
+						<Button
+							type="button"
+							variant="outline"
+							onClick={() => setAdding(false)}
+						>
+							Cancel
+						</Button>
+						<Button
+							type="button"
+							disabled={addMut.isPending || toAdd.size === 0}
+							onClick={() => addMut.mutate([...toAdd])}
+						>
+							Add
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
+			<AlertDialog open={leaving} onOpenChange={setLeaving}>
+				<AlertDialogContent className="chat-scope">
+					<AlertDialogHeader>
+						<AlertDialogTitle>Leave this group?</AlertDialogTitle>
+						<AlertDialogDescription>
+							You'll stop receiving its messages and won't be able to rejoin
+							unless someone adds you back.
+						</AlertDialogDescription>
+					</AlertDialogHeader>
+					<AlertDialogFooter>
+						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogAction
+							className="bg-destructive text-white hover:bg-destructive/90"
+							onClick={(e) => {
+								e.preventDefault();
+								leaveMut.mutate();
+							}}
+							disabled={leaveMut.isPending}
+						>
+							Leave
+						</AlertDialogAction>
+					</AlertDialogFooter>
+				</AlertDialogContent>
+			</AlertDialog>
 		</div>
 	);
 }
