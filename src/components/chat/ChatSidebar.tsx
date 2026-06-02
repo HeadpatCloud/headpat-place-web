@@ -3,6 +3,7 @@ import { Link, useLocation } from "@tanstack/react-router";
 import {
 	ChevronDownIcon,
 	ChevronLeftIcon,
+	HashIcon,
 	PencilIcon,
 	PlusIcon,
 	SettingsIcon,
@@ -122,7 +123,7 @@ function ChannelRow({
 	const row =
 		ch.type === "voice" ? (
 			<div className="group flex cursor-default items-center gap-2 rounded-md px-3 py-1.5 text-sm text-muted-foreground/55">
-				<Volume2Icon className="size-3.5" />
+				<Volume2Icon className="size-4 shrink-0" />
 				<span className="truncate">{ch.name}</span>
 				{controls}
 			</div>
@@ -136,7 +137,7 @@ function ChannelRow({
 				}}
 				aria-current={ch.id === activeChannelId ? "page" : undefined}
 			>
-				<span className="font-medium text-muted-foreground">#</span>
+				<HashIcon className="size-4 shrink-0" />
 				<span className="truncate">{ch.name}</span>
 				{controls}
 			</Link>
@@ -269,7 +270,7 @@ function ServerBlock({
 						variant="sm"
 						className="size-7 shrink-0 rounded-md object-cover bg-muted"
 						fallback={
-							<div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary/20 text-xs font-semibold text-primary">
+							<div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary/20 text-xs font-semibold leading-none text-primary">
 								{initials(name, "C")}
 							</div>
 						}
@@ -426,7 +427,7 @@ export function ChatSidebar() {
 									variant="sm"
 									className="size-6.5 rounded-full object-cover bg-muted"
 									fallback={
-										<div className="flex size-6.5 items-center justify-center rounded-full bg-muted text-xs font-semibold">
+										<div className="flex size-6.5 items-center justify-center rounded-full bg-muted text-xs font-semibold leading-none">
 											{initials(label, "?")}
 										</div>
 									}
@@ -467,7 +468,7 @@ export function ChatSidebar() {
 						variant="md"
 						className="size-8.5 rounded-full object-cover bg-muted"
 						fallback={
-							<div className="flex size-8.5 items-center justify-center rounded-full bg-primary/20 text-sm font-semibold text-primary">
+							<div className="flex size-8.5 items-center justify-center rounded-full bg-primary/20 text-sm font-semibold leading-none text-primary">
 								{initials(meName, "Y")}
 							</div>
 						}
