@@ -10,6 +10,7 @@ import {
 	SearchIcon,
 	SendHorizontalIcon,
 	SmileIcon,
+	SmilePlusIcon,
 	TrashIcon,
 	UserPlusIcon,
 	UsersIcon,
@@ -36,7 +37,17 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import {
+	EmojiPicker,
+	EmojiPickerContent,
+	EmojiPickerSearch,
+} from "@/components/ui/emoji-picker";
 import { Input } from "@/components/ui/input";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
 import { useSession } from "@/lib/auth-client";
 import { useDateFormat } from "@/lib/datetime";
 import { client, orpc } from "@/lib/orpc";
@@ -66,6 +77,7 @@ type Msg = {
 		name: string | null;
 		avatarFileId: string | null;
 	} | null;
+	reactions?: { emoji: string; count: number; mine: boolean }[];
 };
 
 function initials(name: string): string {
@@ -90,6 +102,8 @@ export function MessagePane({ source }: { source: Source }) {
 	const [editingId, setEditingId] = useState<string | null>(null);
 	const [editDraft, setEditDraft] = useState("");
 	const [deletingId, setDeletingId] = useState<string | null>(null);
+	const [reactingId, setReactingId] = useState<string | null>(null);
+	const [composerEmoji, setComposerEmoji] = useState(false);
 	const scrollRef = useRef<HTMLDivElement>(null);
 
 	const dmConversationId =
@@ -196,6 +210,13 @@ export function MessagePane({ source }: { source: Source }) {
 			await invalidateThread();
 			setDeletingId(null);
 		},
+		onError: (e: Error) => toast.error(e.message),
+	});
+
+	const reactMut = useMutation({
+		mutationFn: (vars: { id: string; emoji: string }) =>
+			client.message.react({ messageId: vars.id, emoji: vars.emoji }),
+		onSuccess: () => invalidateThread(),
 		onError: (e: Error) => toast.error(e.message),
 	});
 
@@ -396,6 +417,35 @@ export function MessagePane({ source }: { source: Source }) {
 									>
 										{editingId === m.id ? null : (
 											<div className="absolute right-2 top-0 flex items-center gap-0.5 rounded-md border border-border bg-card opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
+												<Popover
+													open={reactingId === m.id}
+													onOpenChange={(o) => setReactingId(o ? m.id : null)}
+												>
+													<PopoverTrigger asChild>
+														<button
+															type="button"
+															className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+															aria-label="Add reaction"
+														>
+															<SmilePlusIcon className="size-3.5" />
+														</button>
+													</PopoverTrigger>
+													<PopoverContent
+														className="chat-scope w-fit p-0"
+														align="end"
+													>
+														<EmojiPicker
+															className="h-[320px]"
+															onEmojiSelect={({ emoji }) => {
+																reactMut.mutate({ id: m.id, emoji });
+																setReactingId(null);
+															}}
+														>
+															<EmojiPickerSearch />
+															<EmojiPickerContent />
+														</EmojiPicker>
+													</PopoverContent>
+												</Popover>
 												{isMine ? (
 													<button
 														type="button"
@@ -499,6 +549,30 @@ export function MessagePane({ source }: { source: Source }) {
 													) : null}
 												</div>
 											)}
+											{editingId === m.id ? null : m.reactions &&
+												m.reactions.length > 0 ? (
+												<div className="mt-1 flex flex-wrap gap-1">
+													{m.reactions.map((r) => (
+														<button
+															key={r.emoji}
+															type="button"
+															onClick={() =>
+																reactMut.mutate({ id: m.id, emoji: r.emoji })
+															}
+															className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs transition-colors ${
+																r.mine
+																	? "border-primary/40 bg-primary/15 text-foreground"
+																	: "border-border bg-card text-muted-foreground hover:bg-muted"
+															}`}
+														>
+															<span className="text-sm leading-none">
+																{r.emoji}
+															</span>
+															<span className="tabular-nums">{r.count}</span>
+														</button>
+													))}
+												</div>
+											) : null}
 										</div>
 									</div>
 								);
@@ -610,13 +684,33 @@ export function MessagePane({ source }: { source: Source }) {
 						disabled={sendMut.isPending}
 					/>
 					<div className="flex shrink-0 items-center gap-1">
-						<button
-							type="button"
-							className="flex size-9.5 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-							aria-label="Emoji"
-						>
-							<SmileIcon className="size-4.5" />
-						</button>
+						<Popover open={composerEmoji} onOpenChange={setComposerEmoji}>
+							<PopoverTrigger asChild>
+								<button
+									type="button"
+									className="flex size-9.5 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+									aria-label="Emoji"
+								>
+									<SmileIcon className="size-4.5" />
+								</button>
+							</PopoverTrigger>
+							<PopoverContent
+								className="chat-scope w-fit p-0"
+								align="end"
+								side="top"
+							>
+								<EmojiPicker
+									className="h-[320px]"
+									onEmojiSelect={({ emoji }) => {
+										setDraft((d) => d + emoji);
+										setComposerEmoji(false);
+									}}
+								>
+									<EmojiPickerSearch />
+									<EmojiPickerContent />
+								</EmojiPicker>
+							</PopoverContent>
+						</Popover>
 						<button
 							type="submit"
 							disabled={sendMut.isPending || !draft.trim()}
