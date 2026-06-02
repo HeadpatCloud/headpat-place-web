@@ -23,6 +23,7 @@ type WsIn = {
 	customStatus?: string | null;
 	customStatusEmoji?: string | null;
 	conversationId?: string;
+	channelId?: string;
 	message?: { senderId?: string };
 };
 
@@ -30,12 +31,14 @@ type Ctx = {
 	presenceOf: (userId: string) => Entry | undefined;
 	typingIn: (conversationId: string) => string[];
 	sendTyping: (conversationId: string) => void;
+	sendChannelTyping: (channelId: string) => void;
 };
 
 const PresenceContext = createContext<Ctx>({
 	presenceOf: () => undefined,
 	typingIn: () => [],
 	sendTyping: () => {},
+	sendChannelTyping: () => {},
 });
 
 export function usePresence() {
@@ -104,14 +107,20 @@ export function PresenceProvider({ children }: { children: React.ReactNode }) {
 							customStatusEmoji: msg.customStatusEmoji ?? null,
 						},
 					}));
-				} else if (msg.type === "message" && msg.conversationId) {
+				} else if (
+					msg.type === "message" &&
+					(msg.conversationId || msg.channelId)
+				) {
 					queryClient.invalidateQueries({ queryKey: orpc.message.list.key() });
 					queryClient.invalidateQueries({
 						queryKey: orpc.message.myConversations.key(),
 					});
+					queryClient.invalidateQueries({
+						queryKey: orpc.channel.messages.key(),
+					});
 					const sender = msg.message?.senderId;
-					const conv = msg.conversationId;
-					if (sender) {
+					const conv = msg.conversationId ?? msg.channelId;
+					if (sender && conv) {
 						setTyping((prev) => {
 							const users = prev[conv];
 							if (!users || !(sender in users)) return prev;
@@ -119,8 +128,12 @@ export function PresenceProvider({ children }: { children: React.ReactNode }) {
 							return { ...prev, [conv]: rest };
 						});
 					}
-				} else if (msg.type === "typing" && msg.conversationId && msg.userId) {
-					const conv = msg.conversationId;
+				} else if (
+					msg.type === "typing" &&
+					(msg.conversationId || msg.channelId) &&
+					msg.userId
+				) {
+					const conv = (msg.conversationId ?? msg.channelId) as string;
 					const who = msg.userId;
 					setTyping((prev) => ({
 						...prev,
@@ -185,9 +198,24 @@ export function PresenceProvider({ children }: { children: React.ReactNode }) {
 		ws.send(JSON.stringify({ type: "typing", conversationId }));
 	}
 
+	function sendChannelTyping(channelId: string) {
+		const ws = wsRef.current;
+		if (!ws || ws.readyState !== WebSocket.OPEN) return;
+		const now = Date.now();
+		if ((lastTypingSent.current[channelId] ?? 0) + TYPING_THROTTLE_MS > now)
+			return;
+		lastTypingSent.current[channelId] = now;
+		ws.send(JSON.stringify({ type: "typing", channelId }));
+	}
+
 	return (
 		<PresenceContext.Provider
-			value={{ presenceOf: (id) => map[id], typingIn, sendTyping }}
+			value={{
+				presenceOf: (id) => map[id],
+				typingIn,
+				sendTyping,
+				sendChannelTyping,
+			}}
 		>
 			{children}
 		</PresenceContext.Provider>
