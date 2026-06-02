@@ -32,6 +32,13 @@ type Msg = {
 	senderId: string;
 	body: string;
 	createdAt: string | Date;
+	author?: {
+		userId: string;
+		profileUrl: string | null;
+		displayName: string | null;
+		name: string | null;
+		avatarFileId: string | null;
+	} | null;
 };
 
 function initials(name: string): string {
@@ -144,7 +151,7 @@ export function MessagePane({ source }: { source: Source }) {
 	const list = (messages.data ?? []) as Msg[];
 
 	return (
-		<div className="flex h-svh flex-col bg-background text-foreground">
+		<div className="flex h-full flex-col bg-background text-foreground">
 			<header className="flex h-15 shrink-0 items-center gap-3 border-b border-border px-5">
 				{source.kind === "channel" ? (
 					<HashIcon className="size-5 text-muted-foreground" />
@@ -201,7 +208,17 @@ export function MessagePane({ source }: { source: Source }) {
 							{list.map((m, i) => {
 								const prev = list[i - 1];
 								const grouped = prev?.senderId === m.senderId;
-								const author = byUser.get(m.senderId);
+								const isMe = m.senderId === meId;
+								const displayName = isMe
+									? (session?.user?.name ?? "You")
+									: m.author
+										? m.author.displayName ||
+											m.author.name ||
+											nameOf(m.senderId)
+										: nameOf(m.senderId);
+								const avatarFileId =
+									m.author?.avatarFileId ??
+									byUser.get(m.senderId)?.avatarFileId;
 								return (
 									<div
 										key={m.id}
@@ -213,12 +230,12 @@ export function MessagePane({ source }: { source: Source }) {
 											{grouped ? null : (
 												<StorageImage
 													kind="avatar"
-													fileId={author?.avatarFileId}
+													fileId={avatarFileId}
 													variant="md"
 													className="size-10.5 rounded-full object-cover bg-muted"
 													fallback={
 														<div className="flex size-10.5 items-center justify-center rounded-full bg-primary/20 text-sm font-semibold text-primary">
-															{initials(nameOf(m.senderId))}
+															{initials(displayName)}
 														</div>
 													}
 												/>
@@ -228,7 +245,7 @@ export function MessagePane({ source }: { source: Source }) {
 											{grouped ? null : (
 												<div className="mb-1 flex items-baseline gap-2.5">
 													<span className="text-sm font-semibold text-foreground">
-														{nameOf(m.senderId)}
+														{displayName}
 													</span>
 													<span className="text-xs text-muted-foreground">
 														{fmt.time(m.createdAt, {

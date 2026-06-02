@@ -379,16 +379,20 @@ export function ChatSidebar() {
 		[following.data],
 	);
 	const [activeServer, setActiveServer] = useState<string | null>(null);
+	const activeChannel = useQuery({
+		...orpc.channel.byId.queryOptions({
+			input: { channelId: activeChannelId ?? "" },
+		}),
+		enabled: !!activeChannelId,
+	});
 	const activeServerId =
-		activeChannelId && communityIds.length
-			? (activeServer ?? communityIds[0])
-			: (activeServer ?? communityIds[0] ?? null);
+		activeServer ?? activeChannel.data?.communityId ?? communityIds[0] ?? null;
 
 	const meId = current?.$id;
 	const meName = userData?.displayName || current?.name || "you";
 
 	return (
-		<aside className="flex h-svh w-[270px] shrink-0 flex-col border-r border-border bg-background">
+		<aside className="flex h-full w-[270px] shrink-0 flex-col border-r border-border bg-background">
 			<Link
 				to="/"
 				className="flex h-13 shrink-0 items-center gap-2 border-b border-border bg-card px-4 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
