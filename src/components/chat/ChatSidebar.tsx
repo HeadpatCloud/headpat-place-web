@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { client, orpc } from "@/lib/orpc";
+import { cn } from "@/lib/utils";
 import { NewConversationDialog } from "./NewConversationDialog";
 
 function initials(name: string | null | undefined, fallback: string): string {
@@ -355,7 +356,7 @@ function ServerBlock({
 	);
 }
 
-export function ChatSidebar() {
+export function ChatSidebar({ className }: { className?: string }) {
 	const location = useLocation();
 	const { userData, current } = useUser();
 	const { presenceOf } = usePresence();
@@ -397,7 +398,12 @@ export function ChatSidebar() {
 	const meName = userData?.displayName || current?.name || "you";
 
 	return (
-		<aside className="flex h-full w-[270px] shrink-0 flex-col border-r border-border bg-background">
+		<aside
+			className={cn(
+				"flex h-full w-full shrink-0 flex-col border-r border-border bg-background md:w-[270px]",
+				className,
+			)}
+		>
 			<Link
 				to="/"
 				className="flex h-13 shrink-0 items-center gap-2 border-b border-border bg-card px-4 text-sm font-semibold text-foreground transition-colors hover:bg-muted"

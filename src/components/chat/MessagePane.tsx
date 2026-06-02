@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import {
 	CheckIcon,
+	ChevronLeftIcon,
 	HashIcon,
 	LogOutIcon,
 	PencilIcon,
@@ -255,7 +256,15 @@ export function MessagePane({ source }: { source: Source }) {
 
 	return (
 		<div className="flex h-full flex-col bg-background text-foreground">
-			<header className="flex h-15 shrink-0 items-center gap-3 border-b border-border px-5">
+			<header className="flex h-15 shrink-0 items-center gap-3 border-b border-border px-4 md:px-5">
+				<button
+					type="button"
+					onClick={() => navigate({ to: "/chat" })}
+					aria-label="Back"
+					className="-ml-1.5 flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:hidden"
+				>
+					<ChevronLeftIcon className="size-5" />
+				</button>
 				{source.kind === "channel" ? (
 					<HashIcon className="size-5 text-muted-foreground" />
 				) : others.length > 1 ? (
@@ -283,14 +292,14 @@ export function MessagePane({ source }: { source: Source }) {
 					>
 						<UsersIcon className="size-4" />
 					</button>
-					<div className="flex w-48 cursor-text items-center gap-2 rounded-md border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground">
+					<div className="hidden w-48 cursor-text items-center gap-2 rounded-md border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground md:flex">
 						<SearchIcon className="size-3.5 opacity-80" />
 						<span>Search</span>
 					</div>
 				</div>
 			</header>
 
-			<div className="flex min-h-0 flex-1">
+			<div className="relative flex min-h-0 flex-1">
 				<div
 					ref={scrollRef}
 					className="flex flex-1 flex-col overflow-y-auto px-5 pb-4 pt-2"
@@ -372,7 +381,7 @@ export function MessagePane({ source }: { source: Source }) {
 				</div>
 
 				{showMembers ? (
-					<aside className="w-56 shrink-0 overflow-y-auto border-l border-border px-3 py-4">
+					<aside className="absolute inset-0 z-20 w-full overflow-y-auto border-l border-border bg-background px-3 py-4 md:static md:inset-auto md:w-56 md:shrink-0">
 						{isGroup ? (
 							<div className="mb-3 flex flex-col gap-1.5 border-b border-border px-2 pb-3">
 								<button
