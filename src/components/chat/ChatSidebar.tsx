@@ -9,6 +9,7 @@ import {
 	PlusIcon,
 	SettingsIcon,
 	TrashIcon,
+	UsersIcon,
 	Volume2Icon,
 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -405,11 +406,14 @@ export function ChatSidebar() {
 
 			<div className="flex-1 overflow-y-auto px-3 pb-2 pt-3.5">
 				<div className="px-2.5 pb-2 pt-0.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-					Direct Messages
+					Messages
 				</div>
 				{conversations.data?.items.map((c) => {
+					const isGroup = c.others.length > 1;
 					const other = c.others[0];
-					const label = other?.displayName || other?.name || "Conversation";
+					const label = isGroup
+						? c.others.map((o) => o.displayName || o.name || "?").join(", ")
+						: other?.displayName || other?.name || "Conversation";
 					const isActive = c.id === activeConversationId;
 					return (
 						<Link
@@ -422,23 +426,31 @@ export function ChatSidebar() {
 							}`}
 						>
 							<span className="relative shrink-0">
-								<StorageImage
-									kind="avatar"
-									fileId={other?.avatarFileId}
-									variant="sm"
-									className="size-6.5 rounded-full object-cover bg-muted"
-									fallback={
-										<div className="flex size-6.5 items-center justify-center rounded-full bg-muted text-xs font-semibold leading-none">
-											{initials(label, "?")}
-										</div>
-									}
-								/>
-								{other ? (
-									<StatusDot
-										userId={other.userId}
-										className="absolute -bottom-0.5 -right-0.5 border-background"
-									/>
-								) : null}
+								{isGroup ? (
+									<div className="flex size-6.5 items-center justify-center rounded-full bg-muted text-muted-foreground">
+										<UsersIcon className="size-3.5" />
+									</div>
+								) : (
+									<>
+										<StorageImage
+											kind="avatar"
+											fileId={other?.avatarFileId}
+											variant="sm"
+											className="size-6.5 rounded-full object-cover bg-muted"
+											fallback={
+												<div className="flex size-6.5 items-center justify-center rounded-full bg-muted text-xs font-semibold leading-none">
+													{initials(label, "?")}
+												</div>
+											}
+										/>
+										{other ? (
+											<StatusDot
+												userId={other.userId}
+												className="absolute -bottom-0.5 -right-0.5 border-background"
+											/>
+										) : null}
+									</>
+								)}
 							</span>
 							<span className="flex-1 truncate text-sm font-semibold text-foreground">
 								{label}

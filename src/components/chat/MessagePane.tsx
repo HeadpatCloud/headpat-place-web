@@ -155,6 +155,8 @@ export function MessagePane({ source }: { source: Source }) {
 			<header className="flex h-15 shrink-0 items-center gap-3 border-b border-border px-5">
 				{source.kind === "channel" ? (
 					<HashIcon className="size-5 text-muted-foreground" />
+				) : others.length > 1 ? (
+					<UsersIcon className="size-5 text-muted-foreground" />
 				) : null}
 				<span className="text-base font-semibold text-foreground">{title}</span>
 				{topic ? (
