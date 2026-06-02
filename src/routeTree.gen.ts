@@ -9,9 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ChatRouteImport } from './routes/chat'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AuthRouteImport } from './routes/_auth'
 import { Route as AppRouteImport } from './routes/_app'
+import { Route as ChatIndexRouteImport } from './routes/chat/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
@@ -63,6 +65,11 @@ import { Route as AppCommunityCommunityIdFollowersRouteImport } from './routes/_
 import { Route as AppCommunityCommunityIdAdminRouteImport } from './routes/_app/community/$communityId/admin'
 import { Route as AppCommunityCommunityIdEventsIndexRouteImport } from './routes/_app/community/$communityId/events/index'
 
+const ChatRoute = ChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -75,6 +82,11 @@ const AuthRoute = AuthRouteImport.update({
 const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ChatIndexRoute = ChatIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ChatRoute,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
@@ -340,6 +352,7 @@ const AppCommunityCommunityIdEventsIndexRoute =
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/chat': typeof ChatRouteWithChildren
   '/changelog': typeof AppChangelogRoute
   '/map': typeof AppMapRoute
   '/notifications': typeof AppNotificationsRoute
@@ -352,6 +365,7 @@ export interface FileRoutesByFullPath {
   '/logout': typeof AuthLogoutRoute
   '/register': typeof AuthRegisterRoute
   '/admin/': typeof AdminIndexRoute
+  '/chat/': typeof ChatIndexRoute
   '/announcements/$announcementId': typeof AppAnnouncementsAnnouncementIdRoute
   '/community/new': typeof AppCommunityNewRoute
   '/events/$eventId': typeof AppEventsEventIdRoute
@@ -404,6 +418,7 @@ export interface FileRoutesByTo {
   '/logout': typeof AuthLogoutRoute
   '/register': typeof AuthRegisterRoute
   '/admin': typeof AdminIndexRoute
+  '/chat': typeof ChatIndexRoute
   '/announcements/$announcementId': typeof AppAnnouncementsAnnouncementIdRoute
   '/community/new': typeof AppCommunityNewRoute
   '/events/$eventId': typeof AppEventsEventIdRoute
@@ -447,6 +462,7 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/_auth': typeof AuthRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
+  '/chat': typeof ChatRouteWithChildren
   '/_app/changelog': typeof AppChangelogRoute
   '/_app/map': typeof AppMapRoute
   '/_app/notifications': typeof AppNotificationsRoute
@@ -460,6 +476,7 @@ export interface FileRoutesById {
   '/_auth/register': typeof AuthRegisterRoute
   '/_app/': typeof AppIndexRoute
   '/admin/': typeof AdminIndexRoute
+  '/chat/': typeof ChatIndexRoute
   '/_app/announcements/$announcementId': typeof AppAnnouncementsAnnouncementIdRoute
   '/_app/community/new': typeof AppCommunityNewRoute
   '/_app/events/$eventId': typeof AppEventsEventIdRoute
@@ -503,6 +520,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/chat'
     | '/changelog'
     | '/map'
     | '/notifications'
@@ -515,6 +533,7 @@ export interface FileRouteTypes {
     | '/logout'
     | '/register'
     | '/admin/'
+    | '/chat/'
     | '/announcements/$announcementId'
     | '/community/new'
     | '/events/$eventId'
@@ -567,6 +586,7 @@ export interface FileRouteTypes {
     | '/logout'
     | '/register'
     | '/admin'
+    | '/chat'
     | '/announcements/$announcementId'
     | '/community/new'
     | '/events/$eventId'
@@ -609,6 +629,7 @@ export interface FileRouteTypes {
     | '/_app'
     | '/_auth'
     | '/admin'
+    | '/chat'
     | '/_app/changelog'
     | '/_app/map'
     | '/_app/notifications'
@@ -622,6 +643,7 @@ export interface FileRouteTypes {
     | '/_auth/register'
     | '/_app/'
     | '/admin/'
+    | '/chat/'
     | '/_app/announcements/$announcementId'
     | '/_app/community/new'
     | '/_app/events/$eventId'
@@ -665,10 +687,18 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
   AdminRoute: typeof AdminRouteWithChildren
+  ChatRoute: typeof ChatRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/chat': {
+      id: '/chat'
+      path: '/chat'
+      fullPath: '/chat'
+      preLoaderRoute: typeof ChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -689,6 +719,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/chat/': {
+      id: '/chat/'
+      path: '/'
+      fullPath: '/chat/'
+      preLoaderRoute: typeof ChatIndexRouteImport
+      parentRoute: typeof ChatRoute
     }
     '/admin/': {
       id: '/admin/'
@@ -1178,10 +1215,21 @@ const AdminRouteChildren: AdminRouteChildren = {
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
+interface ChatRouteChildren {
+  ChatIndexRoute: typeof ChatIndexRoute
+}
+
+const ChatRouteChildren: ChatRouteChildren = {
+  ChatIndexRoute: ChatIndexRoute,
+}
+
+const ChatRouteWithChildren = ChatRoute._addFileChildren(ChatRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
   AdminRoute: AdminRouteWithChildren,
+  ChatRoute: ChatRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -11,6 +11,7 @@ import {
 	LayoutPanelLeftIcon,
 	MapIcon,
 	MegaphoneIcon,
+	MessagesSquareIcon,
 	PencilIcon,
 	RocketIcon,
 	ShieldIcon,
@@ -54,6 +55,11 @@ export function AppSidebar({
 				name: pageNames("gallery"),
 				url: "/gallery",
 				icon: LayoutPanelLeftIcon,
+			},
+			{
+				name: "Chat",
+				url: "/chat",
+				icon: MessagesSquareIcon,
 			},
 			{
 				name: pageNames("announcements"),
