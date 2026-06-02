@@ -4,6 +4,7 @@ import {
 	ChevronDownIcon,
 	ChevronLeftIcon,
 	HashIcon,
+	HeartHandshakeIcon,
 	PencilIcon,
 	PlusIcon,
 	SettingsIcon,
@@ -270,8 +271,8 @@ function ServerBlock({
 						variant="sm"
 						className="size-7 shrink-0 rounded-md object-cover bg-muted"
 						fallback={
-							<div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-primary/20 text-xs font-semibold leading-none text-primary">
-								{initials(name, "C")}
+							<div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
+								<HeartHandshakeIcon className="size-4" />
 							</div>
 						}
 					/>
