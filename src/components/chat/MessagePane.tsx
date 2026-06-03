@@ -461,10 +461,7 @@ export function MessagePane({ source }: { source: Source }) {
 															<SmilePlusIcon className="size-3.5" />
 														</button>
 													</PopoverTrigger>
-													<PopoverContent
-														className="chat-scope w-fit p-0"
-														align="end"
-													>
+													<PopoverContent className="w-fit p-0" align="end">
 														<EmojiPicker
 															className="h-[320px]"
 															onEmojiSelect={({ emoji }) => {
@@ -725,11 +722,7 @@ export function MessagePane({ source }: { source: Source }) {
 									<SmileIcon className="size-4.5" />
 								</button>
 							</PopoverTrigger>
-							<PopoverContent
-								className="chat-scope w-fit p-0"
-								align="end"
-								side="top"
-							>
+							<PopoverContent className="w-fit p-0" align="end" side="top">
 								<EmojiPicker
 									className="h-[320px]"
 									onEmojiSelect={({ emoji }) => {
@@ -755,7 +748,7 @@ export function MessagePane({ source }: { source: Source }) {
 			</div>
 
 			<Dialog open={renaming} onOpenChange={setRenaming}>
-				<DialogContent className="chat-scope max-w-sm">
+				<DialogContent className="max-w-sm">
 					<DialogHeader>
 						<DialogTitle>Rename group</DialogTitle>
 					</DialogHeader>
@@ -793,7 +786,7 @@ export function MessagePane({ source }: { source: Source }) {
 			</Dialog>
 
 			<Dialog open={adding} onOpenChange={setAdding}>
-				<DialogContent className="chat-scope max-w-md">
+				<DialogContent className="max-w-md">
 					<DialogHeader>
 						<DialogTitle>Add people</DialogTitle>
 					</DialogHeader>
@@ -868,7 +861,7 @@ export function MessagePane({ source }: { source: Source }) {
 			</Dialog>
 
 			<AlertDialog open={leaving} onOpenChange={setLeaving}>
-				<AlertDialogContent className="chat-scope">
+				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>Leave this group?</AlertDialogTitle>
 						<AlertDialogDescription>
@@ -898,7 +891,7 @@ export function MessagePane({ source }: { source: Source }) {
 					if (!o) setDeletingId(null);
 				}}
 			>
-				<AlertDialogContent className="chat-scope">
+				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>Delete message?</AlertDialogTitle>
 						<AlertDialogDescription>

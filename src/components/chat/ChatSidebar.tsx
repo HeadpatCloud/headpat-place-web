@@ -152,7 +152,7 @@ function ChannelRow({
 			{row}
 
 			<Dialog open={renaming} onOpenChange={setRenaming}>
-				<DialogContent className="chat-scope max-w-sm">
+				<DialogContent className="max-w-sm">
 					<DialogHeader>
 						<DialogTitle>Rename channel</DialogTitle>
 					</DialogHeader>
@@ -187,7 +187,7 @@ function ChannelRow({
 			</Dialog>
 
 			<AlertDialog open={deleting} onOpenChange={setDeleting}>
-				<AlertDialogContent className="chat-scope">
+				<AlertDialogContent>
 					<AlertDialogHeader>
 						<AlertDialogTitle>Delete #{ch.name}?</AlertDialogTitle>
 						<AlertDialogDescription>
@@ -316,7 +316,7 @@ function ServerBlock({
 			) : null}
 
 			<Dialog open={creating} onOpenChange={setCreating}>
-				<DialogContent className="chat-scope max-w-sm">
+				<DialogContent className="max-w-sm">
 					<DialogHeader>
 						<DialogTitle>Create channel</DialogTitle>
 					</DialogHeader>
