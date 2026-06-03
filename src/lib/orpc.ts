@@ -3,6 +3,7 @@ import { createORPCClient } from "@orpc/client"
 import { RPCLink } from "@orpc/client/fetch"
 import type { RouterClient } from "@orpc/server"
 import { createTanstackQueryUtils } from "@orpc/tanstack-query"
+import { isNetworkFailure, randomNetworkFailureMessage } from "./funny-errors"
 
 function resolveBackendUrl(): string {
   if (typeof window !== "undefined") {
@@ -15,11 +16,18 @@ export const BACKEND_URL = resolveBackendUrl()
 
 const link = new RPCLink({
   url: `${BACKEND_URL}/api/rpc`,
-  fetch: (input, init) =>
-    fetch(input, {
-      ...init,
-      credentials: "include",
-    }),
+  fetch: async (input, init) => {
+    try {
+      return await fetch(input, {
+        ...init,
+        credentials: "include",
+      })
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e)
+      if (isNetworkFailure(message)) throw new Error(randomNetworkFailureMessage())
+      throw e
+    }
+  },
 })
 
 export const client = createORPCClient(link) as RouterClient<AppRouter>

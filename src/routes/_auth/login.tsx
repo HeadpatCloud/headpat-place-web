@@ -16,6 +16,7 @@ import InputField from "@/components/fields/InputField"
 import { Button } from "@/components/ui/button"
 import { Form, FormField } from "@/components/ui/form"
 import { authClient, signIn, signUp, useSession } from "@/lib/auth-client"
+import { humanizeError } from "@/lib/funny-errors"
 
 export const Route = createFileRoute("/_auth/login")({
   component: LoginPage,
@@ -120,13 +121,13 @@ function LoginPage() {
           navigate({ to: "/login/mfa" as never })
           return
         }
-        fail(r.error.message ?? "Wrong email or password.")
+        fail(humanizeError(r.error.message ?? "Wrong email or password."))
         return
       }
       toast.success("Logged in successfully.")
       navigate({ to: "/account" as never })
     } catch (e) {
-      fail(e instanceof Error ? e.message : "Something went wrong. Please try again.")
+      fail(humanizeError(e instanceof Error ? e.message : null))
     }
   }
 
@@ -139,13 +140,13 @@ function LoginPage() {
         name: data.username,
       })
       if (r.error) {
-        fail(r.error.message ?? "Could not create your account.")
+        fail(humanizeError(r.error.message ?? "Could not create your account."))
         return
       }
       toast.success("Logged in successfully.")
       navigate({ to: "/account" as never })
     } catch (e) {
-      fail(e instanceof Error ? e.message : "Something went wrong. Please try again.")
+      fail(humanizeError(e instanceof Error ? e.message : null))
     }
   }
 
