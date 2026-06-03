@@ -7,7 +7,7 @@ import {
 } from "@icons-pack/react-simple-icons"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { z } from "zod"
@@ -69,6 +69,9 @@ function LoginPage() {
   const navigate = useNavigate()
   const { data: session } = useSession()
   const [isRegistering, setIsRegistering] = useState(false)
+  const [authError, setAuthError] = useState<string | null>(null)
+  const [shakeKey, setShakeKey] = useState(0)
+  const cardRef = useRef<HTMLDivElement>(null)
 
   const loginForm = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -83,40 +86,72 @@ function LoginPage() {
     if (session?.user) navigate({ to: "/account" as never })
   }, [session, navigate])
 
+  // Wiggle the card on a failed attempt — visible, immediate feedback.
+  useEffect(() => {
+    if (shakeKey === 0) return
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return
+    cardRef.current?.animate(
+      [
+        { transform: "translateX(0)" },
+        { transform: "translateX(-9px)" },
+        { transform: "translateX(8px)" },
+        { transform: "translateX(-5px)" },
+        { transform: "translateX(3px)" },
+        { transform: "translateX(0)" },
+      ],
+      { duration: 420, easing: "ease-in-out" },
+    )
+  }, [shakeKey])
+
+  function fail(message: string) {
+    setAuthError(message)
+    setShakeKey((k) => k + 1)
+  }
+
   async function submitLogin(data: LoginFormData) {
-    const r = await signIn.email({ email: data.email, password: data.password })
-    if (r.error) {
-      if (
-        r.error.code === "TWO_FACTOR_REQUIRED" ||
-        r.error.message?.toLowerCase().includes("factor")
-      ) {
-        navigate({ to: "/login/mfa" as never })
+    setAuthError(null)
+    try {
+      const r = await signIn.email({ email: data.email, password: data.password })
+      if (r.error) {
+        if (
+          r.error.code === "TWO_FACTOR_REQUIRED" ||
+          r.error.message?.toLowerCase().includes("factor")
+        ) {
+          navigate({ to: "/login/mfa" as never })
+          return
+        }
+        fail(r.error.message ?? "Wrong email or password.")
         return
       }
-      toast.error(r.error.message ?? "Login failed")
-      return
+      toast.success("Logged in successfully.")
+      navigate({ to: "/account" as never })
+    } catch (e) {
+      fail(e instanceof Error ? e.message : "Something went wrong. Please try again.")
     }
-    toast.success("Logged in successfully.")
-    navigate({ to: "/account" as never })
   }
 
   async function submitRegister(data: RegisterFormData) {
-    const r = await signUp.email({
-      email: data.email,
-      password: data.password,
-      name: data.username,
-    })
-    if (r.error) {
-      toast.error(r.error.message ?? "Sign up failed")
-      return
+    setAuthError(null)
+    try {
+      const r = await signUp.email({
+        email: data.email,
+        password: data.password,
+        name: data.username,
+      })
+      if (r.error) {
+        fail(r.error.message ?? "Could not create your account.")
+        return
+      }
+      toast.success("Logged in successfully.")
+      navigate({ to: "/account" as never })
+    } catch (e) {
+      fail(e instanceof Error ? e.message : "Something went wrong. Please try again.")
     }
-    toast.success("Logged in successfully.")
-    navigate({ to: "/account" as never })
   }
 
   return (
     <div className="flex items-center justify-center">
-      <div className="min-w-1/3 mx-auto rounded-2xl dark:ring-white">
+      <div ref={cardRef} className="min-w-1/3 mx-auto rounded-2xl dark:ring-white">
         <div className="text-center">
           <h4 className="mt-8 text-2xl font-bold leading-9 tracking-tight">
             Welcome to Headpat!
@@ -125,13 +160,27 @@ function LoginPage() {
             {isRegistering ? "Already registered?" : "Not yet registered?"}{" "}
             <button
               type="button"
-              onClick={() => setIsRegistering(!isRegistering)}
+              onClick={() => {
+                setIsRegistering(!isRegistering)
+                setAuthError(null)
+              }}
               className="text-link hover:text-link/80 font-semibold"
             >
               Click here!
             </button>
           </p>
         </div>
+
+        {authError ? (
+          <div
+            role="alert"
+            aria-live="assertive"
+            className="mx-6 mt-4 flex items-center gap-2 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm font-medium text-destructive"
+          >
+            <span aria-hidden="true">😿</span>
+            <span>{authError}</span>
+          </div>
+        ) : null}
 
         <div className="mt-4">
           {isRegistering ? (
