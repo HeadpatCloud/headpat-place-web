@@ -40,15 +40,19 @@ function applyActive(active: string, themes: UserTheme[]) {
 	if (active.startsWith("custom:")) {
 		const id = active.slice(7);
 		const t = themes.find((x) => x.id === id);
-		const css = t
-			? themeCss(`[data-theme="custom-${id}"]`, t.light, t.dark)
-			: "";
-		const el =
-			(existing as HTMLStyleElement) ?? document.createElement("style");
-		el.id = CUSTOM_STYLE_ID;
-		el.textContent = css;
-		if (!existing) document.head.appendChild(el);
-		localStorage.setItem(`${STORAGE_KEY}-css`, css);
+		// Theme not loaded yet (e.g. myThemes still fetching on reload) — leave the
+		// pre-painted anti-flash <style> and the mirror intact instead of wiping
+		// them, so the custom theme doesn't flicker to defaults before the query
+		// resolves. The effect re-runs once myThemes loads and injects the real CSS.
+		if (t) {
+			const css = themeCss(`[data-theme="custom-${id}"]`, t.light, t.dark);
+			const el =
+				(existing as HTMLStyleElement) ?? document.createElement("style");
+			el.id = CUSTOM_STYLE_ID;
+			el.textContent = css;
+			if (!existing) document.head.appendChild(el);
+			localStorage.setItem(`${STORAGE_KEY}-css`, css);
+		}
 	} else {
 		existing?.remove();
 		localStorage.removeItem(`${STORAGE_KEY}-css`);

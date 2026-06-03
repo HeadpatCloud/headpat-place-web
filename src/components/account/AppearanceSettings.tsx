@@ -109,14 +109,23 @@ export function AppearanceSettings() {
 									onClick={() => setActiveTheme(value)}
 									className="block w-full text-left"
 								>
-									<div
-										data-theme={`custom-${t.id}`}
-										className="flex h-12 w-full overflow-hidden rounded-md border border-border"
-									>
-										<div className="flex-1 bg-background" />
-										<div className="flex-1 bg-card" />
-										<div className="flex-1 bg-primary" />
-										<div className="flex-1 bg-accent" />
+									<div className="flex h-12 w-full overflow-hidden rounded-md border border-border">
+										<div
+											className="flex-1"
+											style={{ background: t.dark.background }}
+										/>
+										<div
+											className="flex-1"
+											style={{ background: t.dark.card }}
+										/>
+										<div
+											className="flex-1"
+											style={{ background: t.dark.primary }}
+										/>
+										<div
+											className="flex-1"
+											style={{ background: t.dark.accent }}
+										/>
 									</div>
 									<span className="mt-2 block truncate text-sm font-medium">
 										{t.name}
