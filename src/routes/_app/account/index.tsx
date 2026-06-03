@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { AvatarBannerUpload } from "@/components/AvatarBannerUpload";
+import { AppearanceSettings } from "@/components/account/AppearanceSettings";
 import InputField from "@/components/fields/InputField";
 import { TimezoneSelect } from "@/components/TimezoneSelect";
 import {
@@ -205,10 +206,11 @@ function AccountPage() {
 	return (
 		<Tabs defaultValue="general" className="w-full">
 			<div className="flex flex-col items-center justify-center">
-				<TabsList className="grid w-full grid-cols-3 sm:max-w-4xl">
+				<TabsList className="grid w-full grid-cols-4 sm:max-w-4xl">
 					<TabsTrigger value="general">General</TabsTrigger>
 					<TabsTrigger value="frontpage">Frontpage</TabsTrigger>
 					<TabsTrigger value="socials">Socials</TabsTrigger>
+					<TabsTrigger value="appearance">Appearance</TabsTrigger>
 				</TabsList>
 			</div>
 
@@ -666,6 +668,10 @@ function AccountPage() {
 						</div>
 					</form>
 				</Form>
+			</TabsContent>
+
+			<TabsContent value="appearance">
+				<AppearanceSettings />
 			</TabsContent>
 		</Tabs>
 	);
