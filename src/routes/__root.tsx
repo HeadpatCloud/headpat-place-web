@@ -9,6 +9,7 @@ import {
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { ThemeProvider } from "next-themes";
 import { PresenceProvider } from "@/components/contexts/PresenceProvider";
+import { ThemeController } from "@/components/contexts/ThemeController";
 import { Toaster } from "@/components/ui/sonner";
 import "../styles/globals.css";
 
@@ -42,6 +43,12 @@ function RootComponent() {
 		<html lang="en" suppressHydrationWarning>
 			<head>
 				<HeadContent />
+				<script
+					// biome-ignore lint/security/noDangerouslySetInnerHtml: pre-paint theme application
+					dangerouslySetInnerHTML={{
+						__html: `(function(){try{var a=localStorage.getItem('hp-active-theme')||'headpat';var s=a.indexOf('custom:')===0?'custom-'+a.slice(7):a;document.documentElement.dataset.theme=s;if(a.indexOf('custom:')===0){var css=localStorage.getItem('hp-active-theme-css');if(css){var el=document.createElement('style');el.id='hp-active-custom';el.textContent=css;document.head.appendChild(el);}}}catch(e){}})();`,
+					}}
+				/>
 			</head>
 			<body className="bg-background flex min-h-screen antialiased font-sans">
 				<QueryClientProvider client={queryClient}>
@@ -51,12 +58,14 @@ function RootComponent() {
 						enableSystem
 						disableTransitionOnChange
 					>
-						<PresenceProvider>
-							<div className="w-full">
-								<Outlet />
-							</div>
-						</PresenceProvider>
-						<Toaster />
+						<ThemeController>
+							<PresenceProvider>
+								<div className="w-full">
+									<Outlet />
+								</div>
+							</PresenceProvider>
+							<Toaster />
+						</ThemeController>
 					</ThemeProvider>
 					{import.meta.env.DEV ? (
 						<>
