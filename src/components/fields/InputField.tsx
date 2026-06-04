@@ -40,7 +40,7 @@ const InputField: React.FC<InputFieldProps> = ({
           {description && (
             <HoverCard openDelay={100} closeDelay={50}>
               <HoverCardTrigger>
-                <span className="ml-2 text-gray-500">
+                <span className="ml-2 text-muted-foreground">
                   <Info className="inline-block size-4" />
                 </span>
               </HoverCardTrigger>
