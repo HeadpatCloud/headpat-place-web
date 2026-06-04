@@ -97,13 +97,15 @@ function AccountPage() {
 			?.scrollIntoView({ behavior: "smooth", block: "start" });
 	}
 
-	async function deleteAccount() {
-		const r = await authClient.deleteUser();
-		if (r.error) {
-			toast.error(r.error.message ?? "Failed to delete account");
-			return;
+	async function deleteAccount(args: { password: string; totpCode?: string }) {
+		try {
+			await client.account.delete(args);
+		} catch (e) {
+			toast.error((e as Error).message ?? "Failed to delete account");
+			throw e;
 		}
 		toast.success("Account deleted.");
+		await authClient.signOut().catch(() => {});
 		navigate({ to: "/" });
 	}
 
@@ -231,7 +233,10 @@ function AccountPage() {
 					</Section>
 
 					<Section id="danger" title="Danger zone">
-						<DangerZone onDelete={deleteAccount} />
+						<DangerZone
+							twoFactorEnabled={!!session.user.twoFactorEnabled}
+							onDelete={deleteAccount}
+						/>
 					</Section>
 				</div>
 			</div>
