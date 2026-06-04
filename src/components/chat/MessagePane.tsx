@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { MessageAttachment } from "@/components/chat/MessageAttachment";
 import { usePresence } from "@/components/contexts/PresenceProvider";
 import { StorageImage } from "@/components/StorageImage";
 import {
@@ -85,6 +86,7 @@ type Msg = {
 		avatarFileId: string | null;
 	} | null;
 	reactions?: { emoji: string; count: number; mine: boolean }[];
+	attachments?: string[];
 };
 
 function initials(name: string): string {
@@ -626,6 +628,13 @@ export function MessagePane({ source }: { source: Source }) {
 													) : null}
 												</div>
 											)}
+											{m.attachments && m.attachments.length > 0 ? (
+												<div className="mt-1.5 flex flex-col gap-1.5">
+													{m.attachments.map((k) => (
+														<MessageAttachment key={k} attachmentKey={k} />
+													))}
+												</div>
+											) : null}
 											{editingId === m.id ? null : m.reactions &&
 												m.reactions.length > 0 ? (
 												<div className="mt-1 flex flex-wrap gap-1">
