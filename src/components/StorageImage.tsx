@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
+import { useEffect, useState } from "react"
 import { orpc } from "@/lib/orpc"
 
 export type StorageKind =
@@ -38,6 +39,20 @@ export function StorageImage({
   ...imgProps
 }: StorageImageProps) {
   const q = useStorageUrl(kind, fileId, variant)
-  if (!fileId || !q.data) return <>{fallback ?? null}</>
-  return <img src={q.data.url} alt={alt ?? ""} {...imgProps} />
+  const [errored, setErrored] = useState(false)
+  const url = q.data?.url
+  // Reset when the resolved URL changes (e.g. the fileId changed) so a new
+  // image is attempted instead of staying on the previous error.
+  useEffect(() => {
+    setErrored(false)
+  }, [url])
+  if (!fileId || !url || errored) return <>{fallback ?? null}</>
+  return (
+    <img
+      src={url}
+      alt={alt ?? ""}
+      {...imgProps}
+      onError={() => setErrored(true)}
+    />
+  )
 }
