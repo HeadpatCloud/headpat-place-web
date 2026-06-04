@@ -3,7 +3,9 @@ import { useNavigate } from "@tanstack/react-router";
 import {
 	CheckIcon,
 	ChevronLeftIcon,
+	FileIcon,
 	HashIcon,
+	Loader2Icon,
 	LogOutIcon,
 	PencilIcon,
 	PlusIcon,
@@ -50,6 +52,10 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { useSession } from "@/lib/auth-client";
+import {
+	type UploadedAttachment,
+	uploadAttachment,
+} from "@/lib/chat-attachments";
 import { useDateFormat } from "@/lib/datetime";
 import { client, orpc } from "@/lib/orpc";
 
@@ -105,7 +111,18 @@ export function MessagePane({ source }: { source: Source }) {
 	const [deletingId, setDeletingId] = useState<string | null>(null);
 	const [reactingId, setReactingId] = useState<string | null>(null);
 	const [composerEmoji, setComposerEmoji] = useState(false);
+	const [pending, setPending] = useState<
+		{
+			id: string;
+			name: string;
+			mimeType: string;
+			size: number;
+			key?: string;
+			status: "uploading" | "done" | "error";
+		}[]
+	>([]);
 	const scrollRef = useRef<HTMLDivElement>(null);
+	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	const dmConversationId =
 		source.kind === "dm" ? source.conversationId : "__none__";
@@ -154,30 +171,6 @@ export function MessagePane({ source }: { source: Source }) {
 	});
 	const messages = source.kind === "dm" ? dmMessages : channelMessages;
 
-	const sendMut = useMutation({
-		mutationFn: async (body: string) =>
-			source.kind === "dm"
-				? client.message.send({ conversationId: source.conversationId, body })
-				: client.channel.send({ channelId: source.channelId, body }),
-		onSuccess: async () => {
-			setDraft("");
-			if (source.kind === "dm") {
-				await qc.invalidateQueries({
-					queryKey: orpc.message.list.queryKey({
-						input: { conversationId: source.conversationId, limit: 200 },
-					}),
-				});
-			} else {
-				await qc.invalidateQueries({
-					queryKey: orpc.channel.messages.queryKey({
-						input: { channelId: source.channelId, limit: 200 },
-					}),
-				});
-			}
-		},
-		onError: (e: Error) => toast.error(e.message),
-	});
-
 	const invalidateThread = async () => {
 		if (source.kind === "dm") {
 			await qc.invalidateQueries({
@@ -193,6 +186,58 @@ export function MessagePane({ source }: { source: Source }) {
 			});
 		}
 	};
+
+	const sendMut = useMutation({
+		mutationFn: async (vars: { body: string; attachments: string[] }) =>
+			source.kind === "dm"
+				? client.message.send({
+						conversationId: source.conversationId,
+						body: vars.body || undefined,
+						attachments: vars.attachments.length ? vars.attachments : undefined,
+					})
+				: client.channel.send({
+						channelId: source.channelId,
+						body: vars.body || undefined,
+						attachments: vars.attachments.length ? vars.attachments : undefined,
+					}),
+		onSuccess: async () => {
+			setDraft("");
+			setPending([]);
+			await invalidateThread();
+		},
+		onError: (e: Error) => toast.error(e.message),
+	});
+
+	function onPickFiles(files: FileList | null) {
+		if (!files) return;
+		for (const file of Array.from(files)) {
+			const id = crypto.randomUUID();
+			setPending((p) => [
+				...p,
+				{
+					id,
+					name: file.name,
+					mimeType: file.type || "application/octet-stream",
+					size: file.size,
+					status: "uploading",
+				},
+			]);
+			uploadAttachment(sourceId, file)
+				.then((res: UploadedAttachment) =>
+					setPending((p) =>
+						p.map((x) =>
+							x.id === id
+								? { ...x, key: res.key, mimeType: res.mimeType, status: "done" }
+								: x,
+						),
+					),
+				)
+				.catch((e: Error) => {
+					toast.error(e.message);
+					setPending((p) => p.filter((x) => x.id !== id));
+				});
+		}
+	}
 
 	const editMut = useMutation({
 		mutationFn: (vars: { id: string; body: string }) =>
@@ -321,8 +366,12 @@ export function MessagePane({ source }: { source: Source }) {
 
 	function onSend() {
 		const body = draft.trim();
-		if (!body) return;
-		sendMut.mutate(body);
+		const ready = pending
+			.filter((p) => p.status === "done" && p.key)
+			.map((p) => p.key as string);
+		if (!body && ready.length === 0) return;
+		if (pending.some((p) => p.status === "uploading")) return;
+		sendMut.mutate({ body, attachments: ready });
 	}
 
 	const list = (messages.data ?? []) as Msg[];
@@ -686,6 +735,43 @@ export function MessagePane({ source }: { source: Source }) {
 								: `${typers.length} people are typing…`}
 					</div>
 				) : null}
+				{pending.length > 0 ? (
+					<div className="mb-2 flex flex-wrap gap-2">
+						{pending.map((p) => (
+							<div
+								key={p.id}
+								className="flex items-center gap-2 rounded-lg border border-border bg-card px-2.5 py-1.5 text-xs"
+							>
+								{p.status === "uploading" ? (
+									<Loader2Icon className="size-3.5 animate-spin text-muted-foreground" />
+								) : (
+									<FileIcon className="size-3.5 text-muted-foreground" />
+								)}
+								<span className="max-w-40 truncate">{p.name}</span>
+								<button
+									type="button"
+									onClick={() =>
+										setPending((arr) => arr.filter((x) => x.id !== p.id))
+									}
+									aria-label="Remove"
+									className="text-muted-foreground hover:text-foreground"
+								>
+									<XIcon className="size-3.5" />
+								</button>
+							</div>
+						))}
+					</div>
+				) : null}
+				<input
+					ref={fileInputRef}
+					type="file"
+					multiple
+					className="hidden"
+					onChange={(e) => {
+						onPickFiles(e.target.files);
+						e.target.value = "";
+					}}
+				/>
 				<form
 					className="flex items-center gap-3 rounded-2xl border border-border bg-card px-1.5 py-1.5 transition-colors focus-within:border-ring"
 					onSubmit={(e) => {
@@ -695,6 +781,7 @@ export function MessagePane({ source }: { source: Source }) {
 				>
 					<button
 						type="button"
+						onClick={() => fileInputRef.current?.click()}
 						className="flex size-9.5 shrink-0 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
 						aria-label="Attach"
 					>
@@ -737,7 +824,11 @@ export function MessagePane({ source }: { source: Source }) {
 						</Popover>
 						<button
 							type="submit"
-							disabled={sendMut.isPending || !draft.trim()}
+							disabled={
+								sendMut.isPending ||
+								(!draft.trim() &&
+									pending.filter((p) => p.status === "done").length === 0)
+							}
 							className="flex size-9.5 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-[filter,transform] hover:brightness-110 disabled:opacity-50"
 							aria-label="Send"
 						>
