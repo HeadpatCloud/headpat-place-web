@@ -58,7 +58,11 @@ export function NewTicketForm({ onCreated, onCancel }: Props) {
 					}
 				}
 				if (keys.length > 0) {
-					await client.ticket.reply({ ticketId: ticket.id, attachments: keys });
+					await client.ticket.setMessageAttachments({
+						ticketId: ticket.id,
+						messageId: ticket.firstMessageId,
+						attachments: keys,
+					});
 				}
 			}
 			return ticket;

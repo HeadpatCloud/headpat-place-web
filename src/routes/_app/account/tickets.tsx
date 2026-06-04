@@ -90,9 +90,9 @@ function TicketsPage() {
 								type="button"
 								onClick={() => setFilter(f)}
 								className={cn(
-									"flex-1 rounded-md px-2 py-1.5 text-sm capitalize transition-colors",
+									"flex-1 rounded-md px-2 py-1.5 text-sm font-medium capitalize transition-colors",
 									filter === f
-										? "bg-primary/15 text-primary"
+										? "bg-primary text-primary-foreground"
 										: "text-muted-foreground hover:text-foreground",
 								)}
 							>
