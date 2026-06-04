@@ -59,6 +59,7 @@ import { Route as AppGalleryGalleryIdRouteImport } from './routes/_app/gallery/$
 import { Route as AppEventsEventIdRouteImport } from './routes/_app/events/$eventId'
 import { Route as AppCommunityNewRouteImport } from './routes/_app/community/new'
 import { Route as AppAnnouncementsAnnouncementIdRouteImport } from './routes/_app/announcements/$announcementId'
+import { Route as AppAccountTicketsRouteImport } from './routes/_app/account/tickets'
 import { Route as AppUserProfileUrlIndexRouteImport } from './routes/_app/user/$profileUrl/index'
 import { Route as AppCommunityCommunityIdIndexRouteImport } from './routes/_app/community/$communityId/index'
 import { Route as AppUserProfileUrlFollowingRouteImport } from './routes/_app/user/$profileUrl/following'
@@ -319,6 +320,11 @@ const AppAnnouncementsAnnouncementIdRoute =
     path: '/announcements/$announcementId',
     getParentRoute: () => AppRoute,
   } as any)
+const AppAccountTicketsRoute = AppAccountTicketsRouteImport.update({
+  id: '/account/tickets',
+  path: '/account/tickets',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppUserProfileUrlIndexRoute = AppUserProfileUrlIndexRouteImport.update({
   id: '/user/$profileUrl/',
   path: '/user/$profileUrl/',
@@ -378,6 +384,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof AuthRegisterRoute
   '/admin/': typeof AdminIndexRoute
   '/chat/': typeof ChatIndexRoute
+  '/account/tickets': typeof AppAccountTicketsRoute
   '/announcements/$announcementId': typeof AppAnnouncementsAnnouncementIdRoute
   '/community/new': typeof AppCommunityNewRoute
   '/events/$eventId': typeof AppEventsEventIdRoute
@@ -433,6 +440,7 @@ export interface FileRoutesByTo {
   '/register': typeof AuthRegisterRoute
   '/admin': typeof AdminIndexRoute
   '/chat': typeof ChatIndexRoute
+  '/account/tickets': typeof AppAccountTicketsRoute
   '/announcements/$announcementId': typeof AppAnnouncementsAnnouncementIdRoute
   '/community/new': typeof AppCommunityNewRoute
   '/events/$eventId': typeof AppEventsEventIdRoute
@@ -493,6 +501,7 @@ export interface FileRoutesById {
   '/_app/': typeof AppIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/chat/': typeof ChatIndexRoute
+  '/_app/account/tickets': typeof AppAccountTicketsRoute
   '/_app/announcements/$announcementId': typeof AppAnnouncementsAnnouncementIdRoute
   '/_app/community/new': typeof AppCommunityNewRoute
   '/_app/events/$eventId': typeof AppEventsEventIdRoute
@@ -552,6 +561,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/admin/'
     | '/chat/'
+    | '/account/tickets'
     | '/announcements/$announcementId'
     | '/community/new'
     | '/events/$eventId'
@@ -607,6 +617,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/admin'
     | '/chat'
+    | '/account/tickets'
     | '/announcements/$announcementId'
     | '/community/new'
     | '/events/$eventId'
@@ -666,6 +677,7 @@ export interface FileRouteTypes {
     | '/_app/'
     | '/admin/'
     | '/chat/'
+    | '/_app/account/tickets'
     | '/_app/announcements/$announcementId'
     | '/_app/community/new'
     | '/_app/events/$eventId'
@@ -1066,6 +1078,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAnnouncementsAnnouncementIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/account/tickets': {
+      id: '/_app/account/tickets'
+      path: '/account/tickets'
+      fullPath: '/account/tickets'
+      preLoaderRoute: typeof AppAccountTicketsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/user/$profileUrl/': {
       id: '/_app/user/$profileUrl/'
       path: '/user/$profileUrl'
@@ -1127,6 +1146,7 @@ interface AppRouteChildren {
   AppSupportRoute: typeof AppSupportRoute
   AppUsersRoute: typeof AppUsersRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppAccountTicketsRoute: typeof AppAccountTicketsRoute
   AppAnnouncementsAnnouncementIdRoute: typeof AppAnnouncementsAnnouncementIdRoute
   AppCommunityNewRoute: typeof AppCommunityNewRoute
   AppEventsEventIdRoute: typeof AppEventsEventIdRoute
@@ -1161,6 +1181,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppSupportRoute: AppSupportRoute,
   AppUsersRoute: AppUsersRoute,
   AppIndexRoute: AppIndexRoute,
+  AppAccountTicketsRoute: AppAccountTicketsRoute,
   AppAnnouncementsAnnouncementIdRoute: AppAnnouncementsAnnouncementIdRoute,
   AppCommunityNewRoute: AppCommunityNewRoute,
   AppEventsEventIdRoute: AppEventsEventIdRoute,
