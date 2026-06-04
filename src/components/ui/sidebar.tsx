@@ -313,8 +313,10 @@ function SidebarInset({ className, ...props }: React.ComponentProps<"main">) {
         "md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm",
         // Add left margin when sidebar is open to prevent content overflow
         "md:ml-[var(--sidebar-width)] md:peer-data-[state=collapsed]:ml-[var(--sidebar-width-icon)]",
-        // Prevent horizontal overflow and constrain width only when sidebar is open
-        "overflow-x-hidden peer-data-[state=open]:max-w-[calc(100vw-var(--sidebar-width))] md:peer-data-[state=collapsed]:max-w-[calc(100vw-var(--sidebar-width-icon))]",
+        // Prevent horizontal overflow and constrain width only when sidebar is open.
+        // overflow-x-clip (not hidden) so it doesn't become a scroll container and
+        // break position: sticky for descendants.
+        "overflow-x-clip peer-data-[state=open]:max-w-[calc(100vw-var(--sidebar-width))] md:peer-data-[state=collapsed]:max-w-[calc(100vw-var(--sidebar-width-icon))]",
         className
       )}
       {...props}
