@@ -109,7 +109,7 @@ function AdminTicketThread() {
 		(reply.trim().length > 0 || files.length > 0) && !send.isPending;
 
 	return (
-		<div className="mx-auto max-w-3xl space-y-4">
+		<div className="mx-auto max-w-5xl space-y-4">
 			<Link
 				to={"/admin/tickets" as never}
 				className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
