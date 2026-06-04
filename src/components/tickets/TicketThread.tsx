@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,14 @@ export function TicketThread({ ticketId }: { ticketId: string }) {
 	const ticket = useQuery(
 		orpc.ticket.get.queryOptions({ input: { ticketId } }),
 	);
+	const scrollRef = useRef<HTMLDivElement>(null);
+
+	const messageCount = ticket.data?.messages.length;
+	// biome-ignore lint/correctness/useExhaustiveDependencies: scroll to bottom when the message count changes
+	useEffect(() => {
+		const el = scrollRef.current;
+		if (el) el.scrollTop = el.scrollHeight;
+	}, [messageCount]);
 
 	function refresh() {
 		qc.invalidateQueries({
@@ -32,13 +40,22 @@ export function TicketThread({ ticketId }: { ticketId: string }) {
 
 	const send = useMutation({
 		mutationFn: async () => {
-			const uploaded = [];
-			for (const f of files)
-				uploaded.push(await uploadTicketAttachment(ticketId, f));
+			const keys: string[] = [];
+			for (const f of files) {
+				try {
+					keys.push((await uploadTicketAttachment(ticketId, f)).key);
+				} catch {
+					toast.error(`Couldn't upload ${f.name}.`);
+				}
+			}
+			const trimmed = reply.trim();
+			if (!trimmed && keys.length === 0) {
+				throw new Error("Add a message or an attachment first.");
+			}
 			return client.ticket.reply({
 				ticketId,
-				body: reply.trim() || undefined,
-				attachments: uploaded.map((u) => u.key),
+				body: trimmed || undefined,
+				attachments: keys,
 			});
 		},
 		onSuccess: () => {
@@ -96,7 +113,7 @@ export function TicketThread({ ticketId }: { ticketId: string }) {
 				</Button>
 			</div>
 
-			<div className="flex-1 space-y-4 overflow-y-auto p-4">
+			<div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto p-4">
 				{t.messages.map((m) => (
 					<div
 						key={m.id}

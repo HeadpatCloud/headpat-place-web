@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
+import { TicketAttachment } from "@/components/tickets/TicketAttachment";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -91,7 +92,16 @@ function TicketThread() {
 								<div className="mb-1 text-xs opacity-70">
 									{m.isStaff ? "Staff" : "User"} · {fmt.dateTime(m.createdAt)}
 								</div>
-								<p className="whitespace-pre-wrap">{m.body}</p>
+								{m.body ? (
+									<p className="whitespace-pre-wrap">{m.body}</p>
+								) : null}
+								{(m.attachments ?? []).length > 0 ? (
+									<div className="mt-2 flex flex-wrap gap-2">
+										{(m.attachments ?? []).map((k) => (
+											<TicketAttachment key={k} attachmentKey={k} />
+										))}
+									</div>
+								) : null}
 							</div>
 						</div>
 					))}

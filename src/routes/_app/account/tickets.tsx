@@ -118,7 +118,7 @@ function TicketsPage() {
 
 				<section
 					className={cn(
-						"overflow-hidden rounded-xl border border-border bg-card lg:h-full",
+						"h-[calc(100dvh-9rem)] overflow-hidden rounded-xl border border-border bg-card lg:h-full",
 						!detailOpen && "hidden lg:block",
 					)}
 				>

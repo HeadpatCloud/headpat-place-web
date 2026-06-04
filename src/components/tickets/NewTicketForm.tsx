@@ -42,17 +42,26 @@ export function NewTicketForm({ onCreated, onCancel }: Props) {
 
 	const create = useMutation({
 		mutationFn: async () => {
-			const id = crypto.randomUUID();
-			const uploaded = [];
-			for (const f of files) uploaded.push(await uploadTicketAttachment(id, f));
-			return client.ticket.create({
-				id,
+			const ticket = await client.ticket.create({
 				subject: subject.trim(),
 				body: body.trim(),
 				category,
 				priority,
-				attachments: uploaded.map((u) => u.key),
 			});
+			if (files.length > 0) {
+				const keys: string[] = [];
+				for (const f of files) {
+					try {
+						keys.push((await uploadTicketAttachment(ticket.id, f)).key);
+					} catch {
+						toast.error(`Couldn't upload ${f.name}.`);
+					}
+				}
+				if (keys.length > 0) {
+					await client.ticket.reply({ ticketId: ticket.id, attachments: keys });
+				}
+			}
+			return ticket;
 		},
 		onSuccess: (t) => {
 			qc.invalidateQueries({
