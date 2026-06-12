@@ -11,7 +11,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN bun run build
 
-FROM node:22-alpine AS runtime
+FROM oven/bun:1-alpine AS runtime
 WORKDIR /app
 RUN addgroup -g 1001 -S app \
  && adduser -u 1001 -G app -S -H -s /sbin/nologin app
@@ -23,4 +23,4 @@ COPY --from=build --chown=app:app /app/start.mjs ./start.mjs
 COPY --from=build --chown=app:app /app/package.json ./package.json
 USER app
 EXPOSE 3000
-CMD ["node", "start.mjs"]
+CMD ["bun", "start.mjs"]
