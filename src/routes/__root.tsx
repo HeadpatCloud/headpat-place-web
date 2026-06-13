@@ -34,6 +34,14 @@ export const Route = createRootRoute({
 				content:
 					"Headpat.place — a social media platform for the next generation.",
 			},
+			{ name: "theme-color", content: "#0a0a0a" },
+			{ property: "og:site_name", content: "Headpat" },
+			{ name: "twitter:card", content: "summary" },
+		],
+		links: [
+			{ rel: "manifest", href: "/site.webmanifest" },
+			{ rel: "icon", href: "/logos/hp_logo_x256.webp", type: "image/webp" },
+			{ rel: "apple-touch-icon", href: "/logos/hp_logo_x256.webp" },
 		],
 	}),
 	component: RootComponent,

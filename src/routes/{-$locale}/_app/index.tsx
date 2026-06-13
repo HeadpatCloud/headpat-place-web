@@ -1,14 +1,56 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { FadeIn } from "@/components/FadeIn";
 import { StorageImage } from "@/components/StorageImage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useSession } from "@/lib/auth-client";
 import { useDateFormat } from "@/lib/datetime";
+import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
 import { orpc } from "@/lib/orpc";
+import { SITE_NAME, SITE_URL, seo } from "@/lib/seo";
 
-export const Route = createFileRoute("/{-$locale}/_app/")({ component: Landing });
+export const Route = createFileRoute("/{-$locale}/_app/")({
+	component: Landing,
+	head: ({ params }) => {
+		const locale = (params as { locale?: Locale }).locale ?? DEFAULT_LOCALE;
+		return {
+			...seo({
+				title: SITE_NAME,
+				description:
+					"Headpat — communities, a creative gallery, and events. Join the pack.",
+				path: "/",
+				locale,
+			}),
+			scripts: [
+				{
+					type: "application/ld+json",
+					children: JSON.stringify({
+						"@context": "https://schema.org",
+						"@graph": [
+							{
+								"@type": "Organization",
+								name: SITE_NAME,
+								url: SITE_URL,
+								logo: `${SITE_URL}/logos/hp_logo_x512.webp`,
+							},
+							{
+								"@type": "WebSite",
+								name: SITE_NAME,
+								url: SITE_URL,
+								potentialAction: {
+									"@type": "SearchAction",
+									target: `${SITE_URL}/users?q={search_term_string}`,
+									"query-input": "required name=search_term_string",
+								},
+							},
+						],
+					}),
+				},
+			],
+		};
+	},
+});
 
 function Landing() {
 	const { data: session } = useSession();

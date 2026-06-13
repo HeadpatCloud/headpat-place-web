@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="Headpat">
+	<defs>
+		<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0" stop-color="#1a0b22"/>
+			<stop offset="0.5" stop-color="#3b1230"/>
+			<stop offset="1" stop-color="#7a1f3d"/>
+		</linearGradient>
+	</defs>
+	<rect width="1200" height="630" fill="url(#bg)"/>
+	<circle cx="980" cy="120" r="320" fill="#ff5c8a" opacity="0.12"/>
+	<circle cx="180" cy="560" r="260" fill="#ffb15c" opacity="0.10"/>
+	<text x="100" y="320" font-family="Inter, system-ui, sans-serif" font-size="120" font-weight="800" fill="#ffffff">Headpat</text>
+	<text x="104" y="400" font-family="Inter, system-ui, sans-serif" font-size="40" font-weight="500" fill="#ffffff" opacity="0.82">Communities, gallery, and events.</text>
+	<text x="104" y="560" font-family="Inter, system-ui, sans-serif" font-size="32" font-weight="600" fill="#ffb15c">headpat.place</text>
+</svg>

@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+
+# Login-gated areas (and their locale-prefixed variants) aren't useful to index.
+Disallow: /account
+Disallow: /admin
+Disallow: /chat
+Disallow: /messages
+Disallow: /notifications
+Disallow: /*/account
+Disallow: /*/admin
+Disallow: /*/chat
+Disallow: /*/messages
+Disallow: /*/notifications
+
+Sitemap: https://headpat.place/sitemap.xml
