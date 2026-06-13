@@ -1,4 +1,5 @@
 import { Switch } from "@/components/ui/switch";
+import { useTranslations } from "@/lib/i18n";
 import { Panel, ToggleRow } from "./Section";
 import type {
 	AccountProfile,
@@ -27,31 +28,11 @@ const DEFAULTS: NotificationPrefs = {
 	events: { email: true, push: true },
 };
 
-const CATEGORIES: {
-	key: NotificationCategory;
-	title: string;
-	description: string;
-}[] = [
-	{
-		key: "follows",
-		title: "New followers",
-		description: "When someone follows you.",
-	},
-	{
-		key: "messages",
-		title: "Direct messages",
-		description: "When you get a new message.",
-	},
-	{
-		key: "replies",
-		title: "Replies & comments",
-		description: "Comments on your gallery and ticket replies.",
-	},
-	{
-		key: "events",
-		title: "Event reminders",
-		description: "Before an event you're attending starts.",
-	},
+const CATEGORY_KEYS: NotificationCategory[] = [
+	"follows",
+	"messages",
+	"replies",
+	"events",
 ];
 
 // Tolerate a legacy boolean or partial value, falling back to the default.
@@ -68,6 +49,7 @@ function channel(raw: unknown, fallback: ChannelPrefs): ChannelPrefs {
 }
 
 export function NotificationsSection({ profile, onUpdate }: Props) {
+	const t = useTranslations("accountPages");
 	const emailOn = profile.emailNotifications;
 	const stored = (profile.notificationPrefs ?? {}) as Record<string, unknown>;
 
@@ -75,8 +57,8 @@ export function NotificationsSection({ profile, onUpdate }: Props) {
 		<div className="space-y-4">
 			<Panel className="px-5">
 				<ToggleRow
-					title="Email notifications"
-					description="The master switch — turn this off to stop all emails."
+					title={t("emailNotifications")}
+					description={t("emailNotificationsDescription")}
 					checked={emailOn}
 					onChange={(v) => onUpdate({ emailNotifications: v })}
 				/>
@@ -86,40 +68,43 @@ export function NotificationsSection({ profile, onUpdate }: Props) {
 				<div className="flex items-center gap-3 border-b border-border py-2.5">
 					<div className="flex-1" />
 					<div className="w-14 text-center text-xs font-semibold text-muted-foreground">
-						Email
+						{t("columnEmail")}
 					</div>
 					<div className="w-14 text-center text-xs font-semibold text-muted-foreground">
-						Push
+						{t("columnPush")}
 					</div>
 				</div>
 
-				{CATEGORIES.map((c) => {
-					const prefs = channel(stored[c.key], DEFAULTS[c.key]);
+				{CATEGORY_KEYS.map((key) => {
+					const prefs = channel(stored[key], DEFAULTS[key]);
+					const title = t(`category_${key}_title`);
 					return (
 						<div
-							key={c.key}
+							key={key}
 							className="flex items-center gap-3 border-b border-border py-3.5 last:border-0"
 						>
 							<div className="min-w-0 flex-1">
-								<p className="text-sm font-medium">{c.title}</p>
-								<p className="text-xs text-muted-foreground">{c.description}</p>
+								<p className="text-sm font-medium">{title}</p>
+								<p className="text-xs text-muted-foreground">
+									{t(`category_${key}_description`)}
+								</p>
 							</div>
 							<div className="flex w-14 justify-center">
 								<Switch
-									aria-label={`${c.title} email`}
+									aria-label={t("categoryEmailAria", { name: title })}
 									checked={emailOn && prefs.email}
 									disabled={!emailOn}
 									onCheckedChange={(v) =>
-										onUpdate({ notificationPrefs: { [c.key]: { email: v } } })
+										onUpdate({ notificationPrefs: { [key]: { email: v } } })
 									}
 								/>
 							</div>
 							<div className="flex w-14 justify-center">
 								<Switch
-									aria-label={`${c.title} push`}
+									aria-label={t("categoryPushAria", { name: title })}
 									checked={prefs.push}
 									onCheckedChange={(v) =>
-										onUpdate({ notificationPrefs: { [c.key]: { push: v } } })
+										onUpdate({ notificationPrefs: { [key]: { push: v } } })
 									}
 								/>
 							</div>
@@ -128,8 +113,7 @@ export function NotificationsSection({ profile, onUpdate }: Props) {
 				})}
 
 				<p className="pt-3 text-xs text-muted-foreground">
-					Push notifications are delivered to the Headpat mobile app. In-app
-					notifications always appear in your notification bell.
+					{t("notificationsFootnote")}
 				</p>
 			</Panel>
 		</div>

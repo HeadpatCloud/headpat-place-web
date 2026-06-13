@@ -5,6 +5,7 @@ import { useStorageUrl } from "@/components/StorageImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useTranslations } from "@/lib/i18n";
 
 export type PreviewData = {
 	displayName?: string | null;
@@ -52,6 +53,7 @@ export function ProfilePreviewCard({
 	followingCount,
 	badges,
 }: Props) {
+	const t = useTranslations("accountPages");
 	const avatarUrl = useStorageUrl("avatar", avatarFileId, "md");
 	const name = data.displayName?.trim() || fallbackName;
 	const pills = socialPills(data);
@@ -115,11 +117,11 @@ export function ProfilePreviewCard({
 					<div className="flex gap-6 text-sm">
 						<span>
 							<span className="font-medium">{followersCount}</span>
-							<span className="text-muted-foreground"> followers</span>
+							<span className="text-muted-foreground"> {t("followers")}</span>
 						</span>
 						<span>
 							<span className="font-medium">{followingCount}</span>
-							<span className="text-muted-foreground"> following</span>
+							<span className="text-muted-foreground"> {t("following")}</span>
 						</span>
 					</div>
 					{pills.length > 0 ? (

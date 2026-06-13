@@ -24,8 +24,10 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "@/components/ui/sidebar";
+import { useTranslations } from "@/lib/i18n";
 
 export function NavUser() {
+	const t = useTranslations("commonUi");
 	const { isMobile, toggleSidebar } = useSidebar();
 	const { userData, current, logout } = useUser();
 	const avatarUrl = useStorageUrl("avatar", userData?.avatarId, "md").data?.url;
@@ -50,7 +52,7 @@ export function NavUser() {
 							</Avatar>
 							<div className="grid flex-1 text-left text-sm leading-tight">
 								<span className="truncate font-medium">
-									{userData?.displayName || userData?.$id || "Login"}
+									{userData?.displayName || userData?.$id || t("login")}
 								</span>
 							</div>
 							<ChevronsUpDown className="ml-auto size-4" />
@@ -75,7 +77,7 @@ export function NavUser() {
 								</Avatar>
 								<div className="grid flex-1 text-left text-sm leading-tight">
 									<span className="truncate font-medium">
-										{userData?.displayName || userData?.$id || "Login"}
+										{userData?.displayName || userData?.$id || t("login")}
 									</span>
 								</div>
 							</div>
@@ -88,7 +90,7 @@ export function NavUser() {
 							>
 								<DropdownMenuItem>
 									<BadgeCheck />
-									Account
+									{t("account")}
 								</DropdownMenuItem>
 							</Link>
 							<Link
@@ -97,7 +99,7 @@ export function NavUser() {
 							>
 								<DropdownMenuItem>
 									<Bell />
-									Notifications
+									{t("notifications")}
 								</DropdownMenuItem>
 							</Link>
 							<Link
@@ -106,7 +108,7 @@ export function NavUser() {
 							>
 								<DropdownMenuItem>
 									<LifeBuoy />
-									Tickets
+									{t("tickets")}
 								</DropdownMenuItem>
 							</Link>
 						</DropdownMenuGroup>
@@ -119,7 +121,7 @@ export function NavUser() {
 								}}
 							>
 								<LogOut />
-								Log out
+								{t("logOut")}
 							</DropdownMenuItem>
 						) : (
 							<Link
@@ -128,7 +130,7 @@ export function NavUser() {
 							>
 								<DropdownMenuItem>
 									<LogOut />
-									Log in
+									{t("logIn")}
 								</DropdownMenuItem>
 							</Link>
 						)}

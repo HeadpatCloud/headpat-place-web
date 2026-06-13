@@ -11,18 +11,15 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { useTranslations } from "@/lib/i18n";
 import { client } from "@/lib/orpc";
 
-const STATUSES = [
-	{ value: "online", label: "Online" },
-	{ value: "away", label: "Away" },
-	{ value: "dnd", label: "Do not disturb" },
-	{ value: "invisible", label: "Invisible" },
-] as const;
+const STATUS_VALUES = ["online", "away", "dnd", "invisible"] as const;
 
 export function PresenceSettings() {
+	const t = useTranslations("accountPages");
 	const [status, setStatus] =
-		useState<(typeof STATUSES)[number]["value"]>("online");
+		useState<(typeof STATUS_VALUES)[number]>("online");
 	const [custom, setCustom] = useState("");
 	const save = useMutation({
 		mutationFn: () =>
@@ -30,14 +27,14 @@ export function PresenceSettings() {
 				manualStatus: status,
 				customStatus: custom.trim() || null,
 			}),
-		onSuccess: () => toast.success("Presence updated."),
+		onSuccess: () => toast.success(t("presenceUpdated")),
 		onError: (e: Error) => toast.error(e.message),
 	});
 
 	return (
 		<div className="space-y-3">
 			<div className="grid gap-2 sm:max-w-sm">
-				<Label>Presence</Label>
+				<Label>{t("presenceLabel")}</Label>
 				<Select
 					value={status}
 					onValueChange={(v) => setStatus(v as typeof status)}
@@ -46,25 +43,25 @@ export function PresenceSettings() {
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
-						{STATUSES.map((s) => (
-							<SelectItem key={s.value} value={s.value}>
-								{s.label}
+						{STATUS_VALUES.map((value) => (
+							<SelectItem key={value} value={value}>
+								{t(`status_${value}`)}
 							</SelectItem>
 						))}
 					</SelectContent>
 				</Select>
 			</div>
 			<div className="grid gap-2 sm:max-w-sm">
-				<Label>Custom status</Label>
+				<Label>{t("customStatus")}</Label>
 				<Input
 					value={custom}
 					onChange={(e) => setCustom(e.target.value)}
-					placeholder="Optional message"
+					placeholder={t("customStatusPlaceholder")}
 					maxLength={140}
 				/>
 			</div>
 			<Button size="sm" onClick={() => save.mutate()} disabled={save.isPending}>
-				Save presence
+				{t("savePresence")}
 			</Button>
 		</div>
 	);

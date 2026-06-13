@@ -2,22 +2,28 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDateFormat } from "@/lib/datetime";
+import { useTranslations } from "@/lib/i18n";
 import { orpc } from "@/lib/orpc";
 
-export const Route = createFileRoute("/{-$locale}/_app/announcements/$announcementId")({
+export const Route = createFileRoute(
+	"/{-$locale}/_app/announcements/$announcementId",
+)({
 	component: AnnouncementPage,
 });
 
 function AnnouncementPage() {
 	const { announcementId } = Route.useParams();
+	const t = useTranslations("miscPages");
+	const c = useTranslations("common");
 	const fmt = useDateFormat();
 	const ann = useQuery(
 		orpc.announcement.byId.queryOptions({ input: { announcementId } }),
 	);
 
 	if (ann.isPending)
-		return <p className="p-4 text-muted-foreground">Loading…</p>;
-	if (ann.isError || !ann.data) return <p className="p-4">Not found.</p>;
+		return <p className="p-4 text-muted-foreground">{c("loading")}</p>;
+	if (ann.isError || !ann.data)
+		return <p className="p-4">{t("announcementNotFound")}</p>;
 	const a = ann.data;
 
 	return (

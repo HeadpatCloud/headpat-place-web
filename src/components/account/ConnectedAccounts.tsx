@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import { useTranslations } from "@/lib/i18n";
 
 type Account = {
 	id: string;
@@ -29,13 +30,13 @@ function ProviderGlyph({ id, label }: { id: string; label: string }) {
 }
 
 export function ConnectedAccounts() {
+	const t = useTranslations("accountPages");
 	const qc = useQueryClient();
 	const accounts = useQuery({
 		queryKey: ["account", "linked"],
 		queryFn: async () => {
 			const r = await authClient.listAccounts();
-			if (r.error)
-				throw new Error(r.error.message ?? "Failed to load accounts");
+			if (r.error) throw new Error(r.error.message ?? t("loadAccountsFailed"));
 			return (r.data ?? []) as Account[];
 		},
 	});
@@ -46,11 +47,11 @@ export function ConnectedAccounts() {
 				providerId: a.providerId,
 				accountId: a.accountId,
 			});
-			if (r.error) throw new Error(r.error.message ?? "Failed to unlink");
+			if (r.error) throw new Error(r.error.message ?? t("unlinkFailed"));
 		},
 		onSuccess: () => {
 			qc.invalidateQueries({ queryKey: ["account", "linked"] });
-			toast.success("Account disconnected.");
+			toast.success(t("accountDisconnected"));
 		},
 		onError: (e: Error) => toast.error(e.message),
 	});
@@ -62,13 +63,14 @@ export function ConnectedAccounts() {
 			>[0]["provider"],
 			callbackURL: window.location.href,
 		});
-		if (r.error) toast.error(r.error.message ?? `Couldn't connect ${provider}`);
+		if (r.error)
+			toast.error(r.error.message ?? t("connectFailed", { provider }));
 	}
 
 	if (accounts.isPending) {
 		return (
 			<div className="flex items-center gap-2 rounded-xl border border-border bg-card p-5 text-sm text-muted-foreground">
-				<Loader2 className="size-4 animate-spin" /> Loading connections…
+				<Loader2 className="size-4 animate-spin" /> {t("loadingConnections")}
 			</div>
 		);
 	}
@@ -101,9 +103,9 @@ export function ConnectedAccounts() {
 		<div className="overflow-hidden rounded-xl border border-border bg-card">
 			<ul className="divide-y divide-border">
 				{credential ? (
-					<Row glyphId="credential" label="Email & password">
+					<Row glyphId="credential" label={t("emailPassword")}>
 						<Badge className="bg-primary/15 text-primary hover:bg-primary/15">
-							Active
+							{t("active")}
 						</Badge>
 					</Row>
 				) : null}
@@ -116,14 +118,10 @@ export function ConnectedAccounts() {
 									variant="outline"
 									size="sm"
 									disabled={unlink.isPending || total <= 1}
-									title={
-										total <= 1
-											? "You can't remove your only sign-in method"
-											: undefined
-									}
+									title={total <= 1 ? t("onlySignInMethod") : undefined}
 									onClick={() => unlink.mutate(linked)}
 								>
-									Disconnect
+									{t("disconnect")}
 								</Button>
 							) : (
 								<Button
@@ -131,7 +129,7 @@ export function ConnectedAccounts() {
 									size="sm"
 									onClick={() => connect(p.id)}
 								>
-									Connect
+									{t("connect")}
 								</Button>
 							)}
 						</Row>

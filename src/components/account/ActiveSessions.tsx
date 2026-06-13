@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { authClient, useSession } from "@/lib/auth-client";
+import { useTranslations } from "@/lib/i18n";
 
 type Session = {
 	id: string;
@@ -34,6 +35,7 @@ function describeDevice(ua?: string | null) {
 }
 
 export function ActiveSessions() {
+	const t = useTranslations("accountPages");
 	const qc = useQueryClient();
 	const { data: current } = useSession();
 	const currentToken = current?.session?.token;
@@ -42,8 +44,7 @@ export function ActiveSessions() {
 		queryKey: ["account", "sessions"],
 		queryFn: async () => {
 			const r = await authClient.listSessions();
-			if (r.error)
-				throw new Error(r.error.message ?? "Failed to load sessions");
+			if (r.error) throw new Error(r.error.message ?? t("loadSessionsFailed"));
 			return (r.data ?? []) as Session[];
 		},
 	});
@@ -51,11 +52,11 @@ export function ActiveSessions() {
 	const revoke = useMutation({
 		mutationFn: async (token: string) => {
 			const r = await authClient.revokeSession({ token });
-			if (r.error) throw new Error(r.error.message ?? "Failed to revoke");
+			if (r.error) throw new Error(r.error.message ?? t("revokeFailed"));
 		},
 		onSuccess: () => {
 			qc.invalidateQueries({ queryKey: ["account", "sessions"] });
-			toast.success("Session revoked.");
+			toast.success(t("sessionRevoked"));
 		},
 		onError: (e: Error) => toast.error(e.message),
 	});
@@ -63,11 +64,11 @@ export function ActiveSessions() {
 	const revokeOthers = useMutation({
 		mutationFn: async () => {
 			const r = await authClient.revokeOtherSessions();
-			if (r.error) throw new Error(r.error.message ?? "Failed");
+			if (r.error) throw new Error(r.error.message ?? t("revokeOthersFailed"));
 		},
 		onSuccess: () => {
 			qc.invalidateQueries({ queryKey: ["account", "sessions"] });
-			toast.success("Signed out of all other sessions.");
+			toast.success(t("signedOutOthers"));
 		},
 		onError: (e: Error) => toast.error(e.message),
 	});
@@ -75,14 +76,14 @@ export function ActiveSessions() {
 	if (sessions.isPending) {
 		return (
 			<div className="flex items-center gap-2 rounded-xl border border-border bg-card p-5 text-sm text-muted-foreground">
-				<Loader2 className="size-4 animate-spin" /> Loading sessions…
+				<Loader2 className="size-4 animate-spin" /> {t("loadingSessions")}
 			</div>
 		);
 	}
 	if (sessions.isError) {
 		return (
 			<div className="rounded-xl border border-border bg-card p-5 text-sm text-muted-foreground">
-				Couldn't load your sessions right now.
+				{t("sessionsError")}
 			</div>
 		);
 	}
@@ -109,14 +110,16 @@ export function ActiveSessions() {
 									</span>
 									{isCurrent ? (
 										<Badge className="bg-primary/15 text-primary hover:bg-primary/15">
-											This device
+											{t("thisDevice")}
 										</Badge>
 									) : null}
 								</div>
 								<p className="truncate text-xs text-muted-foreground">
-									{s.ipAddress ? `${s.ipAddress} · ` : ""}active{" "}
-									{formatDistanceToNow(new Date(s.updatedAt), {
-										addSuffix: true,
+									{s.ipAddress ? `${s.ipAddress} · ` : ""}
+									{t("activeAgo", {
+										when: formatDistanceToNow(new Date(s.updatedAt), {
+											addSuffix: true,
+										}),
 									})}
 								</p>
 							</div>
@@ -127,7 +130,7 @@ export function ActiveSessions() {
 									disabled={revoke.isPending}
 									onClick={() => revoke.mutate(s.token)}
 								>
-									Revoke
+									{t("revoke")}
 								</Button>
 							)}
 						</li>
@@ -137,7 +140,9 @@ export function ActiveSessions() {
 			{others > 0 ? (
 				<div className="flex items-center justify-between gap-4 border-t border-border bg-muted/30 px-4 py-3">
 					<span className="text-xs text-muted-foreground">
-						{others} other {others === 1 ? "session" : "sessions"} signed in.
+						{others === 1
+							? t("otherSessionsOne")
+							: t("otherSessionsMany", { count: others })}
 					</span>
 					<Button
 						variant="destructive"
@@ -145,7 +150,7 @@ export function ActiveSessions() {
 						disabled={revokeOthers.isPending}
 						onClick={() => revokeOthers.mutate()}
 					>
-						Sign out everywhere else
+						{t("signOutEverywhere")}
 					</Button>
 				</div>
 			) : null}

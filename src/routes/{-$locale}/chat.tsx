@@ -1,7 +1,9 @@
 import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
 import { ChatSidebar } from "@/components/chat/ChatSidebar";
 
-export const Route = createFileRoute("/{-$locale}/chat")({ component: ChatLayout });
+export const Route = createFileRoute("/{-$locale}/chat")({
+	component: ChatLayout,
+});
 
 function ChatLayout() {
 	const location = useLocation();

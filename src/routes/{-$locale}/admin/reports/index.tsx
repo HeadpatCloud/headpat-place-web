@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useDateFormat } from "@/lib/datetime";
+import { useTranslations } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/{-$locale}/admin/reports/")({
@@ -15,15 +16,18 @@ export const Route = createFileRoute("/{-$locale}/admin/reports/")({
 
 type ReportStatus = "open" | "reviewing" | "resolved" | "dismissed";
 
-const filters: { label: string; value: ReportStatus | undefined }[] = [
-	{ label: "All", value: undefined },
-	{ label: "Open", value: "open" },
-	{ label: "Reviewing", value: "reviewing" },
-	{ label: "Resolved", value: "resolved" },
-	{ label: "Dismissed", value: "dismissed" },
-];
+const filters: { labelKey: string | null; value: ReportStatus | undefined }[] =
+	[
+		{ labelKey: null, value: undefined },
+		{ labelKey: "filterOpen", value: "open" },
+		{ labelKey: "filterReviewing", value: "reviewing" },
+		{ labelKey: "filterResolved", value: "resolved" },
+		{ labelKey: "filterDismissed", value: "dismissed" },
+	];
 
 function ReportsList() {
+	const t = useTranslations("adminPanel");
+	const c = useTranslations("common");
 	const qc = useQueryClient();
 	const fmt = useDateFormat();
 	const [status, setStatus] = useState<ReportStatus | undefined>(undefined);
@@ -45,11 +49,11 @@ function ReportsList() {
 
 	return (
 		<div className="space-y-4">
-			<h1 className="text-2xl font-extrabold tracking-tight">Reports</h1>
+			<h1 className="text-2xl font-extrabold tracking-tight">{t("reports")}</h1>
 			<div className="flex flex-wrap gap-2">
 				{filters.map((f) => (
 					<Button
-						key={f.label}
+						key={f.value ?? "all"}
 						size="sm"
 						variant={status === f.value ? "default" : "outline"}
 						className={
@@ -59,15 +63,15 @@ function ReportsList() {
 						}
 						onClick={() => setStatus(f.value)}
 					>
-						{f.label}
+						{f.labelKey ? t(f.labelKey) : c("all")}
 					</Button>
 				))}
 			</div>
 
 			{reports.isError ? (
-				<p className="text-muted-foreground">You don't have access to this.</p>
+				<p className="text-muted-foreground">{t("noAccess")}</p>
 			) : reports.isPending ? (
-				<p className="text-muted-foreground">Loading…</p>
+				<p className="text-muted-foreground">{c("loading")}</p>
 			) : (
 				<div className="space-y-2">
 					{(reports.data ?? []).map((r) => {
@@ -112,7 +116,7 @@ function ReportsList() {
 											}
 											className="bg-primary text-primary-foreground hover:bg-primary/90"
 										>
-											Resolve
+											{t("resolve")}
 										</Button>
 										<Button
 											size="sm"
@@ -122,7 +126,7 @@ function ReportsList() {
 												resolve.mutate({ reportId: r.id, status: "dismissed" })
 											}
 										>
-											Dismiss
+											{t("dismiss")}
 										</Button>
 									</div>
 								) : null}
@@ -130,7 +134,7 @@ function ReportsList() {
 						);
 					})}
 					{(reports.data ?? []).length === 0 ? (
-						<p className="text-muted-foreground text-sm">No reports.</p>
+						<p className="text-muted-foreground text-sm">{t("noReports")}</p>
 					) : null}
 				</div>
 			)}

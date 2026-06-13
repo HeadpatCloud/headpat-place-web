@@ -4,15 +4,19 @@ import { useState } from "react";
 import { Pager } from "@/components/Pager";
 import { UserCard } from "@/components/UserCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTranslations } from "@/lib/i18n";
 import { orpc } from "@/lib/orpc";
 
-export const Route = createFileRoute("/{-$locale}/_app/community/$communityId/followers")({
+export const Route = createFileRoute(
+	"/{-$locale}/_app/community/$communityId/followers",
+)({
 	component: CommunityFollowersPage,
 });
 
 const PAGE_SIZE = 30;
 
 function CommunityFollowersPage() {
+	const t = useTranslations("communityPages");
 	const { communityId } = Route.useParams();
 	const [page, setPage] = useState(1);
 	const followers = useQuery(
@@ -26,13 +30,13 @@ function CommunityFollowersPage() {
 		<main>
 			<Card>
 				<CardHeader>
-					<CardTitle>Members</CardTitle>
+					<CardTitle>{t("members")}</CardTitle>
 				</CardHeader>
 				<CardContent>
 					{followers.isPending ? (
-						<p className="text-muted-foreground">Loading…</p>
+						<p className="text-muted-foreground">{t("loading")}</p>
 					) : items.length === 0 ? (
-						<p className="text-muted-foreground">No members yet.</p>
+						<p className="text-muted-foreground">{t("noMembersYet")}</p>
 					) : (
 						<>
 							<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Pager } from "@/components/Pager";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDateFormat } from "@/lib/datetime";
+import { useTranslations } from "@/lib/i18n";
 import { orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/{-$locale}/_app/announcements/")({
@@ -14,6 +15,8 @@ const PAGE_SIZE = 24;
 
 function AnnouncementsPage() {
 	const [page, setPage] = useState(1);
+	const t = useTranslations("miscPages");
+	const c = useTranslations("common");
 	const fmt = useDateFormat();
 	const list = useQuery(
 		orpc.announcement.list.queryOptions({
@@ -24,11 +27,11 @@ function AnnouncementsPage() {
 
 	return (
 		<main className="space-y-4">
-			<h2 className="text-2xl font-bold">Announcements</h2>
+			<h2 className="text-2xl font-bold">{t("announcementsTitle")}</h2>
 			{list.isPending ? (
-				<p className="text-muted-foreground">Loading…</p>
+				<p className="text-muted-foreground">{c("loading")}</p>
 			) : items.length === 0 ? (
-				<p className="text-muted-foreground">No announcements right now.</p>
+				<p className="text-muted-foreground">{t("announcementsEmpty")}</p>
 			) : (
 				<>
 					<div className="space-y-3">

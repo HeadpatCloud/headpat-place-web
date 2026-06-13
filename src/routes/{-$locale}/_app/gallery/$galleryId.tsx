@@ -23,6 +23,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { useSession } from "@/lib/auth-client";
 import { useDateFormat } from "@/lib/datetime";
+import { useTranslations } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/{-$locale}/_app/gallery/$galleryId")({
@@ -30,6 +31,8 @@ export const Route = createFileRoute("/{-$locale}/_app/gallery/$galleryId")({
 });
 
 function GalleryItemPage() {
+	const t = useTranslations("galleryPages");
+	const c = useTranslations("common");
 	const { galleryId } = Route.useParams();
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
@@ -42,7 +45,7 @@ function GalleryItemPage() {
 	const deleteMut = useMutation({
 		mutationFn: () => client.gallery.delete({ itemId: galleryId }),
 		onSuccess: async () => {
-			toast.success("Deleted.");
+			toast.success(t("deleted"));
 			await queryClient.invalidateQueries({ queryKey: ["gallery"] });
 			navigate({ to: "/gallery" as never });
 		},
@@ -62,8 +65,8 @@ function GalleryItemPage() {
 	});
 
 	if (item.isPending)
-		return <p className="p-4 text-muted-foreground">Loading…</p>;
-	if (item.isError || !item.data) return <p className="p-4">Not found.</p>;
+		return <p className="p-4 text-muted-foreground">{c("loading")}</p>;
+	if (item.isError || !item.data) return <p className="p-4">{t("notFound")}</p>;
 	const g = item.data;
 	const isOwner = session?.user?.id === g.userId;
 	const isVideo = g.mimeType?.startsWith("video/") ?? false;
@@ -89,24 +92,23 @@ function GalleryItemPage() {
 						<AlertDialog>
 							<AlertDialogTrigger asChild>
 								<Button variant="destructive" size="sm">
-									Delete
+									{c("delete")}
 								</Button>
 							</AlertDialogTrigger>
 							<AlertDialogContent>
 								<AlertDialogHeader>
-									<AlertDialogTitle>Delete this image?</AlertDialogTitle>
+									<AlertDialogTitle>{t("deleteImageTitle")}</AlertDialogTitle>
 									<AlertDialogDescription>
-										Removes the file from storage and the metadata row. This
-										cannot be undone.
+										{t("deleteImageBody")}
 									</AlertDialogDescription>
 								</AlertDialogHeader>
 								<AlertDialogFooter>
-									<AlertDialogCancel>Cancel</AlertDialogCancel>
+									<AlertDialogCancel>{c("cancel")}</AlertDialogCancel>
 									<AlertDialogAction
 										onClick={() => deleteMut.mutate()}
 										disabled={deleteMut.isPending}
 									>
-										{deleteMut.isPending ? "Deleting…" : "Delete"}
+										{deleteMut.isPending ? t("deleting") : c("delete")}
 									</AlertDialogAction>
 								</AlertDialogFooter>
 							</AlertDialogContent>
@@ -117,7 +119,7 @@ function GalleryItemPage() {
 					{g.author ? (
 						<div className="space-y-1.5">
 							<p className="text-xs font-medium text-muted-foreground">
-								Posted by
+								{t("postedBy")}
 							</p>
 							<UserCard user={g.author} />
 						</div>
@@ -144,7 +146,7 @@ function GalleryItemPage() {
 						</Button>
 					</div>
 					<div className="flex gap-2 flex-wrap">
-						{g.nsfw ? <Badge variant="destructive">NSFW</Badge> : null}
+						{g.nsfw ? <Badge variant="destructive">{t("nsfw")}</Badge> : null}
 						{(g.tags ?? []).map((t) => (
 							<Badge key={t} variant="secondary">
 								{t}
@@ -152,10 +154,10 @@ function GalleryItemPage() {
 						))}
 					</div>
 					<p className="text-xs text-muted-foreground">
-						Uploaded {fmt.dateTime(g.createdAt)}
+						{t("uploadedAt", { date: fmt.dateTime(g.createdAt) })}
 						{g.updatedAt &&
 						new Date(g.updatedAt).getTime() !== new Date(g.createdAt).getTime()
-							? ` · edited ${fmt.dateTime(g.updatedAt)}`
+							? t("editedAt", { date: fmt.dateTime(g.updatedAt) })
 							: ""}
 					</p>
 				</CardContent>
@@ -179,6 +181,8 @@ function CommentsSection({
 	itemOwnerId: string;
 	canComment: boolean;
 }) {
+	const t = useTranslations("galleryPages");
+	const c = useTranslations("common");
 	const queryClient = useQueryClient();
 	const { data: session } = useSession();
 	const fmt = useDateFormat();
@@ -218,7 +222,7 @@ function CommentsSection({
 	return (
 		<Card className="mt-4">
 			<CardHeader>
-				<CardTitle className="text-lg">Comments</CardTitle>
+				<CardTitle className="text-lg">{t("comments")}</CardTitle>
 			</CardHeader>
 			<CardContent className="space-y-4">
 				{canComment ? (
@@ -226,7 +230,7 @@ function CommentsSection({
 						<Textarea
 							value={body}
 							onChange={(e) => setBody(e.target.value)}
-							placeholder="Add a comment"
+							placeholder={t("commentPlaceholder")}
 							maxLength={2000}
 						/>
 						<Button
@@ -235,19 +239,19 @@ function CommentsSection({
 							onClick={() =>
 								body.trim()
 									? add.mutate()
-									: toast.error("Write something first.")
+									: toast.error(t("writeSomethingFirst"))
 							}
 							className="bg-primary text-primary-foreground hover:bg-primary/90"
 						>
-							Comment
+							{t("comment")}
 						</Button>
 					</div>
 				) : null}
 
 				{comments.isPending ? (
-					<p className="text-sm text-muted-foreground">Loading…</p>
+					<p className="text-sm text-muted-foreground">{c("loading")}</p>
 				) : (comments.data ?? []).length === 0 ? (
-					<p className="text-sm text-muted-foreground">No comments yet.</p>
+					<p className="text-sm text-muted-foreground">{t("noComments")}</p>
 				) : (
 					<div className="space-y-3">
 						{(comments.data ?? []).map((c) => {
@@ -272,7 +276,7 @@ function CommentsSection({
 											size="icon"
 											disabled={remove.isPending}
 											onClick={() => remove.mutate(c.id)}
-											title="Delete comment"
+											title={t("deleteComment")}
 										>
 											<Trash2Icon className="size-4 text-muted-foreground" />
 										</Button>

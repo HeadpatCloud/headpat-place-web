@@ -3,6 +3,7 @@ import { Camera, Loader2, Trash2 } from "lucide-react";
 import { type ReactNode, useRef, useState } from "react";
 import { toast } from "sonner";
 import type { StorageKind } from "@/components/StorageImage";
+import { useTranslations } from "@/lib/i18n";
 import { client } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
 
@@ -29,6 +30,7 @@ export function MediaEditOverlay({
 	rounded,
 	label,
 }: Props) {
+	const t = useTranslations("accountPages");
 	const inputRef = useRef<HTMLInputElement>(null);
 	const qc = useQueryClient();
 	const [busy, setBusy] = useState(false);
@@ -36,7 +38,7 @@ export function MediaEditOverlay({
 
 	async function onPick(file: File) {
 		if (!file.type.startsWith("image/")) {
-			toast.error("That doesn't look like an image.");
+			toast.error(t("notAnImage"));
 			return;
 		}
 		setBusy(true);
@@ -107,13 +109,13 @@ export function MediaEditOverlay({
 					<Camera className="size-5" />
 				)}
 				<span className="text-xs font-medium">
-					{busy ? "Uploading…" : drag ? "Drop to upload" : label}
+					{busy ? t("uploading") : drag ? t("dropToUpload") : label}
 				</span>
 			</button>
 			{currentFileId && !busy ? (
 				<button
 					type="button"
-					aria-label={`Remove ${kind}`}
+					aria-label={t("removeMedia", { kind })}
 					onClick={remove}
 					className="absolute right-2 top-2 z-10 rounded-md bg-background/80 p-1.5 text-destructive opacity-0 transition-opacity hover:bg-background group-hover/media:opacity-100 focus-visible:opacity-100 focus-visible:outline-none"
 				>

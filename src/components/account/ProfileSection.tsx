@@ -1,13 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import { CalendarIcon, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import InputField from "@/components/fields/InputField";
 import { RichBioEditor } from "@/components/profile/RichBioEditor";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
 	Form,
 	FormControl,
@@ -17,12 +15,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
-import {
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
-} from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { useTranslations } from "@/lib/i18n";
 import { BirthdayPicker } from "./BirthdayPicker";
 import { ProfilePreviewCard } from "./ProfilePreviewCard";
 import type { AccountProfile } from "./types";
@@ -60,6 +53,7 @@ function plainToHtml(text: string): string {
 }
 
 export function ProfileSection({ profile, onSave, saving }: Props) {
+	const t = useTranslations("accountPages");
 	const [bioUploading, setBioUploading] = useState(false);
 	const form = useForm<Values>({
 		resolver: zodResolver(schema),
@@ -120,8 +114,8 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 							name="displayName"
 							render={({ field }) => (
 								<InputField
-									label="Display name"
-									description="The name shown across the app."
+									label={t("displayName")}
+									description={t("displayNameDescription")}
 									placeholder=""
 									field={field}
 									maxLength={120}
@@ -133,9 +127,9 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 							name="status"
 							render={({ field }) => (
 								<InputField
-									label="Status"
-									description="A short line under your name."
-									placeholder="e.g. open for commissions"
+									label={t("statusLabel")}
+									description={t("statusDescription")}
+									placeholder={t("statusPlaceholder")}
 									field={field}
 									maxLength={120}
 								/>
@@ -146,7 +140,7 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 							name="bioHtml"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Bio</FormLabel>
+									<FormLabel>{t("bioLabel")}</FormLabel>
 									<FormControl>
 										<RichBioEditor
 											initialHtml={initialBioHtml}
@@ -164,9 +158,9 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 								name="pronouns"
 								render={({ field }) => (
 									<InputField
-										label="Pronouns"
+										label={t("pronouns")}
 										description=""
-										placeholder="they/them"
+										placeholder={t("pronounsPlaceholder")}
 										field={field}
 										maxLength={60}
 									/>
@@ -177,9 +171,9 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 								name="location"
 								render={({ field }) => (
 									<InputField
-										label="Location"
+										label={t("location")}
 										description=""
-										placeholder="Somewhere nice"
+										placeholder={t("locationPlaceholder")}
 										field={field}
 										maxLength={120}
 									/>
@@ -191,7 +185,7 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 							name="birthday"
 							render={({ field }) => (
 								<FormItem className="flex flex-col">
-									<FormLabel>Birthday</FormLabel>
+									<FormLabel>{t("birthday")}</FormLabel>
 									<FormControl>
 										<BirthdayPicker
 											value={field.value ?? null}
@@ -206,7 +200,7 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 
 					<div className="space-y-4">
 						<h3 className="text-sm font-semibold text-muted-foreground">
-							Social links
+							{t("socialLinks")}
 						</h3>
 						<div className="grid gap-4 sm:grid-cols-2">
 							<FormField
@@ -292,17 +286,17 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 
 					<Button type="submit" disabled={saving || bioUploading}>
 						{bioUploading
-							? "Uploading image…"
+							? t("uploadingImage")
 							: saving
-								? "Saving…"
-								: "Save profile"}
+								? t("saving")
+								: t("saveProfile")}
 					</Button>
 				</form>
 			</Form>
 
 			<aside className="xl:sticky xl:top-6 xl:h-fit">
 				<Label className="mb-2 block text-xs uppercase tracking-wide text-muted-foreground">
-					Live preview
+					{t("livePreview")}
 				</Label>
 				<ProfilePreviewCard
 					data={draft}

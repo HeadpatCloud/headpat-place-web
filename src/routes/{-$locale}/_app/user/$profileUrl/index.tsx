@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useSession } from "@/lib/auth-client";
+import { useTranslations } from "@/lib/i18n";
 import { orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/{-$locale}/_app/user/$profileUrl/")({
@@ -36,15 +37,17 @@ function formatBirthday(birthday: string | Date) {
 
 function UserProfilePage() {
 	const { profileUrl } = Route.useParams();
+	const t = useTranslations("miscPages");
+	const c = useTranslations("common");
 	const profile = useQuery(
 		orpc.profile.byUrl.queryOptions({ input: { profileUrl } }),
 	);
 	const avatarUrl = useStorageUrl("avatar", profile.data?.avatarFileId, "md");
 
 	if (profile.isPending)
-		return <p className="p-4 text-muted-foreground">Loading…</p>;
+		return <p className="p-4 text-muted-foreground">{c("loading")}</p>;
 	if (profile.isError || !profile.data)
-		return <p className="p-4">Profile not found.</p>;
+		return <p className="p-4">{t("profileNotFound")}</p>;
 	const p = profile.data;
 	const birthday = isBirthdayToday(p.birthday);
 
@@ -79,7 +82,7 @@ function UserProfilePage() {
 						{birthday ? (
 							<div className="flex items-center gap-2 rounded-xl bg-primary/10 px-4 py-2 text-primary">
 								<CakeIcon className="size-5" />
-								<span className="font-semibold">It's my birthday today!</span>
+								<span className="font-semibold">{t("birthdayToday")}</span>
 							</div>
 						) : null}
 						<div className="flex gap-2 flex-wrap">
@@ -106,14 +109,20 @@ function UserProfilePage() {
 								className="hover:underline"
 							>
 								<span className="font-medium">{p.followersCount}</span>
-								<span className="text-muted-foreground"> followers</span>
+								<span className="text-muted-foreground">
+									{" "}
+									{t("followersLabel")}
+								</span>
 							</Link>
 							<Link
 								to={`/user/${profileUrl}/following` as never}
 								className="hover:underline"
 							>
 								<span className="font-medium">{p.followingCount}</span>
-								<span className="text-muted-foreground"> following</span>
+								<span className="text-muted-foreground">
+									{" "}
+									{t("followingLabel")}
+								</span>
 							</Link>
 						</div>
 						<SocialLinks profile={p} />
@@ -122,7 +131,7 @@ function UserProfilePage() {
 								<Separator />
 								<div>
 									<p className="mb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-										About
+										{t("profileAbout")}
 									</p>
 									{p.bioHtml ? (
 										<RichBio html={p.bioHtml} />
@@ -151,6 +160,7 @@ function SocialLinks({
 		blueskyName?: string | null;
 	};
 }) {
+	const t = useTranslations("miscPages");
 	const links: { label: string; value: string; href?: string }[] = [];
 	if (profile.discordName)
 		links.push({ label: "Discord", value: profile.discordName });
@@ -212,7 +222,9 @@ function SocialLinks({
 							className={pill}
 							onClick={() => {
 								navigator.clipboard.writeText(l.value);
-								toast.success(`Copied ${l.label}: ${l.value}`);
+								toast.success(
+									t("copiedSocial", { label: l.label, value: l.value }),
+								);
 							}}
 						>
 							{l.label}: {l.value}
@@ -250,23 +262,26 @@ function BirthdayConfetti() {
 	return null;
 }
 
-const SELF_FOLLOW_LABELS = [
-	"It me 🪞",
-	"That's you, genius",
-	"Self-follow? bold",
-	"#1 fan: yourself",
-	"Looking good today ✨",
-	"Go touch grass",
-	"Certified you",
-	"Mirror says hi",
+const SELF_FOLLOW_LABEL_KEYS = [
+	"selfFollow1",
+	"selfFollow2",
+	"selfFollow3",
+	"selfFollow4",
+	"selfFollow5",
+	"selfFollow6",
+	"selfFollow7",
+	"selfFollow8",
 ];
 
 function FollowButton({ targetUserId }: { targetUserId: string }) {
+	const t = useTranslations("miscPages");
 	const { data: session } = useSession();
 	const isMe = session?.user?.id === targetUserId;
-	const [selfLabel] = useState(
+	const [selfLabelKey] = useState(
 		() =>
-			SELF_FOLLOW_LABELS[Math.floor(Math.random() * SELF_FOLLOW_LABELS.length)],
+			SELF_FOLLOW_LABEL_KEYS[
+				Math.floor(Math.random() * SELF_FOLLOW_LABEL_KEYS.length)
+			],
 	);
 	const status = useQuery({
 		...orpc.follow.status.queryOptions({ input: { targetUserId } }),
@@ -276,13 +291,8 @@ function FollowButton({ targetUserId }: { targetUserId: string }) {
 	if (isMe) {
 		return (
 			<div className="pb-1">
-				<Button
-					variant="outline"
-					onClick={() =>
-						toast("You can't follow yourself — but the confidence is noted.")
-					}
-				>
-					{selfLabel}
+				<Button variant="outline" onClick={() => toast(t("selfFollowToast"))}>
+					{t(selfLabelKey)}
 				</Button>
 			</div>
 		);
@@ -299,10 +309,10 @@ function FollowButton({ targetUserId }: { targetUserId: string }) {
 						: "bg-primary text-primary-foreground hover:bg-primary/90"
 				}
 			>
-				{status.data.iFollow ? "Following" : "Follow"}
+				{status.data.iFollow ? t("following") : t("follow")}
 			</Button>
 			{status.data.followsMe ? (
-				<Badge variant="secondary">Follows you</Badge>
+				<Badge variant="secondary">{t("followsYou")}</Badge>
 			) : null}
 		</div>
 	);

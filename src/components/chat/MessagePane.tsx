@@ -57,6 +57,7 @@ import {
 	uploadAttachment,
 } from "@/lib/chat-attachments";
 import { useDateFormat } from "@/lib/datetime";
+import { useTranslations } from "@/lib/i18n";
 import { useLocalizedNavigate as useNavigate } from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
 
@@ -96,6 +97,8 @@ function initials(name: string): string {
 export function MessagePane({ source }: { source: Source }) {
 	const sourceId =
 		source.kind === "dm" ? source.conversationId : source.channelId;
+	const t = useTranslations("chatUi");
+	const c = useTranslations("common");
 	const { data: session } = useSession();
 	const { typingIn, sendTyping, sendChannelTyping } = usePresence();
 	const qc = useQueryClient();
@@ -281,7 +284,7 @@ export function MessagePane({ source }: { source: Source }) {
 				queryKey: orpc.message.myConversations.key(),
 			});
 			setRenaming(false);
-			toast.success("Group renamed");
+			toast.success(t("groupRenamed"));
 		},
 		onError: (e: Error) => toast.error(e.message),
 	});
@@ -303,7 +306,7 @@ export function MessagePane({ source }: { source: Source }) {
 			});
 			setAdding(false);
 			setToAdd(new Set());
-			toast.success("Added to group");
+			toast.success(t("addedToGroup"));
 		},
 		onError: (e: Error) => toast.error(e.message),
 	});
@@ -344,7 +347,7 @@ export function MessagePane({ source }: { source: Source }) {
 	const nameOf = (userId: string) => {
 		const p = byUser.get(userId);
 		if (p) return p.displayName || p.name || p.profileUrl || userId.slice(0, 8);
-		if (userId === meId) return session?.user?.name ?? "You";
+		if (userId === meId) return session?.user?.name ?? t("youCapitalized");
 		return userId.slice(0, 8);
 	};
 
@@ -353,7 +356,7 @@ export function MessagePane({ source }: { source: Source }) {
 			? (channelInfo.data?.name ?? "…")
 			: conversation.data?.name ||
 				(others.length === 0
-					? "Just you"
+					? t("justYou")
 					: others
 							.map((p) => p.displayName || p.name || p.profileUrl)
 							.join(", "));
@@ -361,8 +364,10 @@ export function MessagePane({ source }: { source: Source }) {
 		source.kind === "channel" ? (channelInfo.data?.topic ?? null) : null;
 	const placeholder =
 		source.kind === "channel"
-			? `Message #${channelInfo.data?.name ?? "channel"}`
-			: `Message ${title}`;
+			? t("messageChannelPlaceholder", {
+					channel: channelInfo.data?.name ?? t("channelFallback"),
+				})
+			: t("messageNamePlaceholder", { name: title });
 
 	const typers = typingIn(sourceId).filter((id) => id !== meId);
 
@@ -384,7 +389,7 @@ export function MessagePane({ source }: { source: Source }) {
 				<button
 					type="button"
 					onClick={() => navigate({ to: "/chat" })}
-					aria-label="Back"
+					aria-label={c("back")}
 					className="-ml-1.5 flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:hidden"
 				>
 					<ChevronLeftIcon className="size-5" />
@@ -402,7 +407,7 @@ export function MessagePane({ source }: { source: Source }) {
 							setRenaming(true);
 						}}
 						className="group/title flex min-w-0 items-center gap-1.5"
-						aria-label="Rename group"
+						aria-label={t("renameGroup")}
 					>
 						<span className="truncate text-base font-semibold text-foreground">
 							{title}
@@ -426,7 +431,7 @@ export function MessagePane({ source }: { source: Source }) {
 						type="button"
 						onClick={() => setShowMembers((v) => !v)}
 						aria-pressed={showMembers}
-						aria-label="Toggle members"
+						aria-label={t("toggleMembers")}
 						className={`flex size-8.5 items-center justify-center rounded-md transition-colors ${
 							showMembers
 								? "bg-primary/15 text-foreground"
@@ -437,7 +442,7 @@ export function MessagePane({ source }: { source: Source }) {
 					</button>
 					<div className="hidden w-48 cursor-text items-center gap-2 rounded-md border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground md:flex">
 						<SearchIcon className="size-3.5 opacity-80" />
-						<span>Search</span>
+						<span>{c("search")}</span>
 					</div>
 					<button
 						type="button"
@@ -445,7 +450,7 @@ export function MessagePane({ source }: { source: Source }) {
 							if (isGroup) setLeaving(true);
 							else navigate({ to: "/chat" });
 						}}
-						aria-label={isGroup ? "Leave group" : "Close conversation"}
+						aria-label={isGroup ? t("leaveGroup") : t("closeConversation")}
 						className="hidden size-8.5 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:flex"
 					>
 						<XIcon className="size-4" />
@@ -459,17 +464,17 @@ export function MessagePane({ source }: { source: Source }) {
 					className="flex flex-1 flex-col overflow-y-auto px-5 pb-4 pt-2"
 				>
 					{messages.isPending ? (
-						<p className="py-4 text-muted-foreground">Loading messages…</p>
+						<p className="py-4 text-muted-foreground">{t("loadingMessages")}</p>
 					) : list.length === 0 ? (
 						<p className="py-8 text-center text-muted-foreground">
-							No messages yet. Say hi.
+							{t("noMessagesYet")}
 						</p>
 					) : (
 						<>
 							<div className="my-4 flex items-center gap-3.5">
 								<span className="h-px flex-1 bg-border" />
 								<span className="text-xs font-semibold text-muted-foreground">
-									Today
+									{t("today")}
 								</span>
 								<span className="h-px flex-1 bg-border" />
 							</div>
@@ -481,7 +486,7 @@ export function MessagePane({ source }: { source: Source }) {
 								const canDelete =
 									isMine || (source.kind === "channel" && canModerate);
 								const displayName = isMe
-									? (session?.user?.name ?? "You")
+									? (session?.user?.name ?? t("youCapitalized"))
 									: m.author
 										? m.author.displayName ||
 											m.author.name ||
@@ -507,7 +512,7 @@ export function MessagePane({ source }: { source: Source }) {
 														<button
 															type="button"
 															className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
-															aria-label="Add reaction"
+															aria-label={t("addReaction")}
 														>
 															<SmilePlusIcon className="size-3.5" />
 														</button>
@@ -533,7 +538,7 @@ export function MessagePane({ source }: { source: Source }) {
 															setEditDraft(m.body);
 														}}
 														className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
-														aria-label="Edit message"
+														aria-label={t("editMessage")}
 													>
 														<PencilIcon className="size-3.5" />
 													</button>
@@ -543,7 +548,7 @@ export function MessagePane({ source }: { source: Source }) {
 														type="button"
 														onClick={() => setDeletingId(m.id)}
 														className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-														aria-label="Delete message"
+														aria-label={t("deleteMessage")}
 													>
 														<TrashIcon className="size-3.5" />
 													</button>
@@ -607,14 +612,14 @@ export function MessagePane({ source }: { source: Source }) {
 															className="underline"
 															onClick={() => setEditingId(null)}
 														>
-															cancel
+															{t("editCancel")}
 														</button>
 														<button
 															type="submit"
 															className="underline"
 															disabled={editMut.isPending}
 														>
-															save
+															{t("editSave")}
 														</button>
 													</div>
 												</form>
@@ -623,7 +628,7 @@ export function MessagePane({ source }: { source: Source }) {
 													{m.body}
 													{m.editedAt ? (
 														<span className="ml-1.5 text-[10px] text-muted-foreground">
-															(edited)
+															{t("edited")}
 														</span>
 													) : null}
 												</div>
@@ -679,7 +684,7 @@ export function MessagePane({ source }: { source: Source }) {
 									}}
 									className="flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
 								>
-									<PencilIcon className="size-4 shrink-0" /> Rename group
+									<PencilIcon className="size-4 shrink-0" /> {t("renameGroup")}
 								</button>
 								<button
 									type="button"
@@ -689,19 +694,19 @@ export function MessagePane({ source }: { source: Source }) {
 									}}
 									className="flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
 								>
-									<UserPlusIcon className="size-4 shrink-0" /> Add people
+									<UserPlusIcon className="size-4 shrink-0" /> {t("addPeople")}
 								</button>
 								<button
 									type="button"
 									onClick={() => setLeaving(true)}
 									className="flex items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-destructive transition-colors hover:bg-destructive/10"
 								>
-									<LogOutIcon className="size-4 shrink-0" /> Leave group
+									<LogOutIcon className="size-4 shrink-0" /> {t("leaveGroup")}
 								</button>
 							</div>
 						) : null}
 						<div className="px-2 pb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-							Members
+							{t("membersHeading")}
 						</div>
 						{source.kind === "dm" ? (
 							parts.map((p) => (
@@ -725,7 +730,7 @@ export function MessagePane({ source }: { source: Source }) {
 							))
 						) : (
 							<p className="px-2 text-sm text-muted-foreground">
-								Member list coming soon.
+								{t("memberListComingSoon")}
 							</p>
 						)}
 					</aside>
@@ -736,12 +741,16 @@ export function MessagePane({ source }: { source: Source }) {
 				{typers.length > 0 ? (
 					<div className="px-1 pb-1 text-xs text-muted-foreground">
 						{source.kind === "dm"
-							? `${typers.map((id) => nameOf(id)).join(", ")} ${
-									typers.length === 1 ? "is" : "are"
-								} typing…`
+							? typers.length === 1
+								? t("typingOne", {
+										names: typers.map((id) => nameOf(id)).join(", "),
+									})
+								: t("typingMany", {
+										names: typers.map((id) => nameOf(id)).join(", "),
+									})
 							: typers.length === 1
-								? "Someone is typing…"
-								: `${typers.length} people are typing…`}
+								? t("typingSomeone")
+								: t("typingNPeople", { count: typers.length })}
 					</div>
 				) : null}
 				{pending.length > 0 ? (
@@ -762,7 +771,7 @@ export function MessagePane({ source }: { source: Source }) {
 									onClick={() =>
 										setPending((arr) => arr.filter((x) => x.id !== p.id))
 									}
-									aria-label="Remove"
+									aria-label={t("removeAttachment")}
 									className="text-muted-foreground hover:text-foreground"
 								>
 									<XIcon className="size-3.5" />
@@ -792,7 +801,7 @@ export function MessagePane({ source }: { source: Source }) {
 						type="button"
 						onClick={() => fileInputRef.current?.click()}
 						className="flex size-9.5 shrink-0 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-						aria-label="Attach"
+						aria-label={t("attach")}
 					>
 						<PlusIcon className="size-5" />
 					</button>
@@ -813,7 +822,7 @@ export function MessagePane({ source }: { source: Source }) {
 								<button
 									type="button"
 									className="flex size-9.5 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-									aria-label="Emoji"
+									aria-label={t("emoji")}
 								>
 									<SmileIcon className="size-4.5" />
 								</button>
@@ -839,7 +848,7 @@ export function MessagePane({ source }: { source: Source }) {
 									pending.filter((p) => p.status === "done").length === 0)
 							}
 							className="flex size-9.5 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-[filter,transform] hover:brightness-110 disabled:opacity-50"
-							aria-label="Send"
+							aria-label={t("send")}
 						>
 							<SendHorizontalIcon className="size-4" />
 						</button>
@@ -850,7 +859,7 @@ export function MessagePane({ source }: { source: Source }) {
 			<Dialog open={renaming} onOpenChange={setRenaming}>
 				<DialogContent className="max-w-sm">
 					<DialogHeader>
-						<DialogTitle>Rename group</DialogTitle>
+						<DialogTitle>{t("renameGroupTitle")}</DialogTitle>
 					</DialogHeader>
 					<form
 						onSubmit={(e) => {
@@ -864,7 +873,7 @@ export function MessagePane({ source }: { source: Source }) {
 							onChange={(e) => setRenameDraft(e.target.value)}
 							maxLength={100}
 							autoFocus
-							placeholder="Group name"
+							placeholder={t("groupNameField")}
 						/>
 						<DialogFooter className="mt-4">
 							<Button
@@ -872,13 +881,13 @@ export function MessagePane({ source }: { source: Source }) {
 								variant="outline"
 								onClick={() => setRenaming(false)}
 							>
-								Cancel
+								{c("cancel")}
 							</Button>
 							<Button
 								type="submit"
 								disabled={renameMut.isPending || !renameDraft.trim()}
 							>
-								Save
+								{c("save")}
 							</Button>
 						</DialogFooter>
 					</form>
@@ -888,21 +897,21 @@ export function MessagePane({ source }: { source: Source }) {
 			<Dialog open={adding} onOpenChange={setAdding}>
 				<DialogContent className="max-w-md">
 					<DialogHeader>
-						<DialogTitle>Add people</DialogTitle>
+						<DialogTitle>{t("addPeopleTitle")}</DialogTitle>
 					</DialogHeader>
 					<div className="max-h-72 overflow-y-auto">
 						{followingQ.isPending ? (
 							<p className="px-1 py-2 text-sm text-muted-foreground">
-								Loading…
+								{c("loading")}
 							</p>
 						) : candidates.length === 0 ? (
 							<p className="px-1 py-2 text-sm text-muted-foreground">
-								No one left to add.
+								{t("noOneLeftToAdd")}
 							</p>
 						) : (
 							candidates.map((u) => {
 								const selected = toAdd.has(u.userId);
-								const label = u.displayName || u.name || "User";
+								const label = u.displayName || u.name || t("userFallback");
 								return (
 									<button
 										key={u.userId}
@@ -947,14 +956,14 @@ export function MessagePane({ source }: { source: Source }) {
 							variant="outline"
 							onClick={() => setAdding(false)}
 						>
-							Cancel
+							{c("cancel")}
 						</Button>
 						<Button
 							type="button"
 							disabled={addMut.isPending || toAdd.size === 0}
 							onClick={() => addMut.mutate([...toAdd])}
 						>
-							Add
+							{t("add")}
 						</Button>
 					</DialogFooter>
 				</DialogContent>
@@ -963,14 +972,13 @@ export function MessagePane({ source }: { source: Source }) {
 			<AlertDialog open={leaving} onOpenChange={setLeaving}>
 				<AlertDialogContent>
 					<AlertDialogHeader>
-						<AlertDialogTitle>Leave this group?</AlertDialogTitle>
+						<AlertDialogTitle>{t("leaveGroupConfirm")}</AlertDialogTitle>
 						<AlertDialogDescription>
-							You'll stop receiving its messages and won't be able to rejoin
-							unless someone adds you back.
+							{t("leaveGroupDescription")}
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogCancel>{c("cancel")}</AlertDialogCancel>
 						<AlertDialogAction
 							className="bg-destructive text-white hover:bg-destructive/90"
 							onClick={(e) => {
@@ -979,7 +987,7 @@ export function MessagePane({ source }: { source: Source }) {
 							}}
 							disabled={leaveMut.isPending}
 						>
-							Leave
+							{t("leave")}
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>
@@ -993,14 +1001,13 @@ export function MessagePane({ source }: { source: Source }) {
 			>
 				<AlertDialogContent>
 					<AlertDialogHeader>
-						<AlertDialogTitle>Delete message?</AlertDialogTitle>
+						<AlertDialogTitle>{t("deleteMessageConfirm")}</AlertDialogTitle>
 						<AlertDialogDescription>
-							This permanently removes the message for everyone. This cannot be
-							undone.
+							{t("deleteMessageDescription")}
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogCancel>{c("cancel")}</AlertDialogCancel>
 						<AlertDialogAction
 							className="bg-destructive text-white hover:bg-destructive/90"
 							onClick={(e) => {
@@ -1009,7 +1016,7 @@ export function MessagePane({ source }: { source: Source }) {
 							}}
 							disabled={deleteMut.isPending}
 						>
-							Delete
+							{c("delete")}
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>

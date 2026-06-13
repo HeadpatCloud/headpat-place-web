@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { authClient } from "@/lib/auth-client";
+import { useTranslations } from "@/lib/i18n";
 import type { AccountProfile } from "./types";
 
 const emailSchema = z.object({ email: z.string().email().trim() });
@@ -44,6 +45,7 @@ export function AccountSection({
 	onSaveUrl,
 	onChangeTimezone,
 }: Props) {
+	const t = useTranslations("accountPages");
 	const [resending, setResending] = useState(false);
 
 	const emailForm = useForm<z.infer<typeof emailSchema>>({
@@ -62,10 +64,10 @@ export function AccountSection({
 	async function changeEmail(values: z.infer<typeof emailSchema>) {
 		const r = await authClient.changeEmail({ newEmail: values.email });
 		if (r.error) {
-			toast.error(r.error.message ?? "Failed to update email");
+			toast.error(r.error.message ?? t("updateEmailFailed"));
 			return;
 		}
-		toast.success("Verification email sent.");
+		toast.success(t("verificationEmailSent"));
 		emailForm.reset({ email: "" });
 	}
 
@@ -77,10 +79,10 @@ export function AccountSection({
 		});
 		setResending(false);
 		if (r.error) {
-			toast.error(r.error.message ?? "Couldn't send verification email");
+			toast.error(r.error.message ?? t("sendVerificationFailed"));
 			return;
 		}
-		toast.success("Verification email sent.");
+		toast.success(t("verificationEmailSent"));
 	}
 
 	async function changePassword(values: z.infer<typeof passwordSchema>) {
@@ -89,10 +91,10 @@ export function AccountSection({
 			newPassword: values.newpassword,
 		});
 		if (r.error) {
-			toast.error(r.error.message ?? "Failed to update password");
+			toast.error(r.error.message ?? t("updatePasswordFailed"));
 			return;
 		}
-		toast.success("Password updated.");
+		toast.success(t("passwordUpdated"));
 		passwordForm.reset({ password: "", newpassword: "" });
 	}
 
@@ -100,25 +102,25 @@ export function AccountSection({
 		<div className="space-y-8">
 			<div className="space-y-3">
 				<div className="flex items-center gap-3">
-					<Label className="text-sm font-semibold">Email address</Label>
+					<Label className="text-sm font-semibold">{t("emailAddress")}</Label>
 					{emailVerified ? (
 						<Badge className="bg-primary/15 text-primary hover:bg-primary/15">
-							Verified
+							{t("verified")}
 						</Badge>
 					) : (
 						<Badge
 							variant="outline"
 							className="border-border text-muted-foreground"
 						>
-							Unverified
+							{t("unverified")}
 						</Badge>
 					)}
 				</div>
 				<p className="text-sm text-muted-foreground">
-					Currently <span className="text-foreground">{email}</span>.
-					{emailVerified
-						? " Change it below — we'll send a verification link to the new address."
-						: " Verify it to secure your account."}
+					{t("currentlyPrefix")}{" "}
+					<span className="text-foreground">{email}</span>
+					{"."}
+					{emailVerified ? t("emailVerifiedHint") : t("emailUnverifiedHint")}
 				</p>
 				{!emailVerified ? (
 					<Button
@@ -127,7 +129,7 @@ export function AccountSection({
 						disabled={resending}
 						onClick={resendVerification}
 					>
-						{resending ? "Sending…" : "Resend verification email"}
+						{resending ? t("sending") : t("resendVerification")}
 					</Button>
 				) : null}
 				<Form {...emailForm}>
@@ -140,15 +142,15 @@ export function AccountSection({
 							name="email"
 							render={({ field }) => (
 								<InputField
-									label="New email"
-									description="A verification email goes to this address."
+									label={t("newEmail")}
+									description={t("newEmailDescription")}
 									placeholder=""
 									field={field}
 								/>
 							)}
 						/>
 						<Button type="submit" variant="outline" size="sm">
-							Update email
+							{t("updateEmail")}
 						</Button>
 					</form>
 				</Form>
@@ -157,9 +159,9 @@ export function AccountSection({
 			<Separator />
 
 			<div className="space-y-3">
-				<Label className="text-sm font-semibold">Profile URL</Label>
+				<Label className="text-sm font-semibold">{t("profileUrl")}</Label>
 				<p className="text-sm text-muted-foreground">
-					Where your public profile lives.
+					{t("profileUrlDescription")}
 				</p>
 				<Form {...urlForm}>
 					<form
@@ -193,7 +195,7 @@ export function AccountSection({
 							)}
 						/>
 						<Button type="submit" variant="outline" size="sm">
-							Save URL
+							{t("saveUrl")}
 						</Button>
 					</form>
 				</Form>
@@ -202,9 +204,9 @@ export function AccountSection({
 			<Separator />
 
 			<div className="space-y-3">
-				<Label className="text-sm font-semibold">Password</Label>
+				<Label className="text-sm font-semibold">{t("password")}</Label>
 				<p className="text-sm text-muted-foreground">
-					Use a strong password you don't reuse elsewhere.
+					{t("passwordDescription")}
 				</p>
 				<Form {...passwordForm}>
 					<form
@@ -216,7 +218,7 @@ export function AccountSection({
 							name="password"
 							render={({ field }) => (
 								<InputField
-									label="Current password"
+									label={t("currentPassword")}
 									description=""
 									placeholder=""
 									field={field}
@@ -229,8 +231,8 @@ export function AccountSection({
 							name="newpassword"
 							render={({ field }) => (
 								<InputField
-									label="New password"
-									description="At least 8 characters."
+									label={t("newPassword")}
+									description={t("newPasswordDescription")}
 									placeholder=""
 									field={field}
 									type="password"
@@ -238,7 +240,7 @@ export function AccountSection({
 							)}
 						/>
 						<Button type="submit" variant="outline" size="sm">
-							Update password
+							{t("updatePassword")}
 						</Button>
 					</form>
 				</Form>
@@ -247,9 +249,9 @@ export function AccountSection({
 			<Separator />
 
 			<div className="space-y-3">
-				<Label className="text-sm font-semibold">Timezone</Label>
+				<Label className="text-sm font-semibold">{t("timezone")}</Label>
 				<p className="text-sm text-muted-foreground">
-					Dates and times are shown in this timezone. Defaults to your device's.
+					{t("timezoneDescription")}
 				</p>
 				<div className="max-w-md">
 					<TimezoneSelect

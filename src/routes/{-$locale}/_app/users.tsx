@@ -5,6 +5,7 @@ import { Pager } from "@/components/Pager";
 import { StorageImage } from "@/components/StorageImage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useTranslations } from "@/lib/i18n";
 import { orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/{-$locale}/_app/users")({
@@ -14,6 +15,8 @@ export const Route = createFileRoute("/{-$locale}/_app/users")({
 const PAGE_SIZE = 24;
 
 function UsersPage() {
+	const t = useTranslations("miscPages");
+	const c = useTranslations("common");
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
 	// One seed per visit so the backend shuffles consistently across pages.
@@ -34,17 +37,17 @@ function UsersPage() {
 	return (
 		<main className="space-y-4">
 			<div className="flex items-center justify-between">
-				<h2 className="text-2xl font-bold">Discover users</h2>
+				<h2 className="text-2xl font-bold">{t("usersTitle")}</h2>
 			</div>
 			<Input
-				placeholder="Search by name, profile URL or bio…"
+				placeholder={t("usersSearchPlaceholder")}
 				value={search}
 				onChange={(e) => setSearch(e.target.value)}
 			/>
 			{users.isPending ? (
-				<p className="text-muted-foreground">Loading…</p>
+				<p className="text-muted-foreground">{c("loading")}</p>
 			) : items.length === 0 ? (
-				<p className="text-muted-foreground">No users found.</p>
+				<p className="text-muted-foreground">{t("usersEmpty")}</p>
 			) : (
 				<>
 					<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -78,10 +81,12 @@ function UsersPage() {
 										{u.bio ? (
 											<p className="text-sm line-clamp-2">{u.bio}</p>
 										) : (
-											<p className="text-xs text-muted-foreground">No bio</p>
+											<p className="text-xs text-muted-foreground">
+												{t("usersNoBio")}
+											</p>
 										)}
 										<p className="mt-auto pt-2 text-xs text-muted-foreground">
-											{u.followersCount} followers
+											{t("usersFollowersCount", { count: u.followersCount })}
 										</p>
 									</CardContent>
 								</Card>

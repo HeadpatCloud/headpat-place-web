@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useSession } from "@/lib/auth-client";
 import { useDateFormat } from "@/lib/datetime";
+import { useTranslations } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/{-$locale}/_app/events/$eventId")({
@@ -26,6 +27,8 @@ export const Route = createFileRoute("/{-$locale}/_app/events/$eventId")({
 });
 
 function EventDetailPage() {
+	const t = useTranslations("eventsPages");
+	const c = useTranslations("common");
 	const { eventId } = Route.useParams();
 	const qc = useQueryClient();
 	const navigate = useNavigate();
@@ -41,7 +44,7 @@ function EventDetailPage() {
 		onSuccess: () => {
 			qc.invalidateQueries({ queryKey: orpc.event.list.key() });
 			qc.invalidateQueries({ queryKey: orpc.event.mapList.key() });
-			toast.success("Event deleted.");
+			toast.success(t("eventDeleted"));
 			navigate({ to: "/events" as never });
 		},
 		onError: (e: Error) => toast.error(e.message),
@@ -79,12 +82,12 @@ function EventDetailPage() {
 	});
 
 	if (event.isPending)
-		return <p className="p-4 text-muted-foreground">Loading…</p>;
+		return <p className="p-4 text-muted-foreground">{c("loading")}</p>;
 	if (event.isError || !event.data)
-		return <p className="p-4">Event not found.</p>;
+		return <p className="p-4">{t("notFound")}</p>;
 	const e = event.data;
 	const isPast = new Date(e.endsAt ?? e.startsAt).getTime() < Date.now();
-	const attendWord = isPast ? "attended" : "attending";
+	const attendWord = isPast ? t("attendedWord") : t("attendingWord");
 	const isOwner = !!session?.user && session.user.id === e.creatorUserId;
 	const hasZone =
 		(e.locationZoneMethod === "circle" || e.locationZoneMethod === "polygon") &&
@@ -108,7 +111,7 @@ function EventDetailPage() {
 									params={{ eventId } as never}
 								>
 									<PencilIcon className="size-4" />
-									Edit
+									{t("edit")}
 								</Link>
 							</Button>
 							<AlertDialog>
@@ -119,25 +122,26 @@ function EventDetailPage() {
 										className="bg-white/15 text-white hover:bg-white/25"
 									>
 										<Trash2Icon className="size-4" />
-										Delete
+										{c("delete")}
 									</Button>
 								</AlertDialogTrigger>
 								<AlertDialogContent>
 									<AlertDialogHeader>
-										<AlertDialogTitle>Delete this event?</AlertDialogTitle>
+										<AlertDialogTitle>
+											{t("deleteConfirmTitle")}
+										</AlertDialogTitle>
 										<AlertDialogDescription>
-											This permanently removes the event and everyone's
-											attendance. This cannot be undone.
+											{t("deleteConfirmBody")}
 										</AlertDialogDescription>
 									</AlertDialogHeader>
 									<AlertDialogFooter>
-										<AlertDialogCancel>Cancel</AlertDialogCancel>
+										<AlertDialogCancel>{c("cancel")}</AlertDialogCancel>
 										<AlertDialogAction
 											onClick={() => remove.mutate()}
 											disabled={remove.isPending}
 											className="bg-destructive text-white hover:bg-destructive/90"
 										>
-											Delete
+											{c("delete")}
 										</AlertDialogAction>
 									</AlertDialogFooter>
 								</AlertDialogContent>
@@ -170,20 +174,20 @@ function EventDetailPage() {
 								{t}
 							</Badge>
 						))}
-						{e.isPaid ? <Badge variant="default">Paid</Badge> : null}
+						{e.isPaid ? <Badge variant="default">{t("paid")}</Badge> : null}
 					</div>
 					{e.label ? <p className="text-muted-foreground">{e.label}</p> : null}
 					{e.description ? <p>{e.description}</p> : null}
 					{e.website ? (
 						<p className="text-sm">
 							<a href={e.website} className="text-link hover:underline">
-								Website
+								{t("website")}
 							</a>
 						</p>
 					) : null}
 					{isPast && !isAttending ? (
 						<Button disabled variant="outline">
-							Event has ended
+							{t("eventEnded")}
 						</Button>
 					) : (
 						<div className="flex items-center gap-2">
@@ -197,7 +201,7 @@ function EventDetailPage() {
 								}
 								variant={isAttending ? "outline" : "default"}
 							>
-								{isAttending ? "Attending — cancel" : "Attend"}
+								{isAttending ? t("attendingCancel") : t("attend")}
 							</Button>
 							{isAttending && !isPast ? (
 								<Button
@@ -205,11 +209,7 @@ function EventDetailPage() {
 									size="icon"
 									disabled={setNotify.isPending}
 									onClick={() => setNotify.mutate()}
-									title={
-										notifyOn
-											? "Reminder on — click to turn off"
-											: "Remind me before it starts"
-									}
+									title={notifyOn ? t("reminderOn") : t("reminderOff")}
 									className={
 										notifyOn ? "text-primary" : "text-muted-foreground"
 									}
@@ -234,12 +234,19 @@ function EventDetailPage() {
 								/>
 							</div>
 							<p className="text-xs text-muted-foreground">
-								{e.attendeesCount} / {e.visitorCapacity} {attendWord}
+								{t("attendeesWithCapacity", {
+									count: e.attendeesCount,
+									capacity: e.visitorCapacity,
+									word: attendWord,
+								})}
 							</p>
 						</div>
 					) : (
 						<p className="text-xs text-muted-foreground">
-							{e.attendeesCount} {attendWord}
+							{t("attendeesCount", {
+								count: e.attendeesCount,
+								word: attendWord,
+							})}
 						</p>
 					)}
 				</CardContent>

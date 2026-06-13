@@ -1,14 +1,14 @@
-import { Outlet, createFileRoute } from "@tanstack/react-router"
-import HeaderClient from "@/components/sidebar/header-client"
+import { createFileRoute, Outlet } from "@tanstack/react-router";
+import HeaderClient from "@/components/sidebar/header-client";
 
 export const Route = createFileRoute("/{-$locale}/_app")({
-  component: AppLayout,
-})
+	component: AppLayout,
+});
 
 function AppLayout() {
-  return (
-    <HeaderClient>
-      <Outlet />
-    </HeaderClient>
-  )
+	return (
+		<HeaderClient>
+			<Outlet />
+		</HeaderClient>
+	);
 }

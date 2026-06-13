@@ -18,7 +18,9 @@ import { useSession } from "@/lib/auth-client";
 import { useDateFormat } from "@/lib/datetime";
 import { client, orpc } from "@/lib/orpc";
 
-export const Route = createFileRoute("/{-$locale}/_app/messages/$conversationId")({
+export const Route = createFileRoute(
+	"/{-$locale}/_app/messages/$conversationId",
+)({
 	component: ConversationPage,
 });
 

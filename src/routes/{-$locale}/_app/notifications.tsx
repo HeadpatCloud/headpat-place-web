@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Pager } from "@/components/Pager";
 import { Button } from "@/components/ui/button";
 import { useDateFormat } from "@/lib/datetime";
+import { useTranslations } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/{-$locale}/_app/notifications")({
@@ -14,6 +15,8 @@ const PAGE_SIZE = 30;
 
 function NotificationsPage() {
 	const [page, setPage] = useState(1);
+	const t = useTranslations("miscPages");
+	const c = useTranslations("common");
 	const qc = useQueryClient();
 	const navigate = useNavigate();
 	const fmt = useDateFormat();
@@ -51,15 +54,15 @@ function NotificationsPage() {
 	return (
 		<main className="space-y-4">
 			<div className="flex items-center justify-between">
-				<h2 className="text-2xl font-bold">Notifications</h2>
+				<h2 className="text-2xl font-bold">{t("notificationsTitle")}</h2>
 				<Button variant="outline" onClick={() => markAll.mutate()}>
-					Mark all read
+					{t("notificationsMarkAllRead")}
 				</Button>
 			</div>
 			{list.isPending ? (
-				<p className="text-muted-foreground">Loading…</p>
+				<p className="text-muted-foreground">{c("loading")}</p>
 			) : items.length === 0 ? (
-				<p className="text-muted-foreground">No notifications.</p>
+				<p className="text-muted-foreground">{t("notificationsEmpty")}</p>
 			) : (
 				<>
 					<div className="space-y-1">

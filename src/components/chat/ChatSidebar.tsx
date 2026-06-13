@@ -37,6 +37,7 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { useTranslations } from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
@@ -64,6 +65,8 @@ function ChannelRow({
 	activeChannelId: string | null;
 	staff: boolean;
 }) {
+	const t = useTranslations("chatUi");
+	const c = useTranslations("common");
 	const qc = useQueryClient();
 	const [renaming, setRenaming] = useState(false);
 	const [deleting, setDeleting] = useState(false);
@@ -82,7 +85,7 @@ function ChannelRow({
 		onSuccess: () => {
 			invalidate();
 			setRenaming(false);
-			toast.success("Channel renamed");
+			toast.success(t("channelRenamed"));
 		},
 		onError: (e: Error) => toast.error(e.message),
 	});
@@ -92,7 +95,7 @@ function ChannelRow({
 		onSuccess: () => {
 			invalidate();
 			setDeleting(false);
-			toast.success("Channel deleted");
+			toast.success(t("channelDeleted"));
 		},
 		onError: (e: Error) => toast.error(e.message),
 	});
@@ -107,7 +110,7 @@ function ChannelRow({
 					setRenaming(true);
 				}}
 				className="flex size-5 items-center justify-center rounded text-muted-foreground/70 transition-colors hover:bg-background hover:text-foreground"
-				aria-label="Rename channel"
+				aria-label={t("renameChannel")}
 			>
 				<PencilIcon className="size-3" />
 			</button>
@@ -118,7 +121,7 @@ function ChannelRow({
 					setDeleting(true);
 				}}
 				className="flex size-5 items-center justify-center rounded text-muted-foreground/70 transition-colors hover:bg-background hover:text-destructive"
-				aria-label="Delete channel"
+				aria-label={t("deleteChannel")}
 			>
 				<TrashIcon className="size-3" />
 			</button>
@@ -155,7 +158,7 @@ function ChannelRow({
 			<Dialog open={renaming} onOpenChange={setRenaming}>
 				<DialogContent className="max-w-sm">
 					<DialogHeader>
-						<DialogTitle>Rename channel</DialogTitle>
+						<DialogTitle>{t("renameChannelTitle")}</DialogTitle>
 					</DialogHeader>
 					<form
 						onSubmit={(e) => {
@@ -169,7 +172,7 @@ function ChannelRow({
 							onChange={(e) => setName(e.target.value)}
 							maxLength={100}
 							autoFocus
-							placeholder="Channel name"
+							placeholder={t("channelNamePlaceholder")}
 						/>
 						<DialogFooter className="mt-4">
 							<Button
@@ -177,10 +180,10 @@ function ChannelRow({
 								variant="outline"
 								onClick={() => setRenaming(false)}
 							>
-								Cancel
+								{c("cancel")}
 							</Button>
 							<Button type="submit" disabled={rename.isPending || !name.trim()}>
-								Save
+								{c("save")}
 							</Button>
 						</DialogFooter>
 					</form>
@@ -190,14 +193,15 @@ function ChannelRow({
 			<AlertDialog open={deleting} onOpenChange={setDeleting}>
 				<AlertDialogContent>
 					<AlertDialogHeader>
-						<AlertDialogTitle>Delete #{ch.name}?</AlertDialogTitle>
+						<AlertDialogTitle>
+							{t("deleteChannelConfirm", { name: ch.name })}
+						</AlertDialogTitle>
 						<AlertDialogDescription>
-							This permanently deletes the channel and its messages. This cannot
-							be undone.
+							{t("deleteChannelDescription")}
 						</AlertDialogDescription>
 					</AlertDialogHeader>
 					<AlertDialogFooter>
-						<AlertDialogCancel>Cancel</AlertDialogCancel>
+						<AlertDialogCancel>{c("cancel")}</AlertDialogCancel>
 						<AlertDialogAction
 							className="bg-destructive text-white hover:bg-destructive/90"
 							onClick={(e) => {
@@ -206,7 +210,7 @@ function ChannelRow({
 							}}
 							disabled={remove.isPending}
 						>
-							Delete
+							{c("delete")}
 						</AlertDialogAction>
 					</AlertDialogFooter>
 				</AlertDialogContent>
@@ -226,6 +230,8 @@ function ServerBlock({
 	activeChannelId: string | null;
 	onActivate: (id: string) => void;
 }) {
+	const t = useTranslations("chatUi");
+	const c = useTranslations("common");
 	const qc = useQueryClient();
 	const community = useQuery(
 		orpc.community.byId.queryOptions({ input: { communityId } }),
@@ -254,7 +260,7 @@ function ServerBlock({
 			});
 			setCreating(false);
 			setNewName("");
-			toast.success("Channel created");
+			toast.success(t("channelCreated"));
 		},
 		onError: (e: Error) => toast.error(e.message),
 	});
@@ -295,7 +301,7 @@ function ServerBlock({
 							setCreating(true);
 						}}
 						className="mr-1 flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground opacity-0 transition-opacity hover:bg-muted hover:text-foreground group-hover:opacity-100"
-						aria-label="Create channel"
+						aria-label={t("createChannel")}
 					>
 						<PlusIcon className="size-4" />
 					</button>
@@ -319,7 +325,7 @@ function ServerBlock({
 			<Dialog open={creating} onOpenChange={setCreating}>
 				<DialogContent className="max-w-sm">
 					<DialogHeader>
-						<DialogTitle>Create channel</DialogTitle>
+						<DialogTitle>{t("createChannelTitle")}</DialogTitle>
 					</DialogHeader>
 					<form
 						onSubmit={(e) => {
@@ -333,7 +339,7 @@ function ServerBlock({
 							onChange={(e) => setNewName(e.target.value)}
 							maxLength={100}
 							autoFocus
-							placeholder="new-channel"
+							placeholder={t("newChannelPlaceholder")}
 						/>
 						<DialogFooter className="mt-4">
 							<Button
@@ -341,13 +347,13 @@ function ServerBlock({
 								variant="outline"
 								onClick={() => setCreating(false)}
 							>
-								Cancel
+								{c("cancel")}
 							</Button>
 							<Button
 								type="submit"
 								disabled={create.isPending || !newName.trim()}
 							>
-								Create
+								{c("create")}
 							</Button>
 						</DialogFooter>
 					</form>
@@ -358,6 +364,7 @@ function ServerBlock({
 }
 
 export function ChatSidebar({ className }: { className?: string }) {
+	const t = useTranslations("chatUi");
 	const location = useLocation();
 	const { userData, current } = useUser();
 	const { presenceOf } = usePresence();
@@ -396,7 +403,7 @@ export function ChatSidebar({ className }: { className?: string }) {
 		activeServer ?? activeChannel.data?.communityId ?? communityIds[0] ?? null;
 
 	const meId = current?.$id;
-	const meName = userData?.displayName || current?.name || "you";
+	const meName = userData?.displayName || current?.name || t("youFallback");
 
 	return (
 		<aside
@@ -416,13 +423,13 @@ export function ChatSidebar({ className }: { className?: string }) {
 			<div className="flex-1 overflow-y-auto px-3 pb-2 pt-3.5">
 				<div className="flex items-center pl-2.5 pr-1 pb-2 pt-0.5">
 					<span className="flex-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-						Messages
+						{t("messagesHeading")}
 					</span>
 					<button
 						type="button"
 						onClick={() => setComposing(true)}
 						className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-						aria-label="New message"
+						aria-label={t("newMessage")}
 					>
 						<PlusIcon className="size-4" />
 					</button>
@@ -434,7 +441,7 @@ export function ChatSidebar({ className }: { className?: string }) {
 						? c.name
 						: isGroup
 							? c.others.map((o) => o.displayName || o.name || "?").join(", ")
-							: other?.displayName || other?.name || "Conversation";
+							: other?.displayName || other?.name || t("conversationFallback");
 					const isActive = c.id === activeConversationId;
 					return (
 						<Link
@@ -481,7 +488,7 @@ export function ChatSidebar({ className }: { className?: string }) {
 				})}
 
 				<div className="px-2.5 pb-2 pt-4.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-					Servers
+					{t("serversHeading")}
 				</div>
 				{communityIds.map((id) => (
 					<ServerBlock
@@ -521,13 +528,15 @@ export function ChatSidebar({ className }: { className?: string }) {
 						{meName}
 					</div>
 					<div className="text-xs text-muted-foreground">
-						{meId ? (presenceOf(meId)?.status ?? "offline") : "offline"}
+						{meId
+							? (presenceOf(meId)?.status ?? t("statusOffline"))
+							: t("statusOffline")}
 					</div>
 				</div>
 				<Link
 					to="/account"
 					className="flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-					aria-label="Settings"
+					aria-label={t("settings")}
 				>
 					<SettingsIcon className="size-4" />
 				</Link>

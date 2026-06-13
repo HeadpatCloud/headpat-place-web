@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useDateFormat } from "@/lib/datetime";
+import { useTranslations } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
 import { uploadTicketAttachment } from "@/lib/ticket-attachments";
 import { cn } from "@/lib/utils";
@@ -20,6 +21,8 @@ export const Route = createFileRoute("/{-$locale}/admin/tickets/$ticketId")({
 });
 
 function AdminTicketThread() {
+	const tr = useTranslations("adminPanel");
+	const c = useTranslations("common");
 	const { ticketId } = Route.useParams();
 	const qc = useQueryClient();
 	const fmt = useDateFormat();
@@ -58,12 +61,12 @@ function AdminTicketThread() {
 				try {
 					keys.push((await uploadTicketAttachment(ticketId, f)).key);
 				} catch {
-					toast.error(`Couldn't upload ${f.name}.`);
+					toast.error(tr("uploadFailed", { name: f.name }));
 				}
 			}
 			const trimmed = reply.trim();
 			if (!trimmed && keys.length === 0) {
-				throw new Error("Add a message or an attachment first.");
+				throw new Error(tr("addMessageOrAttachment"));
 			}
 			return client.ticket.reply({
 				ticketId,
@@ -87,16 +90,12 @@ function AdminTicketThread() {
 	});
 
 	if (ticket.isError) {
-		return (
-			<p className="p-4 text-muted-foreground">
-				You don't have access to this.
-			</p>
-		);
+		return <p className="p-4 text-muted-foreground">{tr("noAccess")}</p>;
 	}
 	if (ticket.isPending) {
-		return <p className="p-4 text-muted-foreground">Loading…</p>;
+		return <p className="p-4 text-muted-foreground">{c("loading")}</p>;
 	}
-	if (!ticket.data) return <p className="p-4">Ticket not found.</p>;
+	if (!ticket.data) return <p className="p-4">{tr("ticketNotFound")}</p>;
 
 	const t = ticket.data;
 	const isClosed = t.status === "closed";
@@ -104,7 +103,7 @@ function AdminTicketThread() {
 		owner.data?.displayName ||
 		owner.data?.name ||
 		owner.data?.profileUrl ||
-		"User";
+		tr("userFallback");
 	const canSend =
 		(reply.trim().length > 0 || files.length > 0) && !send.isPending;
 
@@ -114,7 +113,7 @@ function AdminTicketThread() {
 				to={"/admin/tickets" as never}
 				className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
 			>
-				<ArrowLeft className="size-4" /> All tickets
+				<ArrowLeft className="size-4" /> {tr("allTickets")}
 			</Link>
 
 			<div className="overflow-hidden rounded-xl border border-border bg-card">
@@ -124,7 +123,7 @@ function AdminTicketThread() {
 							{t.subject}
 						</h1>
 						<p className="mt-0.5 text-xs text-muted-foreground">
-							#{t.id.slice(0, 8)} · {t.category} · {t.priority} · opened{" "}
+							#{t.id.slice(0, 8)} · {t.category} · {t.priority} · {tr("opened")}{" "}
 							{fmt.date(t.createdAt)}
 						</p>
 					</div>
@@ -143,7 +142,7 @@ function AdminTicketThread() {
 						disabled={setStatus.isPending}
 						onClick={() => setStatus.mutate(isClosed ? "open" : "closed")}
 					>
-						{isClosed ? "Reopen" : "Close"}
+						{isClosed ? tr("reopen") : tr("close")}
 					</Button>
 				</div>
 
@@ -169,7 +168,7 @@ function AdminTicketThread() {
 							</div>
 						</div>
 						<span className="ml-auto text-xs text-muted-foreground">
-							View profile →
+							{tr("viewProfile")}
 						</span>
 					</Link>
 				) : null}
@@ -187,7 +186,8 @@ function AdminTicketThread() {
 							)}
 						>
 							<div className="text-xs text-muted-foreground">
-								{m.isStaff ? "Staff" : ownerName} · {fmt.dateTime(m.createdAt)}
+								{m.isStaff ? tr("staff") : ownerName} ·{" "}
+								{fmt.dateTime(m.createdAt)}
 							</div>
 							{m.body ? (
 								<div
@@ -215,14 +215,14 @@ function AdminTicketThread() {
 				<div className="border-t border-border p-4">
 					{isClosed ? (
 						<div className="flex items-center justify-between gap-3 text-sm text-muted-foreground">
-							<span>This ticket is closed.</span>
+							<span>{tr("ticketClosed")}</span>
 							<Button
 								variant="outline"
 								size="sm"
 								disabled={setStatus.isPending}
 								onClick={() => setStatus.mutate("open")}
 							>
-								Reopen
+								{tr("reopen")}
 							</Button>
 						</div>
 					) : (
@@ -230,7 +230,7 @@ function AdminTicketThread() {
 							<Textarea
 								value={reply}
 								onChange={(e) => setReply(e.target.value)}
-								placeholder="Reply as staff…"
+								placeholder={tr("replyAsStaff")}
 								className="min-h-[80px]"
 								maxLength={10000}
 							/>
@@ -241,7 +241,7 @@ function AdminTicketThread() {
 									disabled={send.isPending}
 								/>
 								<Button disabled={!canSend} onClick={() => send.mutate()}>
-									{send.isPending ? "Sending…" : "Reply"}
+									{send.isPending ? tr("sending") : tr("reply")}
 								</Button>
 							</div>
 						</div>

@@ -7,6 +7,7 @@ import { StorageImage } from "@/components/StorageImage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { useTranslations } from "@/lib/i18n";
 import { orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/{-$locale}/_app/community/")({
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/{-$locale}/_app/community/")({
 const PAGE_SIZE = 24;
 
 function CommunitiesPage() {
+	const t = useTranslations("communityPages");
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
 	useEffect(() => setPage(1), [search]);
@@ -32,18 +34,20 @@ function CommunitiesPage() {
 	return (
 		<main className="space-y-4">
 			<div className="flex items-center justify-between gap-4">
-				<h2 className="text-2xl font-bold">Communities</h2>
+				<h2 className="text-2xl font-bold">{t("communitiesTitle")}</h2>
 				<Button asChild>
-					<Link to={"/community/new" as never}>+ Create</Link>
+					<Link to={"/community/new" as never}>
+						{t("createCommunityShort")}
+					</Link>
 				</Button>
 			</div>
 			<Input
-				placeholder="Search communities…"
+				placeholder={t("searchCommunitiesPlaceholder")}
 				value={search}
 				onChange={(e) => setSearch(e.target.value)}
 			/>
 			{list.isPending ? (
-				<p className="text-muted-foreground">Loading…</p>
+				<p className="text-muted-foreground">{t("loading")}</p>
 			) : (
 				<>
 					<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -69,10 +73,10 @@ function CommunitiesPage() {
 									</CardHeader>
 									<CardContent>
 										<p className="text-sm text-muted-foreground line-clamp-2">
-											{c.description ?? "No description"}
+											{c.description ?? t("noDescription")}
 										</p>
 										<p className="text-xs text-muted-foreground mt-2">
-											{c.followersCount} members
+											{t("membersCount", { count: c.followersCount })}
 										</p>
 										{c.tags && c.tags.length > 0 && (
 											<div className="flex flex-wrap gap-1 mt-2">

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { FadeIn } from "@/components/FadeIn";
 import { Pager } from "@/components/Pager";
 import { useDateFormat } from "@/lib/datetime";
+import { useTranslations } from "@/lib/i18n";
 import { orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/{-$locale}/_app/changelog")({
@@ -28,20 +29,26 @@ type Entry = {
 
 const KINDS = {
 	features: {
-		label: "Features",
+		labelKey: "changelogFeatures",
 		dot: "bg-emerald-500",
 		text: "text-emerald-500",
 	},
 	improvements: {
-		label: "Improvements",
+		labelKey: "changelogImprovements",
 		dot: "bg-indigo-500",
 		text: "text-indigo-500",
 	},
-	bugfixes: { label: "Fixes", dot: "bg-amber-500", text: "text-amber-500" },
+	bugfixes: {
+		labelKey: "changelogFixes",
+		dot: "bg-amber-500",
+		text: "text-amber-500",
+	},
 } as const;
 
 function ChangelogPage() {
 	const [page, setPage] = useState(1);
+	const t = useTranslations("miscPages");
+	const c = useTranslations("common");
 	const list = useQuery(
 		orpc.changelog.list.queryOptions({ input: { page, pageSize: PAGE_SIZE } }),
 	);
@@ -49,11 +56,13 @@ function ChangelogPage() {
 
 	return (
 		<main className="space-y-6">
-			<h1 className="text-2xl font-extrabold tracking-tight">Changelog</h1>
+			<h1 className="text-2xl font-extrabold tracking-tight">
+				{t("changelogTitle")}
+			</h1>
 			{list.isPending ? (
-				<p className="text-muted-foreground">Loading…</p>
+				<p className="text-muted-foreground">{c("loading")}</p>
 			) : items.length === 0 ? (
-				<p className="text-muted-foreground">No releases yet.</p>
+				<p className="text-muted-foreground">{t("changelogEmpty")}</p>
 			) : (
 				<>
 					<ol className="relative ml-1.5 space-y-8 border-l-2 border-border pl-8">
@@ -79,6 +88,7 @@ function ChangelogPage() {
 }
 
 function Entry({ entry, latest }: { entry: Entry; latest: boolean }) {
+	const t = useTranslations("miscPages");
 	const columns = [
 		{
 			platform: "Web",
@@ -117,7 +127,7 @@ function Entry({ entry, latest }: { entry: Entry; latest: boolean }) {
 				) : null}
 				{latest ? (
 					<span className="rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary">
-						Latest
+						{t("changelogLatest")}
 					</span>
 				) : null}
 				{date ? (
@@ -135,12 +145,12 @@ function Entry({ entry, latest }: { entry: Entry; latest: boolean }) {
 								{col.platform}
 							</div>
 							{col.groups.map((g) => (
-								<div key={g.kind.label}>
+								<div key={g.kind.labelKey}>
 									<div
 										className={`flex items-center gap-2 text-xs font-bold uppercase tracking-wide ${g.kind.text}`}
 									>
 										<span className={`size-2 rounded-full ${g.kind.dot}`} />
-										{g.kind.label}
+										{t(g.kind.labelKey)}
 									</div>
 									<ul className="mt-1.5 list-disc space-y-1 pl-5 text-sm">
 										{g.items.map((it, j) => (

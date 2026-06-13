@@ -27,6 +27,7 @@ import { Section } from "@/components/account/Section";
 import { SecuritySection } from "@/components/account/SecuritySection";
 import type { AccountProfile } from "@/components/account/types";
 import { authClient, useSession } from "@/lib/auth-client";
+import { useTranslations } from "@/lib/i18n";
 import { useLocalizedNavigate as useNavigate } from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
 
@@ -34,22 +35,41 @@ export const Route = createFileRoute("/{-$locale}/_app/account/")({
 	component: AccountPage,
 });
 
-const SECTIONS: NavItem[] = [
-	{ id: "profile", label: "Profile", icon: UserRound },
-	{ id: "account", label: "Account", icon: AtSign },
-	{ id: "security", label: "Security", icon: ShieldCheck },
-	{ id: "connections", label: "Connections", icon: Link2 },
-	{ id: "privacy", label: "Privacy", icon: Eye },
-	{ id: "notifications", label: "Notifications", icon: Bell },
-	{ id: "appearance", label: "Appearance", icon: Palette },
-	{ id: "danger", label: "Danger zone", icon: TriangleAlert },
-];
+const SECTION_IDS = [
+	"profile",
+	"account",
+	"security",
+	"connections",
+	"privacy",
+	"notifications",
+	"appearance",
+	"danger",
+] as const;
+
+const SECTION_ICONS = {
+	profile: UserRound,
+	account: AtSign,
+	security: ShieldCheck,
+	connections: Link2,
+	privacy: Eye,
+	notifications: Bell,
+	appearance: Palette,
+	danger: TriangleAlert,
+} as const;
 
 function AccountPage() {
+	const t = useTranslations("accountPages");
+	const c = useTranslations("common");
 	const navigate = useNavigate();
 	const { data: session, isPending } = useSession();
 	const queryClient = useQueryClient();
 	const [active, setActive] = useState("profile");
+
+	const SECTIONS: NavItem[] = SECTION_IDS.map((id) => ({
+		id,
+		label: t(`nav_${id}`),
+		icon: SECTION_ICONS[id],
+	}));
 
 	useEffect(() => {
 		if (!isPending && !session?.user) navigate({ to: "/login" as never });
@@ -65,7 +85,7 @@ function AccountPage() {
 			client.profile.update(input),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: orpc.profile.me.queryKey() });
-			toast.success("Saved.");
+			toast.success(t("saved"));
 		},
 		onError: (e: Error) => toast.error(e.message),
 	});
@@ -74,7 +94,7 @@ function AccountPage() {
 
 	useEffect(() => {
 		if (!profile) return;
-		const els = SECTIONS.map((s) => document.getElementById(s.id)).filter(
+		const els = SECTION_IDS.map((id) => document.getElementById(id)).filter(
 			(el): el is HTMLElement => el !== null,
 		);
 		if (!els.length) return;
@@ -102,16 +122,16 @@ function AccountPage() {
 		try {
 			await client.account.delete(args);
 		} catch (e) {
-			toast.error((e as Error).message ?? "Failed to delete account");
+			toast.error((e as Error).message ?? t("deleteAccountFailed"));
 			throw e;
 		}
-		toast.success("Account deleted.");
+		toast.success(t("accountDeleted"));
 		await authClient.signOut().catch(() => {});
 		navigate({ to: "/" });
 	}
 
 	if (isPending || (session?.user && profileQuery.isPending)) {
-		return <p className="p-4 text-muted-foreground">Loading…</p>;
+		return <p className="p-4 text-muted-foreground">{c("loading")}</p>;
 	}
 	if (!session?.user || !profile) return null;
 
@@ -147,8 +167,8 @@ function AccountPage() {
 				<div className="min-w-0 space-y-12">
 					<Section
 						id="profile"
-						title="Profile"
-						description="How you appear to everyone else."
+						title={t("nav_profile")}
+						description={t("profileDescription")}
 					>
 						<div className="space-y-8">
 							<ProfileCompleteness profile={profile} />
@@ -163,7 +183,9 @@ function AccountPage() {
 								}
 							/>
 							<div className="border-t border-border pt-6">
-								<h3 className="mb-3 text-sm font-semibold">Presence</h3>
+								<h3 className="mb-3 text-sm font-semibold">
+									{t("presenceHeading")}
+								</h3>
 								<PresenceSettings />
 							</div>
 						</div>
@@ -171,8 +193,8 @@ function AccountPage() {
 
 					<Section
 						id="account"
-						title="Account"
-						description="Sign-in details and how people reach your profile."
+						title={t("nav_account")}
+						description={t("accountDescription")}
 					>
 						<AccountSection
 							profile={profile}
@@ -187,24 +209,24 @@ function AccountPage() {
 
 					<Section
 						id="security"
-						title="Security"
-						description="Protect your account and manage where you're signed in."
+						title={t("nav_security")}
+						description={t("securityDescription")}
 					>
 						<SecuritySection />
 					</Section>
 
 					<Section
 						id="connections"
-						title="Connections"
-						description="Link other accounts to sign in with them."
+						title={t("nav_connections")}
+						description={t("connectionsDescription")}
 					>
 						<ConnectedAccounts />
 					</Section>
 
 					<Section
 						id="privacy"
-						title="Privacy"
-						description="Control your visibility and what you see."
+						title={t("nav_privacy")}
+						description={t("privacyDescription")}
 					>
 						<PrivacySection
 							profile={profile}
@@ -216,8 +238,8 @@ function AccountPage() {
 
 					<Section
 						id="notifications"
-						title="Notifications"
-						description="Choose which emails we send you."
+						title={t("nav_notifications")}
+						description={t("notificationsDescription")}
 					>
 						<NotificationsSection
 							profile={profile}
@@ -227,13 +249,13 @@ function AccountPage() {
 
 					<Section
 						id="appearance"
-						title="Appearance"
-						description="Theme and color across the whole app, including chat."
+						title={t("nav_appearance")}
+						description={t("appearanceDescription")}
 					>
 						<AppearanceSettings />
 					</Section>
 
-					<Section id="danger" title="Danger zone">
+					<Section id="danger" title={t("nav_danger")}>
 						<DangerZone
 							twoFactorEnabled={!!session.user.twoFactorEnabled}
 							onDelete={deleteAccount}

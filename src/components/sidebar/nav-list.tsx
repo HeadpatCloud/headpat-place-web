@@ -1,55 +1,56 @@
-﻿
-import type { LucideIcon } from "lucide-react"
-
+﻿import { Link } from "@tanstack/react-router";
+import type { LucideIcon } from "lucide-react";
 import {
-  SidebarGroup,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar"
-import { Link } from "@tanstack/react-router"
+	SidebarGroup,
+	SidebarGroupLabel,
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem,
+	useSidebar,
+} from "@/components/ui/sidebar";
 
 export function NavList({
-  projects,
-  label,
+	projects,
+	label,
 }: {
-  projects: {
-    name: string
-    url: string
-    icon: LucideIcon
-    disabled?: boolean
-  }[]
-  label?: string
+	projects: {
+		name: string;
+		url: string;
+		icon: LucideIcon;
+		disabled?: boolean;
+	}[];
+	label?: string;
 }) {
-  const { toggleSidebar, isMobile } = useSidebar()
-  return (
-    <SidebarGroup>
-      {label ? <SidebarGroupLabel>{label}</SidebarGroupLabel> : null}
-      <SidebarMenu>
-        {projects.map((item) => (
-          <SidebarMenuItem key={item.name}>
-            {item.disabled ? (
-              <SidebarMenuButton disabled className="opacity-40">
-                <item.icon />
-                <span>{item.name}</span>
-              </SidebarMenuButton>
-            ) : (
-              <SidebarMenuButton asChild>
-                <Link
-                  to={item.url}
-                  onClick={isMobile ? toggleSidebar : undefined}
-                  activeProps={{ className: "bg-primary/15 text-primary dark:text-emerald-400 font-semibold rounded-md" }}
-                >
-                  <item.icon />
-                  <span>{item.name}</span>
-                </Link>
-              </SidebarMenuButton>
-            )}
-          </SidebarMenuItem>
-        ))}
-      </SidebarMenu>
-    </SidebarGroup>
-  )
+	const { toggleSidebar, isMobile } = useSidebar();
+	return (
+		<SidebarGroup>
+			{label ? <SidebarGroupLabel>{label}</SidebarGroupLabel> : null}
+			<SidebarMenu>
+				{projects.map((item) => (
+					<SidebarMenuItem key={item.name}>
+						{item.disabled ? (
+							<SidebarMenuButton disabled className="opacity-40">
+								<item.icon />
+								<span>{item.name}</span>
+							</SidebarMenuButton>
+						) : (
+							<SidebarMenuButton asChild>
+								<Link
+									to={item.url}
+									onClick={isMobile ? toggleSidebar : undefined}
+									activeProps={{
+										className:
+											"bg-primary/15 text-primary dark:text-emerald-400 font-semibold rounded-md",
+									}}
+								>
+									<item.icon />
+									<span>{item.name}</span>
+								</Link>
+							</SidebarMenuButton>
+						)}
+					</SidebarMenuItem>
+				))}
+			</SidebarMenu>
+		</SidebarGroup>
+	);
 }

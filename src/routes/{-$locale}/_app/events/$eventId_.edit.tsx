@@ -3,6 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { EventForm } from "@/components/events/EventForm";
 import { useSession } from "@/lib/auth-client";
+import { useTranslations } from "@/lib/i18n";
 import { orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/{-$locale}/_app/events/$eventId_/edit")({
@@ -11,6 +12,8 @@ export const Route = createFileRoute("/{-$locale}/_app/events/$eventId_/edit")({
 });
 
 function EditEventPage() {
+	const t = useTranslations("eventsPages");
+	const c = useTranslations("common");
 	const { eventId } = Route.useParams();
 	const navigate = useNavigate();
 	const { data: session, isPending } = useSession();
@@ -21,17 +24,17 @@ function EditEventPage() {
 	}, [session, isPending, navigate]);
 
 	if (isPending || event.isPending)
-		return <p className="p-4 text-muted-foreground">Loading…</p>;
+		return <p className="p-4 text-muted-foreground">{c("loading")}</p>;
 	if (!session?.user) return null;
 	if (event.isError || !event.data)
-		return <p className="p-4">Event not found.</p>;
+		return <p className="p-4">{t("notFound")}</p>;
 	const e = event.data;
 	if (e.creatorUserId !== session.user.id)
-		return <p className="p-4">You can only edit events you created.</p>;
+		return <p className="p-4">{t("editOwnOnly")}</p>;
 
 	return (
 		<main className="mx-auto max-w-2xl space-y-6">
-			<h2 className="text-2xl font-bold">Edit event</h2>
+			<h2 className="text-2xl font-bold">{t("editEvent")}</h2>
 			<EventForm mode="edit" initial={e} />
 		</main>
 	);

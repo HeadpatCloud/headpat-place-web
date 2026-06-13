@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useSession } from "@/lib/auth-client";
 import { useDateFormat } from "@/lib/datetime";
+import { useTranslations } from "@/lib/i18n";
 import { orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/{-$locale}/_app/events/")({
@@ -17,6 +18,8 @@ export const Route = createFileRoute("/{-$locale}/_app/events/")({
 const PAGE_SIZE = 24;
 
 function EventsPage() {
+	const t = useTranslations("eventsPages");
+	const c = useTranslations("common");
 	const [page, setPage] = useState(1);
 	const fmt = useDateFormat();
 	const { data: session } = useSession();
@@ -28,7 +31,7 @@ function EventsPage() {
 	return (
 		<main className="space-y-4">
 			<div className="flex items-center justify-between gap-2">
-				<h2 className="text-2xl font-bold">Events</h2>
+				<h2 className="text-2xl font-bold">{t("title")}</h2>
 				{session?.user ? (
 					<Button
 						asChild
@@ -36,15 +39,15 @@ function EventsPage() {
 					>
 						<Link to={"/events/new" as never}>
 							<PlusIcon className="size-4" />
-							New event
+							{t("newEvent")}
 						</Link>
 					</Button>
 				) : null}
 			</div>
 			{events.isPending ? (
-				<p className="text-muted-foreground">Loading…</p>
+				<p className="text-muted-foreground">{c("loading")}</p>
 			) : items.length === 0 ? (
-				<p className="text-muted-foreground">No events yet.</p>
+				<p className="text-muted-foreground">{t("emptyState")}</p>
 			) : (
 				<>
 					<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -69,7 +72,7 @@ function EventsPage() {
 											))}
 										</div>
 										<p className="text-xs text-muted-foreground">
-											{e.attendeesCount} attending
+											{t("nAttending", { count: e.attendeesCount })}
 										</p>
 									</CardContent>
 								</Card>

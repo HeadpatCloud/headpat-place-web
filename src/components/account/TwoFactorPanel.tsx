@@ -10,8 +10,10 @@ import {
 } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
 import { authClient, useSession } from "@/lib/auth-client";
+import { useTranslations } from "@/lib/i18n";
 
 function QrImage({ value }: { value: string }) {
+	const t = useTranslations("accountPages");
 	const [src, setSrc] = useState<string | null>(null);
 	useEffect(() => {
 		let active = true;
@@ -28,7 +30,7 @@ function QrImage({ value }: { value: string }) {
 	return (
 		<img
 			src={src}
-			alt="Two-factor QR code"
+			alt={t("twoFactorQrAlt")}
 			width={184}
 			height={184}
 			className="rounded-lg border border-border bg-white p-2"
@@ -37,24 +39,25 @@ function QrImage({ value }: { value: string }) {
 }
 
 function BackupCodes({ codes }: { codes: string[] }) {
+	const t = useTranslations("accountPages");
 	return (
 		<div className="rounded-lg border border-border bg-muted/40 p-3">
 			<div className="flex items-center justify-between">
-				<p className="text-sm font-medium">Backup codes</p>
+				<p className="text-sm font-medium">{t("backupCodes")}</p>
 				<Button
 					type="button"
 					variant="ghost"
 					size="sm"
 					onClick={() => {
 						navigator.clipboard.writeText(codes.join("\n"));
-						toast.success("Backup codes copied.");
+						toast.success(t("backupCodesCopied"));
 					}}
 				>
-					Copy all
+					{t("copyAll")}
 				</Button>
 			</div>
 			<p className="mt-1 text-xs text-muted-foreground">
-				Store these somewhere safe — each works once if you lose your device.
+				{t("backupCodesHint")}
 			</p>
 			<ul className="mt-2 grid grid-cols-2 gap-1 font-mono text-sm">
 				{codes.map((c) => (
@@ -66,6 +69,7 @@ function BackupCodes({ codes }: { codes: string[] }) {
 }
 
 export function TwoFactorPanel() {
+	const t = useTranslations("accountPages");
 	const { data: session, refetch } = useSession();
 	const enabled = session?.user?.twoFactorEnabled;
 
@@ -84,7 +88,7 @@ export function TwoFactorPanel() {
 		const r = await authClient.twoFactor.enable({ password });
 		setBusy(false);
 		if (r.error) {
-			toast.error(r.error.message ?? "Failed to start 2FA setup");
+			toast.error(r.error.message ?? t("twoFactorStartFailed"));
 			return;
 		}
 		setSetupUri(r.data?.totpURI ?? null);
@@ -97,10 +101,10 @@ export function TwoFactorPanel() {
 		const r = await authClient.twoFactor.verifyTotp({ code: verifyCode });
 		setBusy(false);
 		if (r.error) {
-			toast.error(r.error.message ?? "Invalid code");
+			toast.error(r.error.message ?? t("invalidCode"));
 			return;
 		}
-		toast.success("Two-factor authentication enabled.");
+		toast.success(t("twoFactorEnabled"));
 		setSetupUri(null);
 		setVerifyCode("");
 		setBackupCodes(null);
@@ -112,10 +116,10 @@ export function TwoFactorPanel() {
 		const r = await authClient.twoFactor.disable({ password });
 		setBusy(false);
 		if (r.error) {
-			toast.error(r.error.message ?? "Failed to disable 2FA");
+			toast.error(r.error.message ?? t("twoFactorDisableFailed"));
 			return;
 		}
-		toast.success("Two-factor authentication disabled.");
+		toast.success(t("twoFactorDisabled"));
 		setPassword("");
 		await refetch();
 	}
@@ -127,27 +131,26 @@ export function TwoFactorPanel() {
 		});
 		setBusy(false);
 		if (r.error) {
-			toast.error(r.error.message ?? "Failed to regenerate codes");
+			toast.error(r.error.message ?? t("regenerateFailed"));
 			return;
 		}
 		setNewCodes(r.data?.backupCodes ?? null);
 		setRegenPw("");
 		setRegenOpen(false);
-		toast.success("New backup codes generated.");
+		toast.success(t("backupCodesGenerated"));
 	}
 
 	if (setupUri) {
 		return (
 			<div className="space-y-4">
 				<p className="text-sm text-muted-foreground">
-					Scan this with your authenticator app, then enter the 6-digit code to
-					confirm.
+					{t("twoFactorScanHint")}
 				</p>
 				<div className="flex flex-col gap-4 sm:flex-row sm:items-start">
 					<QrImage value={setupUri} />
 					<div className="space-y-3">
 						<div className="space-y-2">
-							<Label>Verification code</Label>
+							<Label>{t("verificationCode")}</Label>
 							<InputOTP
 								maxLength={6}
 								value={verifyCode}
@@ -161,7 +164,7 @@ export function TwoFactorPanel() {
 							</InputOTP>
 						</div>
 						<details className="text-sm text-muted-foreground">
-							<summary className="cursor-pointer">Can't scan?</summary>
+							<summary className="cursor-pointer">{t("cantScan")}</summary>
 							<code className="mt-1 block break-all rounded bg-muted px-2 py-1 text-xs">
 								{setupUri}
 							</code>
@@ -170,7 +173,7 @@ export function TwoFactorPanel() {
 							disabled={busy || verifyCode.length !== 6}
 							onClick={confirmEnroll}
 						>
-							Confirm &amp; enable
+							{t("confirmEnable")}
 						</Button>
 					</div>
 				</div>
@@ -185,8 +188,9 @@ export function TwoFactorPanel() {
 		return (
 			<div className="space-y-4">
 				<p className="text-sm">
-					Two-factor authentication is{" "}
-					<span className="font-semibold text-primary">on</span>.
+					{t("twoFactorOnPrefix")}{" "}
+					<span className="font-semibold text-primary">{t("twoFactorOn")}</span>
+					{t("twoFactorOnSuffix")}
 				</p>
 
 				{newCodes ? <BackupCodes codes={newCodes} /> : null}
@@ -197,12 +201,12 @@ export function TwoFactorPanel() {
 						size="sm"
 						onClick={() => setRegenOpen((v) => !v)}
 					>
-						Regenerate backup codes
+						{t("regenerateBackupCodes")}
 					</Button>
 				</div>
 				{regenOpen ? (
 					<div className="flex max-w-sm flex-col gap-2">
-						<Label>Confirm password</Label>
+						<Label>{t("confirmPassword")}</Label>
 						<Input
 							type="password"
 							value={regenPw}
@@ -213,13 +217,13 @@ export function TwoFactorPanel() {
 							disabled={busy || regenPw.length < 8}
 							onClick={regenerate}
 						>
-							Generate new codes
+							{t("generateNewCodes")}
 						</Button>
 					</div>
 				) : null}
 
 				<div className="flex max-w-sm flex-col gap-2 border-t border-border pt-4">
-					<Label>Disable 2FA — confirm password</Label>
+					<Label>{t("disableTwoFactorLabel")}</Label>
 					<Input
 						type="password"
 						value={password}
@@ -231,7 +235,7 @@ export function TwoFactorPanel() {
 						disabled={busy || password.length < 8}
 						onClick={disable}
 					>
-						Disable 2FA
+						{t("disableTwoFactor")}
 					</Button>
 				</div>
 			</div>
@@ -240,17 +244,15 @@ export function TwoFactorPanel() {
 
 	return (
 		<div className="flex max-w-sm flex-col gap-2">
-			<p className="text-sm text-muted-foreground">
-				Add a second factor with an authenticator app (TOTP).
-			</p>
-			<Label>Confirm password</Label>
+			<p className="text-sm text-muted-foreground">{t("twoFactorIntro")}</p>
+			<Label>{t("confirmPassword")}</Label>
 			<Input
 				type="password"
 				value={password}
 				onChange={(e) => setPassword(e.target.value)}
 			/>
 			<Button disabled={busy || password.length < 8} onClick={startEnroll}>
-				Enable 2FA
+				{t("enableTwoFactor")}
 			</Button>
 		</div>
 	);

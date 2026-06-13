@@ -7,6 +7,7 @@ import { TicketList } from "@/components/tickets/TicketList";
 import { TicketThread } from "@/components/tickets/TicketThread";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/lib/auth-client";
+import { useTranslations } from "@/lib/i18n";
 import { orpc } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
 
@@ -19,6 +20,8 @@ export const Route = createFileRoute("/{-$locale}/_app/account/tickets")({
 const FILTERS = ["all", "open", "closed"] as const;
 
 function TicketsPage() {
+	const t = useTranslations("accountPages");
+	const c = useTranslations("common");
 	const navigate = useNavigate();
 	const { data: session, isPending } = useSession();
 	const search = Route.useSearch();
@@ -36,7 +39,7 @@ function TicketsPage() {
 	});
 
 	if (isPending) {
-		return <p className="p-4 text-muted-foreground">Loading…</p>;
+		return <p className="p-4 text-muted-foreground">{c("loading")}</p>;
 	}
 	if (!session?.user) return null;
 
@@ -59,20 +62,20 @@ function TicketsPage() {
 			<div className="flex items-center justify-between gap-3">
 				<div>
 					<h1 className="text-2xl font-extrabold tracking-tight">
-						Your tickets
+						{t("ticketsTitle")}
 					</h1>
 					<p className="text-sm text-muted-foreground">
-						Your conversations with support.{" "}
+						{t("ticketsSubtitle")}{" "}
 						<Link
 							to={"/support" as never}
 							className="text-link hover:underline"
 						>
-							Other ways to get help →
+							{t("ticketsOtherHelp")}
 						</Link>
 					</p>
 				</div>
 				<Button onClick={openNew} className="shrink-0">
-					<Plus className="size-4" /> New ticket
+					<Plus className="size-4" /> {t("newTicket")}
 				</Button>
 			</div>
 
@@ -96,13 +99,15 @@ function TicketsPage() {
 										: "text-muted-foreground hover:text-foreground",
 								)}
 							>
-								{f}
+								{f === "all" ? c("all") : t(`filter_${f}`)}
 							</button>
 						))}
 					</div>
 					<div className="min-h-0 flex-1 overflow-y-auto">
 						{tickets.isPending ? (
-							<p className="p-6 text-sm text-muted-foreground">Loading…</p>
+							<p className="p-6 text-sm text-muted-foreground">
+								{c("loading")}
+							</p>
 						) : (
 							<TicketList
 								tickets={list}
@@ -128,12 +133,12 @@ function TicketsPage() {
 							onClick={back}
 							className="flex items-center gap-1.5 border-b border-border p-3 text-sm text-muted-foreground hover:text-foreground lg:hidden"
 						>
-							<ArrowLeft className="size-4" /> Back
+							<ArrowLeft className="size-4" /> {c("back")}
 						</button>
 					) : null}
 					{newOpen ? (
 						<div className="p-5">
-							<h2 className="mb-4 text-lg font-semibold">Open a ticket</h2>
+							<h2 className="mb-4 text-lg font-semibold">{t("openTicket")}</h2>
 							<NewTicketForm
 								onCreated={(id) => {
 									setNewOpen(false);
@@ -147,7 +152,7 @@ function TicketsPage() {
 					) : (
 						<div className="flex h-full flex-col items-center justify-center gap-3 p-10 text-center text-muted-foreground">
 							<LifeBuoy className="size-10 opacity-40" />
-							<p>Select a ticket to read it, or open a new one.</p>
+							<p>{t("ticketsEmptyState")}</p>
 						</div>
 					)}
 				</section>

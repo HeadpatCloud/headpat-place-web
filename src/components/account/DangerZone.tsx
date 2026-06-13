@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useTranslations } from "@/lib/i18n";
 
 type Props = {
 	twoFactorEnabled: boolean;
@@ -18,6 +19,8 @@ type Props = {
 };
 
 export function DangerZone({ twoFactorEnabled, onDelete }: Props) {
+	const t = useTranslations("accountPages");
+	const c = useTranslations("common");
 	const [password, setPassword] = useState("");
 	const [totp, setTotp] = useState("");
 	const [busy, setBusy] = useState(false);
@@ -40,28 +43,27 @@ export function DangerZone({ twoFactorEnabled, onDelete }: Props) {
 	return (
 		<div className="flex flex-col gap-4 rounded-xl border border-destructive/40 bg-destructive/5 p-5 sm:flex-row sm:items-center sm:justify-between">
 			<div>
-				<h3 className="text-sm font-semibold">Delete account</h3>
+				<h3 className="text-sm font-semibold">{t("deleteAccount")}</h3>
 				<p className="mt-1 text-sm text-muted-foreground">
-					Permanently deletes your profile, uploads, gallery, messages, and all
-					media. This can't be undone.
+					{t("deleteAccountDescription")}
 				</p>
 			</div>
 			<AlertDialog>
 				<AlertDialogTrigger asChild>
 					<Button variant="destructive" className="shrink-0">
-						Delete account
+						{t("deleteAccount")}
 					</Button>
 				</AlertDialogTrigger>
 				<AlertDialogContent>
-					<AlertDialogTitle>Delete your account?</AlertDialogTitle>
+					<AlertDialogTitle>{t("deleteAccountConfirmTitle")}</AlertDialogTitle>
 					<AlertDialogDescription>
-						This permanently erases your profile, gallery images, chat messages,
-						and every uploaded file. There's no going back — confirm with your
-						password{twoFactorEnabled ? " and a 2FA code" : ""}.
+						{twoFactorEnabled
+							? t("deleteAccountConfirmWith2fa")
+							: t("deleteAccountConfirmBody")}
 					</AlertDialogDescription>
 					<div className="space-y-3 py-2">
 						<div className="space-y-1.5">
-							<Label htmlFor="del-password">Confirm password</Label>
+							<Label htmlFor="del-password">{t("confirmPassword")}</Label>
 							<Input
 								id="del-password"
 								type="password"
@@ -72,7 +74,7 @@ export function DangerZone({ twoFactorEnabled, onDelete }: Props) {
 						</div>
 						{twoFactorEnabled ? (
 							<div className="space-y-1.5">
-								<Label htmlFor="del-totp">Two-factor code</Label>
+								<Label htmlFor="del-totp">{t("twoFactorCode")}</Label>
 								<Input
 									id="del-totp"
 									inputMode="numeric"
@@ -88,13 +90,13 @@ export function DangerZone({ twoFactorEnabled, onDelete }: Props) {
 						) : null}
 					</div>
 					<AlertDialogFooter>
-						<AlertDialogCancel disabled={busy}>Cancel</AlertDialogCancel>
+						<AlertDialogCancel disabled={busy}>{c("cancel")}</AlertDialogCancel>
 						<Button
 							variant="destructive"
 							disabled={!canSubmit || busy}
 							onClick={handleDelete}
 						>
-							{busy ? "Deleting…" : "Delete account"}
+							{busy ? t("deleting") : t("deleteAccount")}
 						</Button>
 					</AlertDialogFooter>
 				</AlertDialogContent>

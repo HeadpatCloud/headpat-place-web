@@ -4,14 +4,11 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { useThemeController } from "@/components/contexts/ThemeController";
 import { ThemeBuilder } from "@/components/theme/ThemeBuilder";
+import { useTranslations } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
 import { PRESETS } from "@/lib/theme/presets";
 
-const MODES = [
-	{ value: "system", label: "System" },
-	{ value: "light", label: "Light" },
-	{ value: "dark", label: "Dark" },
-] as const;
+const MODE_VALUES = ["system", "light", "dark"] as const;
 
 function Swatch({ slug }: { slug: string }) {
 	return (
@@ -28,6 +25,8 @@ function Swatch({ slug }: { slug: string }) {
 }
 
 export function AppearanceSettings() {
+	const t = useTranslations("accountPages");
+	const c = useTranslations("common");
 	const { theme: mode, setTheme: setMode } = useTheme();
 	const { activeTheme, setActiveTheme, myThemes } = useThemeController();
 	const qc = useQueryClient();
@@ -42,7 +41,7 @@ export function AppearanceSettings() {
 				queryKey: orpc.theme.myThemes.queryKey({ input: {} }),
 			});
 			qc.invalidateQueries({ queryKey: orpc.profile.me.queryKey() });
-			toast.success("Theme deleted");
+			toast.success(t("themeDeleted"));
 		},
 		onError: (e: Error) => toast.error(e.message),
 	});
@@ -50,32 +49,32 @@ export function AppearanceSettings() {
 	return (
 		<div className="mx-auto max-w-4xl space-y-10 p-6">
 			<section>
-				<h4 className="text-base font-semibold">Mode</h4>
+				<h4 className="text-base font-semibold">{t("modeHeading")}</h4>
 				<p className="mt-1 text-sm text-muted-foreground">
-					Light, dark, or follow your system.
+					{t("modeDescription")}
 				</p>
 				<div className="mt-3 inline-flex rounded-lg border border-border p-1">
-					{MODES.map((m) => (
+					{MODE_VALUES.map((value) => (
 						<button
-							key={m.value}
+							key={value}
 							type="button"
-							onClick={() => setMode(m.value)}
+							onClick={() => setMode(value)}
 							className={`rounded-md px-4 py-1.5 text-sm transition-colors ${
-								mode === m.value
+								mode === value
 									? "bg-primary text-primary-foreground"
 									: "text-muted-foreground hover:text-foreground"
 							}`}
 						>
-							{m.label}
+							{t(`mode_${value}`)}
 						</button>
 					))}
 				</div>
 			</section>
 
 			<section>
-				<h4 className="text-base font-semibold">Theme</h4>
+				<h4 className="text-base font-semibold">{t("themeHeading")}</h4>
 				<p className="mt-1 text-sm text-muted-foreground">
-					Applies across the whole app, including chat.
+					{t("themeDescription")}
 				</p>
 				<div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
 					{PRESETS.map((p) => (
@@ -93,11 +92,11 @@ export function AppearanceSettings() {
 							<span className="mt-2 block text-sm font-medium">{p.name}</span>
 						</button>
 					))}
-					{myThemes.map((t) => {
-						const value = `custom:${t.id}`;
+					{myThemes.map((theme) => {
+						const value = `custom:${theme.id}`;
 						return (
 							<div
-								key={t.id}
+								key={theme.id}
 								className={`rounded-lg border p-2 ${
 									activeTheme === value
 										? "border-primary ring-2 ring-primary/40"
@@ -112,39 +111,39 @@ export function AppearanceSettings() {
 									<div className="flex h-12 w-full overflow-hidden rounded-md border border-border">
 										<div
 											className="flex-1"
-											style={{ background: t.dark.background }}
+											style={{ background: theme.dark.background }}
 										/>
 										<div
 											className="flex-1"
-											style={{ background: t.dark.card }}
+											style={{ background: theme.dark.card }}
 										/>
 										<div
 											className="flex-1"
-											style={{ background: t.dark.primary }}
+											style={{ background: theme.dark.primary }}
 										/>
 										<div
 											className="flex-1"
-											style={{ background: t.dark.accent }}
+											style={{ background: theme.dark.accent }}
 										/>
 									</div>
 									<span className="mt-2 block truncate text-sm font-medium">
-										{t.name}
+										{theme.name}
 									</span>
 								</button>
 								<div className="mt-1 flex gap-2">
 									<button
 										type="button"
-										onClick={() => setBuilder({ mode: "edit", id: t.id })}
+										onClick={() => setBuilder({ mode: "edit", id: theme.id })}
 										className="text-xs text-muted-foreground underline hover:text-foreground"
 									>
-										Edit
+										{t("editTheme")}
 									</button>
 									<button
 										type="button"
-										onClick={() => del.mutate(t.id)}
+										onClick={() => del.mutate(theme.id)}
 										className="text-xs text-destructive underline"
 									>
-										Delete
+										{c("delete")}
 									</button>
 								</div>
 							</div>
@@ -155,7 +154,7 @@ export function AppearanceSettings() {
 						onClick={() => setBuilder({ mode: "create" })}
 						className="flex min-h-[5.5rem] items-center justify-center rounded-lg border border-dashed border-border text-sm text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
 					>
-						+ Create theme
+						{t("createTheme")}
 					</button>
 				</div>
 			</section>

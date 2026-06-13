@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { useTranslations } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
 
 export type EventFormInitial = {
@@ -96,6 +97,8 @@ export function EventForm({
 	mode: "create" | "edit";
 	initial?: EventFormInitial;
 }) {
+	const t = useTranslations("eventsPages");
+	const c = useTranslations("common");
 	const navigate = useNavigate();
 	const qc = useQueryClient();
 	const [form, setForm] = useState<FormState>(() => initState(initial));
@@ -123,7 +126,7 @@ export function EventForm({
 			? [
 					{
 						id: initial.communityId,
-						name: currentCommunity.data?.name ?? "Current community",
+						name: currentCommunity.data?.name ?? t("currentCommunity"),
 					},
 					...communities,
 				]
@@ -156,7 +159,7 @@ export function EventForm({
 			client.event.create(input),
 		onSuccess: (row) => {
 			invalidate();
-			toast.success("Event created.");
+			toast.success(t("eventCreated"));
 			navigate({ to: `/events/${row.id}` as never });
 		},
 		onError: (e: Error) => toast.error(e.message),
@@ -167,7 +170,7 @@ export function EventForm({
 			client.event.update(input),
 		onSuccess: (row) => {
 			invalidate();
-			toast.success("Event saved.");
+			toast.success(t("eventSaved"));
 			navigate({ to: `/events/${row.id}` as never });
 		},
 		onError: (e: Error) => toast.error(e.message),
@@ -182,28 +185,28 @@ export function EventForm({
 		website: string | null;
 	} | null {
 		if (!form.title.trim()) {
-			toast.error("Give the event a title.");
+			toast.error(t("validateTitle"));
 			return null;
 		}
 		if (!form.communityId) {
-			toast.error("Select a community for this event.");
+			toast.error(t("validateCommunity"));
 			return null;
 		}
 		if (!form.startsAt) {
-			toast.error("Pick a start date and time.");
+			toast.error(t("validateStart"));
 			return null;
 		}
 		const startsAt = new Date(form.startsAt);
 		const endsAt = form.endsAt ? new Date(form.endsAt) : null;
 		if (endsAt && endsAt < startsAt) {
-			toast.error("The end can't be before the start.");
+			toast.error(t("validateEndBeforeStart"));
 			return null;
 		}
 		let capacity: number | null = null;
 		if (form.visitorCapacity.trim()) {
 			capacity = Number(form.visitorCapacity);
 			if (!Number.isInteger(capacity) || capacity < 1) {
-				toast.error("Capacity must be a whole number of at least 1.");
+				toast.error(t("validateCapacity"));
 				return null;
 			}
 		}
@@ -217,7 +220,7 @@ export function EventForm({
 					throw new Error();
 				website = u.toString();
 			} catch {
-				toast.error("Enter a valid website URL.");
+				toast.error(t("validateWebsite"));
 				return null;
 			}
 		}
@@ -225,7 +228,7 @@ export function EventForm({
 			form.location.method !== "virtual" &&
 			form.location.coordinates.length === 0
 		) {
-			toast.error("Draw the event's location on the map, or set it to Online.");
+			toast.error(t("validateLocation"));
 			return null;
 		}
 		return { startsAt, endsAt, capacity, website };
@@ -284,11 +287,11 @@ export function EventForm({
 		return (
 			<Card>
 				<CardContent className="space-y-3 pt-6 text-center">
-					<p className="font-medium">Couldn't load your communities</p>
+					<p className="font-medium">{t("communitiesLoadError")}</p>
 					<p className="text-sm text-muted-foreground">
-						Something went wrong fetching the communities you run. Try again.
+						{t("communitiesLoadErrorBody")}
 					</p>
-					<Button onClick={() => mine.refetch()}>Retry</Button>
+					<Button onClick={() => mine.refetch()}>{c("retry")}</Button>
 				</CardContent>
 			</Card>
 		);
@@ -298,16 +301,15 @@ export function EventForm({
 		return (
 			<Card>
 				<CardContent className="space-y-3 pt-6 text-center">
-					<p className="font-medium">You don't run a community yet</p>
+					<p className="font-medium">{t("noCommunitiesTitle")}</p>
 					<p className="text-sm text-muted-foreground">
-						Events belong to a community. Create or help run one, then come back
-						to host an event.
+						{t("noCommunitiesBody")}
 					</p>
 					<Button
 						asChild
 						className="bg-primary text-primary-foreground hover:bg-primary/90"
 					>
-						<Link to={"/communities" as never}>Browse communities</Link>
+						<Link to={"/communities" as never}>{t("browseCommunities")}</Link>
 					</Button>
 				</CardContent>
 			</Card>
@@ -319,7 +321,7 @@ export function EventForm({
 			<Card>
 				<CardContent className="space-y-4 pt-6">
 					<div className="space-y-2">
-						<Label htmlFor="ev-community">Community</Label>
+						<Label htmlFor="ev-community">{t("communityLabel")}</Label>
 						<Select
 							value={form.communityId}
 							onValueChange={(v) => setField("communityId", v)}
@@ -327,51 +329,51 @@ export function EventForm({
 							<SelectTrigger id="ev-community">
 								<SelectValue
 									placeholder={
-										mine.isPending ? "Loading…" : "Select a community"
+										mine.isPending ? c("loading") : t("communityPlaceholder")
 									}
 								/>
 							</SelectTrigger>
 							<SelectContent>
-								{options.map((c) => (
-									<SelectItem key={c.id} value={c.id}>
-										{c.name}
+								{options.map((opt) => (
+									<SelectItem key={opt.id} value={opt.id}>
+										{opt.name}
 									</SelectItem>
 								))}
 							</SelectContent>
 						</Select>
 						<p className="text-xs text-muted-foreground">
-							The event is hosted under this community.
+							{t("communityHelp")}
 						</p>
 					</div>
 					<div className="space-y-2">
-						<Label htmlFor="ev-title">Title</Label>
+						<Label htmlFor="ev-title">{t("titleLabel")}</Label>
 						<Input
 							id="ev-title"
 							value={form.title}
 							onChange={(e) => setField("title", e.target.value)}
 							maxLength={200}
-							placeholder="Fur the love of art"
+							placeholder={t("titlePlaceholder")}
 						/>
 					</div>
 					<div className="space-y-2">
-						<Label htmlFor="ev-label">Tagline</Label>
+						<Label htmlFor="ev-label">{t("taglineLabel")}</Label>
 						<Input
 							id="ev-label"
 							value={form.label}
 							onChange={(e) => setField("label", e.target.value)}
 							maxLength={200}
-							placeholder="A short one-liner shown under the title"
+							placeholder={t("taglinePlaceholder")}
 						/>
 					</div>
 					<div className="space-y-2">
-						<Label htmlFor="ev-desc">Description</Label>
+						<Label htmlFor="ev-desc">{t("descriptionLabel")}</Label>
 						<Textarea
 							id="ev-desc"
 							value={form.description}
 							onChange={(e) => setField("description", e.target.value)}
 							maxLength={10000}
 							rows={5}
-							placeholder="What's happening, who's it for, what to bring…"
+							placeholder={t("descriptionPlaceholder")}
 						/>
 					</div>
 				</CardContent>
@@ -380,7 +382,7 @@ export function EventForm({
 			<Card>
 				<CardContent className="grid gap-4 pt-6 sm:grid-cols-2">
 					<div className="space-y-2">
-						<Label htmlFor="ev-start">Starts</Label>
+						<Label htmlFor="ev-start">{t("startsLabel")}</Label>
 						<Input
 							id="ev-start"
 							type="datetime-local"
@@ -389,7 +391,7 @@ export function EventForm({
 						/>
 					</div>
 					<div className="space-y-2">
-						<Label htmlFor="ev-end">Ends (optional)</Label>
+						<Label htmlFor="ev-end">{t("endsLabel")}</Label>
 						<Input
 							id="ev-end"
 							type="datetime-local"
@@ -403,23 +405,21 @@ export function EventForm({
 			<Card>
 				<CardContent className="space-y-4 pt-6">
 					<div>
-						<Label>Location</Label>
-						<p className="text-sm text-muted-foreground">
-							Pick how attendees find the event. Drawn areas show up on the map.
-						</p>
+						<Label>{t("locationLabel")}</Label>
+						<p className="text-sm text-muted-foreground">{t("locationHelp")}</p>
 					</div>
 					<LocationPicker
 						value={form.location}
 						onChange={(v) => setField("location", v)}
 					/>
 					<div className="space-y-2">
-						<Label htmlFor="ev-locationtext">Address / venue</Label>
+						<Label htmlFor="ev-locationtext">{t("addressLabel")}</Label>
 						<Input
 							id="ev-locationtext"
 							value={form.locationText}
 							onChange={(e) => setField("locationText", e.target.value)}
 							maxLength={200}
-							placeholder="Venue name or full address"
+							placeholder={t("addressPlaceholder")}
 						/>
 					</div>
 				</CardContent>
@@ -429,7 +429,7 @@ export function EventForm({
 				<CardContent className="space-y-4 pt-6">
 					<div className="grid gap-4 sm:grid-cols-2">
 						<div className="space-y-2">
-							<Label htmlFor="ev-website">Website</Label>
+							<Label htmlFor="ev-website">{t("websiteLabel")}</Label>
 							<Input
 								id="ev-website"
 								type="url"
@@ -440,19 +440,19 @@ export function EventForm({
 							/>
 						</div>
 						<div className="space-y-2">
-							<Label htmlFor="ev-capacity">Capacity (optional)</Label>
+							<Label htmlFor="ev-capacity">{t("capacityLabel")}</Label>
 							<Input
 								id="ev-capacity"
 								type="number"
 								min={1}
 								value={form.visitorCapacity}
 								onChange={(e) => setField("visitorCapacity", e.target.value)}
-								placeholder="No limit"
+								placeholder={t("capacityPlaceholder")}
 							/>
 						</div>
 					</div>
 					<div className="space-y-2">
-						<Label>Tags</Label>
+						<Label>{t("tagsLabel")}</Label>
 						<InputTags
 							value={form.tags}
 							onChange={(next) =>
@@ -462,15 +462,13 @@ export function EventForm({
 								)
 							}
 							maxLength={40}
-							placeholder="Add a tag, press Enter"
+							placeholder={t("tagsPlaceholder")}
 						/>
 					</div>
 					<div className="flex items-center justify-between rounded-lg border border-border px-4 py-3">
 						<div>
-							<p className="text-sm font-medium">Public event</p>
-							<p className="text-xs text-muted-foreground">
-								Anyone can find it. Off means only your community sees it.
-							</p>
+							<p className="text-sm font-medium">{t("publicLabel")}</p>
+							<p className="text-xs text-muted-foreground">{t("publicHelp")}</p>
 						</div>
 						<Switch
 							checked={form.isPublic}
@@ -479,10 +477,8 @@ export function EventForm({
 					</div>
 					<div className="flex items-center justify-between rounded-lg border border-border px-4 py-3">
 						<div>
-							<p className="text-sm font-medium">Paid event</p>
-							<p className="text-xs text-muted-foreground">
-								Marks the event as paid entry.
-							</p>
+							<p className="text-sm font-medium">{t("paidLabel")}</p>
+							<p className="text-xs text-muted-foreground">{t("paidHelp")}</p>
 						</div>
 						<Switch
 							checked={form.isPaid}
@@ -499,10 +495,10 @@ export function EventForm({
 					className="bg-primary text-primary-foreground hover:bg-primary/90"
 				>
 					{submitting
-						? "Saving…"
+						? t("saving")
 						: mode === "create"
-							? "Create event"
-							: "Save changes"}
+							? t("createEvent")
+							: t("saveChanges")}
 				</Button>
 				<Button
 					type="button"
@@ -510,7 +506,7 @@ export function EventForm({
 					disabled={submitting}
 					onClick={() => navigate({ to: ".." as never })}
 				>
-					Cancel
+					{c("cancel")}
 				</Button>
 			</div>
 		</form>

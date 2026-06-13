@@ -2,21 +2,21 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, MessageSquarePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useTranslations } from "@/lib/i18n";
 
 export const Route = createFileRoute("/{-$locale}/_app/support")({
 	component: SupportPage,
 });
 
 function SupportPage() {
+	const t = useTranslations("miscPages");
 	return (
 		<div className="mx-auto max-w-2xl space-y-6">
 			<div>
 				<h1 className="text-2xl font-extrabold tracking-tight">
-					Help &amp; support
+					{t("supportTitle")}
 				</h1>
-				<p className="mt-1 text-muted-foreground">
-					Reach us however suits you — or open a ticket and we'll follow up.
-				</p>
+				<p className="mt-1 text-muted-foreground">{t("supportSubtitle")}</p>
 			</div>
 
 			<Card className="border-primary/30 bg-primary/5">
@@ -25,22 +25,24 @@ function SupportPage() {
 						{/* globals.css sizes bare h2 at 1.875rem; ! beats that unlayered rule */}
 						<h2 className="flex items-center gap-2 text-lg! font-semibold">
 							<MessageSquarePlus className="size-5 text-primary" />
-							Open a support ticket
+							{t("supportOpenTicket")}
 						</h2>
 						<p className="mt-1 text-sm text-muted-foreground">
-							Track the conversation and attach screenshots or files.
+							{t("supportTicketDesc")}
 						</p>
 					</div>
 					<div className="flex shrink-0 gap-2">
 						<Button asChild variant="outline">
-							<Link to={"/account/tickets" as never}>Your tickets</Link>
+							<Link to={"/account/tickets" as never}>
+								{t("supportYourTickets")}
+							</Link>
 						</Button>
 						<Button asChild>
 							<Link
 								to={"/account/tickets" as never}
 								search={{ new: true } as never}
 							>
-								New ticket <ArrowRight className="size-4" />
+								{t("supportNewTicket")} <ArrowRight className="size-4" />
 							</Link>
 						</Button>
 					</div>
@@ -49,13 +51,13 @@ function SupportPage() {
 
 			<Card>
 				<CardHeader>
-					<CardTitle className="text-lg">Other ways to reach us</CardTitle>
+					<CardTitle className="text-lg">{t("supportOtherWays")}</CardTitle>
 				</CardHeader>
 				<CardContent className="space-y-4 text-sm">
 					<div>
 						<span className="font-medium">Discord</span>
 						<p className="text-muted-foreground">
-							Real-time help and community chat:{" "}
+							{t("supportDiscordDesc")}{" "}
 							<a
 								className="text-link hover:underline"
 								href="https://discord.gg/EaQTEKRg2A"
@@ -65,9 +67,9 @@ function SupportPage() {
 						</p>
 					</div>
 					<div>
-						<span className="font-medium">E-mail</span>
+						<span className="font-medium">{t("supportEmailLabel")}</span>
 						<p className="text-muted-foreground">
-							Drop us a line at{" "}
+							{t("supportEmailDesc")}{" "}
 							<a
 								className="text-link hover:underline"
 								href="mailto:help@headpat.place"
@@ -79,7 +81,7 @@ function SupportPage() {
 					<div>
 						<span className="font-medium">GitHub</span>
 						<p className="text-muted-foreground">
-							File bugs and contribute at{" "}
+							{t("supportGithubDesc")}{" "}
 							<a
 								className="text-link hover:underline"
 								href="https://github.com/headpatcloud"

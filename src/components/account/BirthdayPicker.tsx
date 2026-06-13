@@ -15,6 +15,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { useTranslations } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 const MONTHS = [
@@ -47,6 +48,7 @@ export function BirthdayPicker({
 	value: Date | null;
 	onChange: (d: Date | null) => void;
 }) {
+	const t = useTranslations("accountPages");
 	const [open, setOpen] = useState(false);
 	// The month shown in the grid, driven by the two selects. Controlling it is
 	// what makes the year/month actually apply when a day is then clicked.
@@ -70,7 +72,7 @@ export function BirthdayPicker({
 						)}
 					>
 						<CalendarIcon className="mr-2 size-4" />
-						{value ? format(value, "d MMMM yyyy") : "Pick your birthday"}
+						{value ? format(value, "d MMMM yyyy") : t("pickBirthday")}
 					</Button>
 				</PopoverTrigger>
 				<PopoverContent className="w-auto p-3" align="start">
@@ -81,7 +83,7 @@ export function BirthdayPicker({
 								setMonth(new Date(month.getFullYear(), Number(v), 1))
 							}
 						>
-							<SelectTrigger className="h-9 flex-1" aria-label="Month">
+							<SelectTrigger className="h-9 flex-1" aria-label={t("month")}>
 								<SelectValue />
 							</SelectTrigger>
 							<SelectContent className="max-h-72">
@@ -98,7 +100,7 @@ export function BirthdayPicker({
 								setMonth(new Date(Number(v), month.getMonth(), 1))
 							}
 						>
-							<SelectTrigger className="h-9 w-[92px]" aria-label="Year">
+							<SelectTrigger className="h-9 w-[92px]" aria-label={t("year")}>
 								<SelectValue />
 							</SelectTrigger>
 							<SelectContent className="max-h-72">
@@ -131,7 +133,7 @@ export function BirthdayPicker({
 					type="button"
 					variant="ghost"
 					size="icon"
-					aria-label="Clear birthday"
+					aria-label={t("clearBirthday")}
 					onClick={() => onChange(null)}
 				>
 					<X className="size-4" />

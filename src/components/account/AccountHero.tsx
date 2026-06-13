@@ -8,6 +8,7 @@ import { useStorageUrl } from "@/components/StorageImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "@/lib/i18n";
 import { orpc } from "@/lib/orpc";
 import { MediaEditOverlay } from "./MediaEditOverlay";
 import type { AccountProfile } from "./types";
@@ -21,6 +22,7 @@ type Props = {
 };
 
 export function AccountHero({ profile, onChangeMedia }: Props) {
+	const t = useTranslations("accountPages");
 	const avatarUrl = useStorageUrl("avatar", profile.avatarFileId, "md");
 	const uploads = useQuery({
 		...orpc.gallery.list.queryOptions({
@@ -34,7 +36,7 @@ export function AccountHero({ profile, onChangeMedia }: Props) {
 	function copyLink() {
 		const url = `${window.location.origin}${publicPath}`;
 		navigator.clipboard.writeText(url);
-		toast.success("Profile link copied.");
+		toast.success(t("profileLinkCopied"));
 	}
 
 	return (
@@ -43,7 +45,7 @@ export function AccountHero({ profile, onChangeMedia }: Props) {
 				kind="banner"
 				currentFileId={profile.bannerFileId}
 				onChange={(id) => onChangeMedia("bannerFileId", id)}
-				label="Change banner"
+				label={t("changeBanner")}
 				className="block"
 			>
 				<GradientBanner
@@ -59,7 +61,7 @@ export function AccountHero({ profile, onChangeMedia }: Props) {
 						kind="avatar"
 						currentFileId={profile.avatarFileId}
 						onChange={(id) => onChangeMedia("avatarFileId", id)}
-						label="Change avatar"
+						label={t("changeAvatar")}
 						className="size-28 rounded-2xl border border-border ring-4 ring-background"
 					>
 						<Avatar className="size-full rounded-2xl">
@@ -85,11 +87,11 @@ export function AccountHero({ profile, onChangeMedia }: Props) {
 
 					<div className="flex gap-2 pb-1">
 						<Button variant="outline" size="sm" onClick={copyLink}>
-							<Copy className="size-4" /> Copy link
+							<Copy className="size-4" /> {t("copyLink")}
 						</Button>
 						<Button asChild size="sm">
 							<Link to={publicPath as never}>
-								<ExternalLink className="size-4" /> View profile
+								<ExternalLink className="size-4" /> {t("viewProfile")}
 							</Link>
 						</Button>
 					</div>
@@ -98,7 +100,7 @@ export function AccountHero({ profile, onChangeMedia }: Props) {
 				<div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
 					{profile.createdAt ? (
 						<span className="text-muted-foreground">
-							Member since{" "}
+							{t("memberSince")}{" "}
 							<span className="font-medium text-foreground">
 								{format(new Date(profile.createdAt), "MMMM yyyy")}
 							</span>
@@ -108,7 +110,7 @@ export function AccountHero({ profile, onChangeMedia }: Props) {
 						<span className="font-medium text-foreground">
 							{uploads.data?.total ?? 0}
 						</span>{" "}
-						uploads
+						{t("uploads")}
 					</span>
 					<Link
 						to={`${publicPath}/followers` as never}
@@ -117,7 +119,7 @@ export function AccountHero({ profile, onChangeMedia }: Props) {
 						<span className="font-medium text-foreground">
 							{profile.followersCount}
 						</span>{" "}
-						followers
+						{t("followers")}
 					</Link>
 					<Link
 						to={`${publicPath}/following` as never}
@@ -126,7 +128,7 @@ export function AccountHero({ profile, onChangeMedia }: Props) {
 						<span className="font-medium text-foreground">
 							{profile.followingCount}
 						</span>{" "}
-						following
+						{t("following")}
 					</Link>
 				</div>
 

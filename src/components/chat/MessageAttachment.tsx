@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { FileIcon } from "lucide-react";
+import { useTranslations } from "@/lib/i18n";
 import { orpc } from "@/lib/orpc";
 
 function useAttachmentUrl(key: string, variant?: string) {
@@ -21,6 +22,7 @@ export function MessageAttachment({
 }: {
 	attachmentKey: string;
 }) {
+	const t = useTranslations("chatUi");
 	const q = useAttachmentUrl(attachmentKey, "md");
 	const mime = q.data?.mimeType ?? "";
 
@@ -61,7 +63,7 @@ export function MessageAttachment({
 			className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm hover:bg-muted"
 		>
 			<FileIcon className="size-4 shrink-0 text-muted-foreground" />
-			<span className="truncate">{mime || "File"}</span>
+			<span className="truncate">{mime || t("fileFallback")}</span>
 			<span className="shrink-0 text-xs text-muted-foreground">
 				{humanSize(q.data.sizeBytes)}
 			</span>

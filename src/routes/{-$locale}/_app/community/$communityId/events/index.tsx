@@ -1,14 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDateFormat } from "@/lib/datetime";
+import { useTranslations } from "@/lib/i18n";
 import { orpc } from "@/lib/orpc";
 
-export const Route = createFileRoute("/{-$locale}/_app/community/$communityId/events/")({
+export const Route = createFileRoute(
+	"/{-$locale}/_app/community/$communityId/events/",
+)({
 	component: CommunityEventsPage,
 });
 
 function CommunityEventsPage() {
+	const t = useTranslations("communityPages");
 	const { communityId } = Route.useParams();
 	const fmt = useDateFormat();
 	const events = useQuery(
@@ -17,11 +21,11 @@ function CommunityEventsPage() {
 
 	return (
 		<main className="space-y-4">
-			<h2 className="text-2xl font-bold">Events</h2>
+			<h2 className="text-2xl font-bold">{t("eventsTitle")}</h2>
 			{events.isPending ? (
-				<p className="text-muted-foreground">Loading…</p>
+				<p className="text-muted-foreground">{t("loading")}</p>
 			) : (events.data ?? []).length === 0 ? (
-				<p className="text-muted-foreground">No events yet.</p>
+				<p className="text-muted-foreground">{t("noEventsYet")}</p>
 			) : (
 				<div className="grid gap-4 sm:grid-cols-2">
 					{(events.data ?? []).map((e) => (

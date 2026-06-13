@@ -5,13 +5,17 @@ import { GradientBanner } from "@/components/GradientBanner";
 import { StorageImage } from "@/components/StorageImage";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
 
-export const Route = createFileRoute("/{-$locale}/_app/community/$communityId/")({
+export const Route = createFileRoute(
+	"/{-$locale}/_app/community/$communityId/",
+)({
 	component: CommunityDetailPage,
 });
 
 function CommunityDetailPage() {
+	const t = useTranslations("communityPages");
 	const { communityId } = Route.useParams();
 	const qc = useQueryClient();
 	const community = useQuery(
@@ -45,9 +49,9 @@ function CommunityDetailPage() {
 	});
 
 	if (community.isPending)
-		return <p className="p-4 text-muted-foreground">Loading…</p>;
+		return <p className="p-4 text-muted-foreground">{t("loading")}</p>;
 	if (community.isError || !community.data)
-		return <p className="p-4">Community not found.</p>;
+		return <p className="p-4">{t("communityNotFound")}</p>;
 	const c = community.data;
 	const role = myRole.data?.role;
 
@@ -82,12 +86,12 @@ function CommunityDetailPage() {
 								}
 								variant={followStatus.data?.iFollow ? "outline" : "default"}
 							>
-								{followStatus.data?.iFollow ? "Joined" : "Join"}
+								{followStatus.data?.iFollow ? t("joined") : t("join")}
 							</Button>
 							{role === "owner" || role === "admin" ? (
 								<Button variant="secondary" asChild>
 									<Link to={`/community/${communityId}/admin` as never}>
-										Admin
+										{t("admin")}
 									</Link>
 								</Button>
 							) : null}
@@ -103,13 +107,13 @@ function CommunityDetailPage() {
 							className="hover:underline"
 						>
 							<b>{c.followersCount}</b>
-							<span className="text-muted-foreground"> members</span>
+							<span className="text-muted-foreground"> {t("members")}</span>
 						</Link>
 						<Link
 							to={`/community/${communityId}/events` as never}
 							className="text-muted-foreground hover:underline"
 						>
-							View events →
+							{t("viewEvents")}
 						</Link>
 					</div>
 					{c.description ? <p className="mb-4">{c.description}</p> : null}

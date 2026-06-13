@@ -16,6 +16,7 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { useDateFormat } from "@/lib/datetime";
+import { useTranslations } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/{-$locale}/admin/users/$userId")({
@@ -23,6 +24,8 @@ export const Route = createFileRoute("/{-$locale}/admin/users/$userId")({
 });
 
 function UserDetail() {
+	const t = useTranslations("adminPanel");
+	const c = useTranslations("common");
 	const { userId } = Route.useParams();
 	const qc = useQueryClient();
 	const fmt = useDateFormat();
@@ -67,11 +70,10 @@ function UserDetail() {
 	});
 
 	if (userQ.isError)
-		return (
-			<p className="text-muted-foreground">You don't have access to this.</p>
-		);
-	if (userQ.isPending) return <p className="text-muted-foreground">Loading…</p>;
-	if (!userQ.data) return <p>User not found.</p>;
+		return <p className="text-muted-foreground">{t("noAccess")}</p>;
+	if (userQ.isPending)
+		return <p className="text-muted-foreground">{c("loading")}</p>;
+	if (!userQ.data) return <p>{t("userNotFound")}</p>;
 
 	const u = userQ.data;
 	const assignedIds = new Set(u.roles.map((r) => r.id));
@@ -95,14 +97,16 @@ function UserDetail() {
 							<p className="truncate font-semibold">
 								{u.displayName || u.name || u.profileUrl}
 							</p>
-							{u.banned ? <Badge variant="destructive">banned</Badge> : null}
+							{u.banned ? (
+								<Badge variant="destructive">{t("bannedBadge")}</Badge>
+							) : null}
 						</div>
 						<p className="truncate text-xs text-muted-foreground">
 							@{u.profileUrl}
 						</p>
 						<p className="truncate text-xs text-muted-foreground">{u.email}</p>
 						<p className="text-xs text-muted-foreground">
-							Joined {fmt.date(u.createdAt)}
+							{t("joined", { date: fmt.date(u.createdAt) })}
 						</p>
 					</div>
 				</CardContent>
@@ -110,14 +114,14 @@ function UserDetail() {
 
 			<Card>
 				<CardHeader>
-					<CardTitle>Moderation</CardTitle>
+					<CardTitle>{t("moderation")}</CardTitle>
 				</CardHeader>
 				<CardContent className="space-y-3">
 					{u.banned ? (
 						<>
 							{u.banReason ? (
 								<p className="text-sm text-muted-foreground">
-									Reason: {u.banReason}
+									{t("banReasonLabel", { reason: u.banReason })}
 								</p>
 							) : null}
 							<Button
@@ -125,7 +129,7 @@ function UserDetail() {
 								disabled={setBanned.isPending}
 								onClick={() => setBanned.mutate({ banned: false })}
 							>
-								Unban
+								{t("unban")}
 							</Button>
 						</>
 					) : (
@@ -133,7 +137,7 @@ function UserDetail() {
 							<Input
 								value={reason}
 								onChange={(e) => setReason(e.target.value)}
-								placeholder="Ban reason (optional)"
+								placeholder={t("banReasonPlaceholder")}
 							/>
 							<Button
 								disabled={setBanned.isPending}
@@ -145,7 +149,7 @@ function UserDetail() {
 								}
 								className="bg-primary text-primary-foreground hover:bg-primary/90 shrink-0"
 							>
-								Ban
+								{t("ban")}
 							</Button>
 						</div>
 					)}
@@ -154,12 +158,14 @@ function UserDetail() {
 
 			<Card>
 				<CardHeader>
-					<CardTitle>Roles</CardTitle>
+					<CardTitle>{t("roles")}</CardTitle>
 				</CardHeader>
 				<CardContent className="space-y-3">
 					<div className="flex flex-wrap gap-1.5">
 						{u.roles.length === 0 ? (
-							<span className="text-sm text-muted-foreground">No roles.</span>
+							<span className="text-sm text-muted-foreground">
+								{t("noRoles")}
+							</span>
 						) : (
 							u.roles.map((r) => (
 								<span
@@ -182,7 +188,7 @@ function UserDetail() {
 					<div className="flex gap-2">
 						<Select value={roleToAdd} onValueChange={setRoleToAdd}>
 							<SelectTrigger className="flex-1">
-								<SelectValue placeholder="Add a role" />
+								<SelectValue placeholder={t("addRole")} />
 							</SelectTrigger>
 							<SelectContent>
 								{available.map((r) => (
@@ -197,7 +203,7 @@ function UserDetail() {
 							onClick={() => assign.mutate(roleToAdd)}
 							className="bg-primary text-primary-foreground hover:bg-primary/90 shrink-0"
 						>
-							Add
+							{t("add")}
 						</Button>
 					</div>
 				</CardContent>

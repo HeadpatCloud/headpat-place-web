@@ -14,6 +14,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import { useTranslations } from "@/lib/i18n";
 
 const ZONES: string[] =
 	(
@@ -27,6 +28,7 @@ export function TimezoneSelect({
 	value: string | null;
 	onChange: (tz: string | null) => void;
 }) {
+	const t = useTranslations("commonUi");
 	const [open, setOpen] = useState(false);
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
@@ -38,7 +40,7 @@ export function TimezoneSelect({
 					aria-expanded={open}
 					className="w-full justify-between sm:w-80"
 				>
-					{value ?? "Device default"}
+					{value ?? t("deviceDefault")}
 					<ChevronsUpDownIcon className="ml-2 size-4 shrink-0 opacity-50" />
 				</Button>
 			</PopoverTrigger>
@@ -47,9 +49,9 @@ export function TimezoneSelect({
 				align="start"
 			>
 				<Command>
-					<CommandInput placeholder="Search timezone…" />
+					<CommandInput placeholder={t("searchTimezone")} />
 					<CommandList>
-						<CommandEmpty>No timezone found.</CommandEmpty>
+						<CommandEmpty>{t("noTimezoneFound")}</CommandEmpty>
 						<CommandGroup>
 							<CommandItem
 								value="Device default"
@@ -61,7 +63,7 @@ export function TimezoneSelect({
 								<CheckIcon
 									className={`mr-2 size-4 ${value === null ? "opacity-100" : "opacity-0"}`}
 								/>
-								Device default
+								{t("deviceDefault")}
 							</CommandItem>
 							{ZONES.map((z) => (
 								<CommandItem

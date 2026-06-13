@@ -13,6 +13,7 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { useTranslations } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
 
 export function NewConversationDialog({
@@ -22,6 +23,8 @@ export function NewConversationDialog({
 	open: boolean;
 	onOpenChange: (v: boolean) => void;
 }) {
+	const t = useTranslations("chatUi");
+	const c = useTranslations("common");
 	const qc = useQueryClient();
 	const navigate = useNavigate();
 	const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -71,7 +74,7 @@ export function NewConversationDialog({
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent className="max-w-md">
 				<DialogHeader>
-					<DialogTitle>New message</DialogTitle>
+					<DialogTitle>{t("newMessageTitle")}</DialogTitle>
 				</DialogHeader>
 
 				{isGroup ? (
@@ -80,25 +83,25 @@ export function NewConversationDialog({
 							htmlFor="group-name"
 							className="text-xs font-medium text-muted-foreground"
 						>
-							Group name (optional)
+							{t("groupNameOptional")}
 						</label>
 						<Input
 							id="group-name"
 							value={name}
 							onChange={(e) => setName(e.target.value)}
 							maxLength={100}
-							placeholder="e.g. Weekend crew"
+							placeholder={t("groupNamePlaceholder")}
 						/>
 					</div>
 				) : selected.size === 1 ? (
 					<p className="text-xs text-muted-foreground">
-						Direct message to{" "}
+						{t("directMessageTo")}{" "}
 						<span className="font-medium text-foreground">
 							{(() => {
 								const u = following.data?.items.find((i) =>
 									selected.has(i.userId),
 								);
-								return u?.displayName || u?.name || "this user";
+								return u?.displayName || u?.name || t("thisUser");
 							})()}
 						</span>
 					</p>
@@ -107,7 +110,7 @@ export function NewConversationDialog({
 				<div className="mt-1 max-h-72 overflow-y-auto rounded-md border border-border">
 					{following.data?.items.length ? (
 						following.data.items.map((u) => {
-							const label = u.displayName || u.name || "User";
+							const label = u.displayName || u.name || t("userFallback");
 							const checked = selected.has(u.userId);
 							return (
 								<button
@@ -142,9 +145,7 @@ export function NewConversationDialog({
 						})
 					) : (
 						<div className="px-3 py-6 text-center text-sm text-muted-foreground">
-							{following.isLoading
-								? "Loading…"
-								: "You aren't following anyone."}
+							{following.isLoading ? c("loading") : t("notFollowingAnyone")}
 						</div>
 					)}
 				</div>
@@ -158,14 +159,14 @@ export function NewConversationDialog({
 							reset();
 						}}
 					>
-						Cancel
+						{c("cancel")}
 					</Button>
 					<Button
 						type="button"
 						onClick={() => start.mutate()}
 						disabled={selected.size === 0 || start.isPending}
 					>
-						Start
+						{t("start")}
 					</Button>
 				</DialogFooter>
 			</DialogContent>
