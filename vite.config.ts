@@ -1,26 +1,33 @@
-import { dirname, resolve } from "node:path"
-import { fileURLToPath } from "node:url"
-import mdx from "@mdx-js/rollup"
-import tailwindcss from "@tailwindcss/vite"
-import { tanstackStart } from "@tanstack/react-start/plugin/vite"
-import viteReact from "@vitejs/plugin-react"
-import { defineConfig } from "vite"
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import mdx from "@mdx-js/rollup";
+import tailwindcss from "@tailwindcss/vite";
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import viteReact from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const pkg = JSON.parse(
+	readFileSync(resolve(__dirname, "package.json"), "utf-8"),
+);
 
 export default defineConfig({
-  plugins: [
-    tanstackStart(),
-    { enforce: "pre", ...mdx() },
-    viteReact(),
-    tailwindcss(),
-  ],
-  resolve: {
-    alias: {
-      "@": resolve(__dirname, "./src"),
-      "#": resolve(__dirname, "./src"),
-      "@backend": resolve(__dirname, "../headpat-place-api/src"),
-    },
-  },
-  server: { port: 3000 },
-})
+	define: {
+		__APP_VERSION__: JSON.stringify(pkg.version),
+	},
+	plugins: [
+		tanstackStart(),
+		{ enforce: "pre", ...mdx() },
+		viteReact(),
+		tailwindcss(),
+	],
+	resolve: {
+		alias: {
+			"@": resolve(__dirname, "./src"),
+			"#": resolve(__dirname, "./src"),
+			"@backend": resolve(__dirname, "../headpat-place-api/src"),
+		},
+	},
+	server: { port: 3000 },
+});

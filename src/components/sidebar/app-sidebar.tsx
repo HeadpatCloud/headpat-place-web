@@ -221,7 +221,7 @@ export function AppSidebar({
 			<SidebarFooter>
 				<Separator />
 				<span className="text-muted-foreground text-center text-sm">
-					BETA 0.8.14 <RocketIcon className="inline-block size-4" />
+					BETA {__APP_VERSION__} <RocketIcon className="inline-block size-4" />
 				</span>
 				<Separator />
 				<NavUser />
