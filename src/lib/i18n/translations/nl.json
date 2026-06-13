@@ -755,7 +755,12 @@
 		"missingVerificationToken": "Geen verificatietoken gevonden.",
 		"verificationFailed": "Verificatie mislukt.",
 		"emailVerifiedRedirecting": "E-mail geverifieerd. Je wordt doorgestuurd…",
-		"verifyingEmail": "Je e-mail wordt geverifieerd…"
+		"verifyingEmail": "Je e-mail wordt geverifieerd…",
+		"invalidEmail": "Voer een geldig e-mailadres in",
+		"passwordTooShort": "Het wachtwoord moet minstens 8 tekens bevatten",
+		"passwordTooLong": "Het wachtwoord mag maximaal 256 tekens bevatten",
+		"displayNameTooShort": "De weergavenaam moet minstens 3 tekens bevatten",
+		"mustAcceptTerms": "Accepteer de voorwaarden om door te gaan"
 	},
 	"accountPages": {
 		"nav_profile": "Profiel",

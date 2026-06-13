@@ -755,7 +755,12 @@
 		"missingVerificationToken": "Missing verification token.",
 		"verificationFailed": "Verification failed.",
 		"emailVerifiedRedirecting": "Email verified. Redirecting…",
-		"verifyingEmail": "Verifying your email…"
+		"verifyingEmail": "Verifying your email…",
+		"invalidEmail": "Please enter a valid email address",
+		"passwordTooShort": "Password must be at least 8 characters",
+		"passwordTooLong": "Password must be at most 256 characters",
+		"displayNameTooShort": "Display name must be at least 3 characters",
+		"mustAcceptTerms": "Please accept the terms to continue"
 	},
 	"accountPages": {
 		"nav_profile": "Profile",

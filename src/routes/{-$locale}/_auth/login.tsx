@@ -7,7 +7,7 @@ import {
 	SiTwitch,
 } from "@icons-pack/react-simple-icons";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -35,31 +35,6 @@ type RegisterFormData = {
 	acceptedTerms: boolean;
 };
 
-const loginSchema = z.object({
-	email: z.string().email("Invalid email").trim(),
-	password: z
-		.string()
-		.trim()
-		.min(8, "Password must be at least 8 characters")
-		.max(256, "Password must be at most 256 characters"),
-});
-
-const registerSchema = z.object({
-	username: z
-		.string()
-		.trim()
-		.min(3, "Display name must be at least 3 characters"),
-	email: z.string().email("Invalid email").trim(),
-	password: z
-		.string()
-		.trim()
-		.min(8, "Password must be at least 8 characters")
-		.max(256, "Password must be at most 256 characters"),
-	acceptedTerms: z.boolean().refine((v) => v === true, {
-		message: "You must accept the terms",
-	}),
-});
-
 async function startOAuth(provider: string) {
 	// Absolute URL on the web origin — the API and web are different origins, so a
 	// relative callbackURL would resolve against the API (api.headpat.place).
@@ -86,12 +61,43 @@ function LoginPage() {
 	const [shakeKey, setShakeKey] = useState(0);
 	const cardRef = useRef<HTMLDivElement>(null);
 
+	const loginSchema = useMemo(
+		() =>
+			z.object({
+				email: z.string().email(t("invalidEmail")).trim(),
+				password: z
+					.string()
+					.trim()
+					.min(8, t("passwordTooShort"))
+					.max(256, t("passwordTooLong")),
+			}),
+		[t],
+	);
+	const registerSchema = useMemo(
+		() =>
+			z.object({
+				username: z.string().trim().min(3, t("displayNameTooShort")),
+				email: z.string().email(t("invalidEmail")).trim(),
+				password: z
+					.string()
+					.trim()
+					.min(8, t("passwordTooShort"))
+					.max(256, t("passwordTooLong")),
+				acceptedTerms: z.boolean().refine((v) => v === true, {
+					message: t("mustAcceptTerms"),
+				}),
+			}),
+		[t],
+	);
+
 	const loginForm = useForm<LoginFormData>({
 		resolver: zodResolver(loginSchema),
+		mode: "onTouched",
 		defaultValues: { email: "", password: "" },
 	});
 	const registerForm = useForm<RegisterFormData>({
 		resolver: zodResolver(registerSchema),
+		mode: "onTouched",
 		defaultValues: {
 			username: "",
 			email: "",
