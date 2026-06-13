@@ -51,6 +51,16 @@ export function MapView() {
 		};
 	}, []);
 
+	// Re-fit the map whenever its box changes (sidebar toggle, rotation, resize) —
+	// otherwise Leaflet renders gray tiles, which bites most often on mobile.
+	useEffect(() => {
+		const el = containerRef.current;
+		if (!el) return;
+		const ro = new ResizeObserver(() => mapRef.current?.invalidateSize());
+		ro.observe(el);
+		return () => ro.disconnect();
+	}, []);
+
 	// biome-ignore lint/correctness/useExhaustiveDependencies: re-render layers when data/theme change
 	useEffect(() => {
 		let cancelled = false;
