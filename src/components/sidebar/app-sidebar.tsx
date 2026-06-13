@@ -36,7 +36,7 @@ export function AppSidebar({
 	mode = "app",
 	...props
 }: React.ComponentProps<typeof Sidebar> & { mode?: "app" | "admin" }) {
-	const pageNames = useTranslations("PageNames");
+	const nav = useTranslations("nav");
 
 	const adminPerms = useQuery({
 		...orpc.adminRole.myPermissions.queryOptions({ input: undefined }),
@@ -47,89 +47,89 @@ export function AppSidebar({
 	const data = {
 		navMain: [
 			{
-				name: pageNames("home"),
+				name: nav("home"),
 				url: "/",
 				icon: HomeIcon,
 			},
 			{
-				name: pageNames("gallery"),
+				name: nav("gallery"),
 				url: "/gallery",
 				icon: LayoutPanelLeftIcon,
 			},
 			{
-				name: "Chat",
+				name: nav("chat"),
 				url: "/chat",
 				icon: MessagesSquareIcon,
 			},
 			{
-				name: pageNames("announcements"),
+				name: nav("announcements"),
 				url: "/announcements",
 				icon: MegaphoneIcon,
 			},
 			{
-				name: pageNames("notifications"),
+				name: nav("notifications"),
 				url: "/notifications",
 				icon: BellIcon,
 			},
 			{
-				name: pageNames("events"),
+				name: nav("events"),
 				url: "/events",
 				icon: CalendarIcon,
 			},
 			{
-				name: pageNames("map"),
+				name: nav("map"),
 				url: "/map",
 				icon: MapIcon,
 			},
 			{
-				name: pageNames("users"),
+				name: nav("users"),
 				url: "/users",
 				icon: UserSearchIcon,
 			},
 		],
 		secondMain: [
 			{
-				name: pageNames("myprofile"),
+				name: nav("myprofile"),
 				url: "/profile",
 				icon: FileIcon,
 			},
 			{
-				name: pageNames("communities"),
+				name: nav("communities"),
 				url: "/community",
 				icon: HeartHandshakeIcon,
 			},
 		],
 		adminAccess: [
-			{ name: "Roles", url: "/admin/roles", icon: ShieldIcon },
+			{ name: nav("roles"), url: "/admin/roles", icon: ShieldIcon },
 			{
-				name: "Users",
+				name: nav("adminUsers"),
 				url: "/admin/users",
 				icon: UserSearchIcon,
 			},
 		],
 		adminOps: [
 			{
-				name: "Reports",
+				name: nav("reports"),
 				url: "/admin/reports",
 				icon: FileCheckIcon,
 			},
 			{
-				name: "Tickets",
+				name: nav("tickets"),
 				url: "/admin/tickets",
 				icon: BadgeHelpIcon,
 			},
 			{
-				name: "Changelog",
+				name: nav("adminChangelog"),
 				url: "/admin/changelog",
 				icon: PencilIcon,
 			},
 			{
-				name: "Announcements",
+				name: nav("adminAnnouncements"),
 				url: "/admin/announcements",
 				icon: MegaphoneIcon,
 			},
 		],
-		adminBack: [{ name: "Back to Headpat", url: "/", icon: HomeIcon }],
+		adminBack: [{ name: nav("backToHeadpat"), url: "/", icon: HomeIcon }],
 		navSecondary: [
 			{
 				title: "Discord",
@@ -144,17 +144,17 @@ export function AppSidebar({
 		],
 		thirdMain: [
 			{
-				name: pageNames("legal"),
+				name: nav("legal"),
 				url: "/legal",
 				icon: FileCheckIcon,
 			},
 			{
-				name: "Support",
+				name: nav("support"),
 				url: "/support",
 				icon: BadgeHelpIcon,
 			},
 			{
-				name: pageNames("changelog"),
+				name: nav("changelog"),
 				url: "/changelog",
 				icon: PencilIcon,
 			},

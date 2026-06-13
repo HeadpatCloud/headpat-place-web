@@ -1,4 +1,26 @@
 {
+	"nav": {
+		"home": "Startseite",
+		"gallery": "Galerie",
+		"chat": "Chat",
+		"announcements": "Ankündigungen",
+		"notifications": "Benachrichtigungen",
+		"events": "Veranstaltungen",
+		"map": "Karte",
+		"users": "Nutzer entdecken",
+		"myprofile": "Mein Profil",
+		"communities": "Communitys",
+		"legal": "Rechtliches",
+		"support": "Support",
+		"changelog": "Änderungsprotokoll",
+		"roles": "Rollen",
+		"adminUsers": "Nutzer",
+		"reports": "Meldungen",
+		"tickets": "Tickets",
+		"adminChangelog": "Änderungsprotokoll",
+		"adminAnnouncements": "Ankündigungen",
+		"backToHeadpat": "Zurück zu Headpat"
+	},
 	"tabs": {
 		"home": "Home",
 		"gallery": "Galerie",

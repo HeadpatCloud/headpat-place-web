@@ -1,4 +1,26 @@
 {
+	"nav": {
+		"home": "Home",
+		"gallery": "Galerij",
+		"chat": "Chat",
+		"announcements": "Aankondigingen",
+		"notifications": "Meldingen",
+		"events": "Evenementen",
+		"map": "Kaart",
+		"users": "Gebruikers ontdekken",
+		"myprofile": "Mijn profiel",
+		"communities": "Communities",
+		"legal": "Juridisch",
+		"support": "Support",
+		"changelog": "Wijzigingslogboek",
+		"roles": "Rollen",
+		"adminUsers": "Gebruikers",
+		"reports": "Rapporten",
+		"tickets": "Tickets",
+		"adminChangelog": "Wijzigingslogboek",
+		"adminAnnouncements": "Aankondigingen",
+		"backToHeadpat": "Terug naar Headpat"
+	},
 	"tabs": {
 		"home": "Home",
 		"gallery": "Galerij",

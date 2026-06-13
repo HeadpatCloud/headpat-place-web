@@ -1,4 +1,26 @@
 {
+	"nav": {
+		"home": "Home",
+		"gallery": "Gallery",
+		"chat": "Chat",
+		"announcements": "Announcements",
+		"notifications": "Notifications",
+		"events": "Events",
+		"map": "Map",
+		"users": "Discover users",
+		"myprofile": "My profile",
+		"communities": "Communities",
+		"legal": "Legal",
+		"support": "Support",
+		"changelog": "Changelog",
+		"roles": "Roles",
+		"adminUsers": "Users",
+		"reports": "Reports",
+		"tickets": "Tickets",
+		"adminChangelog": "Changelog",
+		"adminAnnouncements": "Announcements",
+		"backToHeadpat": "Back to Headpat"
+	},
 	"tabs": {
 		"home": "Home",
 		"gallery": "Gallery",
