@@ -54,7 +54,7 @@ export function AccountHero({ profile, onChangeMedia }: Props) {
 			</MediaEditOverlay>
 
 			<div className="px-6 pb-6">
-				<div className="-mt-14 flex flex-wrap items-end gap-4">
+				<div className="-mt-12 flex flex-wrap items-end gap-4">
 					<MediaEditOverlay
 						kind="avatar"
 						currentFileId={profile.avatarFileId}
@@ -75,10 +75,10 @@ export function AccountHero({ profile, onChangeMedia }: Props) {
 					</MediaEditOverlay>
 
 					<div className="min-w-0 flex-1 pb-1">
-						<h1 className="truncate text-2xl font-extrabold tracking-tight">
+						<h1 className="truncate text-xl font-extrabold tracking-tight">
 							{name}
 						</h1>
-						<p className="truncate text-muted-foreground">
+						<p className="truncate text-sm text-muted-foreground">
 							@{profile.profileUrl}
 						</p>
 					</div>

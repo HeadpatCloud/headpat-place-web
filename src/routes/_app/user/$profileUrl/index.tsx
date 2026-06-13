@@ -54,7 +54,7 @@ function UserProfilePage() {
 			<div className="overflow-hidden rounded-2xl border">
 				<GradientBanner kind="banner" fileId={p.bannerFileId} aspect="3/1" />
 				<div className="px-6 pb-6">
-					<div className="-mt-16 flex items-end gap-4">
+					<div className="-mt-12 flex items-end gap-4">
 						<Avatar className="h-32 w-32 rounded-2xl border border-border ring-4 ring-background">
 							<AvatarImage
 								src={avatarUrl.data?.url}
@@ -66,7 +66,7 @@ function UserProfilePage() {
 							</AvatarFallback>
 						</Avatar>
 						<div className="min-w-0 flex-1 pb-1">
-							<h1 className="truncate text-2xl font-extrabold tracking-tight">
+							<h1 className="truncate text-xl font-extrabold tracking-tight">
 								{p.displayName || p.name || p.profileUrl}
 							</h1>
 							{p.status ? (

@@ -1,5 +1,6 @@
 import { CakeIcon } from "lucide-react";
 import { GradientBanner } from "@/components/GradientBanner";
+import { RichBio } from "@/components/profile/RichBio";
 import { useStorageUrl } from "@/components/StorageImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +10,7 @@ export type PreviewData = {
 	displayName?: string | null;
 	status?: string | null;
 	bio?: string | null;
+	bioHtml?: string | null;
 	pronouns?: string | null;
 	location?: string | null;
 	birthday?: string | Date | null;
@@ -82,7 +84,9 @@ export function ProfilePreviewCard({
 				</div>
 
 				<div className="mt-3 space-y-3">
-					{data.bio?.trim() ? (
+					{data.bioHtml?.trim() ? (
+						<RichBio html={data.bioHtml} className="text-sm" />
+					) : data.bio?.trim() ? (
 						<p className="whitespace-pre-wrap text-sm">{data.bio}</p>
 					) : null}
 					{data.pronouns?.trim() || data.location?.trim() || data.birthday ? (
