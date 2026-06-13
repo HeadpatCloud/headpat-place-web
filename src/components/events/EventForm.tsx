@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -22,6 +21,10 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useTranslations } from "@/lib/i18n";
+import {
+	LocalizedLink as Link,
+	useLocalizedNavigate as useNavigate,
+} from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
 
 export type EventFormInitial = {

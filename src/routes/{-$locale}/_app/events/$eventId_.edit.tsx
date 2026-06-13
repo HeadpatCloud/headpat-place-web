@@ -1,9 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { EventForm } from "@/components/events/EventForm";
 import { useSession } from "@/lib/auth-client";
 import { useTranslations } from "@/lib/i18n";
+import { useLocalizedNavigate as useNavigate } from "@/lib/localized-nav";
 import { orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/{-$locale}/_app/events/$eventId_/edit")({

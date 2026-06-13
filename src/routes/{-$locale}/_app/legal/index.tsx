@@ -1,6 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { Paperclip } from "lucide-react";
 import { useTranslations } from "@/lib/i18n";
+import { LocalizedLink as Link } from "@/lib/localized-nav";
 
 export const Route = createFileRoute("/{-$locale}/_app/legal/")({
 	component: LegalPage,

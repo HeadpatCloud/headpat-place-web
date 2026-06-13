@@ -49,10 +49,16 @@ type NavigateArg = { to?: unknown; params?: Record<string, unknown> } & Record<
 export function useLocalizedNavigate() {
 	const navigate = useNavigate();
 	const locale = useResolvedLocale();
-	return (opts: NavigateArg) =>
-		navigate({
+	return (opts: NavigateArg) => {
+		// Pass through anything that isn't a plain string-path navigation
+		// (e.g. navigate(-1), or navigate({ search }) with no `to`).
+		if (!opts || typeof opts !== "object" || typeof opts.to !== "string") {
+			return navigate(opts as never);
+		}
+		return navigate({
 			...opts,
 			to: prefixedTo(opts.to),
 			params: { ...(opts.params ?? {}), locale: localeParam(locale) },
 		} as never);
+	};
 }

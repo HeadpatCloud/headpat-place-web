@@ -1,5 +1,4 @@
-﻿import { Link } from "@tanstack/react-router";
-import type { LucideIcon } from "lucide-react";
+﻿import type { LucideIcon } from "lucide-react";
 import { ChevronRight } from "lucide-react";
 import {
 	Collapsible,
@@ -19,6 +18,7 @@ import {
 	useSidebar,
 } from "@/components/ui/sidebar";
 import { useTranslations } from "@/lib/i18n";
+import { LocalizedLink as Link } from "@/lib/localized-nav";
 
 export function NavMain({
 	items,

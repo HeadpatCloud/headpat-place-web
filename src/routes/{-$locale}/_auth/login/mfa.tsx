@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import {
@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/input-otp";
 import { twoFactor } from "@/lib/auth-client";
 import { useTranslations } from "@/lib/i18n";
+import { useLocalizedNavigate as useNavigate } from "@/lib/localized-nav";
 
 export const Route = createFileRoute("/{-$locale}/_auth/login/mfa")({
 	component: MfaPage,

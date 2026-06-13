@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { ArrowLeft, LifeBuoy, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NewTicketForm } from "@/components/tickets/NewTicketForm";
@@ -8,6 +8,10 @@ import { TicketThread } from "@/components/tickets/TicketThread";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/lib/auth-client";
 import { useTranslations } from "@/lib/i18n";
+import {
+	LocalizedLink as Link,
+	useLocalizedNavigate as useNavigate,
+} from "@/lib/localized-nav";
 import { orpc } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
 

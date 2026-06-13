@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router";
 import {
 	BadgeCheck,
 	Bell,
@@ -25,6 +24,7 @@ import {
 	useSidebar,
 } from "@/components/ui/sidebar";
 import { useTranslations } from "@/lib/i18n";
+import { LocalizedLink as Link } from "@/lib/localized-nav";
 
 export function NavUser() {
 	const t = useTranslations("commonUi");

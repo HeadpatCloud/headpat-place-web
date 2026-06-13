@@ -1,16 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
-import {
-	createFileRoute,
-	Link,
-	Outlet,
-	useNavigate,
-} from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { ShieldAlertIcon } from "lucide-react";
 import { useEffect } from "react";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import HeaderClient from "@/components/sidebar/header-client";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "@/lib/i18n";
+import {
+	LocalizedLink as Link,
+	useLocalizedNavigate as useNavigate,
+} from "@/lib/localized-nav";
 import { orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/{-$locale}/admin")({

@@ -6,7 +6,7 @@ import {
 	SiGoogle,
 	SiTwitch,
 } from "@icons-pack/react-simple-icons";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -18,6 +18,10 @@ import { Form, FormField } from "@/components/ui/form";
 import { authClient, signIn, signUp, useSession } from "@/lib/auth-client";
 import { humanizeError } from "@/lib/funny-errors";
 import { useTranslations } from "@/lib/i18n";
+import {
+	LocalizedLink as Link,
+	useLocalizedNavigate as useNavigate,
+} from "@/lib/localized-nav";
 
 export const Route = createFileRoute("/{-$locale}/_auth/login")({
 	component: LoginPage,

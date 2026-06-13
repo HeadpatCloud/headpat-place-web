@@ -1,5 +1,4 @@
-﻿import { Link } from "@tanstack/react-router";
-import type { LucideIcon } from "lucide-react";
+﻿import type { LucideIcon } from "lucide-react";
 import {
 	SidebarGroup,
 	SidebarGroupLabel,
@@ -8,6 +7,7 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "@/components/ui/sidebar";
+import { LocalizedLink as Link } from "@/lib/localized-nav";
 
 export function NavList({
 	projects,
