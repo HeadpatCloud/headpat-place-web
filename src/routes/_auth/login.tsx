@@ -53,16 +53,19 @@ const registerSchema = z.object({
 })
 
 async function startOAuth(provider: string) {
+  // Absolute URL on the web origin — the API and web are different origins, so a
+  // relative callbackURL would resolve against the API (api.headpat.place).
+  const callbackURL = `${window.location.origin}/account`
   if (provider === "eurofurence") {
     await authClient.signIn.oauth2({
       providerId: "eurofurence",
-      callbackURL: "/account",
+      callbackURL,
     })
     return
   }
   await signIn.social({
     provider: provider as Parameters<typeof signIn.social>[0]["provider"],
-    callbackURL: "/account",
+    callbackURL,
   })
 }
 
