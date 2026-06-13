@@ -13,7 +13,7 @@ const MODE_VALUES = ["system", "light", "dark"] as const;
 function Swatch({ slug }: { slug: string }) {
 	return (
 		<div
-			data-theme={slug === "headpat" ? undefined : slug}
+			data-theme={slug}
 			className="flex h-12 w-full overflow-hidden rounded-md border border-border"
 		>
 			<div className="flex-1 bg-background" />

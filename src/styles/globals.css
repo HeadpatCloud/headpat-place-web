@@ -177,7 +177,8 @@
 	}
 }
 
-:root {
+:root,
+[data-theme="headpat"] {
 	--background: hsl(0 0% 100%);
 	--foreground: hsl(0 0% 0%);
 	--muted: hsl(0 0% 90%);
