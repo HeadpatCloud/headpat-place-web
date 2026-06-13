@@ -61,4 +61,6 @@ export const CONTRAST_PAIRS: [ThemeTokenKey, ThemeTokenKey][] = [
 	["popover", "popover-foreground"],
 	["muted", "muted-foreground"],
 	["primary", "primary-foreground"],
+	["secondary", "secondary-foreground"],
+	["accent", "accent-foreground"],
 ];

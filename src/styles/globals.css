@@ -377,6 +377,71 @@ pre {
 	@apply my-8 border-border;
 }
 
+/* Rich profile bio — shared by the editor surface and the rendered output. */
+.rich-bio {
+	@apply text-foreground leading-7;
+}
+.rich-bio h2 {
+	@apply mt-5 mb-2 text-xl font-bold tracking-tight;
+}
+.rich-bio h3 {
+	@apply mt-4 mb-1.5 text-lg font-semibold tracking-tight;
+}
+.rich-bio p {
+	@apply my-2;
+}
+.rich-bio ul {
+	@apply my-2 list-disc pl-6;
+}
+.rich-bio ol {
+	@apply my-2 list-decimal pl-6;
+}
+.rich-bio li {
+	@apply my-1;
+}
+.rich-bio blockquote {
+	@apply my-3 border-l-2 border-border pl-3 text-muted-foreground;
+}
+.rich-bio hr {
+	@apply my-5 border-border;
+}
+.rich-bio strong {
+	@apply font-semibold;
+}
+.rich-bio a:not(.bio-cta) {
+	@apply text-link underline underline-offset-2;
+}
+.rich-bio a.bio-cta {
+	@apply my-1 inline-block rounded-lg bg-primary px-4 py-2 font-semibold text-primary-foreground no-underline transition-colors hover:bg-primary/90;
+}
+.rich-bio img {
+	@apply my-3 h-auto max-w-full rounded-lg;
+}
+.rich-bio img.ProseMirror-selectednode {
+	@apply ring-2 ring-primary;
+}
+.rich-bio table {
+	@apply w-full border-collapse text-sm;
+}
+.rich-bio th,
+.rich-bio td {
+	@apply relative border border-border px-3 py-2 text-left align-top;
+}
+.rich-bio th {
+	@apply bg-muted font-semibold;
+}
+.rich-bio-scroll {
+	@apply my-3 overflow-x-auto;
+}
+.rich-bio-scroll table {
+	@apply my-0 min-w-[26rem];
+}
+/* table cell selection while editing */
+.rich-bio .selectedCell::after {
+	@apply pointer-events-none absolute inset-0 z-[2] bg-primary/15;
+	content: "";
+}
+
 .bg-sunset {
 	background-image: linear-gradient(
 		135deg,
