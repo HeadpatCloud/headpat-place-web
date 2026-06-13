@@ -22,7 +22,8 @@ function SupportPage() {
 			<Card className="border-primary/30 bg-primary/5">
 				<CardContent className="flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
 					<div>
-						<h2 className="flex items-center gap-2 font-semibold">
+						{/* globals.css sizes bare h2 at 1.875rem; ! beats that unlayered rule */}
+						<h2 className="flex items-center gap-2 text-lg! font-semibold">
 							<MessageSquarePlus className="size-5 text-primary" />
 							Open a support ticket
 						</h2>
