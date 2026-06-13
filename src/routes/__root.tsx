@@ -11,6 +11,7 @@ import { ThemeProvider } from "next-themes";
 import { PresenceProvider } from "@/components/contexts/PresenceProvider";
 import { ThemeController } from "@/components/contexts/ThemeController";
 import { Toaster } from "@/components/ui/sonner";
+import { LocaleProvider, useResolvedLocale } from "@/lib/i18n";
 import "../styles/globals.css";
 
 const queryClient = new QueryClient({
@@ -39,8 +40,9 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
+	const locale = useResolvedLocale();
 	return (
-		<html lang="en" suppressHydrationWarning>
+		<html lang={locale} suppressHydrationWarning>
 			<head>
 				<HeadContent />
 				<script
@@ -59,12 +61,14 @@ function RootComponent() {
 						disableTransitionOnChange
 					>
 						<ThemeController>
-							<PresenceProvider>
-								<div className="w-full">
-									<Outlet />
-								</div>
-							</PresenceProvider>
-							<Toaster />
+							<LocaleProvider locale={locale}>
+								<PresenceProvider>
+									<div className="w-full">
+										<Outlet />
+									</div>
+								</PresenceProvider>
+								<Toaster />
+							</LocaleProvider>
 						</ThemeController>
 					</ThemeProvider>
 					{import.meta.env.DEV ? (
