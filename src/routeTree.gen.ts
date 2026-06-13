@@ -56,6 +56,7 @@ import { Route as AppLegalImpressumRouteImport } from './routes/_app/legal/impre
 import { Route as AppLegalEulaRouteImport } from './routes/_app/legal/eula'
 import { Route as AppGalleryUploadRouteImport } from './routes/_app/gallery/upload'
 import { Route as AppGalleryGalleryIdRouteImport } from './routes/_app/gallery/$galleryId'
+import { Route as AppEventsNewRouteImport } from './routes/_app/events/new'
 import { Route as AppEventsEventIdRouteImport } from './routes/_app/events/$eventId'
 import { Route as AppCommunityNewRouteImport } from './routes/_app/community/new'
 import { Route as AppAnnouncementsAnnouncementIdRouteImport } from './routes/_app/announcements/$announcementId'
@@ -64,6 +65,7 @@ import { Route as AppUserProfileUrlIndexRouteImport } from './routes/_app/user/$
 import { Route as AppCommunityCommunityIdIndexRouteImport } from './routes/_app/community/$communityId/index'
 import { Route as AppUserProfileUrlFollowingRouteImport } from './routes/_app/user/$profileUrl/following'
 import { Route as AppUserProfileUrlFollowersRouteImport } from './routes/_app/user/$profileUrl/followers'
+import { Route as AppEventsEventIdEditRouteImport } from './routes/_app/events/$eventId_.edit'
 import { Route as AppCommunityCommunityIdFollowersRouteImport } from './routes/_app/community/$communityId/followers'
 import { Route as AppCommunityCommunityIdAdminRouteImport } from './routes/_app/community/$communityId/admin'
 import { Route as AppCommunityCommunityIdEventsIndexRouteImport } from './routes/_app/community/$communityId/events/index'
@@ -304,6 +306,11 @@ const AppGalleryGalleryIdRoute = AppGalleryGalleryIdRouteImport.update({
   path: '/gallery/$galleryId',
   getParentRoute: () => AppRoute,
 } as any)
+const AppEventsNewRoute = AppEventsNewRouteImport.update({
+  id: '/events/new',
+  path: '/events/new',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppEventsEventIdRoute = AppEventsEventIdRouteImport.update({
   id: '/events/$eventId',
   path: '/events/$eventId',
@@ -348,6 +355,11 @@ const AppUserProfileUrlFollowersRoute =
     path: '/user/$profileUrl/followers',
     getParentRoute: () => AppRoute,
   } as any)
+const AppEventsEventIdEditRoute = AppEventsEventIdEditRouteImport.update({
+  id: '/events/$eventId_/edit',
+  path: '/events/$eventId/edit',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppCommunityCommunityIdFollowersRoute =
   AppCommunityCommunityIdFollowersRouteImport.update({
     id: '/community/$communityId/followers',
@@ -388,6 +400,7 @@ export interface FileRoutesByFullPath {
   '/announcements/$announcementId': typeof AppAnnouncementsAnnouncementIdRoute
   '/community/new': typeof AppCommunityNewRoute
   '/events/$eventId': typeof AppEventsEventIdRoute
+  '/events/new': typeof AppEventsNewRoute
   '/gallery/$galleryId': typeof AppGalleryGalleryIdRoute
   '/gallery/upload': typeof AppGalleryUploadRoute
   '/legal/eula': typeof AppLegalEulaRoute
@@ -419,6 +432,7 @@ export interface FileRoutesByFullPath {
   '/admin/users/': typeof AdminUsersIndexRoute
   '/community/$communityId/admin': typeof AppCommunityCommunityIdAdminRoute
   '/community/$communityId/followers': typeof AppCommunityCommunityIdFollowersRoute
+  '/events/$eventId/edit': typeof AppEventsEventIdEditRoute
   '/user/$profileUrl/followers': typeof AppUserProfileUrlFollowersRoute
   '/user/$profileUrl/following': typeof AppUserProfileUrlFollowingRoute
   '/community/$communityId/': typeof AppCommunityCommunityIdIndexRoute
@@ -444,6 +458,7 @@ export interface FileRoutesByTo {
   '/announcements/$announcementId': typeof AppAnnouncementsAnnouncementIdRoute
   '/community/new': typeof AppCommunityNewRoute
   '/events/$eventId': typeof AppEventsEventIdRoute
+  '/events/new': typeof AppEventsNewRoute
   '/gallery/$galleryId': typeof AppGalleryGalleryIdRoute
   '/gallery/upload': typeof AppGalleryUploadRoute
   '/legal/eula': typeof AppLegalEulaRoute
@@ -475,6 +490,7 @@ export interface FileRoutesByTo {
   '/admin/users': typeof AdminUsersIndexRoute
   '/community/$communityId/admin': typeof AppCommunityCommunityIdAdminRoute
   '/community/$communityId/followers': typeof AppCommunityCommunityIdFollowersRoute
+  '/events/$eventId/edit': typeof AppEventsEventIdEditRoute
   '/user/$profileUrl/followers': typeof AppUserProfileUrlFollowersRoute
   '/user/$profileUrl/following': typeof AppUserProfileUrlFollowingRoute
   '/community/$communityId': typeof AppCommunityCommunityIdIndexRoute
@@ -505,6 +521,7 @@ export interface FileRoutesById {
   '/_app/announcements/$announcementId': typeof AppAnnouncementsAnnouncementIdRoute
   '/_app/community/new': typeof AppCommunityNewRoute
   '/_app/events/$eventId': typeof AppEventsEventIdRoute
+  '/_app/events/new': typeof AppEventsNewRoute
   '/_app/gallery/$galleryId': typeof AppGalleryGalleryIdRoute
   '/_app/gallery/upload': typeof AppGalleryUploadRoute
   '/_app/legal/eula': typeof AppLegalEulaRoute
@@ -536,6 +553,7 @@ export interface FileRoutesById {
   '/admin/users/': typeof AdminUsersIndexRoute
   '/_app/community/$communityId/admin': typeof AppCommunityCommunityIdAdminRoute
   '/_app/community/$communityId/followers': typeof AppCommunityCommunityIdFollowersRoute
+  '/_app/events/$eventId_/edit': typeof AppEventsEventIdEditRoute
   '/_app/user/$profileUrl/followers': typeof AppUserProfileUrlFollowersRoute
   '/_app/user/$profileUrl/following': typeof AppUserProfileUrlFollowingRoute
   '/_app/community/$communityId/': typeof AppCommunityCommunityIdIndexRoute
@@ -565,6 +583,7 @@ export interface FileRouteTypes {
     | '/announcements/$announcementId'
     | '/community/new'
     | '/events/$eventId'
+    | '/events/new'
     | '/gallery/$galleryId'
     | '/gallery/upload'
     | '/legal/eula'
@@ -596,6 +615,7 @@ export interface FileRouteTypes {
     | '/admin/users/'
     | '/community/$communityId/admin'
     | '/community/$communityId/followers'
+    | '/events/$eventId/edit'
     | '/user/$profileUrl/followers'
     | '/user/$profileUrl/following'
     | '/community/$communityId/'
@@ -621,6 +641,7 @@ export interface FileRouteTypes {
     | '/announcements/$announcementId'
     | '/community/new'
     | '/events/$eventId'
+    | '/events/new'
     | '/gallery/$galleryId'
     | '/gallery/upload'
     | '/legal/eula'
@@ -652,6 +673,7 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/community/$communityId/admin'
     | '/community/$communityId/followers'
+    | '/events/$eventId/edit'
     | '/user/$profileUrl/followers'
     | '/user/$profileUrl/following'
     | '/community/$communityId'
@@ -681,6 +703,7 @@ export interface FileRouteTypes {
     | '/_app/announcements/$announcementId'
     | '/_app/community/new'
     | '/_app/events/$eventId'
+    | '/_app/events/new'
     | '/_app/gallery/$galleryId'
     | '/_app/gallery/upload'
     | '/_app/legal/eula'
@@ -712,6 +735,7 @@ export interface FileRouteTypes {
     | '/admin/users/'
     | '/_app/community/$communityId/admin'
     | '/_app/community/$communityId/followers'
+    | '/_app/events/$eventId_/edit'
     | '/_app/user/$profileUrl/followers'
     | '/_app/user/$profileUrl/following'
     | '/_app/community/$communityId/'
@@ -1057,6 +1081,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppGalleryGalleryIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/events/new': {
+      id: '/_app/events/new'
+      path: '/events/new'
+      fullPath: '/events/new'
+      preLoaderRoute: typeof AppEventsNewRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/events/$eventId': {
       id: '/_app/events/$eventId'
       path: '/events/$eventId'
@@ -1113,6 +1144,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppUserProfileUrlFollowersRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/events/$eventId_/edit': {
+      id: '/_app/events/$eventId_/edit'
+      path: '/events/$eventId/edit'
+      fullPath: '/events/$eventId/edit'
+      preLoaderRoute: typeof AppEventsEventIdEditRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/community/$communityId/followers': {
       id: '/_app/community/$communityId/followers'
       path: '/community/$communityId/followers'
@@ -1150,6 +1188,7 @@ interface AppRouteChildren {
   AppAnnouncementsAnnouncementIdRoute: typeof AppAnnouncementsAnnouncementIdRoute
   AppCommunityNewRoute: typeof AppCommunityNewRoute
   AppEventsEventIdRoute: typeof AppEventsEventIdRoute
+  AppEventsNewRoute: typeof AppEventsNewRoute
   AppGalleryGalleryIdRoute: typeof AppGalleryGalleryIdRoute
   AppGalleryUploadRoute: typeof AppGalleryUploadRoute
   AppLegalEulaRoute: typeof AppLegalEulaRoute
@@ -1165,6 +1204,7 @@ interface AppRouteChildren {
   AppMessagesIndexRoute: typeof AppMessagesIndexRoute
   AppCommunityCommunityIdAdminRoute: typeof AppCommunityCommunityIdAdminRoute
   AppCommunityCommunityIdFollowersRoute: typeof AppCommunityCommunityIdFollowersRoute
+  AppEventsEventIdEditRoute: typeof AppEventsEventIdEditRoute
   AppUserProfileUrlFollowersRoute: typeof AppUserProfileUrlFollowersRoute
   AppUserProfileUrlFollowingRoute: typeof AppUserProfileUrlFollowingRoute
   AppCommunityCommunityIdIndexRoute: typeof AppCommunityCommunityIdIndexRoute
@@ -1185,6 +1225,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppAnnouncementsAnnouncementIdRoute: AppAnnouncementsAnnouncementIdRoute,
   AppCommunityNewRoute: AppCommunityNewRoute,
   AppEventsEventIdRoute: AppEventsEventIdRoute,
+  AppEventsNewRoute: AppEventsNewRoute,
   AppGalleryGalleryIdRoute: AppGalleryGalleryIdRoute,
   AppGalleryUploadRoute: AppGalleryUploadRoute,
   AppLegalEulaRoute: AppLegalEulaRoute,
@@ -1200,6 +1241,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppMessagesIndexRoute: AppMessagesIndexRoute,
   AppCommunityCommunityIdAdminRoute: AppCommunityCommunityIdAdminRoute,
   AppCommunityCommunityIdFollowersRoute: AppCommunityCommunityIdFollowersRoute,
+  AppEventsEventIdEditRoute: AppEventsEventIdEditRoute,
   AppUserProfileUrlFollowersRoute: AppUserProfileUrlFollowersRoute,
   AppUserProfileUrlFollowingRoute: AppUserProfileUrlFollowingRoute,
   AppCommunityCommunityIdIndexRoute: AppCommunityCommunityIdIndexRoute,

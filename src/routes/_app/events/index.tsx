@@ -1,9 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { Pager } from "@/components/Pager";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useSession } from "@/lib/auth-client";
 import { useDateFormat } from "@/lib/datetime";
 import { orpc } from "@/lib/orpc";
 
@@ -16,6 +19,7 @@ const PAGE_SIZE = 24;
 function EventsPage() {
 	const [page, setPage] = useState(1);
 	const fmt = useDateFormat();
+	const { data: session } = useSession();
 	const events = useQuery(
 		orpc.event.list.queryOptions({ input: { page, pageSize: PAGE_SIZE } }),
 	);
@@ -23,7 +27,20 @@ function EventsPage() {
 
 	return (
 		<main className="space-y-4">
-			<h2 className="text-2xl font-bold">Events</h2>
+			<div className="flex items-center justify-between gap-2">
+				<h2 className="text-2xl font-bold">Events</h2>
+				{session?.user ? (
+					<Button
+						asChild
+						className="bg-primary text-primary-foreground hover:bg-primary/90"
+					>
+						<Link to={"/events/new" as never}>
+							<PlusIcon className="size-4" />
+							New event
+						</Link>
+					</Button>
+				) : null}
+			</div>
 			{events.isPending ? (
 				<p className="text-muted-foreground">Loading…</p>
 			) : items.length === 0 ? (

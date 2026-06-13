@@ -1,10 +1,23 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { BellIcon, BellOffIcon } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { BellIcon, BellOffIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
+import { EventLocationMap } from "@/components/map/EventLocationMap";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useSession } from "@/lib/auth-client";
 import { useDateFormat } from "@/lib/datetime";
 import { client, orpc } from "@/lib/orpc";
 
@@ -15,11 +28,24 @@ export const Route = createFileRoute("/_app/events/$eventId")({
 function EventDetailPage() {
 	const { eventId } = Route.useParams();
 	const qc = useQueryClient();
+	const navigate = useNavigate();
 	const fmt = useDateFormat();
+	const { data: session } = useSession();
 	const event = useQuery(orpc.event.byId.queryOptions({ input: { eventId } }));
 	const myAttending = useQuery(
 		orpc.event.myAttending.queryOptions({ input: undefined }),
 	);
+
+	const remove = useMutation({
+		mutationFn: async () => client.event.delete({ eventId }),
+		onSuccess: () => {
+			qc.invalidateQueries({ queryKey: orpc.event.list.key() });
+			qc.invalidateQueries({ queryKey: orpc.event.mapList.key() });
+			toast.success("Event deleted.");
+			navigate({ to: "/events" as never });
+		},
+		onError: (e: Error) => toast.error(e.message),
+	});
 
 	const myRow = (myAttending.data ?? []).find((a) => a.eventId === eventId);
 	const isAttending = !!myRow;
@@ -59,11 +85,66 @@ function EventDetailPage() {
 	const e = event.data;
 	const isPast = new Date(e.endsAt ?? e.startsAt).getTime() < Date.now();
 	const attendWord = isPast ? "attended" : "attending";
+	const isOwner = !!session?.user && session.user.id === e.creatorUserId;
+	const hasZone =
+		(e.locationZoneMethod === "circle" || e.locationZoneMethod === "polygon") &&
+		(e.coordinates ?? []).length > 0;
 
 	return (
 		<main className="space-y-6">
 			<div className="bg-sunset-hero rounded-2xl p-8 text-white space-y-2">
-				<h1 className="text-2xl sm:text-3xl font-extrabold">{e.title}</h1>
+				<div className="flex items-start justify-between gap-3">
+					<h1 className="text-2xl sm:text-3xl font-extrabold">{e.title}</h1>
+					{isOwner ? (
+						<div className="flex shrink-0 gap-2">
+							<Button
+								asChild
+								variant="secondary"
+								size="sm"
+								className="bg-white/15 text-white hover:bg-white/25"
+							>
+								<Link
+									to={"/events/$eventId/edit" as never}
+									params={{ eventId } as never}
+								>
+									<PencilIcon className="size-4" />
+									Edit
+								</Link>
+							</Button>
+							<AlertDialog>
+								<AlertDialogTrigger asChild>
+									<Button
+										variant="secondary"
+										size="sm"
+										className="bg-white/15 text-white hover:bg-white/25"
+									>
+										<Trash2Icon className="size-4" />
+										Delete
+									</Button>
+								</AlertDialogTrigger>
+								<AlertDialogContent>
+									<AlertDialogHeader>
+										<AlertDialogTitle>Delete this event?</AlertDialogTitle>
+										<AlertDialogDescription>
+											This permanently removes the event and everyone's
+											attendance. This cannot be undone.
+										</AlertDialogDescription>
+									</AlertDialogHeader>
+									<AlertDialogFooter>
+										<AlertDialogCancel>Cancel</AlertDialogCancel>
+										<AlertDialogAction
+											onClick={() => remove.mutate()}
+											disabled={remove.isPending}
+											className="bg-destructive text-white hover:bg-destructive/90"
+										>
+											Delete
+										</AlertDialogAction>
+									</AlertDialogFooter>
+								</AlertDialogContent>
+							</AlertDialog>
+						</div>
+					) : null}
+				</div>
 				<p className="text-sm opacity-90">
 					{fmt.dateTime(e.startsAt)}
 					{e.endsAt ? ` — ${fmt.dateTime(e.endsAt)}` : ""}
@@ -72,6 +153,14 @@ function EventDetailPage() {
 					<p className="text-sm opacity-90">{e.locationText}</p>
 				) : null}
 			</div>
+
+			{hasZone ? (
+				<EventLocationMap
+					method={e.locationZoneMethod}
+					coordinates={e.coordinates ?? []}
+					circleRadius={e.circleRadius}
+				/>
+			) : null}
 
 			<Card>
 				<CardContent className="space-y-4 pt-6">

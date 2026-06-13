@@ -4,34 +4,21 @@ import "leaflet/dist/leaflet.css";
 import { useTheme } from "next-themes";
 import { useEffect, useRef } from "react";
 import { orpc } from "@/lib/orpc";
+import {
+	ACCENT,
+	loadLeaflet,
+	localTimezone,
+	parseLatLng,
+	pinIcon,
+	tileLayer,
+	timezoneToView,
+} from "./leaflet-shared";
 
-const TILES = {
-	light: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-	dark: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-};
-const ATTRIBUTION =
-	'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
-const ACCENT = "#10b981";
-
-function parseLatLng(s: string): [number, number] | null {
-	const [lat, lng] = s.split(",").map(Number);
-	return Number.isFinite(lat) && Number.isFinite(lng) ? [lat, lng] : null;
-}
 function escapeHtml(s: string): string {
 	return s.replace(
 		/[&<>"]/g,
 		(c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] ?? c,
 	);
-}
-function pinIcon(L: typeof LType) {
-	const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="26" height="34" viewBox="0 0 26 34"><path d="M13 0C5.8 0 0 5.8 0 13c0 9.5 13 21 13 21s13-11.5 13-21C26 5.8 20.2 0 13 0z" fill="${ACCENT}" stroke="#fff" stroke-width="2"/><circle cx="13" cy="13" r="5" fill="#fff"/></svg>`;
-	return L.divIcon({
-		html: svg,
-		className: "",
-		iconSize: [26, 34],
-		iconAnchor: [13, 34],
-		popupAnchor: [0, -30],
-	});
 }
 
 type MapEvent = {
@@ -68,7 +55,7 @@ export function MapView() {
 	useEffect(() => {
 		let cancelled = false;
 		(async () => {
-			if (!LRef.current) LRef.current = (await import("leaflet")).default;
+			if (!LRef.current) LRef.current = await loadLeaflet();
 			const L = LRef.current;
 			if (cancelled || !containerRef.current) return;
 
@@ -85,11 +72,7 @@ export function MapView() {
 
 			// tile layer follows the app theme
 			if (tileRef.current) map.removeLayer(tileRef.current);
-			tileRef.current = L.tileLayer(dark ? TILES.dark : TILES.light, {
-				attribution: ATTRIBUTION,
-				subdomains: "abcd",
-				maxZoom: 20,
-			}).addTo(map);
+			tileRef.current = tileLayer(L, dark).addTo(map);
 			tileRef.current.bringToBack();
 
 			// event zones + pins
@@ -141,9 +124,16 @@ export function MapView() {
 						.bindPopup(popup);
 				}
 			}
-			if (!fittedRef.current && bounds.isValid()) {
-				map.fitBounds(bounds, { padding: [60, 60], maxZoom: 13 });
-				fittedRef.current = true;
+			if (!fittedRef.current) {
+				if (bounds.isValid()) {
+					map.fitBounds(bounds, { padding: [60, 60], maxZoom: 13 });
+					fittedRef.current = true;
+				} else if (events.isSuccess) {
+					// no located events — open near the visitor's region instead of mid-ocean
+					const view = timezoneToView(localTimezone());
+					if (view) map.setView(view.center, view.zoom);
+					fittedRef.current = true;
+				}
 			}
 		})();
 		return () => {
