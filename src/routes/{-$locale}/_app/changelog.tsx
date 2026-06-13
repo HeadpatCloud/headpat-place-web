@@ -89,24 +89,11 @@ function ChangelogPage() {
 
 function Entry({ entry, latest }: { entry: Entry; latest: boolean }) {
 	const t = useTranslations("miscPages");
-	const columns = [
-		{
-			platform: "Web",
-			groups: [
-				{ kind: KINDS.features, items: entry.featuresWeb },
-				{ kind: KINDS.improvements, items: entry.improvementsWeb },
-				{ kind: KINDS.bugfixes, items: entry.bugfixesWeb },
-			].filter((g) => g.items.length > 0),
-		},
-		{
-			platform: "App",
-			groups: [
-				{ kind: KINDS.features, items: entry.featuresApp },
-				{ kind: KINDS.improvements, items: entry.improvementsApp },
-				{ kind: KINDS.bugfixes, items: entry.bugfixesApp },
-			].filter((g) => g.items.length > 0),
-		},
-	].filter((c) => c.groups.length > 0);
+	const groups = [
+		{ kind: KINDS.features, items: entry.featuresWeb },
+		{ kind: KINDS.improvements, items: entry.improvementsWeb },
+		{ kind: KINDS.bugfixes, items: entry.bugfixesWeb },
+	].filter((g) => g.items.length > 0);
 	const fmt = useDateFormat();
 	const date = entry.publishedAt
 		? fmt.date(entry.publishedAt, {
@@ -137,28 +124,21 @@ function Entry({ entry, latest }: { entry: Entry; latest: boolean }) {
 			{entry.description ? (
 				<p className="mt-1.5 text-muted-foreground">{entry.description}</p>
 			) : null}
-			{columns.length > 0 ? (
+			{groups.length > 0 ? (
 				<div className="mt-3 grid gap-x-8 gap-y-6 sm:grid-cols-2">
-					{columns.map((col) => (
-						<div key={col.platform} className="space-y-4">
-							<div className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
-								{col.platform}
+					{groups.map((g) => (
+						<div key={g.kind.labelKey}>
+							<div
+								className={`flex items-center gap-2 text-xs font-bold uppercase tracking-wide ${g.kind.text}`}
+							>
+								<span className={`size-2 rounded-full ${g.kind.dot}`} />
+								{t(g.kind.labelKey)}
 							</div>
-							{col.groups.map((g) => (
-								<div key={g.kind.labelKey}>
-									<div
-										className={`flex items-center gap-2 text-xs font-bold uppercase tracking-wide ${g.kind.text}`}
-									>
-										<span className={`size-2 rounded-full ${g.kind.dot}`} />
-										{t(g.kind.labelKey)}
-									</div>
-									<ul className="mt-1.5 list-disc space-y-1 pl-5 text-sm">
-										{g.items.map((it, j) => (
-											<li key={j}>{it}</li>
-										))}
-									</ul>
-								</div>
-							))}
+							<ul className="mt-1.5 list-disc space-y-1 pl-5 text-sm">
+								{g.items.map((it, j) => (
+									<li key={j}>{it}</li>
+								))}
+							</ul>
 						</div>
 					))}
 				</div>
