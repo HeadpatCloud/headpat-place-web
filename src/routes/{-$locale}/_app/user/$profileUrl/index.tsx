@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import confetti from "canvas-confetti";
 import { CakeIcon } from "lucide-react";
@@ -14,7 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { useSession } from "@/lib/auth-client";
 import { useTranslations } from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
-import { orpc } from "@/lib/orpc";
+import { client, orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/{-$locale}/_app/user/$profileUrl/")({
 	component: UserProfilePage,
@@ -288,6 +288,20 @@ function FollowButton({ targetUserId }: { targetUserId: string }) {
 		...orpc.follow.status.queryOptions({ input: { targetUserId } }),
 		enabled: !isMe,
 	});
+	const qc = useQueryClient();
+	const toggle = useMutation({
+		mutationFn: async () => {
+			if (status.data?.iFollow) await client.follow.remove({ targetUserId });
+			else await client.follow.add({ targetUserId });
+		},
+		onSuccess: () => {
+			qc.invalidateQueries({
+				queryKey: orpc.follow.status.queryKey({ input: { targetUserId } }),
+			});
+			qc.invalidateQueries({ queryKey: orpc.profile.byUrl.key() });
+		},
+		onError: (e: Error) => toast.error(e.message),
+	});
 
 	if (isMe) {
 		return (
@@ -309,6 +323,8 @@ function FollowButton({ targetUserId }: { targetUserId: string }) {
 						? undefined
 						: "bg-primary text-primary-foreground hover:bg-primary/90"
 				}
+				disabled={toggle.isPending}
+				onClick={() => toggle.mutate()}
 			>
 				{status.data.iFollow ? t("following") : t("follow")}
 			</Button>
