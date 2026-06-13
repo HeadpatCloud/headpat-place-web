@@ -23,6 +23,7 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
+import { BirthdayPicker } from "./BirthdayPicker";
 import { ProfilePreviewCard } from "./ProfilePreviewCard";
 import type { AccountProfile } from "./types";
 
@@ -191,49 +192,12 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 							render={({ field }) => (
 								<FormItem className="flex flex-col">
 									<FormLabel>Birthday</FormLabel>
-									<div className="flex items-center gap-2">
-										<Popover>
-											<PopoverTrigger asChild>
-												<FormControl>
-													<Button
-														type="button"
-														variant="outline"
-														className={cn(
-															"w-[240px] justify-start text-left font-normal",
-															!field.value && "text-muted-foreground",
-														)}
-													>
-														<CalendarIcon className="mr-2 size-4" />
-														{field.value
-															? format(field.value, "d MMMM yyyy")
-															: "Pick a date"}
-													</Button>
-												</FormControl>
-											</PopoverTrigger>
-											<PopoverContent className="w-auto p-0" align="start">
-												<Calendar
-													mode="single"
-													captionLayout="dropdown"
-													startMonth={new Date(1920, 0)}
-													endMonth={new Date()}
-													defaultMonth={field.value ?? new Date(2000, 0)}
-													selected={field.value ?? undefined}
-													onSelect={(d) => field.onChange(d ?? null)}
-												/>
-											</PopoverContent>
-										</Popover>
-										{field.value ? (
-											<Button
-												type="button"
-												variant="ghost"
-												size="icon"
-												aria-label="Clear birthday"
-												onClick={() => field.onChange(null)}
-											>
-												<X className="size-4" />
-											</Button>
-										) : null}
-									</div>
+									<FormControl>
+										<BirthdayPicker
+											value={field.value ?? null}
+											onChange={field.onChange}
+										/>
+									</FormControl>
 									<FormMessage />
 								</FormItem>
 							)}
