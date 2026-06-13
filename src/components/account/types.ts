@@ -1,9 +1,12 @@
-export type NotificationPrefs = {
-	follows: boolean;
-	messages: boolean;
-	replies: boolean;
-	announcements: boolean;
-};
+export type ChannelPrefs = { email: boolean; push: boolean };
+
+export type NotificationCategory =
+	| "follows"
+	| "messages"
+	| "replies"
+	| "events";
+
+export type NotificationPrefs = Record<NotificationCategory, ChannelPrefs>;
 
 export type AccountProfile = {
 	userId: string;
@@ -12,6 +15,7 @@ export type AccountProfile = {
 	displayName?: string | null;
 	status?: string | null;
 	bio?: string | null;
+	bioHtml?: string | null;
 	pronouns?: string | null;
 	birthday?: string | Date | null;
 	location?: string | null;
