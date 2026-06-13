@@ -72,7 +72,12 @@ export function useUser() {
 
 	const register = useCallback(
 		async (email: string, password: string, name: string) => {
-			const r = await signUp.email({ email, password, name });
+			const r = await signUp.email({
+				email,
+				password,
+				name,
+				callbackURL: `${window.location.origin}/account`,
+			});
 			if (r.error) throw new Error(r.error.message ?? "Registration failed");
 		},
 		[],

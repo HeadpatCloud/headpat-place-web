@@ -141,6 +141,7 @@ function LoginPage() {
         email: data.email,
         password: data.password,
         name: data.username,
+        callbackURL: `${window.location.origin}/account`,
       })
       if (r.error) {
         fail(humanizeError(r.error.message ?? "Could not create your account."))
