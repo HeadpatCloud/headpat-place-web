@@ -1,10 +1,11 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon, X } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import InputField from "@/components/fields/InputField";
+import { RichBioEditor } from "@/components/profile/RichBioEditor";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -21,7 +22,6 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
-import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { ProfilePreviewCard } from "./ProfilePreviewCard";
 import type { AccountProfile } from "./types";
@@ -29,7 +29,7 @@ import type { AccountProfile } from "./types";
 const schema = z.object({
 	displayName: z.string().max(120).optional(),
 	status: z.string().max(120).optional(),
-	bio: z.string().max(2000).optional(),
+	bioHtml: z.string().max(20000).optional(),
 	pronouns: z.string().max(60).optional(),
 	location: z.string().max(120).optional(),
 	birthday: z.date().nullable().optional(),
@@ -49,13 +49,23 @@ type Props = {
 	saving?: boolean;
 };
 
+// Seed the editor from a legacy plain-text bio when there's no rich HTML yet.
+function plainToHtml(text: string): string {
+	const esc = text
+		.replace(/&/g, "&amp;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;");
+	return `<p>${esc.replace(/\n/g, "<br>")}</p>`;
+}
+
 export function ProfileSection({ profile, onSave, saving }: Props) {
+	const [bioUploading, setBioUploading] = useState(false);
 	const form = useForm<Values>({
 		resolver: zodResolver(schema),
 		defaultValues: {
 			displayName: "",
 			status: "",
-			bio: "",
+			bioHtml: "",
 			pronouns: "",
 			location: "",
 			birthday: null,
@@ -68,22 +78,31 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 		},
 	});
 
+	const initialBioHtml =
+		profile.bioHtml ?? (profile.bio ? plainToHtml(profile.bio) : "");
+
 	useEffect(() => {
-		form.reset({
-			displayName: profile.displayName ?? "",
-			status: profile.status ?? "",
-			bio: profile.bio ?? "",
-			pronouns: profile.pronouns ?? "",
-			location: profile.location ?? "",
-			birthday: profile.birthday ? new Date(profile.birthday) : null,
-			discordName: profile.discordName ?? "",
-			telegramName: profile.telegramName ?? "",
-			furaffinityName: profile.furaffinityName ?? "",
-			xName: profile.xName ?? "",
-			twitchName: profile.twitchName ?? "",
-			blueskyName: profile.blueskyName ?? "",
-		});
-	}, [profile, form]);
+		form.reset(
+			{
+				displayName: profile.displayName ?? "",
+				status: profile.status ?? "",
+				bioHtml: initialBioHtml,
+				pronouns: profile.pronouns ?? "",
+				location: profile.location ?? "",
+				birthday: profile.birthday ? new Date(profile.birthday) : null,
+				discordName: profile.discordName ?? "",
+				telegramName: profile.telegramName ?? "",
+				furaffinityName: profile.furaffinityName ?? "",
+				xName: profile.xName ?? "",
+				twitchName: profile.twitchName ?? "",
+				blueskyName: profile.blueskyName ?? "",
+			},
+			// a profile refetch (e.g. on window focus) must not clobber fields the
+			// user is mid-editing — the rich editor keeps its own state, so a plain
+			// reset would silently desync what's saved from what's on screen
+			{ keepDirtyValues: true },
+		);
+	}, [profile, form, initialBioHtml]);
 
 	const draft = form.watch();
 
@@ -123,16 +142,15 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 						/>
 						<FormField
 							control={form.control}
-							name="bio"
+							name="bioHtml"
 							render={({ field }) => (
 								<FormItem>
 									<FormLabel>Bio</FormLabel>
 									<FormControl>
-										<Textarea
-											{...field}
-											rows={4}
-											maxLength={2000}
-											placeholder="Tell people about yourself…"
+										<RichBioEditor
+											initialHtml={initialBioHtml}
+											onChange={field.onChange}
+											onUploadingChange={setBioUploading}
 										/>
 									</FormControl>
 									<FormMessage />
@@ -308,8 +326,12 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 						</div>
 					</div>
 
-					<Button type="submit" disabled={saving}>
-						{saving ? "Saving…" : "Save profile"}
+					<Button type="submit" disabled={saving || bioUploading}>
+						{bioUploading
+							? "Uploading image…"
+							: saving
+								? "Saving…"
+								: "Save profile"}
 					</Button>
 				</form>
 			</Form>
