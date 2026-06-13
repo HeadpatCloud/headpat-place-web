@@ -9,1332 +9,1473 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ChatRouteImport } from './routes/chat'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AuthRouteImport } from './routes/_auth'
-import { Route as AppRouteImport } from './routes/_app'
-import { Route as ChatIndexRouteImport } from './routes/chat/index'
-import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as AppIndexRouteImport } from './routes/_app/index'
-import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
-import { Route as AuthLogoutRouteImport } from './routes/_auth/logout'
-import { Route as AuthLoginRouteImport } from './routes/_auth/login'
-import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
-import { Route as AppUsersRouteImport } from './routes/_app/users'
-import { Route as AppSupportRouteImport } from './routes/_app/support'
-import { Route as AppProfileRouteImport } from './routes/_app/profile'
-import { Route as AppPawcraftRouteImport } from './routes/_app/pawcraft'
-import { Route as AppNotificationsRouteImport } from './routes/_app/notifications'
-import { Route as AppMapRouteImport } from './routes/_app/map'
-import { Route as AppChangelogRouteImport } from './routes/_app/changelog'
-import { Route as AdminUsersIndexRouteImport } from './routes/admin/users/index'
-import { Route as AdminTicketsIndexRouteImport } from './routes/admin/tickets/index'
-import { Route as AdminRolesIndexRouteImport } from './routes/admin/roles/index'
-import { Route as AdminReportsIndexRouteImport } from './routes/admin/reports/index'
-import { Route as AdminChangelogIndexRouteImport } from './routes/admin/changelog/index'
-import { Route as AdminAnnouncementsIndexRouteImport } from './routes/admin/announcements/index'
-import { Route as AppMessagesIndexRouteImport } from './routes/_app/messages/index'
-import { Route as AppLegalIndexRouteImport } from './routes/_app/legal/index'
-import { Route as AppGalleryIndexRouteImport } from './routes/_app/gallery/index'
-import { Route as AppEventsIndexRouteImport } from './routes/_app/events/index'
-import { Route as AppCommunityIndexRouteImport } from './routes/_app/community/index'
-import { Route as AppAnnouncementsIndexRouteImport } from './routes/_app/announcements/index'
-import { Route as AppAccountIndexRouteImport } from './routes/_app/account/index'
-import { Route as ChatDmConversationIdRouteImport } from './routes/chat/dm/$conversationId'
-import { Route as ChatCChannelIdRouteImport } from './routes/chat/c/$channelId'
-import { Route as AdminUsersUserIdRouteImport } from './routes/admin/users/$userId'
-import { Route as AdminTicketsTicketIdRouteImport } from './routes/admin/tickets/$ticketId'
-import { Route as AdminRolesRoleIdRouteImport } from './routes/admin/roles/$roleId'
-import { Route as AdminChangelogChangelogIdRouteImport } from './routes/admin/changelog/$changelogId'
-import { Route as AdminAnnouncementsAnnouncementIdRouteImport } from './routes/admin/announcements/$announcementId'
-import { Route as AuthLoginMfaRouteImport } from './routes/_auth/login/mfa'
-import { Route as AuthIVerifyEmailRouteImport } from './routes/_auth/i/verify-email'
-import { Route as AuthIResetPasswordRouteImport } from './routes/_auth/i/reset-password'
-import { Route as AppMessagesConversationIdRouteImport } from './routes/_app/messages/$conversationId'
-import { Route as AppLegalPrivacypolicyRouteImport } from './routes/_app/legal/privacypolicy'
-import { Route as AppLegalImpressumRouteImport } from './routes/_app/legal/impressum'
-import { Route as AppLegalEulaRouteImport } from './routes/_app/legal/eula'
-import { Route as AppGalleryUploadRouteImport } from './routes/_app/gallery/upload'
-import { Route as AppGalleryGalleryIdRouteImport } from './routes/_app/gallery/$galleryId'
-import { Route as AppEventsNewRouteImport } from './routes/_app/events/new'
-import { Route as AppEventsEventIdRouteImport } from './routes/_app/events/$eventId'
-import { Route as AppCommunityNewRouteImport } from './routes/_app/community/new'
-import { Route as AppAnnouncementsAnnouncementIdRouteImport } from './routes/_app/announcements/$announcementId'
-import { Route as AppAccountTicketsRouteImport } from './routes/_app/account/tickets'
-import { Route as AppUserProfileUrlIndexRouteImport } from './routes/_app/user/$profileUrl/index'
-import { Route as AppCommunityCommunityIdIndexRouteImport } from './routes/_app/community/$communityId/index'
-import { Route as AppUserProfileUrlFollowingRouteImport } from './routes/_app/user/$profileUrl/following'
-import { Route as AppUserProfileUrlFollowersRouteImport } from './routes/_app/user/$profileUrl/followers'
-import { Route as AppEventsEventIdEditRouteImport } from './routes/_app/events/$eventId_.edit'
-import { Route as AppCommunityCommunityIdFollowersRouteImport } from './routes/_app/community/$communityId/followers'
-import { Route as AppCommunityCommunityIdAdminRouteImport } from './routes/_app/community/$communityId/admin'
-import { Route as AppCommunityCommunityIdEventsIndexRouteImport } from './routes/_app/community/$communityId/events/index'
+import { Route as Char123LocaleChar125RouteImport } from './routes/{-$locale}'
+import { Route as Char123LocaleChar125ChatRouteImport } from './routes/{-$locale}/chat'
+import { Route as Char123LocaleChar125AdminRouteImport } from './routes/{-$locale}/admin'
+import { Route as Char123LocaleChar125AuthRouteImport } from './routes/{-$locale}/_auth'
+import { Route as Char123LocaleChar125AppRouteImport } from './routes/{-$locale}/_app'
+import { Route as Char123LocaleChar125ChatIndexRouteImport } from './routes/{-$locale}/chat/index'
+import { Route as Char123LocaleChar125AdminIndexRouteImport } from './routes/{-$locale}/admin/index'
+import { Route as Char123LocaleChar125AppIndexRouteImport } from './routes/{-$locale}/_app/index'
+import { Route as Char123LocaleChar125AuthRegisterRouteImport } from './routes/{-$locale}/_auth/register'
+import { Route as Char123LocaleChar125AuthLogoutRouteImport } from './routes/{-$locale}/_auth/logout'
+import { Route as Char123LocaleChar125AuthLoginRouteImport } from './routes/{-$locale}/_auth/login'
+import { Route as Char123LocaleChar125AuthForgotPasswordRouteImport } from './routes/{-$locale}/_auth/forgot-password'
+import { Route as Char123LocaleChar125AppUsersRouteImport } from './routes/{-$locale}/_app/users'
+import { Route as Char123LocaleChar125AppSupportRouteImport } from './routes/{-$locale}/_app/support'
+import { Route as Char123LocaleChar125AppProfileRouteImport } from './routes/{-$locale}/_app/profile'
+import { Route as Char123LocaleChar125AppPawcraftRouteImport } from './routes/{-$locale}/_app/pawcraft'
+import { Route as Char123LocaleChar125AppNotificationsRouteImport } from './routes/{-$locale}/_app/notifications'
+import { Route as Char123LocaleChar125AppMapRouteImport } from './routes/{-$locale}/_app/map'
+import { Route as Char123LocaleChar125AppChangelogRouteImport } from './routes/{-$locale}/_app/changelog'
+import { Route as Char123LocaleChar125AdminUsersIndexRouteImport } from './routes/{-$locale}/admin/users/index'
+import { Route as Char123LocaleChar125AdminTicketsIndexRouteImport } from './routes/{-$locale}/admin/tickets/index'
+import { Route as Char123LocaleChar125AdminRolesIndexRouteImport } from './routes/{-$locale}/admin/roles/index'
+import { Route as Char123LocaleChar125AdminReportsIndexRouteImport } from './routes/{-$locale}/admin/reports/index'
+import { Route as Char123LocaleChar125AdminChangelogIndexRouteImport } from './routes/{-$locale}/admin/changelog/index'
+import { Route as Char123LocaleChar125AdminAnnouncementsIndexRouteImport } from './routes/{-$locale}/admin/announcements/index'
+import { Route as Char123LocaleChar125AppMessagesIndexRouteImport } from './routes/{-$locale}/_app/messages/index'
+import { Route as Char123LocaleChar125AppLegalIndexRouteImport } from './routes/{-$locale}/_app/legal/index'
+import { Route as Char123LocaleChar125AppGalleryIndexRouteImport } from './routes/{-$locale}/_app/gallery/index'
+import { Route as Char123LocaleChar125AppEventsIndexRouteImport } from './routes/{-$locale}/_app/events/index'
+import { Route as Char123LocaleChar125AppCommunityIndexRouteImport } from './routes/{-$locale}/_app/community/index'
+import { Route as Char123LocaleChar125AppAnnouncementsIndexRouteImport } from './routes/{-$locale}/_app/announcements/index'
+import { Route as Char123LocaleChar125AppAccountIndexRouteImport } from './routes/{-$locale}/_app/account/index'
+import { Route as Char123LocaleChar125ChatDmConversationIdRouteImport } from './routes/{-$locale}/chat/dm/$conversationId'
+import { Route as Char123LocaleChar125ChatCChannelIdRouteImport } from './routes/{-$locale}/chat/c/$channelId'
+import { Route as Char123LocaleChar125AdminUsersUserIdRouteImport } from './routes/{-$locale}/admin/users/$userId'
+import { Route as Char123LocaleChar125AdminTicketsTicketIdRouteImport } from './routes/{-$locale}/admin/tickets/$ticketId'
+import { Route as Char123LocaleChar125AdminRolesRoleIdRouteImport } from './routes/{-$locale}/admin/roles/$roleId'
+import { Route as Char123LocaleChar125AdminChangelogChangelogIdRouteImport } from './routes/{-$locale}/admin/changelog/$changelogId'
+import { Route as Char123LocaleChar125AdminAnnouncementsAnnouncementIdRouteImport } from './routes/{-$locale}/admin/announcements/$announcementId'
+import { Route as Char123LocaleChar125AuthLoginMfaRouteImport } from './routes/{-$locale}/_auth/login/mfa'
+import { Route as Char123LocaleChar125AuthIVerifyEmailRouteImport } from './routes/{-$locale}/_auth/i/verify-email'
+import { Route as Char123LocaleChar125AuthIResetPasswordRouteImport } from './routes/{-$locale}/_auth/i/reset-password'
+import { Route as Char123LocaleChar125AppMessagesConversationIdRouteImport } from './routes/{-$locale}/_app/messages/$conversationId'
+import { Route as Char123LocaleChar125AppLegalPrivacypolicyRouteImport } from './routes/{-$locale}/_app/legal/privacypolicy'
+import { Route as Char123LocaleChar125AppLegalImpressumRouteImport } from './routes/{-$locale}/_app/legal/impressum'
+import { Route as Char123LocaleChar125AppLegalEulaRouteImport } from './routes/{-$locale}/_app/legal/eula'
+import { Route as Char123LocaleChar125AppGalleryUploadRouteImport } from './routes/{-$locale}/_app/gallery/upload'
+import { Route as Char123LocaleChar125AppGalleryGalleryIdRouteImport } from './routes/{-$locale}/_app/gallery/$galleryId'
+import { Route as Char123LocaleChar125AppEventsNewRouteImport } from './routes/{-$locale}/_app/events/new'
+import { Route as Char123LocaleChar125AppEventsEventIdRouteImport } from './routes/{-$locale}/_app/events/$eventId'
+import { Route as Char123LocaleChar125AppCommunityNewRouteImport } from './routes/{-$locale}/_app/community/new'
+import { Route as Char123LocaleChar125AppAnnouncementsAnnouncementIdRouteImport } from './routes/{-$locale}/_app/announcements/$announcementId'
+import { Route as Char123LocaleChar125AppAccountTicketsRouteImport } from './routes/{-$locale}/_app/account/tickets'
+import { Route as Char123LocaleChar125AppUserProfileUrlIndexRouteImport } from './routes/{-$locale}/_app/user/$profileUrl/index'
+import { Route as Char123LocaleChar125AppCommunityCommunityIdIndexRouteImport } from './routes/{-$locale}/_app/community/$communityId/index'
+import { Route as Char123LocaleChar125AppUserProfileUrlFollowingRouteImport } from './routes/{-$locale}/_app/user/$profileUrl/following'
+import { Route as Char123LocaleChar125AppUserProfileUrlFollowersRouteImport } from './routes/{-$locale}/_app/user/$profileUrl/followers'
+import { Route as Char123LocaleChar125AppEventsEventIdEditRouteImport } from './routes/{-$locale}/_app/events/$eventId_.edit'
+import { Route as Char123LocaleChar125AppCommunityCommunityIdFollowersRouteImport } from './routes/{-$locale}/_app/community/$communityId/followers'
+import { Route as Char123LocaleChar125AppCommunityCommunityIdAdminRouteImport } from './routes/{-$locale}/_app/community/$communityId/admin'
+import { Route as Char123LocaleChar125AppCommunityCommunityIdEventsIndexRouteImport } from './routes/{-$locale}/_app/community/$communityId/events/index'
 
-const ChatRoute = ChatRouteImport.update({
-  id: '/chat',
-  path: '/chat',
+const Char123LocaleChar125Route = Char123LocaleChar125RouteImport.update({
+  id: '/{-$locale}',
+  path: '/{-$locale}',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/_auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AppRoute = AppRouteImport.update({
+const Char123LocaleChar125ChatRoute =
+  Char123LocaleChar125ChatRouteImport.update({
+    id: '/chat',
+    path: '/chat',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125AdminRoute =
+  Char123LocaleChar125AdminRouteImport.update({
+    id: '/admin',
+    path: '/admin',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125AuthRoute =
+  Char123LocaleChar125AuthRouteImport.update({
+    id: '/_auth',
+    getParentRoute: () => Char123LocaleChar125Route,
+  } as any)
+const Char123LocaleChar125AppRoute = Char123LocaleChar125AppRouteImport.update({
   id: '/_app',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => Char123LocaleChar125Route,
 } as any)
-const ChatIndexRoute = ChatIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => ChatRoute,
-} as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AppIndexRoute = AppIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AppRoute,
-} as any)
-const AuthRegisterRoute = AuthRegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthLogoutRoute = AuthLogoutRouteImport.update({
-  id: '/logout',
-  path: '/logout',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthLoginRoute = AuthLoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
-  id: '/forgot-password',
-  path: '/forgot-password',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AppUsersRoute = AppUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppSupportRoute = AppSupportRouteImport.update({
-  id: '/support',
-  path: '/support',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppProfileRoute = AppProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppPawcraftRoute = AppPawcraftRouteImport.update({
-  id: '/pawcraft',
-  path: '/pawcraft',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppNotificationsRoute = AppNotificationsRouteImport.update({
-  id: '/notifications',
-  path: '/notifications',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppMapRoute = AppMapRouteImport.update({
-  id: '/map',
-  path: '/map',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppChangelogRoute = AppChangelogRouteImport.update({
-  id: '/changelog',
-  path: '/changelog',
-  getParentRoute: () => AppRoute,
-} as any)
-const AdminUsersIndexRoute = AdminUsersIndexRouteImport.update({
-  id: '/users/',
-  path: '/users/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminTicketsIndexRoute = AdminTicketsIndexRouteImport.update({
-  id: '/tickets/',
-  path: '/tickets/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminRolesIndexRoute = AdminRolesIndexRouteImport.update({
-  id: '/roles/',
-  path: '/roles/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminReportsIndexRoute = AdminReportsIndexRouteImport.update({
-  id: '/reports/',
-  path: '/reports/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminChangelogIndexRoute = AdminChangelogIndexRouteImport.update({
-  id: '/changelog/',
-  path: '/changelog/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminAnnouncementsIndexRoute = AdminAnnouncementsIndexRouteImport.update({
-  id: '/announcements/',
-  path: '/announcements/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AppMessagesIndexRoute = AppMessagesIndexRouteImport.update({
-  id: '/messages/',
-  path: '/messages/',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppLegalIndexRoute = AppLegalIndexRouteImport.update({
-  id: '/legal/',
-  path: '/legal/',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppGalleryIndexRoute = AppGalleryIndexRouteImport.update({
-  id: '/gallery/',
-  path: '/gallery/',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppEventsIndexRoute = AppEventsIndexRouteImport.update({
-  id: '/events/',
-  path: '/events/',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppCommunityIndexRoute = AppCommunityIndexRouteImport.update({
-  id: '/community/',
-  path: '/community/',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppAnnouncementsIndexRoute = AppAnnouncementsIndexRouteImport.update({
-  id: '/announcements/',
-  path: '/announcements/',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppAccountIndexRoute = AppAccountIndexRouteImport.update({
-  id: '/account/',
-  path: '/account/',
-  getParentRoute: () => AppRoute,
-} as any)
-const ChatDmConversationIdRoute = ChatDmConversationIdRouteImport.update({
-  id: '/dm/$conversationId',
-  path: '/dm/$conversationId',
-  getParentRoute: () => ChatRoute,
-} as any)
-const ChatCChannelIdRoute = ChatCChannelIdRouteImport.update({
-  id: '/c/$channelId',
-  path: '/c/$channelId',
-  getParentRoute: () => ChatRoute,
-} as any)
-const AdminUsersUserIdRoute = AdminUsersUserIdRouteImport.update({
-  id: '/users/$userId',
-  path: '/users/$userId',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminTicketsTicketIdRoute = AdminTicketsTicketIdRouteImport.update({
-  id: '/tickets/$ticketId',
-  path: '/tickets/$ticketId',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminRolesRoleIdRoute = AdminRolesRoleIdRouteImport.update({
-  id: '/roles/$roleId',
-  path: '/roles/$roleId',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminChangelogChangelogIdRoute =
-  AdminChangelogChangelogIdRouteImport.update({
+const Char123LocaleChar125ChatIndexRoute =
+  Char123LocaleChar125ChatIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => Char123LocaleChar125ChatRoute,
+  } as any)
+const Char123LocaleChar125AdminIndexRoute =
+  Char123LocaleChar125AdminIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AppIndexRoute =
+  Char123LocaleChar125AppIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AuthRegisterRoute =
+  Char123LocaleChar125AuthRegisterRouteImport.update({
+    id: '/register',
+    path: '/register',
+    getParentRoute: () => Char123LocaleChar125AuthRoute,
+  } as any)
+const Char123LocaleChar125AuthLogoutRoute =
+  Char123LocaleChar125AuthLogoutRouteImport.update({
+    id: '/logout',
+    path: '/logout',
+    getParentRoute: () => Char123LocaleChar125AuthRoute,
+  } as any)
+const Char123LocaleChar125AuthLoginRoute =
+  Char123LocaleChar125AuthLoginRouteImport.update({
+    id: '/login',
+    path: '/login',
+    getParentRoute: () => Char123LocaleChar125AuthRoute,
+  } as any)
+const Char123LocaleChar125AuthForgotPasswordRoute =
+  Char123LocaleChar125AuthForgotPasswordRouteImport.update({
+    id: '/forgot-password',
+    path: '/forgot-password',
+    getParentRoute: () => Char123LocaleChar125AuthRoute,
+  } as any)
+const Char123LocaleChar125AppUsersRoute =
+  Char123LocaleChar125AppUsersRouteImport.update({
+    id: '/users',
+    path: '/users',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppSupportRoute =
+  Char123LocaleChar125AppSupportRouteImport.update({
+    id: '/support',
+    path: '/support',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppProfileRoute =
+  Char123LocaleChar125AppProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppPawcraftRoute =
+  Char123LocaleChar125AppPawcraftRouteImport.update({
+    id: '/pawcraft',
+    path: '/pawcraft',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppNotificationsRoute =
+  Char123LocaleChar125AppNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppMapRoute =
+  Char123LocaleChar125AppMapRouteImport.update({
+    id: '/map',
+    path: '/map',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppChangelogRoute =
+  Char123LocaleChar125AppChangelogRouteImport.update({
+    id: '/changelog',
+    path: '/changelog',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AdminUsersIndexRoute =
+  Char123LocaleChar125AdminUsersIndexRouteImport.update({
+    id: '/users/',
+    path: '/users/',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AdminTicketsIndexRoute =
+  Char123LocaleChar125AdminTicketsIndexRouteImport.update({
+    id: '/tickets/',
+    path: '/tickets/',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AdminRolesIndexRoute =
+  Char123LocaleChar125AdminRolesIndexRouteImport.update({
+    id: '/roles/',
+    path: '/roles/',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AdminReportsIndexRoute =
+  Char123LocaleChar125AdminReportsIndexRouteImport.update({
+    id: '/reports/',
+    path: '/reports/',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AdminChangelogIndexRoute =
+  Char123LocaleChar125AdminChangelogIndexRouteImport.update({
+    id: '/changelog/',
+    path: '/changelog/',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AdminAnnouncementsIndexRoute =
+  Char123LocaleChar125AdminAnnouncementsIndexRouteImport.update({
+    id: '/announcements/',
+    path: '/announcements/',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AppMessagesIndexRoute =
+  Char123LocaleChar125AppMessagesIndexRouteImport.update({
+    id: '/messages/',
+    path: '/messages/',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppLegalIndexRoute =
+  Char123LocaleChar125AppLegalIndexRouteImport.update({
+    id: '/legal/',
+    path: '/legal/',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppGalleryIndexRoute =
+  Char123LocaleChar125AppGalleryIndexRouteImport.update({
+    id: '/gallery/',
+    path: '/gallery/',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppEventsIndexRoute =
+  Char123LocaleChar125AppEventsIndexRouteImport.update({
+    id: '/events/',
+    path: '/events/',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppCommunityIndexRoute =
+  Char123LocaleChar125AppCommunityIndexRouteImport.update({
+    id: '/community/',
+    path: '/community/',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppAnnouncementsIndexRoute =
+  Char123LocaleChar125AppAnnouncementsIndexRouteImport.update({
+    id: '/announcements/',
+    path: '/announcements/',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppAccountIndexRoute =
+  Char123LocaleChar125AppAccountIndexRouteImport.update({
+    id: '/account/',
+    path: '/account/',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125ChatDmConversationIdRoute =
+  Char123LocaleChar125ChatDmConversationIdRouteImport.update({
+    id: '/dm/$conversationId',
+    path: '/dm/$conversationId',
+    getParentRoute: () => Char123LocaleChar125ChatRoute,
+  } as any)
+const Char123LocaleChar125ChatCChannelIdRoute =
+  Char123LocaleChar125ChatCChannelIdRouteImport.update({
+    id: '/c/$channelId',
+    path: '/c/$channelId',
+    getParentRoute: () => Char123LocaleChar125ChatRoute,
+  } as any)
+const Char123LocaleChar125AdminUsersUserIdRoute =
+  Char123LocaleChar125AdminUsersUserIdRouteImport.update({
+    id: '/users/$userId',
+    path: '/users/$userId',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AdminTicketsTicketIdRoute =
+  Char123LocaleChar125AdminTicketsTicketIdRouteImport.update({
+    id: '/tickets/$ticketId',
+    path: '/tickets/$ticketId',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AdminRolesRoleIdRoute =
+  Char123LocaleChar125AdminRolesRoleIdRouteImport.update({
+    id: '/roles/$roleId',
+    path: '/roles/$roleId',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AdminChangelogChangelogIdRoute =
+  Char123LocaleChar125AdminChangelogChangelogIdRouteImport.update({
     id: '/changelog/$changelogId',
     path: '/changelog/$changelogId',
-    getParentRoute: () => AdminRoute,
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
-const AdminAnnouncementsAnnouncementIdRoute =
-  AdminAnnouncementsAnnouncementIdRouteImport.update({
+const Char123LocaleChar125AdminAnnouncementsAnnouncementIdRoute =
+  Char123LocaleChar125AdminAnnouncementsAnnouncementIdRouteImport.update({
     id: '/announcements/$announcementId',
     path: '/announcements/$announcementId',
-    getParentRoute: () => AdminRoute,
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
-const AuthLoginMfaRoute = AuthLoginMfaRouteImport.update({
-  id: '/mfa',
-  path: '/mfa',
-  getParentRoute: () => AuthLoginRoute,
-} as any)
-const AuthIVerifyEmailRoute = AuthIVerifyEmailRouteImport.update({
-  id: '/i/verify-email',
-  path: '/i/verify-email',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AuthIResetPasswordRoute = AuthIResetPasswordRouteImport.update({
-  id: '/i/reset-password',
-  path: '/i/reset-password',
-  getParentRoute: () => AuthRoute,
-} as any)
-const AppMessagesConversationIdRoute =
-  AppMessagesConversationIdRouteImport.update({
+const Char123LocaleChar125AuthLoginMfaRoute =
+  Char123LocaleChar125AuthLoginMfaRouteImport.update({
+    id: '/mfa',
+    path: '/mfa',
+    getParentRoute: () => Char123LocaleChar125AuthLoginRoute,
+  } as any)
+const Char123LocaleChar125AuthIVerifyEmailRoute =
+  Char123LocaleChar125AuthIVerifyEmailRouteImport.update({
+    id: '/i/verify-email',
+    path: '/i/verify-email',
+    getParentRoute: () => Char123LocaleChar125AuthRoute,
+  } as any)
+const Char123LocaleChar125AuthIResetPasswordRoute =
+  Char123LocaleChar125AuthIResetPasswordRouteImport.update({
+    id: '/i/reset-password',
+    path: '/i/reset-password',
+    getParentRoute: () => Char123LocaleChar125AuthRoute,
+  } as any)
+const Char123LocaleChar125AppMessagesConversationIdRoute =
+  Char123LocaleChar125AppMessagesConversationIdRouteImport.update({
     id: '/messages/$conversationId',
     path: '/messages/$conversationId',
-    getParentRoute: () => AppRoute,
+    getParentRoute: () => Char123LocaleChar125AppRoute,
   } as any)
-const AppLegalPrivacypolicyRoute = AppLegalPrivacypolicyRouteImport.update({
-  id: '/legal/privacypolicy',
-  path: '/legal/privacypolicy',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppLegalImpressumRoute = AppLegalImpressumRouteImport.update({
-  id: '/legal/impressum',
-  path: '/legal/impressum',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppLegalEulaRoute = AppLegalEulaRouteImport.update({
-  id: '/legal/eula',
-  path: '/legal/eula',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppGalleryUploadRoute = AppGalleryUploadRouteImport.update({
-  id: '/gallery/upload',
-  path: '/gallery/upload',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppGalleryGalleryIdRoute = AppGalleryGalleryIdRouteImport.update({
-  id: '/gallery/$galleryId',
-  path: '/gallery/$galleryId',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppEventsNewRoute = AppEventsNewRouteImport.update({
-  id: '/events/new',
-  path: '/events/new',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppEventsEventIdRoute = AppEventsEventIdRouteImport.update({
-  id: '/events/$eventId',
-  path: '/events/$eventId',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppCommunityNewRoute = AppCommunityNewRouteImport.update({
-  id: '/community/new',
-  path: '/community/new',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppAnnouncementsAnnouncementIdRoute =
-  AppAnnouncementsAnnouncementIdRouteImport.update({
+const Char123LocaleChar125AppLegalPrivacypolicyRoute =
+  Char123LocaleChar125AppLegalPrivacypolicyRouteImport.update({
+    id: '/legal/privacypolicy',
+    path: '/legal/privacypolicy',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppLegalImpressumRoute =
+  Char123LocaleChar125AppLegalImpressumRouteImport.update({
+    id: '/legal/impressum',
+    path: '/legal/impressum',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppLegalEulaRoute =
+  Char123LocaleChar125AppLegalEulaRouteImport.update({
+    id: '/legal/eula',
+    path: '/legal/eula',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppGalleryUploadRoute =
+  Char123LocaleChar125AppGalleryUploadRouteImport.update({
+    id: '/gallery/upload',
+    path: '/gallery/upload',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppGalleryGalleryIdRoute =
+  Char123LocaleChar125AppGalleryGalleryIdRouteImport.update({
+    id: '/gallery/$galleryId',
+    path: '/gallery/$galleryId',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppEventsNewRoute =
+  Char123LocaleChar125AppEventsNewRouteImport.update({
+    id: '/events/new',
+    path: '/events/new',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppEventsEventIdRoute =
+  Char123LocaleChar125AppEventsEventIdRouteImport.update({
+    id: '/events/$eventId',
+    path: '/events/$eventId',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppCommunityNewRoute =
+  Char123LocaleChar125AppCommunityNewRouteImport.update({
+    id: '/community/new',
+    path: '/community/new',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppAnnouncementsAnnouncementIdRoute =
+  Char123LocaleChar125AppAnnouncementsAnnouncementIdRouteImport.update({
     id: '/announcements/$announcementId',
     path: '/announcements/$announcementId',
-    getParentRoute: () => AppRoute,
+    getParentRoute: () => Char123LocaleChar125AppRoute,
   } as any)
-const AppAccountTicketsRoute = AppAccountTicketsRouteImport.update({
-  id: '/account/tickets',
-  path: '/account/tickets',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppUserProfileUrlIndexRoute = AppUserProfileUrlIndexRouteImport.update({
-  id: '/user/$profileUrl/',
-  path: '/user/$profileUrl/',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppCommunityCommunityIdIndexRoute =
-  AppCommunityCommunityIdIndexRouteImport.update({
+const Char123LocaleChar125AppAccountTicketsRoute =
+  Char123LocaleChar125AppAccountTicketsRouteImport.update({
+    id: '/account/tickets',
+    path: '/account/tickets',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppUserProfileUrlIndexRoute =
+  Char123LocaleChar125AppUserProfileUrlIndexRouteImport.update({
+    id: '/user/$profileUrl/',
+    path: '/user/$profileUrl/',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppCommunityCommunityIdIndexRoute =
+  Char123LocaleChar125AppCommunityCommunityIdIndexRouteImport.update({
     id: '/community/$communityId/',
     path: '/community/$communityId/',
-    getParentRoute: () => AppRoute,
+    getParentRoute: () => Char123LocaleChar125AppRoute,
   } as any)
-const AppUserProfileUrlFollowingRoute =
-  AppUserProfileUrlFollowingRouteImport.update({
+const Char123LocaleChar125AppUserProfileUrlFollowingRoute =
+  Char123LocaleChar125AppUserProfileUrlFollowingRouteImport.update({
     id: '/user/$profileUrl/following',
     path: '/user/$profileUrl/following',
-    getParentRoute: () => AppRoute,
+    getParentRoute: () => Char123LocaleChar125AppRoute,
   } as any)
-const AppUserProfileUrlFollowersRoute =
-  AppUserProfileUrlFollowersRouteImport.update({
+const Char123LocaleChar125AppUserProfileUrlFollowersRoute =
+  Char123LocaleChar125AppUserProfileUrlFollowersRouteImport.update({
     id: '/user/$profileUrl/followers',
     path: '/user/$profileUrl/followers',
-    getParentRoute: () => AppRoute,
+    getParentRoute: () => Char123LocaleChar125AppRoute,
   } as any)
-const AppEventsEventIdEditRoute = AppEventsEventIdEditRouteImport.update({
-  id: '/events/$eventId_/edit',
-  path: '/events/$eventId/edit',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppCommunityCommunityIdFollowersRoute =
-  AppCommunityCommunityIdFollowersRouteImport.update({
+const Char123LocaleChar125AppEventsEventIdEditRoute =
+  Char123LocaleChar125AppEventsEventIdEditRouteImport.update({
+    id: '/events/$eventId_/edit',
+    path: '/events/$eventId/edit',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppCommunityCommunityIdFollowersRoute =
+  Char123LocaleChar125AppCommunityCommunityIdFollowersRouteImport.update({
     id: '/community/$communityId/followers',
     path: '/community/$communityId/followers',
-    getParentRoute: () => AppRoute,
+    getParentRoute: () => Char123LocaleChar125AppRoute,
   } as any)
-const AppCommunityCommunityIdAdminRoute =
-  AppCommunityCommunityIdAdminRouteImport.update({
+const Char123LocaleChar125AppCommunityCommunityIdAdminRoute =
+  Char123LocaleChar125AppCommunityCommunityIdAdminRouteImport.update({
     id: '/community/$communityId/admin',
     path: '/community/$communityId/admin',
-    getParentRoute: () => AppRoute,
+    getParentRoute: () => Char123LocaleChar125AppRoute,
   } as any)
-const AppCommunityCommunityIdEventsIndexRoute =
-  AppCommunityCommunityIdEventsIndexRouteImport.update({
+const Char123LocaleChar125AppCommunityCommunityIdEventsIndexRoute =
+  Char123LocaleChar125AppCommunityCommunityIdEventsIndexRouteImport.update({
     id: '/community/$communityId/events/',
     path: '/community/$communityId/events/',
-    getParentRoute: () => AppRoute,
+    getParentRoute: () => Char123LocaleChar125AppRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AppIndexRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/chat': typeof ChatRouteWithChildren
-  '/changelog': typeof AppChangelogRoute
-  '/map': typeof AppMapRoute
-  '/notifications': typeof AppNotificationsRoute
-  '/pawcraft': typeof AppPawcraftRoute
-  '/profile': typeof AppProfileRoute
-  '/support': typeof AppSupportRoute
-  '/users': typeof AppUsersRoute
-  '/forgot-password': typeof AuthForgotPasswordRoute
-  '/login': typeof AuthLoginRouteWithChildren
-  '/logout': typeof AuthLogoutRoute
-  '/register': typeof AuthRegisterRoute
-  '/admin/': typeof AdminIndexRoute
-  '/chat/': typeof ChatIndexRoute
-  '/account/tickets': typeof AppAccountTicketsRoute
-  '/announcements/$announcementId': typeof AppAnnouncementsAnnouncementIdRoute
-  '/community/new': typeof AppCommunityNewRoute
-  '/events/$eventId': typeof AppEventsEventIdRoute
-  '/events/new': typeof AppEventsNewRoute
-  '/gallery/$galleryId': typeof AppGalleryGalleryIdRoute
-  '/gallery/upload': typeof AppGalleryUploadRoute
-  '/legal/eula': typeof AppLegalEulaRoute
-  '/legal/impressum': typeof AppLegalImpressumRoute
-  '/legal/privacypolicy': typeof AppLegalPrivacypolicyRoute
-  '/messages/$conversationId': typeof AppMessagesConversationIdRoute
-  '/i/reset-password': typeof AuthIResetPasswordRoute
-  '/i/verify-email': typeof AuthIVerifyEmailRoute
-  '/login/mfa': typeof AuthLoginMfaRoute
-  '/admin/announcements/$announcementId': typeof AdminAnnouncementsAnnouncementIdRoute
-  '/admin/changelog/$changelogId': typeof AdminChangelogChangelogIdRoute
-  '/admin/roles/$roleId': typeof AdminRolesRoleIdRoute
-  '/admin/tickets/$ticketId': typeof AdminTicketsTicketIdRoute
-  '/admin/users/$userId': typeof AdminUsersUserIdRoute
-  '/chat/c/$channelId': typeof ChatCChannelIdRoute
-  '/chat/dm/$conversationId': typeof ChatDmConversationIdRoute
-  '/account/': typeof AppAccountIndexRoute
-  '/announcements/': typeof AppAnnouncementsIndexRoute
-  '/community/': typeof AppCommunityIndexRoute
-  '/events/': typeof AppEventsIndexRoute
-  '/gallery/': typeof AppGalleryIndexRoute
-  '/legal/': typeof AppLegalIndexRoute
-  '/messages/': typeof AppMessagesIndexRoute
-  '/admin/announcements/': typeof AdminAnnouncementsIndexRoute
-  '/admin/changelog/': typeof AdminChangelogIndexRoute
-  '/admin/reports/': typeof AdminReportsIndexRoute
-  '/admin/roles/': typeof AdminRolesIndexRoute
-  '/admin/tickets/': typeof AdminTicketsIndexRoute
-  '/admin/users/': typeof AdminUsersIndexRoute
-  '/community/$communityId/admin': typeof AppCommunityCommunityIdAdminRoute
-  '/community/$communityId/followers': typeof AppCommunityCommunityIdFollowersRoute
-  '/events/$eventId/edit': typeof AppEventsEventIdEditRoute
-  '/user/$profileUrl/followers': typeof AppUserProfileUrlFollowersRoute
-  '/user/$profileUrl/following': typeof AppUserProfileUrlFollowingRoute
-  '/community/$communityId/': typeof AppCommunityCommunityIdIndexRoute
-  '/user/$profileUrl/': typeof AppUserProfileUrlIndexRoute
-  '/community/$communityId/events/': typeof AppCommunityCommunityIdEventsIndexRoute
+  '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
+  '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
+  '/{-$locale}/chat': typeof Char123LocaleChar125ChatRouteWithChildren
+  '/{-$locale}/changelog': typeof Char123LocaleChar125AppChangelogRoute
+  '/{-$locale}/map': typeof Char123LocaleChar125AppMapRoute
+  '/{-$locale}/notifications': typeof Char123LocaleChar125AppNotificationsRoute
+  '/{-$locale}/pawcraft': typeof Char123LocaleChar125AppPawcraftRoute
+  '/{-$locale}/profile': typeof Char123LocaleChar125AppProfileRoute
+  '/{-$locale}/support': typeof Char123LocaleChar125AppSupportRoute
+  '/{-$locale}/users': typeof Char123LocaleChar125AppUsersRoute
+  '/{-$locale}/forgot-password': typeof Char123LocaleChar125AuthForgotPasswordRoute
+  '/{-$locale}/login': typeof Char123LocaleChar125AuthLoginRouteWithChildren
+  '/{-$locale}/logout': typeof Char123LocaleChar125AuthLogoutRoute
+  '/{-$locale}/register': typeof Char123LocaleChar125AuthRegisterRoute
+  '/{-$locale}/': typeof Char123LocaleChar125AppIndexRoute
+  '/{-$locale}/admin/': typeof Char123LocaleChar125AdminIndexRoute
+  '/{-$locale}/chat/': typeof Char123LocaleChar125ChatIndexRoute
+  '/{-$locale}/account/tickets': typeof Char123LocaleChar125AppAccountTicketsRoute
+  '/{-$locale}/announcements/$announcementId': typeof Char123LocaleChar125AppAnnouncementsAnnouncementIdRoute
+  '/{-$locale}/community/new': typeof Char123LocaleChar125AppCommunityNewRoute
+  '/{-$locale}/events/$eventId': typeof Char123LocaleChar125AppEventsEventIdRoute
+  '/{-$locale}/events/new': typeof Char123LocaleChar125AppEventsNewRoute
+  '/{-$locale}/gallery/$galleryId': typeof Char123LocaleChar125AppGalleryGalleryIdRoute
+  '/{-$locale}/gallery/upload': typeof Char123LocaleChar125AppGalleryUploadRoute
+  '/{-$locale}/legal/eula': typeof Char123LocaleChar125AppLegalEulaRoute
+  '/{-$locale}/legal/impressum': typeof Char123LocaleChar125AppLegalImpressumRoute
+  '/{-$locale}/legal/privacypolicy': typeof Char123LocaleChar125AppLegalPrivacypolicyRoute
+  '/{-$locale}/messages/$conversationId': typeof Char123LocaleChar125AppMessagesConversationIdRoute
+  '/{-$locale}/i/reset-password': typeof Char123LocaleChar125AuthIResetPasswordRoute
+  '/{-$locale}/i/verify-email': typeof Char123LocaleChar125AuthIVerifyEmailRoute
+  '/{-$locale}/login/mfa': typeof Char123LocaleChar125AuthLoginMfaRoute
+  '/{-$locale}/admin/announcements/$announcementId': typeof Char123LocaleChar125AdminAnnouncementsAnnouncementIdRoute
+  '/{-$locale}/admin/changelog/$changelogId': typeof Char123LocaleChar125AdminChangelogChangelogIdRoute
+  '/{-$locale}/admin/roles/$roleId': typeof Char123LocaleChar125AdminRolesRoleIdRoute
+  '/{-$locale}/admin/tickets/$ticketId': typeof Char123LocaleChar125AdminTicketsTicketIdRoute
+  '/{-$locale}/admin/users/$userId': typeof Char123LocaleChar125AdminUsersUserIdRoute
+  '/{-$locale}/chat/c/$channelId': typeof Char123LocaleChar125ChatCChannelIdRoute
+  '/{-$locale}/chat/dm/$conversationId': typeof Char123LocaleChar125ChatDmConversationIdRoute
+  '/{-$locale}/account/': typeof Char123LocaleChar125AppAccountIndexRoute
+  '/{-$locale}/announcements/': typeof Char123LocaleChar125AppAnnouncementsIndexRoute
+  '/{-$locale}/community/': typeof Char123LocaleChar125AppCommunityIndexRoute
+  '/{-$locale}/events/': typeof Char123LocaleChar125AppEventsIndexRoute
+  '/{-$locale}/gallery/': typeof Char123LocaleChar125AppGalleryIndexRoute
+  '/{-$locale}/legal/': typeof Char123LocaleChar125AppLegalIndexRoute
+  '/{-$locale}/messages/': typeof Char123LocaleChar125AppMessagesIndexRoute
+  '/{-$locale}/admin/announcements/': typeof Char123LocaleChar125AdminAnnouncementsIndexRoute
+  '/{-$locale}/admin/changelog/': typeof Char123LocaleChar125AdminChangelogIndexRoute
+  '/{-$locale}/admin/reports/': typeof Char123LocaleChar125AdminReportsIndexRoute
+  '/{-$locale}/admin/roles/': typeof Char123LocaleChar125AdminRolesIndexRoute
+  '/{-$locale}/admin/tickets/': typeof Char123LocaleChar125AdminTicketsIndexRoute
+  '/{-$locale}/admin/users/': typeof Char123LocaleChar125AdminUsersIndexRoute
+  '/{-$locale}/community/$communityId/admin': typeof Char123LocaleChar125AppCommunityCommunityIdAdminRoute
+  '/{-$locale}/community/$communityId/followers': typeof Char123LocaleChar125AppCommunityCommunityIdFollowersRoute
+  '/{-$locale}/events/$eventId/edit': typeof Char123LocaleChar125AppEventsEventIdEditRoute
+  '/{-$locale}/user/$profileUrl/followers': typeof Char123LocaleChar125AppUserProfileUrlFollowersRoute
+  '/{-$locale}/user/$profileUrl/following': typeof Char123LocaleChar125AppUserProfileUrlFollowingRoute
+  '/{-$locale}/community/$communityId/': typeof Char123LocaleChar125AppCommunityCommunityIdIndexRoute
+  '/{-$locale}/user/$profileUrl/': typeof Char123LocaleChar125AppUserProfileUrlIndexRoute
+  '/{-$locale}/community/$communityId/events/': typeof Char123LocaleChar125AppCommunityCommunityIdEventsIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof AppIndexRoute
-  '/changelog': typeof AppChangelogRoute
-  '/map': typeof AppMapRoute
-  '/notifications': typeof AppNotificationsRoute
-  '/pawcraft': typeof AppPawcraftRoute
-  '/profile': typeof AppProfileRoute
-  '/support': typeof AppSupportRoute
-  '/users': typeof AppUsersRoute
-  '/forgot-password': typeof AuthForgotPasswordRoute
-  '/login': typeof AuthLoginRouteWithChildren
-  '/logout': typeof AuthLogoutRoute
-  '/register': typeof AuthRegisterRoute
-  '/admin': typeof AdminIndexRoute
-  '/chat': typeof ChatIndexRoute
-  '/account/tickets': typeof AppAccountTicketsRoute
-  '/announcements/$announcementId': typeof AppAnnouncementsAnnouncementIdRoute
-  '/community/new': typeof AppCommunityNewRoute
-  '/events/$eventId': typeof AppEventsEventIdRoute
-  '/events/new': typeof AppEventsNewRoute
-  '/gallery/$galleryId': typeof AppGalleryGalleryIdRoute
-  '/gallery/upload': typeof AppGalleryUploadRoute
-  '/legal/eula': typeof AppLegalEulaRoute
-  '/legal/impressum': typeof AppLegalImpressumRoute
-  '/legal/privacypolicy': typeof AppLegalPrivacypolicyRoute
-  '/messages/$conversationId': typeof AppMessagesConversationIdRoute
-  '/i/reset-password': typeof AuthIResetPasswordRoute
-  '/i/verify-email': typeof AuthIVerifyEmailRoute
-  '/login/mfa': typeof AuthLoginMfaRoute
-  '/admin/announcements/$announcementId': typeof AdminAnnouncementsAnnouncementIdRoute
-  '/admin/changelog/$changelogId': typeof AdminChangelogChangelogIdRoute
-  '/admin/roles/$roleId': typeof AdminRolesRoleIdRoute
-  '/admin/tickets/$ticketId': typeof AdminTicketsTicketIdRoute
-  '/admin/users/$userId': typeof AdminUsersUserIdRoute
-  '/chat/c/$channelId': typeof ChatCChannelIdRoute
-  '/chat/dm/$conversationId': typeof ChatDmConversationIdRoute
-  '/account': typeof AppAccountIndexRoute
-  '/announcements': typeof AppAnnouncementsIndexRoute
-  '/community': typeof AppCommunityIndexRoute
-  '/events': typeof AppEventsIndexRoute
-  '/gallery': typeof AppGalleryIndexRoute
-  '/legal': typeof AppLegalIndexRoute
-  '/messages': typeof AppMessagesIndexRoute
-  '/admin/announcements': typeof AdminAnnouncementsIndexRoute
-  '/admin/changelog': typeof AdminChangelogIndexRoute
-  '/admin/reports': typeof AdminReportsIndexRoute
-  '/admin/roles': typeof AdminRolesIndexRoute
-  '/admin/tickets': typeof AdminTicketsIndexRoute
-  '/admin/users': typeof AdminUsersIndexRoute
-  '/community/$communityId/admin': typeof AppCommunityCommunityIdAdminRoute
-  '/community/$communityId/followers': typeof AppCommunityCommunityIdFollowersRoute
-  '/events/$eventId/edit': typeof AppEventsEventIdEditRoute
-  '/user/$profileUrl/followers': typeof AppUserProfileUrlFollowersRoute
-  '/user/$profileUrl/following': typeof AppUserProfileUrlFollowingRoute
-  '/community/$communityId': typeof AppCommunityCommunityIdIndexRoute
-  '/user/$profileUrl': typeof AppUserProfileUrlIndexRoute
-  '/community/$communityId/events': typeof AppCommunityCommunityIdEventsIndexRoute
+  '/{-$locale}': typeof Char123LocaleChar125AppIndexRoute
+  '/{-$locale}/changelog': typeof Char123LocaleChar125AppChangelogRoute
+  '/{-$locale}/map': typeof Char123LocaleChar125AppMapRoute
+  '/{-$locale}/notifications': typeof Char123LocaleChar125AppNotificationsRoute
+  '/{-$locale}/pawcraft': typeof Char123LocaleChar125AppPawcraftRoute
+  '/{-$locale}/profile': typeof Char123LocaleChar125AppProfileRoute
+  '/{-$locale}/support': typeof Char123LocaleChar125AppSupportRoute
+  '/{-$locale}/users': typeof Char123LocaleChar125AppUsersRoute
+  '/{-$locale}/forgot-password': typeof Char123LocaleChar125AuthForgotPasswordRoute
+  '/{-$locale}/login': typeof Char123LocaleChar125AuthLoginRouteWithChildren
+  '/{-$locale}/logout': typeof Char123LocaleChar125AuthLogoutRoute
+  '/{-$locale}/register': typeof Char123LocaleChar125AuthRegisterRoute
+  '/{-$locale}/admin': typeof Char123LocaleChar125AdminIndexRoute
+  '/{-$locale}/chat': typeof Char123LocaleChar125ChatIndexRoute
+  '/{-$locale}/account/tickets': typeof Char123LocaleChar125AppAccountTicketsRoute
+  '/{-$locale}/announcements/$announcementId': typeof Char123LocaleChar125AppAnnouncementsAnnouncementIdRoute
+  '/{-$locale}/community/new': typeof Char123LocaleChar125AppCommunityNewRoute
+  '/{-$locale}/events/$eventId': typeof Char123LocaleChar125AppEventsEventIdRoute
+  '/{-$locale}/events/new': typeof Char123LocaleChar125AppEventsNewRoute
+  '/{-$locale}/gallery/$galleryId': typeof Char123LocaleChar125AppGalleryGalleryIdRoute
+  '/{-$locale}/gallery/upload': typeof Char123LocaleChar125AppGalleryUploadRoute
+  '/{-$locale}/legal/eula': typeof Char123LocaleChar125AppLegalEulaRoute
+  '/{-$locale}/legal/impressum': typeof Char123LocaleChar125AppLegalImpressumRoute
+  '/{-$locale}/legal/privacypolicy': typeof Char123LocaleChar125AppLegalPrivacypolicyRoute
+  '/{-$locale}/messages/$conversationId': typeof Char123LocaleChar125AppMessagesConversationIdRoute
+  '/{-$locale}/i/reset-password': typeof Char123LocaleChar125AuthIResetPasswordRoute
+  '/{-$locale}/i/verify-email': typeof Char123LocaleChar125AuthIVerifyEmailRoute
+  '/{-$locale}/login/mfa': typeof Char123LocaleChar125AuthLoginMfaRoute
+  '/{-$locale}/admin/announcements/$announcementId': typeof Char123LocaleChar125AdminAnnouncementsAnnouncementIdRoute
+  '/{-$locale}/admin/changelog/$changelogId': typeof Char123LocaleChar125AdminChangelogChangelogIdRoute
+  '/{-$locale}/admin/roles/$roleId': typeof Char123LocaleChar125AdminRolesRoleIdRoute
+  '/{-$locale}/admin/tickets/$ticketId': typeof Char123LocaleChar125AdminTicketsTicketIdRoute
+  '/{-$locale}/admin/users/$userId': typeof Char123LocaleChar125AdminUsersUserIdRoute
+  '/{-$locale}/chat/c/$channelId': typeof Char123LocaleChar125ChatCChannelIdRoute
+  '/{-$locale}/chat/dm/$conversationId': typeof Char123LocaleChar125ChatDmConversationIdRoute
+  '/{-$locale}/account': typeof Char123LocaleChar125AppAccountIndexRoute
+  '/{-$locale}/announcements': typeof Char123LocaleChar125AppAnnouncementsIndexRoute
+  '/{-$locale}/community': typeof Char123LocaleChar125AppCommunityIndexRoute
+  '/{-$locale}/events': typeof Char123LocaleChar125AppEventsIndexRoute
+  '/{-$locale}/gallery': typeof Char123LocaleChar125AppGalleryIndexRoute
+  '/{-$locale}/legal': typeof Char123LocaleChar125AppLegalIndexRoute
+  '/{-$locale}/messages': typeof Char123LocaleChar125AppMessagesIndexRoute
+  '/{-$locale}/admin/announcements': typeof Char123LocaleChar125AdminAnnouncementsIndexRoute
+  '/{-$locale}/admin/changelog': typeof Char123LocaleChar125AdminChangelogIndexRoute
+  '/{-$locale}/admin/reports': typeof Char123LocaleChar125AdminReportsIndexRoute
+  '/{-$locale}/admin/roles': typeof Char123LocaleChar125AdminRolesIndexRoute
+  '/{-$locale}/admin/tickets': typeof Char123LocaleChar125AdminTicketsIndexRoute
+  '/{-$locale}/admin/users': typeof Char123LocaleChar125AdminUsersIndexRoute
+  '/{-$locale}/community/$communityId/admin': typeof Char123LocaleChar125AppCommunityCommunityIdAdminRoute
+  '/{-$locale}/community/$communityId/followers': typeof Char123LocaleChar125AppCommunityCommunityIdFollowersRoute
+  '/{-$locale}/events/$eventId/edit': typeof Char123LocaleChar125AppEventsEventIdEditRoute
+  '/{-$locale}/user/$profileUrl/followers': typeof Char123LocaleChar125AppUserProfileUrlFollowersRoute
+  '/{-$locale}/user/$profileUrl/following': typeof Char123LocaleChar125AppUserProfileUrlFollowingRoute
+  '/{-$locale}/community/$communityId': typeof Char123LocaleChar125AppCommunityCommunityIdIndexRoute
+  '/{-$locale}/user/$profileUrl': typeof Char123LocaleChar125AppUserProfileUrlIndexRoute
+  '/{-$locale}/community/$communityId/events': typeof Char123LocaleChar125AppCommunityCommunityIdEventsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/_app': typeof AppRouteWithChildren
-  '/_auth': typeof AuthRouteWithChildren
-  '/admin': typeof AdminRouteWithChildren
-  '/chat': typeof ChatRouteWithChildren
-  '/_app/changelog': typeof AppChangelogRoute
-  '/_app/map': typeof AppMapRoute
-  '/_app/notifications': typeof AppNotificationsRoute
-  '/_app/pawcraft': typeof AppPawcraftRoute
-  '/_app/profile': typeof AppProfileRoute
-  '/_app/support': typeof AppSupportRoute
-  '/_app/users': typeof AppUsersRoute
-  '/_auth/forgot-password': typeof AuthForgotPasswordRoute
-  '/_auth/login': typeof AuthLoginRouteWithChildren
-  '/_auth/logout': typeof AuthLogoutRoute
-  '/_auth/register': typeof AuthRegisterRoute
-  '/_app/': typeof AppIndexRoute
-  '/admin/': typeof AdminIndexRoute
-  '/chat/': typeof ChatIndexRoute
-  '/_app/account/tickets': typeof AppAccountTicketsRoute
-  '/_app/announcements/$announcementId': typeof AppAnnouncementsAnnouncementIdRoute
-  '/_app/community/new': typeof AppCommunityNewRoute
-  '/_app/events/$eventId': typeof AppEventsEventIdRoute
-  '/_app/events/new': typeof AppEventsNewRoute
-  '/_app/gallery/$galleryId': typeof AppGalleryGalleryIdRoute
-  '/_app/gallery/upload': typeof AppGalleryUploadRoute
-  '/_app/legal/eula': typeof AppLegalEulaRoute
-  '/_app/legal/impressum': typeof AppLegalImpressumRoute
-  '/_app/legal/privacypolicy': typeof AppLegalPrivacypolicyRoute
-  '/_app/messages/$conversationId': typeof AppMessagesConversationIdRoute
-  '/_auth/i/reset-password': typeof AuthIResetPasswordRoute
-  '/_auth/i/verify-email': typeof AuthIVerifyEmailRoute
-  '/_auth/login/mfa': typeof AuthLoginMfaRoute
-  '/admin/announcements/$announcementId': typeof AdminAnnouncementsAnnouncementIdRoute
-  '/admin/changelog/$changelogId': typeof AdminChangelogChangelogIdRoute
-  '/admin/roles/$roleId': typeof AdminRolesRoleIdRoute
-  '/admin/tickets/$ticketId': typeof AdminTicketsTicketIdRoute
-  '/admin/users/$userId': typeof AdminUsersUserIdRoute
-  '/chat/c/$channelId': typeof ChatCChannelIdRoute
-  '/chat/dm/$conversationId': typeof ChatDmConversationIdRoute
-  '/_app/account/': typeof AppAccountIndexRoute
-  '/_app/announcements/': typeof AppAnnouncementsIndexRoute
-  '/_app/community/': typeof AppCommunityIndexRoute
-  '/_app/events/': typeof AppEventsIndexRoute
-  '/_app/gallery/': typeof AppGalleryIndexRoute
-  '/_app/legal/': typeof AppLegalIndexRoute
-  '/_app/messages/': typeof AppMessagesIndexRoute
-  '/admin/announcements/': typeof AdminAnnouncementsIndexRoute
-  '/admin/changelog/': typeof AdminChangelogIndexRoute
-  '/admin/reports/': typeof AdminReportsIndexRoute
-  '/admin/roles/': typeof AdminRolesIndexRoute
-  '/admin/tickets/': typeof AdminTicketsIndexRoute
-  '/admin/users/': typeof AdminUsersIndexRoute
-  '/_app/community/$communityId/admin': typeof AppCommunityCommunityIdAdminRoute
-  '/_app/community/$communityId/followers': typeof AppCommunityCommunityIdFollowersRoute
-  '/_app/events/$eventId_/edit': typeof AppEventsEventIdEditRoute
-  '/_app/user/$profileUrl/followers': typeof AppUserProfileUrlFollowersRoute
-  '/_app/user/$profileUrl/following': typeof AppUserProfileUrlFollowingRoute
-  '/_app/community/$communityId/': typeof AppCommunityCommunityIdIndexRoute
-  '/_app/user/$profileUrl/': typeof AppUserProfileUrlIndexRoute
-  '/_app/community/$communityId/events/': typeof AppCommunityCommunityIdEventsIndexRoute
+  '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
+  '/{-$locale}/_app': typeof Char123LocaleChar125AppRouteWithChildren
+  '/{-$locale}/_auth': typeof Char123LocaleChar125AuthRouteWithChildren
+  '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
+  '/{-$locale}/chat': typeof Char123LocaleChar125ChatRouteWithChildren
+  '/{-$locale}/_app/changelog': typeof Char123LocaleChar125AppChangelogRoute
+  '/{-$locale}/_app/map': typeof Char123LocaleChar125AppMapRoute
+  '/{-$locale}/_app/notifications': typeof Char123LocaleChar125AppNotificationsRoute
+  '/{-$locale}/_app/pawcraft': typeof Char123LocaleChar125AppPawcraftRoute
+  '/{-$locale}/_app/profile': typeof Char123LocaleChar125AppProfileRoute
+  '/{-$locale}/_app/support': typeof Char123LocaleChar125AppSupportRoute
+  '/{-$locale}/_app/users': typeof Char123LocaleChar125AppUsersRoute
+  '/{-$locale}/_auth/forgot-password': typeof Char123LocaleChar125AuthForgotPasswordRoute
+  '/{-$locale}/_auth/login': typeof Char123LocaleChar125AuthLoginRouteWithChildren
+  '/{-$locale}/_auth/logout': typeof Char123LocaleChar125AuthLogoutRoute
+  '/{-$locale}/_auth/register': typeof Char123LocaleChar125AuthRegisterRoute
+  '/{-$locale}/_app/': typeof Char123LocaleChar125AppIndexRoute
+  '/{-$locale}/admin/': typeof Char123LocaleChar125AdminIndexRoute
+  '/{-$locale}/chat/': typeof Char123LocaleChar125ChatIndexRoute
+  '/{-$locale}/_app/account/tickets': typeof Char123LocaleChar125AppAccountTicketsRoute
+  '/{-$locale}/_app/announcements/$announcementId': typeof Char123LocaleChar125AppAnnouncementsAnnouncementIdRoute
+  '/{-$locale}/_app/community/new': typeof Char123LocaleChar125AppCommunityNewRoute
+  '/{-$locale}/_app/events/$eventId': typeof Char123LocaleChar125AppEventsEventIdRoute
+  '/{-$locale}/_app/events/new': typeof Char123LocaleChar125AppEventsNewRoute
+  '/{-$locale}/_app/gallery/$galleryId': typeof Char123LocaleChar125AppGalleryGalleryIdRoute
+  '/{-$locale}/_app/gallery/upload': typeof Char123LocaleChar125AppGalleryUploadRoute
+  '/{-$locale}/_app/legal/eula': typeof Char123LocaleChar125AppLegalEulaRoute
+  '/{-$locale}/_app/legal/impressum': typeof Char123LocaleChar125AppLegalImpressumRoute
+  '/{-$locale}/_app/legal/privacypolicy': typeof Char123LocaleChar125AppLegalPrivacypolicyRoute
+  '/{-$locale}/_app/messages/$conversationId': typeof Char123LocaleChar125AppMessagesConversationIdRoute
+  '/{-$locale}/_auth/i/reset-password': typeof Char123LocaleChar125AuthIResetPasswordRoute
+  '/{-$locale}/_auth/i/verify-email': typeof Char123LocaleChar125AuthIVerifyEmailRoute
+  '/{-$locale}/_auth/login/mfa': typeof Char123LocaleChar125AuthLoginMfaRoute
+  '/{-$locale}/admin/announcements/$announcementId': typeof Char123LocaleChar125AdminAnnouncementsAnnouncementIdRoute
+  '/{-$locale}/admin/changelog/$changelogId': typeof Char123LocaleChar125AdminChangelogChangelogIdRoute
+  '/{-$locale}/admin/roles/$roleId': typeof Char123LocaleChar125AdminRolesRoleIdRoute
+  '/{-$locale}/admin/tickets/$ticketId': typeof Char123LocaleChar125AdminTicketsTicketIdRoute
+  '/{-$locale}/admin/users/$userId': typeof Char123LocaleChar125AdminUsersUserIdRoute
+  '/{-$locale}/chat/c/$channelId': typeof Char123LocaleChar125ChatCChannelIdRoute
+  '/{-$locale}/chat/dm/$conversationId': typeof Char123LocaleChar125ChatDmConversationIdRoute
+  '/{-$locale}/_app/account/': typeof Char123LocaleChar125AppAccountIndexRoute
+  '/{-$locale}/_app/announcements/': typeof Char123LocaleChar125AppAnnouncementsIndexRoute
+  '/{-$locale}/_app/community/': typeof Char123LocaleChar125AppCommunityIndexRoute
+  '/{-$locale}/_app/events/': typeof Char123LocaleChar125AppEventsIndexRoute
+  '/{-$locale}/_app/gallery/': typeof Char123LocaleChar125AppGalleryIndexRoute
+  '/{-$locale}/_app/legal/': typeof Char123LocaleChar125AppLegalIndexRoute
+  '/{-$locale}/_app/messages/': typeof Char123LocaleChar125AppMessagesIndexRoute
+  '/{-$locale}/admin/announcements/': typeof Char123LocaleChar125AdminAnnouncementsIndexRoute
+  '/{-$locale}/admin/changelog/': typeof Char123LocaleChar125AdminChangelogIndexRoute
+  '/{-$locale}/admin/reports/': typeof Char123LocaleChar125AdminReportsIndexRoute
+  '/{-$locale}/admin/roles/': typeof Char123LocaleChar125AdminRolesIndexRoute
+  '/{-$locale}/admin/tickets/': typeof Char123LocaleChar125AdminTicketsIndexRoute
+  '/{-$locale}/admin/users/': typeof Char123LocaleChar125AdminUsersIndexRoute
+  '/{-$locale}/_app/community/$communityId/admin': typeof Char123LocaleChar125AppCommunityCommunityIdAdminRoute
+  '/{-$locale}/_app/community/$communityId/followers': typeof Char123LocaleChar125AppCommunityCommunityIdFollowersRoute
+  '/{-$locale}/_app/events/$eventId_/edit': typeof Char123LocaleChar125AppEventsEventIdEditRoute
+  '/{-$locale}/_app/user/$profileUrl/followers': typeof Char123LocaleChar125AppUserProfileUrlFollowersRoute
+  '/{-$locale}/_app/user/$profileUrl/following': typeof Char123LocaleChar125AppUserProfileUrlFollowingRoute
+  '/{-$locale}/_app/community/$communityId/': typeof Char123LocaleChar125AppCommunityCommunityIdIndexRoute
+  '/{-$locale}/_app/user/$profileUrl/': typeof Char123LocaleChar125AppUserProfileUrlIndexRoute
+  '/{-$locale}/_app/community/$communityId/events/': typeof Char123LocaleChar125AppCommunityCommunityIdEventsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
-    | '/admin'
-    | '/chat'
-    | '/changelog'
-    | '/map'
-    | '/notifications'
-    | '/pawcraft'
-    | '/profile'
-    | '/support'
-    | '/users'
-    | '/forgot-password'
-    | '/login'
-    | '/logout'
-    | '/register'
-    | '/admin/'
-    | '/chat/'
-    | '/account/tickets'
-    | '/announcements/$announcementId'
-    | '/community/new'
-    | '/events/$eventId'
-    | '/events/new'
-    | '/gallery/$galleryId'
-    | '/gallery/upload'
-    | '/legal/eula'
-    | '/legal/impressum'
-    | '/legal/privacypolicy'
-    | '/messages/$conversationId'
-    | '/i/reset-password'
-    | '/i/verify-email'
-    | '/login/mfa'
-    | '/admin/announcements/$announcementId'
-    | '/admin/changelog/$changelogId'
-    | '/admin/roles/$roleId'
-    | '/admin/tickets/$ticketId'
-    | '/admin/users/$userId'
-    | '/chat/c/$channelId'
-    | '/chat/dm/$conversationId'
-    | '/account/'
-    | '/announcements/'
-    | '/community/'
-    | '/events/'
-    | '/gallery/'
-    | '/legal/'
-    | '/messages/'
-    | '/admin/announcements/'
-    | '/admin/changelog/'
-    | '/admin/reports/'
-    | '/admin/roles/'
-    | '/admin/tickets/'
-    | '/admin/users/'
-    | '/community/$communityId/admin'
-    | '/community/$communityId/followers'
-    | '/events/$eventId/edit'
-    | '/user/$profileUrl/followers'
-    | '/user/$profileUrl/following'
-    | '/community/$communityId/'
-    | '/user/$profileUrl/'
-    | '/community/$communityId/events/'
+    | '/{-$locale}'
+    | '/{-$locale}/admin'
+    | '/{-$locale}/chat'
+    | '/{-$locale}/changelog'
+    | '/{-$locale}/map'
+    | '/{-$locale}/notifications'
+    | '/{-$locale}/pawcraft'
+    | '/{-$locale}/profile'
+    | '/{-$locale}/support'
+    | '/{-$locale}/users'
+    | '/{-$locale}/forgot-password'
+    | '/{-$locale}/login'
+    | '/{-$locale}/logout'
+    | '/{-$locale}/register'
+    | '/{-$locale}/'
+    | '/{-$locale}/admin/'
+    | '/{-$locale}/chat/'
+    | '/{-$locale}/account/tickets'
+    | '/{-$locale}/announcements/$announcementId'
+    | '/{-$locale}/community/new'
+    | '/{-$locale}/events/$eventId'
+    | '/{-$locale}/events/new'
+    | '/{-$locale}/gallery/$galleryId'
+    | '/{-$locale}/gallery/upload'
+    | '/{-$locale}/legal/eula'
+    | '/{-$locale}/legal/impressum'
+    | '/{-$locale}/legal/privacypolicy'
+    | '/{-$locale}/messages/$conversationId'
+    | '/{-$locale}/i/reset-password'
+    | '/{-$locale}/i/verify-email'
+    | '/{-$locale}/login/mfa'
+    | '/{-$locale}/admin/announcements/$announcementId'
+    | '/{-$locale}/admin/changelog/$changelogId'
+    | '/{-$locale}/admin/roles/$roleId'
+    | '/{-$locale}/admin/tickets/$ticketId'
+    | '/{-$locale}/admin/users/$userId'
+    | '/{-$locale}/chat/c/$channelId'
+    | '/{-$locale}/chat/dm/$conversationId'
+    | '/{-$locale}/account/'
+    | '/{-$locale}/announcements/'
+    | '/{-$locale}/community/'
+    | '/{-$locale}/events/'
+    | '/{-$locale}/gallery/'
+    | '/{-$locale}/legal/'
+    | '/{-$locale}/messages/'
+    | '/{-$locale}/admin/announcements/'
+    | '/{-$locale}/admin/changelog/'
+    | '/{-$locale}/admin/reports/'
+    | '/{-$locale}/admin/roles/'
+    | '/{-$locale}/admin/tickets/'
+    | '/{-$locale}/admin/users/'
+    | '/{-$locale}/community/$communityId/admin'
+    | '/{-$locale}/community/$communityId/followers'
+    | '/{-$locale}/events/$eventId/edit'
+    | '/{-$locale}/user/$profileUrl/followers'
+    | '/{-$locale}/user/$profileUrl/following'
+    | '/{-$locale}/community/$communityId/'
+    | '/{-$locale}/user/$profileUrl/'
+    | '/{-$locale}/community/$communityId/events/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
-    | '/changelog'
-    | '/map'
-    | '/notifications'
-    | '/pawcraft'
-    | '/profile'
-    | '/support'
-    | '/users'
-    | '/forgot-password'
-    | '/login'
-    | '/logout'
-    | '/register'
-    | '/admin'
-    | '/chat'
-    | '/account/tickets'
-    | '/announcements/$announcementId'
-    | '/community/new'
-    | '/events/$eventId'
-    | '/events/new'
-    | '/gallery/$galleryId'
-    | '/gallery/upload'
-    | '/legal/eula'
-    | '/legal/impressum'
-    | '/legal/privacypolicy'
-    | '/messages/$conversationId'
-    | '/i/reset-password'
-    | '/i/verify-email'
-    | '/login/mfa'
-    | '/admin/announcements/$announcementId'
-    | '/admin/changelog/$changelogId'
-    | '/admin/roles/$roleId'
-    | '/admin/tickets/$ticketId'
-    | '/admin/users/$userId'
-    | '/chat/c/$channelId'
-    | '/chat/dm/$conversationId'
-    | '/account'
-    | '/announcements'
-    | '/community'
-    | '/events'
-    | '/gallery'
-    | '/legal'
-    | '/messages'
-    | '/admin/announcements'
-    | '/admin/changelog'
-    | '/admin/reports'
-    | '/admin/roles'
-    | '/admin/tickets'
-    | '/admin/users'
-    | '/community/$communityId/admin'
-    | '/community/$communityId/followers'
-    | '/events/$eventId/edit'
-    | '/user/$profileUrl/followers'
-    | '/user/$profileUrl/following'
-    | '/community/$communityId'
-    | '/user/$profileUrl'
-    | '/community/$communityId/events'
+    | '/{-$locale}'
+    | '/{-$locale}/changelog'
+    | '/{-$locale}/map'
+    | '/{-$locale}/notifications'
+    | '/{-$locale}/pawcraft'
+    | '/{-$locale}/profile'
+    | '/{-$locale}/support'
+    | '/{-$locale}/users'
+    | '/{-$locale}/forgot-password'
+    | '/{-$locale}/login'
+    | '/{-$locale}/logout'
+    | '/{-$locale}/register'
+    | '/{-$locale}/admin'
+    | '/{-$locale}/chat'
+    | '/{-$locale}/account/tickets'
+    | '/{-$locale}/announcements/$announcementId'
+    | '/{-$locale}/community/new'
+    | '/{-$locale}/events/$eventId'
+    | '/{-$locale}/events/new'
+    | '/{-$locale}/gallery/$galleryId'
+    | '/{-$locale}/gallery/upload'
+    | '/{-$locale}/legal/eula'
+    | '/{-$locale}/legal/impressum'
+    | '/{-$locale}/legal/privacypolicy'
+    | '/{-$locale}/messages/$conversationId'
+    | '/{-$locale}/i/reset-password'
+    | '/{-$locale}/i/verify-email'
+    | '/{-$locale}/login/mfa'
+    | '/{-$locale}/admin/announcements/$announcementId'
+    | '/{-$locale}/admin/changelog/$changelogId'
+    | '/{-$locale}/admin/roles/$roleId'
+    | '/{-$locale}/admin/tickets/$ticketId'
+    | '/{-$locale}/admin/users/$userId'
+    | '/{-$locale}/chat/c/$channelId'
+    | '/{-$locale}/chat/dm/$conversationId'
+    | '/{-$locale}/account'
+    | '/{-$locale}/announcements'
+    | '/{-$locale}/community'
+    | '/{-$locale}/events'
+    | '/{-$locale}/gallery'
+    | '/{-$locale}/legal'
+    | '/{-$locale}/messages'
+    | '/{-$locale}/admin/announcements'
+    | '/{-$locale}/admin/changelog'
+    | '/{-$locale}/admin/reports'
+    | '/{-$locale}/admin/roles'
+    | '/{-$locale}/admin/tickets'
+    | '/{-$locale}/admin/users'
+    | '/{-$locale}/community/$communityId/admin'
+    | '/{-$locale}/community/$communityId/followers'
+    | '/{-$locale}/events/$eventId/edit'
+    | '/{-$locale}/user/$profileUrl/followers'
+    | '/{-$locale}/user/$profileUrl/following'
+    | '/{-$locale}/community/$communityId'
+    | '/{-$locale}/user/$profileUrl'
+    | '/{-$locale}/community/$communityId/events'
   id:
     | '__root__'
-    | '/_app'
-    | '/_auth'
-    | '/admin'
-    | '/chat'
-    | '/_app/changelog'
-    | '/_app/map'
-    | '/_app/notifications'
-    | '/_app/pawcraft'
-    | '/_app/profile'
-    | '/_app/support'
-    | '/_app/users'
-    | '/_auth/forgot-password'
-    | '/_auth/login'
-    | '/_auth/logout'
-    | '/_auth/register'
-    | '/_app/'
-    | '/admin/'
-    | '/chat/'
-    | '/_app/account/tickets'
-    | '/_app/announcements/$announcementId'
-    | '/_app/community/new'
-    | '/_app/events/$eventId'
-    | '/_app/events/new'
-    | '/_app/gallery/$galleryId'
-    | '/_app/gallery/upload'
-    | '/_app/legal/eula'
-    | '/_app/legal/impressum'
-    | '/_app/legal/privacypolicy'
-    | '/_app/messages/$conversationId'
-    | '/_auth/i/reset-password'
-    | '/_auth/i/verify-email'
-    | '/_auth/login/mfa'
-    | '/admin/announcements/$announcementId'
-    | '/admin/changelog/$changelogId'
-    | '/admin/roles/$roleId'
-    | '/admin/tickets/$ticketId'
-    | '/admin/users/$userId'
-    | '/chat/c/$channelId'
-    | '/chat/dm/$conversationId'
-    | '/_app/account/'
-    | '/_app/announcements/'
-    | '/_app/community/'
-    | '/_app/events/'
-    | '/_app/gallery/'
-    | '/_app/legal/'
-    | '/_app/messages/'
-    | '/admin/announcements/'
-    | '/admin/changelog/'
-    | '/admin/reports/'
-    | '/admin/roles/'
-    | '/admin/tickets/'
-    | '/admin/users/'
-    | '/_app/community/$communityId/admin'
-    | '/_app/community/$communityId/followers'
-    | '/_app/events/$eventId_/edit'
-    | '/_app/user/$profileUrl/followers'
-    | '/_app/user/$profileUrl/following'
-    | '/_app/community/$communityId/'
-    | '/_app/user/$profileUrl/'
-    | '/_app/community/$communityId/events/'
+    | '/{-$locale}'
+    | '/{-$locale}/_app'
+    | '/{-$locale}/_auth'
+    | '/{-$locale}/admin'
+    | '/{-$locale}/chat'
+    | '/{-$locale}/_app/changelog'
+    | '/{-$locale}/_app/map'
+    | '/{-$locale}/_app/notifications'
+    | '/{-$locale}/_app/pawcraft'
+    | '/{-$locale}/_app/profile'
+    | '/{-$locale}/_app/support'
+    | '/{-$locale}/_app/users'
+    | '/{-$locale}/_auth/forgot-password'
+    | '/{-$locale}/_auth/login'
+    | '/{-$locale}/_auth/logout'
+    | '/{-$locale}/_auth/register'
+    | '/{-$locale}/_app/'
+    | '/{-$locale}/admin/'
+    | '/{-$locale}/chat/'
+    | '/{-$locale}/_app/account/tickets'
+    | '/{-$locale}/_app/announcements/$announcementId'
+    | '/{-$locale}/_app/community/new'
+    | '/{-$locale}/_app/events/$eventId'
+    | '/{-$locale}/_app/events/new'
+    | '/{-$locale}/_app/gallery/$galleryId'
+    | '/{-$locale}/_app/gallery/upload'
+    | '/{-$locale}/_app/legal/eula'
+    | '/{-$locale}/_app/legal/impressum'
+    | '/{-$locale}/_app/legal/privacypolicy'
+    | '/{-$locale}/_app/messages/$conversationId'
+    | '/{-$locale}/_auth/i/reset-password'
+    | '/{-$locale}/_auth/i/verify-email'
+    | '/{-$locale}/_auth/login/mfa'
+    | '/{-$locale}/admin/announcements/$announcementId'
+    | '/{-$locale}/admin/changelog/$changelogId'
+    | '/{-$locale}/admin/roles/$roleId'
+    | '/{-$locale}/admin/tickets/$ticketId'
+    | '/{-$locale}/admin/users/$userId'
+    | '/{-$locale}/chat/c/$channelId'
+    | '/{-$locale}/chat/dm/$conversationId'
+    | '/{-$locale}/_app/account/'
+    | '/{-$locale}/_app/announcements/'
+    | '/{-$locale}/_app/community/'
+    | '/{-$locale}/_app/events/'
+    | '/{-$locale}/_app/gallery/'
+    | '/{-$locale}/_app/legal/'
+    | '/{-$locale}/_app/messages/'
+    | '/{-$locale}/admin/announcements/'
+    | '/{-$locale}/admin/changelog/'
+    | '/{-$locale}/admin/reports/'
+    | '/{-$locale}/admin/roles/'
+    | '/{-$locale}/admin/tickets/'
+    | '/{-$locale}/admin/users/'
+    | '/{-$locale}/_app/community/$communityId/admin'
+    | '/{-$locale}/_app/community/$communityId/followers'
+    | '/{-$locale}/_app/events/$eventId_/edit'
+    | '/{-$locale}/_app/user/$profileUrl/followers'
+    | '/{-$locale}/_app/user/$profileUrl/following'
+    | '/{-$locale}/_app/community/$communityId/'
+    | '/{-$locale}/_app/user/$profileUrl/'
+    | '/{-$locale}/_app/community/$communityId/events/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AppRoute: typeof AppRouteWithChildren
-  AuthRoute: typeof AuthRouteWithChildren
-  AdminRoute: typeof AdminRouteWithChildren
-  ChatRoute: typeof ChatRouteWithChildren
+  Char123LocaleChar125Route: typeof Char123LocaleChar125RouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/chat': {
-      id: '/chat'
+    '/{-$locale}': {
+      id: '/{-$locale}'
+      path: '/{-$locale}'
+      fullPath: '/{-$locale}'
+      preLoaderRoute: typeof Char123LocaleChar125RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/{-$locale}/chat': {
+      id: '/{-$locale}/chat'
       path: '/chat'
-      fullPath: '/chat'
-      preLoaderRoute: typeof ChatRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/{-$locale}/chat'
+      preLoaderRoute: typeof Char123LocaleChar125ChatRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
     }
-    '/admin': {
-      id: '/admin'
+    '/{-$locale}/admin': {
+      id: '/{-$locale}/admin'
       path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/{-$locale}/admin'
+      preLoaderRoute: typeof Char123LocaleChar125AdminRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
     }
-    '/_auth': {
-      id: '/_auth'
+    '/{-$locale}/_auth': {
+      id: '/{-$locale}/_auth'
       path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/{-$locale}'
+      preLoaderRoute: typeof Char123LocaleChar125AuthRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
     }
-    '/_app': {
-      id: '/_app'
+    '/{-$locale}/_app': {
+      id: '/{-$locale}/_app'
       path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AppRouteImport
-      parentRoute: typeof rootRouteImport
+      fullPath: '/{-$locale}'
+      preLoaderRoute: typeof Char123LocaleChar125AppRouteImport
+      parentRoute: typeof Char123LocaleChar125Route
     }
-    '/chat/': {
-      id: '/chat/'
+    '/{-$locale}/chat/': {
+      id: '/{-$locale}/chat/'
       path: '/'
-      fullPath: '/chat/'
-      preLoaderRoute: typeof ChatIndexRouteImport
-      parentRoute: typeof ChatRoute
+      fullPath: '/{-$locale}/chat/'
+      preLoaderRoute: typeof Char123LocaleChar125ChatIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125ChatRoute
     }
-    '/admin/': {
-      id: '/admin/'
+    '/{-$locale}/admin/': {
+      id: '/{-$locale}/admin/'
       path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRoute
+      fullPath: '/{-$locale}/admin/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/_app/': {
-      id: '/_app/'
+    '/{-$locale}/_app/': {
+      id: '/{-$locale}/_app/'
       path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof AppIndexRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/'
+      preLoaderRoute: typeof Char123LocaleChar125AppIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_auth/register': {
-      id: '/_auth/register'
+    '/{-$locale}/_auth/register': {
+      id: '/{-$locale}/_auth/register'
       path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof AuthRegisterRouteImport
-      parentRoute: typeof AuthRoute
+      fullPath: '/{-$locale}/register'
+      preLoaderRoute: typeof Char123LocaleChar125AuthRegisterRouteImport
+      parentRoute: typeof Char123LocaleChar125AuthRoute
     }
-    '/_auth/logout': {
-      id: '/_auth/logout'
+    '/{-$locale}/_auth/logout': {
+      id: '/{-$locale}/_auth/logout'
       path: '/logout'
-      fullPath: '/logout'
-      preLoaderRoute: typeof AuthLogoutRouteImport
-      parentRoute: typeof AuthRoute
+      fullPath: '/{-$locale}/logout'
+      preLoaderRoute: typeof Char123LocaleChar125AuthLogoutRouteImport
+      parentRoute: typeof Char123LocaleChar125AuthRoute
     }
-    '/_auth/login': {
-      id: '/_auth/login'
+    '/{-$locale}/_auth/login': {
+      id: '/{-$locale}/_auth/login'
       path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof AuthLoginRouteImport
-      parentRoute: typeof AuthRoute
+      fullPath: '/{-$locale}/login'
+      preLoaderRoute: typeof Char123LocaleChar125AuthLoginRouteImport
+      parentRoute: typeof Char123LocaleChar125AuthRoute
     }
-    '/_auth/forgot-password': {
-      id: '/_auth/forgot-password'
+    '/{-$locale}/_auth/forgot-password': {
+      id: '/{-$locale}/_auth/forgot-password'
       path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof AuthForgotPasswordRouteImport
-      parentRoute: typeof AuthRoute
+      fullPath: '/{-$locale}/forgot-password'
+      preLoaderRoute: typeof Char123LocaleChar125AuthForgotPasswordRouteImport
+      parentRoute: typeof Char123LocaleChar125AuthRoute
     }
-    '/_app/users': {
-      id: '/_app/users'
+    '/{-$locale}/_app/users': {
+      id: '/{-$locale}/_app/users'
       path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof AppUsersRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/users'
+      preLoaderRoute: typeof Char123LocaleChar125AppUsersRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/support': {
-      id: '/_app/support'
+    '/{-$locale}/_app/support': {
+      id: '/{-$locale}/_app/support'
       path: '/support'
-      fullPath: '/support'
-      preLoaderRoute: typeof AppSupportRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/support'
+      preLoaderRoute: typeof Char123LocaleChar125AppSupportRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/profile': {
-      id: '/_app/profile'
+    '/{-$locale}/_app/profile': {
+      id: '/{-$locale}/_app/profile'
       path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof AppProfileRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/profile'
+      preLoaderRoute: typeof Char123LocaleChar125AppProfileRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/pawcraft': {
-      id: '/_app/pawcraft'
+    '/{-$locale}/_app/pawcraft': {
+      id: '/{-$locale}/_app/pawcraft'
       path: '/pawcraft'
-      fullPath: '/pawcraft'
-      preLoaderRoute: typeof AppPawcraftRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/pawcraft'
+      preLoaderRoute: typeof Char123LocaleChar125AppPawcraftRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/notifications': {
-      id: '/_app/notifications'
+    '/{-$locale}/_app/notifications': {
+      id: '/{-$locale}/_app/notifications'
       path: '/notifications'
-      fullPath: '/notifications'
-      preLoaderRoute: typeof AppNotificationsRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/notifications'
+      preLoaderRoute: typeof Char123LocaleChar125AppNotificationsRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/map': {
-      id: '/_app/map'
+    '/{-$locale}/_app/map': {
+      id: '/{-$locale}/_app/map'
       path: '/map'
-      fullPath: '/map'
-      preLoaderRoute: typeof AppMapRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/map'
+      preLoaderRoute: typeof Char123LocaleChar125AppMapRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/changelog': {
-      id: '/_app/changelog'
+    '/{-$locale}/_app/changelog': {
+      id: '/{-$locale}/_app/changelog'
       path: '/changelog'
-      fullPath: '/changelog'
-      preLoaderRoute: typeof AppChangelogRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/changelog'
+      preLoaderRoute: typeof Char123LocaleChar125AppChangelogRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/admin/users/': {
-      id: '/admin/users/'
+    '/{-$locale}/admin/users/': {
+      id: '/{-$locale}/admin/users/'
       path: '/users'
-      fullPath: '/admin/users/'
-      preLoaderRoute: typeof AdminUsersIndexRouteImport
-      parentRoute: typeof AdminRoute
+      fullPath: '/{-$locale}/admin/users/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminUsersIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/admin/tickets/': {
-      id: '/admin/tickets/'
+    '/{-$locale}/admin/tickets/': {
+      id: '/{-$locale}/admin/tickets/'
       path: '/tickets'
-      fullPath: '/admin/tickets/'
-      preLoaderRoute: typeof AdminTicketsIndexRouteImport
-      parentRoute: typeof AdminRoute
+      fullPath: '/{-$locale}/admin/tickets/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminTicketsIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/admin/roles/': {
-      id: '/admin/roles/'
+    '/{-$locale}/admin/roles/': {
+      id: '/{-$locale}/admin/roles/'
       path: '/roles'
-      fullPath: '/admin/roles/'
-      preLoaderRoute: typeof AdminRolesIndexRouteImport
-      parentRoute: typeof AdminRoute
+      fullPath: '/{-$locale}/admin/roles/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminRolesIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/admin/reports/': {
-      id: '/admin/reports/'
+    '/{-$locale}/admin/reports/': {
+      id: '/{-$locale}/admin/reports/'
       path: '/reports'
-      fullPath: '/admin/reports/'
-      preLoaderRoute: typeof AdminReportsIndexRouteImport
-      parentRoute: typeof AdminRoute
+      fullPath: '/{-$locale}/admin/reports/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminReportsIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/admin/changelog/': {
-      id: '/admin/changelog/'
+    '/{-$locale}/admin/changelog/': {
+      id: '/{-$locale}/admin/changelog/'
       path: '/changelog'
-      fullPath: '/admin/changelog/'
-      preLoaderRoute: typeof AdminChangelogIndexRouteImport
-      parentRoute: typeof AdminRoute
+      fullPath: '/{-$locale}/admin/changelog/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminChangelogIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/admin/announcements/': {
-      id: '/admin/announcements/'
+    '/{-$locale}/admin/announcements/': {
+      id: '/{-$locale}/admin/announcements/'
       path: '/announcements'
-      fullPath: '/admin/announcements/'
-      preLoaderRoute: typeof AdminAnnouncementsIndexRouteImport
-      parentRoute: typeof AdminRoute
+      fullPath: '/{-$locale}/admin/announcements/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminAnnouncementsIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/_app/messages/': {
-      id: '/_app/messages/'
+    '/{-$locale}/_app/messages/': {
+      id: '/{-$locale}/_app/messages/'
       path: '/messages'
-      fullPath: '/messages/'
-      preLoaderRoute: typeof AppMessagesIndexRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/messages/'
+      preLoaderRoute: typeof Char123LocaleChar125AppMessagesIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/legal/': {
-      id: '/_app/legal/'
+    '/{-$locale}/_app/legal/': {
+      id: '/{-$locale}/_app/legal/'
       path: '/legal'
-      fullPath: '/legal/'
-      preLoaderRoute: typeof AppLegalIndexRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/legal/'
+      preLoaderRoute: typeof Char123LocaleChar125AppLegalIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/gallery/': {
-      id: '/_app/gallery/'
+    '/{-$locale}/_app/gallery/': {
+      id: '/{-$locale}/_app/gallery/'
       path: '/gallery'
-      fullPath: '/gallery/'
-      preLoaderRoute: typeof AppGalleryIndexRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/gallery/'
+      preLoaderRoute: typeof Char123LocaleChar125AppGalleryIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/events/': {
-      id: '/_app/events/'
+    '/{-$locale}/_app/events/': {
+      id: '/{-$locale}/_app/events/'
       path: '/events'
-      fullPath: '/events/'
-      preLoaderRoute: typeof AppEventsIndexRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/events/'
+      preLoaderRoute: typeof Char123LocaleChar125AppEventsIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/community/': {
-      id: '/_app/community/'
+    '/{-$locale}/_app/community/': {
+      id: '/{-$locale}/_app/community/'
       path: '/community'
-      fullPath: '/community/'
-      preLoaderRoute: typeof AppCommunityIndexRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/community/'
+      preLoaderRoute: typeof Char123LocaleChar125AppCommunityIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/announcements/': {
-      id: '/_app/announcements/'
+    '/{-$locale}/_app/announcements/': {
+      id: '/{-$locale}/_app/announcements/'
       path: '/announcements'
-      fullPath: '/announcements/'
-      preLoaderRoute: typeof AppAnnouncementsIndexRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/announcements/'
+      preLoaderRoute: typeof Char123LocaleChar125AppAnnouncementsIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/account/': {
-      id: '/_app/account/'
+    '/{-$locale}/_app/account/': {
+      id: '/{-$locale}/_app/account/'
       path: '/account'
-      fullPath: '/account/'
-      preLoaderRoute: typeof AppAccountIndexRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/account/'
+      preLoaderRoute: typeof Char123LocaleChar125AppAccountIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/chat/dm/$conversationId': {
-      id: '/chat/dm/$conversationId'
+    '/{-$locale}/chat/dm/$conversationId': {
+      id: '/{-$locale}/chat/dm/$conversationId'
       path: '/dm/$conversationId'
-      fullPath: '/chat/dm/$conversationId'
-      preLoaderRoute: typeof ChatDmConversationIdRouteImport
-      parentRoute: typeof ChatRoute
+      fullPath: '/{-$locale}/chat/dm/$conversationId'
+      preLoaderRoute: typeof Char123LocaleChar125ChatDmConversationIdRouteImport
+      parentRoute: typeof Char123LocaleChar125ChatRoute
     }
-    '/chat/c/$channelId': {
-      id: '/chat/c/$channelId'
+    '/{-$locale}/chat/c/$channelId': {
+      id: '/{-$locale}/chat/c/$channelId'
       path: '/c/$channelId'
-      fullPath: '/chat/c/$channelId'
-      preLoaderRoute: typeof ChatCChannelIdRouteImport
-      parentRoute: typeof ChatRoute
+      fullPath: '/{-$locale}/chat/c/$channelId'
+      preLoaderRoute: typeof Char123LocaleChar125ChatCChannelIdRouteImport
+      parentRoute: typeof Char123LocaleChar125ChatRoute
     }
-    '/admin/users/$userId': {
-      id: '/admin/users/$userId'
+    '/{-$locale}/admin/users/$userId': {
+      id: '/{-$locale}/admin/users/$userId'
       path: '/users/$userId'
-      fullPath: '/admin/users/$userId'
-      preLoaderRoute: typeof AdminUsersUserIdRouteImport
-      parentRoute: typeof AdminRoute
+      fullPath: '/{-$locale}/admin/users/$userId'
+      preLoaderRoute: typeof Char123LocaleChar125AdminUsersUserIdRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/admin/tickets/$ticketId': {
-      id: '/admin/tickets/$ticketId'
+    '/{-$locale}/admin/tickets/$ticketId': {
+      id: '/{-$locale}/admin/tickets/$ticketId'
       path: '/tickets/$ticketId'
-      fullPath: '/admin/tickets/$ticketId'
-      preLoaderRoute: typeof AdminTicketsTicketIdRouteImport
-      parentRoute: typeof AdminRoute
+      fullPath: '/{-$locale}/admin/tickets/$ticketId'
+      preLoaderRoute: typeof Char123LocaleChar125AdminTicketsTicketIdRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/admin/roles/$roleId': {
-      id: '/admin/roles/$roleId'
+    '/{-$locale}/admin/roles/$roleId': {
+      id: '/{-$locale}/admin/roles/$roleId'
       path: '/roles/$roleId'
-      fullPath: '/admin/roles/$roleId'
-      preLoaderRoute: typeof AdminRolesRoleIdRouteImport
-      parentRoute: typeof AdminRoute
+      fullPath: '/{-$locale}/admin/roles/$roleId'
+      preLoaderRoute: typeof Char123LocaleChar125AdminRolesRoleIdRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/admin/changelog/$changelogId': {
-      id: '/admin/changelog/$changelogId'
+    '/{-$locale}/admin/changelog/$changelogId': {
+      id: '/{-$locale}/admin/changelog/$changelogId'
       path: '/changelog/$changelogId'
-      fullPath: '/admin/changelog/$changelogId'
-      preLoaderRoute: typeof AdminChangelogChangelogIdRouteImport
-      parentRoute: typeof AdminRoute
+      fullPath: '/{-$locale}/admin/changelog/$changelogId'
+      preLoaderRoute: typeof Char123LocaleChar125AdminChangelogChangelogIdRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/admin/announcements/$announcementId': {
-      id: '/admin/announcements/$announcementId'
+    '/{-$locale}/admin/announcements/$announcementId': {
+      id: '/{-$locale}/admin/announcements/$announcementId'
       path: '/announcements/$announcementId'
-      fullPath: '/admin/announcements/$announcementId'
-      preLoaderRoute: typeof AdminAnnouncementsAnnouncementIdRouteImport
-      parentRoute: typeof AdminRoute
+      fullPath: '/{-$locale}/admin/announcements/$announcementId'
+      preLoaderRoute: typeof Char123LocaleChar125AdminAnnouncementsAnnouncementIdRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/_auth/login/mfa': {
-      id: '/_auth/login/mfa'
+    '/{-$locale}/_auth/login/mfa': {
+      id: '/{-$locale}/_auth/login/mfa'
       path: '/mfa'
-      fullPath: '/login/mfa'
-      preLoaderRoute: typeof AuthLoginMfaRouteImport
-      parentRoute: typeof AuthLoginRoute
+      fullPath: '/{-$locale}/login/mfa'
+      preLoaderRoute: typeof Char123LocaleChar125AuthLoginMfaRouteImport
+      parentRoute: typeof Char123LocaleChar125AuthLoginRoute
     }
-    '/_auth/i/verify-email': {
-      id: '/_auth/i/verify-email'
+    '/{-$locale}/_auth/i/verify-email': {
+      id: '/{-$locale}/_auth/i/verify-email'
       path: '/i/verify-email'
-      fullPath: '/i/verify-email'
-      preLoaderRoute: typeof AuthIVerifyEmailRouteImport
-      parentRoute: typeof AuthRoute
+      fullPath: '/{-$locale}/i/verify-email'
+      preLoaderRoute: typeof Char123LocaleChar125AuthIVerifyEmailRouteImport
+      parentRoute: typeof Char123LocaleChar125AuthRoute
     }
-    '/_auth/i/reset-password': {
-      id: '/_auth/i/reset-password'
+    '/{-$locale}/_auth/i/reset-password': {
+      id: '/{-$locale}/_auth/i/reset-password'
       path: '/i/reset-password'
-      fullPath: '/i/reset-password'
-      preLoaderRoute: typeof AuthIResetPasswordRouteImport
-      parentRoute: typeof AuthRoute
+      fullPath: '/{-$locale}/i/reset-password'
+      preLoaderRoute: typeof Char123LocaleChar125AuthIResetPasswordRouteImport
+      parentRoute: typeof Char123LocaleChar125AuthRoute
     }
-    '/_app/messages/$conversationId': {
-      id: '/_app/messages/$conversationId'
+    '/{-$locale}/_app/messages/$conversationId': {
+      id: '/{-$locale}/_app/messages/$conversationId'
       path: '/messages/$conversationId'
-      fullPath: '/messages/$conversationId'
-      preLoaderRoute: typeof AppMessagesConversationIdRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/messages/$conversationId'
+      preLoaderRoute: typeof Char123LocaleChar125AppMessagesConversationIdRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/legal/privacypolicy': {
-      id: '/_app/legal/privacypolicy'
+    '/{-$locale}/_app/legal/privacypolicy': {
+      id: '/{-$locale}/_app/legal/privacypolicy'
       path: '/legal/privacypolicy'
-      fullPath: '/legal/privacypolicy'
-      preLoaderRoute: typeof AppLegalPrivacypolicyRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/legal/privacypolicy'
+      preLoaderRoute: typeof Char123LocaleChar125AppLegalPrivacypolicyRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/legal/impressum': {
-      id: '/_app/legal/impressum'
+    '/{-$locale}/_app/legal/impressum': {
+      id: '/{-$locale}/_app/legal/impressum'
       path: '/legal/impressum'
-      fullPath: '/legal/impressum'
-      preLoaderRoute: typeof AppLegalImpressumRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/legal/impressum'
+      preLoaderRoute: typeof Char123LocaleChar125AppLegalImpressumRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/legal/eula': {
-      id: '/_app/legal/eula'
+    '/{-$locale}/_app/legal/eula': {
+      id: '/{-$locale}/_app/legal/eula'
       path: '/legal/eula'
-      fullPath: '/legal/eula'
-      preLoaderRoute: typeof AppLegalEulaRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/legal/eula'
+      preLoaderRoute: typeof Char123LocaleChar125AppLegalEulaRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/gallery/upload': {
-      id: '/_app/gallery/upload'
+    '/{-$locale}/_app/gallery/upload': {
+      id: '/{-$locale}/_app/gallery/upload'
       path: '/gallery/upload'
-      fullPath: '/gallery/upload'
-      preLoaderRoute: typeof AppGalleryUploadRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/gallery/upload'
+      preLoaderRoute: typeof Char123LocaleChar125AppGalleryUploadRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/gallery/$galleryId': {
-      id: '/_app/gallery/$galleryId'
+    '/{-$locale}/_app/gallery/$galleryId': {
+      id: '/{-$locale}/_app/gallery/$galleryId'
       path: '/gallery/$galleryId'
-      fullPath: '/gallery/$galleryId'
-      preLoaderRoute: typeof AppGalleryGalleryIdRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/gallery/$galleryId'
+      preLoaderRoute: typeof Char123LocaleChar125AppGalleryGalleryIdRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/events/new': {
-      id: '/_app/events/new'
+    '/{-$locale}/_app/events/new': {
+      id: '/{-$locale}/_app/events/new'
       path: '/events/new'
-      fullPath: '/events/new'
-      preLoaderRoute: typeof AppEventsNewRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/events/new'
+      preLoaderRoute: typeof Char123LocaleChar125AppEventsNewRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/events/$eventId': {
-      id: '/_app/events/$eventId'
+    '/{-$locale}/_app/events/$eventId': {
+      id: '/{-$locale}/_app/events/$eventId'
       path: '/events/$eventId'
-      fullPath: '/events/$eventId'
-      preLoaderRoute: typeof AppEventsEventIdRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/events/$eventId'
+      preLoaderRoute: typeof Char123LocaleChar125AppEventsEventIdRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/community/new': {
-      id: '/_app/community/new'
+    '/{-$locale}/_app/community/new': {
+      id: '/{-$locale}/_app/community/new'
       path: '/community/new'
-      fullPath: '/community/new'
-      preLoaderRoute: typeof AppCommunityNewRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/community/new'
+      preLoaderRoute: typeof Char123LocaleChar125AppCommunityNewRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/announcements/$announcementId': {
-      id: '/_app/announcements/$announcementId'
+    '/{-$locale}/_app/announcements/$announcementId': {
+      id: '/{-$locale}/_app/announcements/$announcementId'
       path: '/announcements/$announcementId'
-      fullPath: '/announcements/$announcementId'
-      preLoaderRoute: typeof AppAnnouncementsAnnouncementIdRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/announcements/$announcementId'
+      preLoaderRoute: typeof Char123LocaleChar125AppAnnouncementsAnnouncementIdRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/account/tickets': {
-      id: '/_app/account/tickets'
+    '/{-$locale}/_app/account/tickets': {
+      id: '/{-$locale}/_app/account/tickets'
       path: '/account/tickets'
-      fullPath: '/account/tickets'
-      preLoaderRoute: typeof AppAccountTicketsRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/account/tickets'
+      preLoaderRoute: typeof Char123LocaleChar125AppAccountTicketsRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/user/$profileUrl/': {
-      id: '/_app/user/$profileUrl/'
+    '/{-$locale}/_app/user/$profileUrl/': {
+      id: '/{-$locale}/_app/user/$profileUrl/'
       path: '/user/$profileUrl'
-      fullPath: '/user/$profileUrl/'
-      preLoaderRoute: typeof AppUserProfileUrlIndexRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/user/$profileUrl/'
+      preLoaderRoute: typeof Char123LocaleChar125AppUserProfileUrlIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/community/$communityId/': {
-      id: '/_app/community/$communityId/'
+    '/{-$locale}/_app/community/$communityId/': {
+      id: '/{-$locale}/_app/community/$communityId/'
       path: '/community/$communityId'
-      fullPath: '/community/$communityId/'
-      preLoaderRoute: typeof AppCommunityCommunityIdIndexRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/community/$communityId/'
+      preLoaderRoute: typeof Char123LocaleChar125AppCommunityCommunityIdIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/user/$profileUrl/following': {
-      id: '/_app/user/$profileUrl/following'
+    '/{-$locale}/_app/user/$profileUrl/following': {
+      id: '/{-$locale}/_app/user/$profileUrl/following'
       path: '/user/$profileUrl/following'
-      fullPath: '/user/$profileUrl/following'
-      preLoaderRoute: typeof AppUserProfileUrlFollowingRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/user/$profileUrl/following'
+      preLoaderRoute: typeof Char123LocaleChar125AppUserProfileUrlFollowingRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/user/$profileUrl/followers': {
-      id: '/_app/user/$profileUrl/followers'
+    '/{-$locale}/_app/user/$profileUrl/followers': {
+      id: '/{-$locale}/_app/user/$profileUrl/followers'
       path: '/user/$profileUrl/followers'
-      fullPath: '/user/$profileUrl/followers'
-      preLoaderRoute: typeof AppUserProfileUrlFollowersRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/user/$profileUrl/followers'
+      preLoaderRoute: typeof Char123LocaleChar125AppUserProfileUrlFollowersRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/events/$eventId_/edit': {
-      id: '/_app/events/$eventId_/edit'
+    '/{-$locale}/_app/events/$eventId_/edit': {
+      id: '/{-$locale}/_app/events/$eventId_/edit'
       path: '/events/$eventId/edit'
-      fullPath: '/events/$eventId/edit'
-      preLoaderRoute: typeof AppEventsEventIdEditRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/events/$eventId/edit'
+      preLoaderRoute: typeof Char123LocaleChar125AppEventsEventIdEditRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/community/$communityId/followers': {
-      id: '/_app/community/$communityId/followers'
+    '/{-$locale}/_app/community/$communityId/followers': {
+      id: '/{-$locale}/_app/community/$communityId/followers'
       path: '/community/$communityId/followers'
-      fullPath: '/community/$communityId/followers'
-      preLoaderRoute: typeof AppCommunityCommunityIdFollowersRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/community/$communityId/followers'
+      preLoaderRoute: typeof Char123LocaleChar125AppCommunityCommunityIdFollowersRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/community/$communityId/admin': {
-      id: '/_app/community/$communityId/admin'
+    '/{-$locale}/_app/community/$communityId/admin': {
+      id: '/{-$locale}/_app/community/$communityId/admin'
       path: '/community/$communityId/admin'
-      fullPath: '/community/$communityId/admin'
-      preLoaderRoute: typeof AppCommunityCommunityIdAdminRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/community/$communityId/admin'
+      preLoaderRoute: typeof Char123LocaleChar125AppCommunityCommunityIdAdminRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
-    '/_app/community/$communityId/events/': {
-      id: '/_app/community/$communityId/events/'
+    '/{-$locale}/_app/community/$communityId/events/': {
+      id: '/{-$locale}/_app/community/$communityId/events/'
       path: '/community/$communityId/events'
-      fullPath: '/community/$communityId/events/'
-      preLoaderRoute: typeof AppCommunityCommunityIdEventsIndexRouteImport
-      parentRoute: typeof AppRoute
+      fullPath: '/{-$locale}/community/$communityId/events/'
+      preLoaderRoute: typeof Char123LocaleChar125AppCommunityCommunityIdEventsIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
     }
   }
 }
 
-interface AppRouteChildren {
-  AppChangelogRoute: typeof AppChangelogRoute
-  AppMapRoute: typeof AppMapRoute
-  AppNotificationsRoute: typeof AppNotificationsRoute
-  AppPawcraftRoute: typeof AppPawcraftRoute
-  AppProfileRoute: typeof AppProfileRoute
-  AppSupportRoute: typeof AppSupportRoute
-  AppUsersRoute: typeof AppUsersRoute
-  AppIndexRoute: typeof AppIndexRoute
-  AppAccountTicketsRoute: typeof AppAccountTicketsRoute
-  AppAnnouncementsAnnouncementIdRoute: typeof AppAnnouncementsAnnouncementIdRoute
-  AppCommunityNewRoute: typeof AppCommunityNewRoute
-  AppEventsEventIdRoute: typeof AppEventsEventIdRoute
-  AppEventsNewRoute: typeof AppEventsNewRoute
-  AppGalleryGalleryIdRoute: typeof AppGalleryGalleryIdRoute
-  AppGalleryUploadRoute: typeof AppGalleryUploadRoute
-  AppLegalEulaRoute: typeof AppLegalEulaRoute
-  AppLegalImpressumRoute: typeof AppLegalImpressumRoute
-  AppLegalPrivacypolicyRoute: typeof AppLegalPrivacypolicyRoute
-  AppMessagesConversationIdRoute: typeof AppMessagesConversationIdRoute
-  AppAccountIndexRoute: typeof AppAccountIndexRoute
-  AppAnnouncementsIndexRoute: typeof AppAnnouncementsIndexRoute
-  AppCommunityIndexRoute: typeof AppCommunityIndexRoute
-  AppEventsIndexRoute: typeof AppEventsIndexRoute
-  AppGalleryIndexRoute: typeof AppGalleryIndexRoute
-  AppLegalIndexRoute: typeof AppLegalIndexRoute
-  AppMessagesIndexRoute: typeof AppMessagesIndexRoute
-  AppCommunityCommunityIdAdminRoute: typeof AppCommunityCommunityIdAdminRoute
-  AppCommunityCommunityIdFollowersRoute: typeof AppCommunityCommunityIdFollowersRoute
-  AppEventsEventIdEditRoute: typeof AppEventsEventIdEditRoute
-  AppUserProfileUrlFollowersRoute: typeof AppUserProfileUrlFollowersRoute
-  AppUserProfileUrlFollowingRoute: typeof AppUserProfileUrlFollowingRoute
-  AppCommunityCommunityIdIndexRoute: typeof AppCommunityCommunityIdIndexRoute
-  AppUserProfileUrlIndexRoute: typeof AppUserProfileUrlIndexRoute
-  AppCommunityCommunityIdEventsIndexRoute: typeof AppCommunityCommunityIdEventsIndexRoute
+interface Char123LocaleChar125AppRouteChildren {
+  Char123LocaleChar125AppChangelogRoute: typeof Char123LocaleChar125AppChangelogRoute
+  Char123LocaleChar125AppMapRoute: typeof Char123LocaleChar125AppMapRoute
+  Char123LocaleChar125AppNotificationsRoute: typeof Char123LocaleChar125AppNotificationsRoute
+  Char123LocaleChar125AppPawcraftRoute: typeof Char123LocaleChar125AppPawcraftRoute
+  Char123LocaleChar125AppProfileRoute: typeof Char123LocaleChar125AppProfileRoute
+  Char123LocaleChar125AppSupportRoute: typeof Char123LocaleChar125AppSupportRoute
+  Char123LocaleChar125AppUsersRoute: typeof Char123LocaleChar125AppUsersRoute
+  Char123LocaleChar125AppIndexRoute: typeof Char123LocaleChar125AppIndexRoute
+  Char123LocaleChar125AppAccountTicketsRoute: typeof Char123LocaleChar125AppAccountTicketsRoute
+  Char123LocaleChar125AppAnnouncementsAnnouncementIdRoute: typeof Char123LocaleChar125AppAnnouncementsAnnouncementIdRoute
+  Char123LocaleChar125AppCommunityNewRoute: typeof Char123LocaleChar125AppCommunityNewRoute
+  Char123LocaleChar125AppEventsEventIdRoute: typeof Char123LocaleChar125AppEventsEventIdRoute
+  Char123LocaleChar125AppEventsNewRoute: typeof Char123LocaleChar125AppEventsNewRoute
+  Char123LocaleChar125AppGalleryGalleryIdRoute: typeof Char123LocaleChar125AppGalleryGalleryIdRoute
+  Char123LocaleChar125AppGalleryUploadRoute: typeof Char123LocaleChar125AppGalleryUploadRoute
+  Char123LocaleChar125AppLegalEulaRoute: typeof Char123LocaleChar125AppLegalEulaRoute
+  Char123LocaleChar125AppLegalImpressumRoute: typeof Char123LocaleChar125AppLegalImpressumRoute
+  Char123LocaleChar125AppLegalPrivacypolicyRoute: typeof Char123LocaleChar125AppLegalPrivacypolicyRoute
+  Char123LocaleChar125AppMessagesConversationIdRoute: typeof Char123LocaleChar125AppMessagesConversationIdRoute
+  Char123LocaleChar125AppAccountIndexRoute: typeof Char123LocaleChar125AppAccountIndexRoute
+  Char123LocaleChar125AppAnnouncementsIndexRoute: typeof Char123LocaleChar125AppAnnouncementsIndexRoute
+  Char123LocaleChar125AppCommunityIndexRoute: typeof Char123LocaleChar125AppCommunityIndexRoute
+  Char123LocaleChar125AppEventsIndexRoute: typeof Char123LocaleChar125AppEventsIndexRoute
+  Char123LocaleChar125AppGalleryIndexRoute: typeof Char123LocaleChar125AppGalleryIndexRoute
+  Char123LocaleChar125AppLegalIndexRoute: typeof Char123LocaleChar125AppLegalIndexRoute
+  Char123LocaleChar125AppMessagesIndexRoute: typeof Char123LocaleChar125AppMessagesIndexRoute
+  Char123LocaleChar125AppCommunityCommunityIdAdminRoute: typeof Char123LocaleChar125AppCommunityCommunityIdAdminRoute
+  Char123LocaleChar125AppCommunityCommunityIdFollowersRoute: typeof Char123LocaleChar125AppCommunityCommunityIdFollowersRoute
+  Char123LocaleChar125AppEventsEventIdEditRoute: typeof Char123LocaleChar125AppEventsEventIdEditRoute
+  Char123LocaleChar125AppUserProfileUrlFollowersRoute: typeof Char123LocaleChar125AppUserProfileUrlFollowersRoute
+  Char123LocaleChar125AppUserProfileUrlFollowingRoute: typeof Char123LocaleChar125AppUserProfileUrlFollowingRoute
+  Char123LocaleChar125AppCommunityCommunityIdIndexRoute: typeof Char123LocaleChar125AppCommunityCommunityIdIndexRoute
+  Char123LocaleChar125AppUserProfileUrlIndexRoute: typeof Char123LocaleChar125AppUserProfileUrlIndexRoute
+  Char123LocaleChar125AppCommunityCommunityIdEventsIndexRoute: typeof Char123LocaleChar125AppCommunityCommunityIdEventsIndexRoute
 }
 
-const AppRouteChildren: AppRouteChildren = {
-  AppChangelogRoute: AppChangelogRoute,
-  AppMapRoute: AppMapRoute,
-  AppNotificationsRoute: AppNotificationsRoute,
-  AppPawcraftRoute: AppPawcraftRoute,
-  AppProfileRoute: AppProfileRoute,
-  AppSupportRoute: AppSupportRoute,
-  AppUsersRoute: AppUsersRoute,
-  AppIndexRoute: AppIndexRoute,
-  AppAccountTicketsRoute: AppAccountTicketsRoute,
-  AppAnnouncementsAnnouncementIdRoute: AppAnnouncementsAnnouncementIdRoute,
-  AppCommunityNewRoute: AppCommunityNewRoute,
-  AppEventsEventIdRoute: AppEventsEventIdRoute,
-  AppEventsNewRoute: AppEventsNewRoute,
-  AppGalleryGalleryIdRoute: AppGalleryGalleryIdRoute,
-  AppGalleryUploadRoute: AppGalleryUploadRoute,
-  AppLegalEulaRoute: AppLegalEulaRoute,
-  AppLegalImpressumRoute: AppLegalImpressumRoute,
-  AppLegalPrivacypolicyRoute: AppLegalPrivacypolicyRoute,
-  AppMessagesConversationIdRoute: AppMessagesConversationIdRoute,
-  AppAccountIndexRoute: AppAccountIndexRoute,
-  AppAnnouncementsIndexRoute: AppAnnouncementsIndexRoute,
-  AppCommunityIndexRoute: AppCommunityIndexRoute,
-  AppEventsIndexRoute: AppEventsIndexRoute,
-  AppGalleryIndexRoute: AppGalleryIndexRoute,
-  AppLegalIndexRoute: AppLegalIndexRoute,
-  AppMessagesIndexRoute: AppMessagesIndexRoute,
-  AppCommunityCommunityIdAdminRoute: AppCommunityCommunityIdAdminRoute,
-  AppCommunityCommunityIdFollowersRoute: AppCommunityCommunityIdFollowersRoute,
-  AppEventsEventIdEditRoute: AppEventsEventIdEditRoute,
-  AppUserProfileUrlFollowersRoute: AppUserProfileUrlFollowersRoute,
-  AppUserProfileUrlFollowingRoute: AppUserProfileUrlFollowingRoute,
-  AppCommunityCommunityIdIndexRoute: AppCommunityCommunityIdIndexRoute,
-  AppUserProfileUrlIndexRoute: AppUserProfileUrlIndexRoute,
-  AppCommunityCommunityIdEventsIndexRoute:
-    AppCommunityCommunityIdEventsIndexRoute,
+const Char123LocaleChar125AppRouteChildren: Char123LocaleChar125AppRouteChildren =
+  {
+    Char123LocaleChar125AppChangelogRoute:
+      Char123LocaleChar125AppChangelogRoute,
+    Char123LocaleChar125AppMapRoute: Char123LocaleChar125AppMapRoute,
+    Char123LocaleChar125AppNotificationsRoute:
+      Char123LocaleChar125AppNotificationsRoute,
+    Char123LocaleChar125AppPawcraftRoute: Char123LocaleChar125AppPawcraftRoute,
+    Char123LocaleChar125AppProfileRoute: Char123LocaleChar125AppProfileRoute,
+    Char123LocaleChar125AppSupportRoute: Char123LocaleChar125AppSupportRoute,
+    Char123LocaleChar125AppUsersRoute: Char123LocaleChar125AppUsersRoute,
+    Char123LocaleChar125AppIndexRoute: Char123LocaleChar125AppIndexRoute,
+    Char123LocaleChar125AppAccountTicketsRoute:
+      Char123LocaleChar125AppAccountTicketsRoute,
+    Char123LocaleChar125AppAnnouncementsAnnouncementIdRoute:
+      Char123LocaleChar125AppAnnouncementsAnnouncementIdRoute,
+    Char123LocaleChar125AppCommunityNewRoute:
+      Char123LocaleChar125AppCommunityNewRoute,
+    Char123LocaleChar125AppEventsEventIdRoute:
+      Char123LocaleChar125AppEventsEventIdRoute,
+    Char123LocaleChar125AppEventsNewRoute:
+      Char123LocaleChar125AppEventsNewRoute,
+    Char123LocaleChar125AppGalleryGalleryIdRoute:
+      Char123LocaleChar125AppGalleryGalleryIdRoute,
+    Char123LocaleChar125AppGalleryUploadRoute:
+      Char123LocaleChar125AppGalleryUploadRoute,
+    Char123LocaleChar125AppLegalEulaRoute:
+      Char123LocaleChar125AppLegalEulaRoute,
+    Char123LocaleChar125AppLegalImpressumRoute:
+      Char123LocaleChar125AppLegalImpressumRoute,
+    Char123LocaleChar125AppLegalPrivacypolicyRoute:
+      Char123LocaleChar125AppLegalPrivacypolicyRoute,
+    Char123LocaleChar125AppMessagesConversationIdRoute:
+      Char123LocaleChar125AppMessagesConversationIdRoute,
+    Char123LocaleChar125AppAccountIndexRoute:
+      Char123LocaleChar125AppAccountIndexRoute,
+    Char123LocaleChar125AppAnnouncementsIndexRoute:
+      Char123LocaleChar125AppAnnouncementsIndexRoute,
+    Char123LocaleChar125AppCommunityIndexRoute:
+      Char123LocaleChar125AppCommunityIndexRoute,
+    Char123LocaleChar125AppEventsIndexRoute:
+      Char123LocaleChar125AppEventsIndexRoute,
+    Char123LocaleChar125AppGalleryIndexRoute:
+      Char123LocaleChar125AppGalleryIndexRoute,
+    Char123LocaleChar125AppLegalIndexRoute:
+      Char123LocaleChar125AppLegalIndexRoute,
+    Char123LocaleChar125AppMessagesIndexRoute:
+      Char123LocaleChar125AppMessagesIndexRoute,
+    Char123LocaleChar125AppCommunityCommunityIdAdminRoute:
+      Char123LocaleChar125AppCommunityCommunityIdAdminRoute,
+    Char123LocaleChar125AppCommunityCommunityIdFollowersRoute:
+      Char123LocaleChar125AppCommunityCommunityIdFollowersRoute,
+    Char123LocaleChar125AppEventsEventIdEditRoute:
+      Char123LocaleChar125AppEventsEventIdEditRoute,
+    Char123LocaleChar125AppUserProfileUrlFollowersRoute:
+      Char123LocaleChar125AppUserProfileUrlFollowersRoute,
+    Char123LocaleChar125AppUserProfileUrlFollowingRoute:
+      Char123LocaleChar125AppUserProfileUrlFollowingRoute,
+    Char123LocaleChar125AppCommunityCommunityIdIndexRoute:
+      Char123LocaleChar125AppCommunityCommunityIdIndexRoute,
+    Char123LocaleChar125AppUserProfileUrlIndexRoute:
+      Char123LocaleChar125AppUserProfileUrlIndexRoute,
+    Char123LocaleChar125AppCommunityCommunityIdEventsIndexRoute:
+      Char123LocaleChar125AppCommunityCommunityIdEventsIndexRoute,
+  }
+
+const Char123LocaleChar125AppRouteWithChildren =
+  Char123LocaleChar125AppRoute._addFileChildren(
+    Char123LocaleChar125AppRouteChildren,
+  )
+
+interface Char123LocaleChar125AuthLoginRouteChildren {
+  Char123LocaleChar125AuthLoginMfaRoute: typeof Char123LocaleChar125AuthLoginMfaRoute
 }
 
-const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+const Char123LocaleChar125AuthLoginRouteChildren: Char123LocaleChar125AuthLoginRouteChildren =
+  {
+    Char123LocaleChar125AuthLoginMfaRoute:
+      Char123LocaleChar125AuthLoginMfaRoute,
+  }
 
-interface AuthLoginRouteChildren {
-  AuthLoginMfaRoute: typeof AuthLoginMfaRoute
+const Char123LocaleChar125AuthLoginRouteWithChildren =
+  Char123LocaleChar125AuthLoginRoute._addFileChildren(
+    Char123LocaleChar125AuthLoginRouteChildren,
+  )
+
+interface Char123LocaleChar125AuthRouteChildren {
+  Char123LocaleChar125AuthForgotPasswordRoute: typeof Char123LocaleChar125AuthForgotPasswordRoute
+  Char123LocaleChar125AuthLoginRoute: typeof Char123LocaleChar125AuthLoginRouteWithChildren
+  Char123LocaleChar125AuthLogoutRoute: typeof Char123LocaleChar125AuthLogoutRoute
+  Char123LocaleChar125AuthRegisterRoute: typeof Char123LocaleChar125AuthRegisterRoute
+  Char123LocaleChar125AuthIResetPasswordRoute: typeof Char123LocaleChar125AuthIResetPasswordRoute
+  Char123LocaleChar125AuthIVerifyEmailRoute: typeof Char123LocaleChar125AuthIVerifyEmailRoute
 }
 
-const AuthLoginRouteChildren: AuthLoginRouteChildren = {
-  AuthLoginMfaRoute: AuthLoginMfaRoute,
+const Char123LocaleChar125AuthRouteChildren: Char123LocaleChar125AuthRouteChildren =
+  {
+    Char123LocaleChar125AuthForgotPasswordRoute:
+      Char123LocaleChar125AuthForgotPasswordRoute,
+    Char123LocaleChar125AuthLoginRoute:
+      Char123LocaleChar125AuthLoginRouteWithChildren,
+    Char123LocaleChar125AuthLogoutRoute: Char123LocaleChar125AuthLogoutRoute,
+    Char123LocaleChar125AuthRegisterRoute:
+      Char123LocaleChar125AuthRegisterRoute,
+    Char123LocaleChar125AuthIResetPasswordRoute:
+      Char123LocaleChar125AuthIResetPasswordRoute,
+    Char123LocaleChar125AuthIVerifyEmailRoute:
+      Char123LocaleChar125AuthIVerifyEmailRoute,
+  }
+
+const Char123LocaleChar125AuthRouteWithChildren =
+  Char123LocaleChar125AuthRoute._addFileChildren(
+    Char123LocaleChar125AuthRouteChildren,
+  )
+
+interface Char123LocaleChar125AdminRouteChildren {
+  Char123LocaleChar125AdminIndexRoute: typeof Char123LocaleChar125AdminIndexRoute
+  Char123LocaleChar125AdminAnnouncementsAnnouncementIdRoute: typeof Char123LocaleChar125AdminAnnouncementsAnnouncementIdRoute
+  Char123LocaleChar125AdminChangelogChangelogIdRoute: typeof Char123LocaleChar125AdminChangelogChangelogIdRoute
+  Char123LocaleChar125AdminRolesRoleIdRoute: typeof Char123LocaleChar125AdminRolesRoleIdRoute
+  Char123LocaleChar125AdminTicketsTicketIdRoute: typeof Char123LocaleChar125AdminTicketsTicketIdRoute
+  Char123LocaleChar125AdminUsersUserIdRoute: typeof Char123LocaleChar125AdminUsersUserIdRoute
+  Char123LocaleChar125AdminAnnouncementsIndexRoute: typeof Char123LocaleChar125AdminAnnouncementsIndexRoute
+  Char123LocaleChar125AdminChangelogIndexRoute: typeof Char123LocaleChar125AdminChangelogIndexRoute
+  Char123LocaleChar125AdminReportsIndexRoute: typeof Char123LocaleChar125AdminReportsIndexRoute
+  Char123LocaleChar125AdminRolesIndexRoute: typeof Char123LocaleChar125AdminRolesIndexRoute
+  Char123LocaleChar125AdminTicketsIndexRoute: typeof Char123LocaleChar125AdminTicketsIndexRoute
+  Char123LocaleChar125AdminUsersIndexRoute: typeof Char123LocaleChar125AdminUsersIndexRoute
 }
 
-const AuthLoginRouteWithChildren = AuthLoginRoute._addFileChildren(
-  AuthLoginRouteChildren,
-)
+const Char123LocaleChar125AdminRouteChildren: Char123LocaleChar125AdminRouteChildren =
+  {
+    Char123LocaleChar125AdminIndexRoute: Char123LocaleChar125AdminIndexRoute,
+    Char123LocaleChar125AdminAnnouncementsAnnouncementIdRoute:
+      Char123LocaleChar125AdminAnnouncementsAnnouncementIdRoute,
+    Char123LocaleChar125AdminChangelogChangelogIdRoute:
+      Char123LocaleChar125AdminChangelogChangelogIdRoute,
+    Char123LocaleChar125AdminRolesRoleIdRoute:
+      Char123LocaleChar125AdminRolesRoleIdRoute,
+    Char123LocaleChar125AdminTicketsTicketIdRoute:
+      Char123LocaleChar125AdminTicketsTicketIdRoute,
+    Char123LocaleChar125AdminUsersUserIdRoute:
+      Char123LocaleChar125AdminUsersUserIdRoute,
+    Char123LocaleChar125AdminAnnouncementsIndexRoute:
+      Char123LocaleChar125AdminAnnouncementsIndexRoute,
+    Char123LocaleChar125AdminChangelogIndexRoute:
+      Char123LocaleChar125AdminChangelogIndexRoute,
+    Char123LocaleChar125AdminReportsIndexRoute:
+      Char123LocaleChar125AdminReportsIndexRoute,
+    Char123LocaleChar125AdminRolesIndexRoute:
+      Char123LocaleChar125AdminRolesIndexRoute,
+    Char123LocaleChar125AdminTicketsIndexRoute:
+      Char123LocaleChar125AdminTicketsIndexRoute,
+    Char123LocaleChar125AdminUsersIndexRoute:
+      Char123LocaleChar125AdminUsersIndexRoute,
+  }
 
-interface AuthRouteChildren {
-  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
-  AuthLoginRoute: typeof AuthLoginRouteWithChildren
-  AuthLogoutRoute: typeof AuthLogoutRoute
-  AuthRegisterRoute: typeof AuthRegisterRoute
-  AuthIResetPasswordRoute: typeof AuthIResetPasswordRoute
-  AuthIVerifyEmailRoute: typeof AuthIVerifyEmailRoute
+const Char123LocaleChar125AdminRouteWithChildren =
+  Char123LocaleChar125AdminRoute._addFileChildren(
+    Char123LocaleChar125AdminRouteChildren,
+  )
+
+interface Char123LocaleChar125ChatRouteChildren {
+  Char123LocaleChar125ChatIndexRoute: typeof Char123LocaleChar125ChatIndexRoute
+  Char123LocaleChar125ChatCChannelIdRoute: typeof Char123LocaleChar125ChatCChannelIdRoute
+  Char123LocaleChar125ChatDmConversationIdRoute: typeof Char123LocaleChar125ChatDmConversationIdRoute
 }
 
-const AuthRouteChildren: AuthRouteChildren = {
-  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
-  AuthLoginRoute: AuthLoginRouteWithChildren,
-  AuthLogoutRoute: AuthLogoutRoute,
-  AuthRegisterRoute: AuthRegisterRoute,
-  AuthIResetPasswordRoute: AuthIResetPasswordRoute,
-  AuthIVerifyEmailRoute: AuthIVerifyEmailRoute,
+const Char123LocaleChar125ChatRouteChildren: Char123LocaleChar125ChatRouteChildren =
+  {
+    Char123LocaleChar125ChatIndexRoute: Char123LocaleChar125ChatIndexRoute,
+    Char123LocaleChar125ChatCChannelIdRoute:
+      Char123LocaleChar125ChatCChannelIdRoute,
+    Char123LocaleChar125ChatDmConversationIdRoute:
+      Char123LocaleChar125ChatDmConversationIdRoute,
+  }
+
+const Char123LocaleChar125ChatRouteWithChildren =
+  Char123LocaleChar125ChatRoute._addFileChildren(
+    Char123LocaleChar125ChatRouteChildren,
+  )
+
+interface Char123LocaleChar125RouteChildren {
+  Char123LocaleChar125AppRoute: typeof Char123LocaleChar125AppRouteWithChildren
+  Char123LocaleChar125AuthRoute: typeof Char123LocaleChar125AuthRouteWithChildren
+  Char123LocaleChar125AdminRoute: typeof Char123LocaleChar125AdminRouteWithChildren
+  Char123LocaleChar125ChatRoute: typeof Char123LocaleChar125ChatRouteWithChildren
 }
 
-const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
-
-interface AdminRouteChildren {
-  AdminIndexRoute: typeof AdminIndexRoute
-  AdminAnnouncementsAnnouncementIdRoute: typeof AdminAnnouncementsAnnouncementIdRoute
-  AdminChangelogChangelogIdRoute: typeof AdminChangelogChangelogIdRoute
-  AdminRolesRoleIdRoute: typeof AdminRolesRoleIdRoute
-  AdminTicketsTicketIdRoute: typeof AdminTicketsTicketIdRoute
-  AdminUsersUserIdRoute: typeof AdminUsersUserIdRoute
-  AdminAnnouncementsIndexRoute: typeof AdminAnnouncementsIndexRoute
-  AdminChangelogIndexRoute: typeof AdminChangelogIndexRoute
-  AdminReportsIndexRoute: typeof AdminReportsIndexRoute
-  AdminRolesIndexRoute: typeof AdminRolesIndexRoute
-  AdminTicketsIndexRoute: typeof AdminTicketsIndexRoute
-  AdminUsersIndexRoute: typeof AdminUsersIndexRoute
+const Char123LocaleChar125RouteChildren: Char123LocaleChar125RouteChildren = {
+  Char123LocaleChar125AppRoute: Char123LocaleChar125AppRouteWithChildren,
+  Char123LocaleChar125AuthRoute: Char123LocaleChar125AuthRouteWithChildren,
+  Char123LocaleChar125AdminRoute: Char123LocaleChar125AdminRouteWithChildren,
+  Char123LocaleChar125ChatRoute: Char123LocaleChar125ChatRouteWithChildren,
 }
 
-const AdminRouteChildren: AdminRouteChildren = {
-  AdminIndexRoute: AdminIndexRoute,
-  AdminAnnouncementsAnnouncementIdRoute: AdminAnnouncementsAnnouncementIdRoute,
-  AdminChangelogChangelogIdRoute: AdminChangelogChangelogIdRoute,
-  AdminRolesRoleIdRoute: AdminRolesRoleIdRoute,
-  AdminTicketsTicketIdRoute: AdminTicketsTicketIdRoute,
-  AdminUsersUserIdRoute: AdminUsersUserIdRoute,
-  AdminAnnouncementsIndexRoute: AdminAnnouncementsIndexRoute,
-  AdminChangelogIndexRoute: AdminChangelogIndexRoute,
-  AdminReportsIndexRoute: AdminReportsIndexRoute,
-  AdminRolesIndexRoute: AdminRolesIndexRoute,
-  AdminTicketsIndexRoute: AdminTicketsIndexRoute,
-  AdminUsersIndexRoute: AdminUsersIndexRoute,
-}
-
-const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
-
-interface ChatRouteChildren {
-  ChatIndexRoute: typeof ChatIndexRoute
-  ChatCChannelIdRoute: typeof ChatCChannelIdRoute
-  ChatDmConversationIdRoute: typeof ChatDmConversationIdRoute
-}
-
-const ChatRouteChildren: ChatRouteChildren = {
-  ChatIndexRoute: ChatIndexRoute,
-  ChatCChannelIdRoute: ChatCChannelIdRoute,
-  ChatDmConversationIdRoute: ChatDmConversationIdRoute,
-}
-
-const ChatRouteWithChildren = ChatRoute._addFileChildren(ChatRouteChildren)
+const Char123LocaleChar125RouteWithChildren =
+  Char123LocaleChar125Route._addFileChildren(Char123LocaleChar125RouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  AppRoute: AppRouteWithChildren,
-  AuthRoute: AuthRouteWithChildren,
-  AdminRoute: AdminRouteWithChildren,
-  ChatRoute: ChatRouteWithChildren,
+  Char123LocaleChar125Route: Char123LocaleChar125RouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useLocation } from "@tanstack/react-router";
+import { useLocation } from "@tanstack/react-router";
 import {
 	ChevronDownIcon,
 	ChevronLeftIcon,
@@ -37,6 +37,7 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { LocalizedLink as Link } from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
 import { NewConversationDialog } from "./NewConversationDialog";

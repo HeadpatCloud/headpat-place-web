@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
 import {
 	CheckIcon,
 	ChevronLeftIcon,
@@ -58,6 +57,7 @@ import {
 	uploadAttachment,
 } from "@/lib/chat-attachments";
 import { useDateFormat } from "@/lib/datetime";
+import { useLocalizedNavigate as useNavigate } from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
 
 type Source =
