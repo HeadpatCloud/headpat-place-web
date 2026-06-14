@@ -4,9 +4,26 @@ import { useState } from "react";
 import { Pager } from "@/components/Pager";
 import { ResponsiveImage } from "@/components/ResponsiveImage";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useTranslations } from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
 import { orpc } from "@/lib/orpc";
+import { cn } from "@/lib/utils";
+
+const SKELETON_HEIGHTS = [
+	"h-44",
+	"h-60",
+	"h-52",
+	"h-40",
+	"h-56",
+	"h-48",
+	"h-64",
+	"h-44",
+	"h-56",
+	"h-48",
+	"h-60",
+	"h-52",
+];
 
 export const Route = createFileRoute("/{-$locale}/_app/gallery/")({
 	component: GalleryPage,
@@ -16,7 +33,6 @@ const PAGE_SIZE = 24;
 
 function GalleryPage() {
 	const t = useTranslations("galleryPages");
-	const c = useTranslations("common");
 	const [page, setPage] = useState(1);
 	const query = useQuery(
 		orpc.gallery.list.queryOptions({ input: { page, pageSize: PAGE_SIZE } }),
@@ -32,7 +48,11 @@ function GalleryPage() {
 				</Button>
 			</div>
 			{query.isPending ? (
-				<p className="text-muted-foreground">{c("loading")}</p>
+				<div className="columns-2 gap-3 sm:columns-3 lg:columns-4 [&>*]:mb-3">
+					{SKELETON_HEIGHTS.map((h, i) => (
+						<Skeleton key={i} className={cn("w-full rounded-xl", h)} />
+					))}
+				</div>
 			) : items.length === 0 ? (
 				<p className="text-muted-foreground">{t("empty")}</p>
 			) : (

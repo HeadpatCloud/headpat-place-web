@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useSession } from "@/lib/auth-client";
 import { useTranslations } from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
@@ -39,14 +40,40 @@ function formatBirthday(birthday: string | Date) {
 function UserProfilePage() {
 	const { profileUrl } = Route.useParams();
 	const t = useTranslations("miscPages");
-	const c = useTranslations("common");
 	const profile = useQuery(
 		orpc.profile.byUrl.queryOptions({ input: { profileUrl } }),
 	);
 	const avatarUrl = useStorageUrl("avatar", profile.data?.avatarFileId, "md");
 
 	if (profile.isPending)
-		return <p className="p-4 text-muted-foreground">{c("loading")}</p>;
+		return (
+			<main className="space-y-6">
+				<div className="overflow-hidden rounded-2xl border">
+					<Skeleton className="aspect-[3/1] w-full rounded-none" />
+					<div className="px-6 pb-6">
+						<div className="-mt-12 flex items-end gap-4">
+							<Skeleton className="h-32 w-32 rounded-2xl ring-4 ring-background" />
+							<div className="flex-1 space-y-2 pb-1">
+								<Skeleton className="h-6 w-44" />
+								<Skeleton className="h-4 w-28" />
+							</div>
+						</div>
+						<div className="mt-4 space-y-4">
+							<div className="flex gap-2">
+								<Skeleton className="h-6 w-20 rounded-full" />
+								<Skeleton className="h-6 w-24 rounded-full" />
+							</div>
+							<Separator />
+							<div className="flex gap-6">
+								<Skeleton className="h-4 w-20" />
+								<Skeleton className="h-4 w-20" />
+							</div>
+							<Skeleton className="h-24 w-full" />
+						</div>
+					</div>
+				</div>
+			</main>
+		);
 	if (profile.isError || !profile.data)
 		return <p className="p-4">{t("profileNotFound")}</p>;
 	const p = profile.data;

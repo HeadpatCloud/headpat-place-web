@@ -6,6 +6,7 @@ import { Pager } from "@/components/Pager";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useSession } from "@/lib/auth-client";
 import { useDateFormat } from "@/lib/datetime";
 import { useTranslations } from "@/lib/i18n";
@@ -20,7 +21,6 @@ const PAGE_SIZE = 24;
 
 function EventsPage() {
 	const t = useTranslations("eventsPages");
-	const c = useTranslations("common");
 	const [page, setPage] = useState(1);
 	const fmt = useDateFormat();
 	const { data: session } = useSession();
@@ -46,7 +46,18 @@ function EventsPage() {
 				) : null}
 			</div>
 			{events.isPending ? (
-				<p className="text-muted-foreground">{c("loading")}</p>
+				<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+					{Array.from({ length: 6 }).map((_, i) => (
+						<div
+							key={i}
+							className="space-y-3 rounded-xl border border-border p-6"
+						>
+							<Skeleton className="h-5 w-2/3" />
+							<Skeleton className="h-4 w-1/2" />
+							<Skeleton className="h-4 w-1/3" />
+						</div>
+					))}
+				</div>
 			) : items.length === 0 ? (
 				<p className="text-muted-foreground">{t("emptyState")}</p>
 			) : (
