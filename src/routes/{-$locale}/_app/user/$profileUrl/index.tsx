@@ -274,6 +274,8 @@ const SELF_FOLLOW_LABEL_KEYS = [
 	"selfFollow8",
 ];
 
+type FollowStatus = { iFollow: boolean; followsMe: boolean };
+
 function FollowButton({ targetUserId }: { targetUserId: string }) {
 	const t = useTranslations("miscPages");
 	const { data: session } = useSession();
@@ -289,18 +291,29 @@ function FollowButton({ targetUserId }: { targetUserId: string }) {
 		enabled: !isMe,
 	});
 	const qc = useQueryClient();
+	const statusKey = orpc.follow.status.queryKey({ input: { targetUserId } });
 	const toggle = useMutation({
-		mutationFn: async () => {
-			if (status.data?.iFollow) await client.follow.remove({ targetUserId });
-			else await client.follow.add({ targetUserId });
+		mutationFn: async (next: boolean) => {
+			if (next) await client.follow.add({ targetUserId });
+			else await client.follow.remove({ targetUserId });
 		},
-		onSuccess: () => {
-			qc.invalidateQueries({
-				queryKey: orpc.follow.status.queryKey({ input: { targetUserId } }),
-			});
+		// Flip the button instantly; roll back if the request fails.
+		onMutate: async (next: boolean) => {
+			await qc.cancelQueries({ queryKey: statusKey });
+			const prev = qc.getQueryData<FollowStatus>(statusKey);
+			qc.setQueryData<FollowStatus>(statusKey, (old) =>
+				old ? { ...old, iFollow: next } : old,
+			);
+			return { prev };
+		},
+		onError: (e: Error, _next, ctx) => {
+			if (ctx?.prev) qc.setQueryData(statusKey, ctx.prev);
+			toast.error(e.message);
+		},
+		onSettled: () => {
+			qc.invalidateQueries({ queryKey: statusKey });
 			qc.invalidateQueries({ queryKey: orpc.profile.byUrl.key() });
 		},
-		onError: (e: Error) => toast.error(e.message),
 	});
 
 	if (isMe) {
@@ -324,7 +337,7 @@ function FollowButton({ targetUserId }: { targetUserId: string }) {
 						: "bg-primary text-primary-foreground hover:bg-primary/90"
 				}
 				disabled={toggle.isPending}
-				onClick={() => toggle.mutate()}
+				onClick={() => toggle.mutate(!status.data.iFollow)}
 			>
 				{status.data.iFollow ? t("following") : t("follow")}
 			</Button>
