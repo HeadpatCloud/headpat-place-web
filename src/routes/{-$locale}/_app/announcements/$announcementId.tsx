@@ -8,19 +8,32 @@ import {
 	translate,
 	useTranslations,
 } from "@/lib/i18n";
-import { orpc } from "@/lib/orpc";
+import { client, orpc } from "@/lib/orpc";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute(
 	"/{-$locale}/_app/announcements/$announcementId",
 )({
 	component: AnnouncementPage,
-	head: ({ params }) => {
+	loader: async ({ params }) => {
+		if (typeof window !== "undefined") return null;
+		try {
+			const ann = await client.announcement.byId({
+				announcementId: params.announcementId,
+			});
+			return { title: ann.title };
+		} catch {
+			return null;
+		}
+	},
+	head: ({ params, loaderData }) => {
 		const locale = (params as { locale?: Locale }).locale ?? DEFAULT_LOCALE;
 		const announcementId = (params as { announcementId: string })
 			.announcementId;
 		return seo({
-			title: translate(locale, "miscPages.announcementSeoTitle"),
+			title:
+				loaderData?.title ??
+				translate(locale, "miscPages.announcementSeoTitle"),
 			path: `/announcements/${announcementId}`,
 			locale,
 		});

@@ -9,7 +9,9 @@ function resolveBackendUrl(): string {
 	const url =
 		typeof window !== "undefined"
 			? import.meta.env.VITE_API_URL || window.location.origin
-			: process.env.VITE_API_URL || "http://localhost:8787";
+			: process.env.VITE_API_URL ||
+				process.env.BACKEND_ORIGIN ||
+				"http://localhost:8787";
 	// a trailing slash would break every `${BACKEND_URL}/path` concatenation
 	return url.replace(/\/+$/, "");
 }

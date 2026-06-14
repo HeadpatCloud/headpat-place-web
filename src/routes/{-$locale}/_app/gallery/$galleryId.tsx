@@ -34,11 +34,20 @@ import { client, orpc } from "@/lib/orpc";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/{-$locale}/_app/gallery/$galleryId")({
-	head: ({ params }) => {
+	loader: async ({ params }) => {
+		if (typeof window !== "undefined") return null;
+		try {
+			const item = await client.gallery.byId({ itemId: params.galleryId });
+			return { title: item.name };
+		} catch {
+			return null;
+		}
+	},
+	head: ({ params, loaderData }) => {
 		const p = params as { locale?: Locale; galleryId: string };
 		const locale = p.locale ?? DEFAULT_LOCALE;
 		return seo({
-			title: translate(locale, "galleryPages.title"),
+			title: loaderData?.title ?? translate(locale, "galleryPages.title"),
 			path: `/gallery/${p.galleryId}`,
 			locale,
 		});

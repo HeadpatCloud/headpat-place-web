@@ -34,11 +34,20 @@ import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/{-$locale}/_app/events/$eventId")({
 	component: EventDetailPage,
-	head: ({ params }) => {
+	loader: async ({ params }) => {
+		if (typeof window !== "undefined") return null;
+		try {
+			const ev = await client.event.byId({ eventId: params.eventId });
+			return { title: ev.title };
+		} catch {
+			return null;
+		}
+	},
+	head: ({ params, loaderData }) => {
 		const locale = (params as { locale?: Locale }).locale ?? DEFAULT_LOCALE;
 		const eventId = (params as { locale?: Locale; eventId: string }).eventId;
 		return seo({
-			title: translate(locale, "eventsPages.seoTitle"),
+			title: loaderData?.title ?? translate(locale, "eventsPages.seoTitle"),
 			path: `/events/${eventId}`,
 			locale,
 		});

@@ -19,11 +19,22 @@ export const Route = createFileRoute(
 	"/{-$locale}/_app/community/$communityId/",
 )({
 	component: CommunityDetailPage,
-	head: ({ params }) => {
+	loader: async ({ params }) => {
+		if (typeof window !== "undefined") return null;
+		try {
+			const community = await client.community.byId({
+				communityId: params.communityId,
+			});
+			return { title: community.name };
+		} catch {
+			return null;
+		}
+	},
+	head: ({ params, loaderData }) => {
 		const locale = (params as { locale?: Locale }).locale ?? DEFAULT_LOCALE;
 		const { communityId } = params as { locale?: Locale; communityId: string };
 		return seo({
-			title: translate(locale, "communityPages.seoTitle"),
+			title: loaderData?.title ?? translate(locale, "communityPages.seoTitle"),
 			path: `/community/${communityId}`,
 			locale,
 		});

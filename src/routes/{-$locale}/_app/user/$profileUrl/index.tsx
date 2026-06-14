@@ -25,11 +25,29 @@ import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/{-$locale}/_app/user/$profileUrl/")({
 	component: UserProfilePage,
-	head: ({ params }) => {
+	// Server-only: fills the title/description from the real profile so shared
+	// links and crawlers see "Name (@handle)". Skipped on client navigation.
+	loader: async ({ params }) => {
+		if (typeof window !== "undefined") return null;
+		try {
+			const p = await client.profile.byUrl({ profileUrl: params.profileUrl });
+			const name = p.displayName || p.name || p.profileUrl;
+			return {
+				title: `${name} (@${p.profileUrl})`,
+				description: p.bio
+					? p.bio.replace(/\s+/g, " ").trim().slice(0, 160)
+					: undefined,
+			};
+		} catch {
+			return null;
+		}
+	},
+	head: ({ params, loaderData }) => {
 		const locale = (params as { locale?: Locale }).locale ?? DEFAULT_LOCALE;
 		const profileUrl = (params as { profileUrl: string }).profileUrl;
 		return seo({
-			title: translate(locale, "miscPages.seoTitle"),
+			title: loaderData?.title ?? translate(locale, "miscPages.seoTitle"),
+			description: loaderData?.description,
 			path: `/user/${profileUrl}`,
 			locale,
 		});
