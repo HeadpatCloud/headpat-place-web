@@ -7,14 +7,18 @@ import { ThemeBuilder } from "@/components/theme/ThemeBuilder";
 import { useTranslations } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
 import { PRESETS } from "@/lib/theme/presets";
+import { cn } from "@/lib/utils";
 
 const MODE_VALUES = ["system", "light", "dark"] as const;
 
-function Swatch({ slug }: { slug: string }) {
+function Swatch({ slug, dark }: { slug: string; dark: boolean }) {
 	return (
 		<div
 			data-theme={slug}
-			className="flex h-12 w-full overflow-hidden rounded-md border border-border"
+			className={cn(
+				"flex h-12 w-full overflow-hidden rounded-md border border-border",
+				dark && "dark",
+			)}
 		>
 			<div className="flex-1 bg-background" />
 			<div className="flex-1 bg-card" />
@@ -27,7 +31,8 @@ function Swatch({ slug }: { slug: string }) {
 export function AppearanceSettings() {
 	const t = useTranslations("accountPages");
 	const c = useTranslations("common");
-	const { theme: mode, setTheme: setMode } = useTheme();
+	const { theme: mode, setTheme: setMode, resolvedTheme } = useTheme();
+	const dark = resolvedTheme === "dark";
 	const { activeTheme, setActiveTheme, myThemes } = useThemeController();
 	const qc = useQueryClient();
 	const [builder, setBuilder] = useState<
@@ -88,7 +93,7 @@ export function AppearanceSettings() {
 									: "border-border hover:border-foreground/30"
 							}`}
 						>
-							<Swatch slug={p.slug} />
+							<Swatch slug={p.slug} dark={dark} />
 							<span className="mt-2 block text-sm font-medium">{p.name}</span>
 						</button>
 					))}
@@ -111,19 +116,27 @@ export function AppearanceSettings() {
 									<div className="flex h-12 w-full overflow-hidden rounded-md border border-border">
 										<div
 											className="flex-1"
-											style={{ background: theme.dark.background }}
+											style={{
+												background: theme[dark ? "dark" : "light"].background,
+											}}
 										/>
 										<div
 											className="flex-1"
-											style={{ background: theme.dark.card }}
+											style={{
+												background: theme[dark ? "dark" : "light"].card,
+											}}
 										/>
 										<div
 											className="flex-1"
-											style={{ background: theme.dark.primary }}
+											style={{
+												background: theme[dark ? "dark" : "light"].primary,
+											}}
 										/>
 										<div
 											className="flex-1"
-											style={{ background: theme.dark.accent }}
+											style={{
+												background: theme[dark ? "dark" : "light"].accent,
+											}}
 										/>
 									</div>
 									<span className="mt-2 block truncate text-sm font-medium">
