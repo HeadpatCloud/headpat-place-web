@@ -5,14 +5,29 @@ import { GradientBanner } from "@/components/GradientBanner";
 import { StorageImage } from "@/components/StorageImage";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useTranslations } from "@/lib/i18n";
+import {
+	DEFAULT_LOCALE,
+	type Locale,
+	translate,
+	useTranslations,
+} from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute(
 	"/{-$locale}/_app/community/$communityId/",
 )({
 	component: CommunityDetailPage,
+	head: ({ params }) => {
+		const locale = (params as { locale?: Locale }).locale ?? DEFAULT_LOCALE;
+		const { communityId } = params as { locale?: Locale; communityId: string };
+		return seo({
+			title: translate(locale, "communityPages.seoTitle"),
+			path: `/community/${communityId}`,
+			locale,
+		});
+	},
 });
 
 function CommunityDetailPage() {

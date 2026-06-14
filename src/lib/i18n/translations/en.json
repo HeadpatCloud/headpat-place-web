@@ -960,6 +960,7 @@
 	},
 	"eventsPages": {
 		"title": "Events",
+		"seoTitle": "Event",
 		"newEvent": "New event",
 		"emptyState": "No events yet.",
 		"nAttending": "%{count} attending",
@@ -1025,6 +1026,7 @@
 		"saveChanges": "Save changes"
 	},
 	"communityPages": {
+		"seoTitle": "Community",
 		"communitiesTitle": "Communities",
 		"createCommunityShort": "+ Create",
 		"searchCommunitiesPlaceholder": "Search communities…",
@@ -1239,6 +1241,7 @@
 	"miscPages": {
 		"announcementNotFound": "Not found.",
 		"announcementsTitle": "Announcements",
+		"announcementSeoTitle": "Announcement",
 		"announcementsEmpty": "No announcements right now.",
 		"impressumTitle": "Impressum",
 		"impressumLegalInfo": "Information according to § 5 TMG.",
@@ -1263,6 +1266,7 @@
 		"legalLinkDisclaimer": "Disclaimer",
 		"legalLinkAcceptableUse": "Acceptable use",
 		"profileNotFound": "Profile not found.",
+		"seoTitle": "User profile",
 		"followersTitle": "%{name}'s followers",
 		"followersEmpty": "No followers yet.",
 		"followingTitle": "%{name} is following",

@@ -13,12 +13,27 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSession } from "@/lib/auth-client";
-import { useTranslations } from "@/lib/i18n";
+import {
+	DEFAULT_LOCALE,
+	type Locale,
+	translate,
+	useTranslations,
+} from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/{-$locale}/_app/user/$profileUrl/")({
 	component: UserProfilePage,
+	head: ({ params }) => {
+		const locale = (params as { locale?: Locale }).locale ?? DEFAULT_LOCALE;
+		const profileUrl = (params as { profileUrl: string }).profileUrl;
+		return seo({
+			title: translate(locale, "miscPages.seoTitle"),
+			path: `/user/${profileUrl}`,
+			locale,
+		});
+	},
 });
 
 function isBirthdayToday(birthday: string | Date | null | undefined) {

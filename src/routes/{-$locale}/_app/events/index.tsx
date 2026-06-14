@@ -9,12 +9,26 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSession } from "@/lib/auth-client";
 import { useDateFormat } from "@/lib/datetime";
-import { useTranslations } from "@/lib/i18n";
+import {
+	DEFAULT_LOCALE,
+	type Locale,
+	translate,
+	useTranslations,
+} from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
 import { orpc } from "@/lib/orpc";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/{-$locale}/_app/events/")({
 	component: EventsPage,
+	head: ({ params }) => {
+		const locale = (params as { locale?: Locale }).locale ?? DEFAULT_LOCALE;
+		return seo({
+			title: translate(locale, "eventsPages.title"),
+			path: "/events",
+			locale,
+		});
+	},
 });
 
 const PAGE_SIZE = 24;

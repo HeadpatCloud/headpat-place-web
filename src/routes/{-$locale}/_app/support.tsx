@@ -2,11 +2,25 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ArrowRight, MessageSquarePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useTranslations } from "@/lib/i18n";
+import {
+	DEFAULT_LOCALE,
+	type Locale,
+	translate,
+	useTranslations,
+} from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/{-$locale}/_app/support")({
 	component: SupportPage,
+	head: ({ params }) => {
+		const locale = (params as { locale?: Locale }).locale ?? DEFAULT_LOCALE;
+		return seo({
+			title: translate(locale, "miscPages.supportTitle"),
+			path: "/support",
+			locale,
+		});
+	},
 });
 
 function SupportPage() {

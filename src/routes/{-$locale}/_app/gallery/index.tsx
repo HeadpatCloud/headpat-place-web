@@ -5,9 +5,15 @@ import { Pager } from "@/components/Pager";
 import { ResponsiveImage } from "@/components/ResponsiveImage";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useTranslations } from "@/lib/i18n";
+import {
+	DEFAULT_LOCALE,
+	type Locale,
+	translate,
+	useTranslations,
+} from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
 import { orpc } from "@/lib/orpc";
+import { seo } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 
 const SKELETON_HEIGHTS = [
@@ -26,6 +32,14 @@ const SKELETON_HEIGHTS = [
 ];
 
 export const Route = createFileRoute("/{-$locale}/_app/gallery/")({
+	head: ({ params }) => {
+		const locale = (params as { locale?: Locale }).locale ?? DEFAULT_LOCALE;
+		return seo({
+			title: translate(locale, "galleryPages.title"),
+			path: "/gallery",
+			locale,
+		});
+	},
 	component: GalleryPage,
 });
 

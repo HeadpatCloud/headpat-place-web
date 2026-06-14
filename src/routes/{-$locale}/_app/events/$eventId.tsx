@@ -19,15 +19,30 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useSession } from "@/lib/auth-client";
 import { useDateFormat } from "@/lib/datetime";
-import { useTranslations } from "@/lib/i18n";
+import {
+	DEFAULT_LOCALE,
+	type Locale,
+	translate,
+	useTranslations,
+} from "@/lib/i18n";
 import {
 	LocalizedLink as Link,
 	useLocalizedNavigate as useNavigate,
 } from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/{-$locale}/_app/events/$eventId")({
 	component: EventDetailPage,
+	head: ({ params }) => {
+		const locale = (params as { locale?: Locale }).locale ?? DEFAULT_LOCALE;
+		const eventId = (params as { locale?: Locale; eventId: string }).eventId;
+		return seo({
+			title: translate(locale, "eventsPages.seoTitle"),
+			path: `/events/${eventId}`,
+			locale,
+		});
+	},
 });
 
 function EventDetailPage() {

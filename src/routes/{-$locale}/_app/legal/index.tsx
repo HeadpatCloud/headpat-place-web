@@ -1,10 +1,24 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Paperclip } from "lucide-react";
-import { useTranslations } from "@/lib/i18n";
+import {
+	DEFAULT_LOCALE,
+	type Locale,
+	translate,
+	useTranslations,
+} from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/{-$locale}/_app/legal/")({
 	component: LegalPage,
+	head: ({ params }) => {
+		const locale = (params as { locale?: Locale }).locale ?? DEFAULT_LOCALE;
+		return seo({
+			title: translate(locale, "miscPages.legalHeading"),
+			path: "/legal",
+			locale,
+		});
+	},
 });
 
 type LegalLink = {

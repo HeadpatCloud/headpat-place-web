@@ -1,9 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useTranslations } from "@/lib/i18n";
+import {
+	DEFAULT_LOCALE,
+	type Locale,
+	translate,
+	useTranslations,
+} from "@/lib/i18n";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/{-$locale}/_app/legal/impressum")({
 	component: ImpressumPage,
-	head: () => ({ meta: [{ title: "Impressum" }] }),
+	head: ({ params }) => {
+		const locale = (params as { locale?: Locale }).locale ?? DEFAULT_LOCALE;
+		return seo({
+			title: translate(locale, "miscPages.impressumTitle"),
+			path: "/legal/impressum",
+			locale,
+		});
+	},
 });
 
 function ImpressumPage() {

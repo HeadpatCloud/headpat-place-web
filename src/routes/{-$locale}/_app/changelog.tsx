@@ -4,11 +4,25 @@ import { useState } from "react";
 import { FadeIn } from "@/components/FadeIn";
 import { Pager } from "@/components/Pager";
 import { useDateFormat } from "@/lib/datetime";
-import { useTranslations } from "@/lib/i18n";
+import {
+	DEFAULT_LOCALE,
+	type Locale,
+	translate,
+	useTranslations,
+} from "@/lib/i18n";
 import { orpc } from "@/lib/orpc";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/{-$locale}/_app/changelog")({
 	component: ChangelogPage,
+	head: ({ params }) => {
+		const locale = (params as { locale?: Locale }).locale ?? DEFAULT_LOCALE;
+		return seo({
+			title: translate(locale, "miscPages.changelogTitle"),
+			path: "/changelog",
+			locale,
+		});
+	},
 });
 
 const PAGE_SIZE = 24;

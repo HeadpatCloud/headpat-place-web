@@ -960,6 +960,7 @@
 	},
 	"eventsPages": {
 		"title": "Veranstaltungen",
+		"seoTitle": "Veranstaltung",
 		"newEvent": "Neue Veranstaltung",
 		"emptyState": "Noch keine Veranstaltungen.",
 		"nAttending": "%{count} nehmen teil",
@@ -1025,6 +1026,7 @@
 		"saveChanges": "Änderungen speichern"
 	},
 	"communityPages": {
+		"seoTitle": "Community",
 		"communitiesTitle": "Communitys",
 		"createCommunityShort": "+ Erstellen",
 		"searchCommunitiesPlaceholder": "Communitys durchsuchen…",
@@ -1239,6 +1241,7 @@
 	"miscPages": {
 		"announcementNotFound": "Nicht gefunden.",
 		"announcementsTitle": "Ankündigungen",
+		"announcementSeoTitle": "Ankündigung",
 		"announcementsEmpty": "Im Moment keine Ankündigungen.",
 		"impressumTitle": "Impressum",
 		"impressumLegalInfo": "Angaben gemäß § 5 TMG.",
@@ -1263,6 +1266,7 @@
 		"legalLinkDisclaimer": "Haftungsausschluss",
 		"legalLinkAcceptableUse": "Nutzungsrichtlinie",
 		"profileNotFound": "Profil nicht gefunden.",
+		"seoTitle": "Benutzerprofil",
 		"followersTitle": "Follower von %{name}",
 		"followersEmpty": "Noch keine Follower.",
 		"followingTitle": "%{name} folgt",

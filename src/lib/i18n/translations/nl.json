@@ -960,6 +960,7 @@
 	},
 	"eventsPages": {
 		"title": "Evenementen",
+		"seoTitle": "Evenement",
 		"newEvent": "Nieuw evenement",
 		"emptyState": "Nog geen evenementen.",
 		"nAttending": "%{count} aanwezig",
@@ -1025,6 +1026,7 @@
 		"saveChanges": "Wijzigingen opslaan"
 	},
 	"communityPages": {
+		"seoTitle": "Community",
 		"communitiesTitle": "Community's",
 		"createCommunityShort": "+ Aanmaken",
 		"searchCommunitiesPlaceholder": "Community's zoeken…",
@@ -1239,6 +1241,7 @@
 	"miscPages": {
 		"announcementNotFound": "Niet gevonden.",
 		"announcementsTitle": "Aankondigingen",
+		"announcementSeoTitle": "Aankondiging",
 		"announcementsEmpty": "Op dit moment geen aankondigingen.",
 		"impressumTitle": "Colofon",
 		"impressumLegalInfo": "Informatie volgens § 5 TMG.",
@@ -1263,6 +1266,7 @@
 		"legalLinkDisclaimer": "Disclaimer",
 		"legalLinkAcceptableUse": "Gebruiksvoorwaarden",
 		"profileNotFound": "Profiel niet gevonden.",
+		"seoTitle": "Gebruikersprofiel",
 		"followersTitle": "Volgers van %{name}",
 		"followersEmpty": "Nog geen volgers.",
 		"followingTitle": "%{name} volgt",

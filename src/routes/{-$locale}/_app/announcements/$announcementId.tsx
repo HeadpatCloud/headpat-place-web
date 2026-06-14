@@ -2,13 +2,29 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDateFormat } from "@/lib/datetime";
-import { useTranslations } from "@/lib/i18n";
+import {
+	DEFAULT_LOCALE,
+	type Locale,
+	translate,
+	useTranslations,
+} from "@/lib/i18n";
 import { orpc } from "@/lib/orpc";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute(
 	"/{-$locale}/_app/announcements/$announcementId",
 )({
 	component: AnnouncementPage,
+	head: ({ params }) => {
+		const locale = (params as { locale?: Locale }).locale ?? DEFAULT_LOCALE;
+		const announcementId = (params as { announcementId: string })
+			.announcementId;
+		return seo({
+			title: translate(locale, "miscPages.announcementSeoTitle"),
+			path: `/announcements/${announcementId}`,
+			locale,
+		});
+	},
 });
 
 function AnnouncementPage() {
