@@ -4,6 +4,7 @@ import {
 	AtSign,
 	Bell,
 	Eye,
+	KeyRound,
 	Link2,
 	Palette,
 	ShieldCheck,
@@ -15,6 +16,7 @@ import { toast } from "sonner";
 import { AccountHero } from "@/components/account/AccountHero";
 import { AccountNav, type NavItem } from "@/components/account/AccountNav";
 import { AccountSection } from "@/components/account/AccountSection";
+import { ApiKeysSection } from "@/components/account/ApiKeysSection";
 import { AppearanceSettings } from "@/components/account/AppearanceSettings";
 import { ConnectedAccounts } from "@/components/account/ConnectedAccounts";
 import { DangerZone } from "@/components/account/DangerZone";
@@ -43,6 +45,7 @@ const SECTION_IDS = [
 	"privacy",
 	"notifications",
 	"appearance",
+	"apikeys",
 	"danger",
 ] as const;
 
@@ -54,6 +57,7 @@ const SECTION_ICONS = {
 	privacy: Eye,
 	notifications: Bell,
 	appearance: Palette,
+	apikeys: KeyRound,
 	danger: TriangleAlert,
 } as const;
 
@@ -253,6 +257,14 @@ function AccountPage() {
 						description={t("appearanceDescription")}
 					>
 						<AppearanceSettings />
+					</Section>
+
+					<Section
+						id="apikeys"
+						title={t("nav_apikeys")}
+						description={t("apiKeysDescription")}
+					>
+						<ApiKeysSection />
 					</Section>
 
 					<Section id="danger" title={t("nav_danger")}>

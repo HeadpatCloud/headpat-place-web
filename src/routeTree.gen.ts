@@ -33,6 +33,7 @@ import { Route as Char123LocaleChar125AdminTicketsIndexRouteImport } from './rou
 import { Route as Char123LocaleChar125AdminRolesIndexRouteImport } from './routes/{-$locale}/admin/roles/index'
 import { Route as Char123LocaleChar125AdminReportsIndexRouteImport } from './routes/{-$locale}/admin/reports/index'
 import { Route as Char123LocaleChar125AdminChangelogIndexRouteImport } from './routes/{-$locale}/admin/changelog/index'
+import { Route as Char123LocaleChar125AdminApiKeysIndexRouteImport } from './routes/{-$locale}/admin/api-keys/index'
 import { Route as Char123LocaleChar125AdminAnnouncementsIndexRouteImport } from './routes/{-$locale}/admin/announcements/index'
 import { Route as Char123LocaleChar125AppMessagesIndexRouteImport } from './routes/{-$locale}/_app/messages/index'
 import { Route as Char123LocaleChar125AppLegalIndexRouteImport } from './routes/{-$locale}/_app/legal/index'
@@ -209,6 +210,12 @@ const Char123LocaleChar125AdminChangelogIndexRoute =
   Char123LocaleChar125AdminChangelogIndexRouteImport.update({
     id: '/changelog/',
     path: '/changelog/',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AdminApiKeysIndexRoute =
+  Char123LocaleChar125AdminApiKeysIndexRouteImport.update({
+    id: '/api-keys/',
+    path: '/api-keys/',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
 const Char123LocaleChar125AdminAnnouncementsIndexRoute =
@@ -481,6 +488,7 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/legal/': typeof Char123LocaleChar125AppLegalIndexRoute
   '/{-$locale}/messages/': typeof Char123LocaleChar125AppMessagesIndexRoute
   '/{-$locale}/admin/announcements/': typeof Char123LocaleChar125AdminAnnouncementsIndexRoute
+  '/{-$locale}/admin/api-keys/': typeof Char123LocaleChar125AdminApiKeysIndexRoute
   '/{-$locale}/admin/changelog/': typeof Char123LocaleChar125AdminChangelogIndexRoute
   '/{-$locale}/admin/reports/': typeof Char123LocaleChar125AdminReportsIndexRoute
   '/{-$locale}/admin/roles/': typeof Char123LocaleChar125AdminRolesIndexRoute
@@ -539,6 +547,7 @@ export interface FileRoutesByTo {
   '/{-$locale}/legal': typeof Char123LocaleChar125AppLegalIndexRoute
   '/{-$locale}/messages': typeof Char123LocaleChar125AppMessagesIndexRoute
   '/{-$locale}/admin/announcements': typeof Char123LocaleChar125AdminAnnouncementsIndexRoute
+  '/{-$locale}/admin/api-keys': typeof Char123LocaleChar125AdminApiKeysIndexRoute
   '/{-$locale}/admin/changelog': typeof Char123LocaleChar125AdminChangelogIndexRoute
   '/{-$locale}/admin/reports': typeof Char123LocaleChar125AdminReportsIndexRoute
   '/{-$locale}/admin/roles': typeof Char123LocaleChar125AdminRolesIndexRoute
@@ -603,6 +612,7 @@ export interface FileRoutesById {
   '/{-$locale}/_app/legal/': typeof Char123LocaleChar125AppLegalIndexRoute
   '/{-$locale}/_app/messages/': typeof Char123LocaleChar125AppMessagesIndexRoute
   '/{-$locale}/admin/announcements/': typeof Char123LocaleChar125AdminAnnouncementsIndexRoute
+  '/{-$locale}/admin/api-keys/': typeof Char123LocaleChar125AdminApiKeysIndexRoute
   '/{-$locale}/admin/changelog/': typeof Char123LocaleChar125AdminChangelogIndexRoute
   '/{-$locale}/admin/reports/': typeof Char123LocaleChar125AdminReportsIndexRoute
   '/{-$locale}/admin/roles/': typeof Char123LocaleChar125AdminRolesIndexRoute
@@ -666,6 +676,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/legal/'
     | '/{-$locale}/messages/'
     | '/{-$locale}/admin/announcements/'
+    | '/{-$locale}/admin/api-keys/'
     | '/{-$locale}/admin/changelog/'
     | '/{-$locale}/admin/reports/'
     | '/{-$locale}/admin/roles/'
@@ -724,6 +735,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/legal'
     | '/{-$locale}/messages'
     | '/{-$locale}/admin/announcements'
+    | '/{-$locale}/admin/api-keys'
     | '/{-$locale}/admin/changelog'
     | '/{-$locale}/admin/reports'
     | '/{-$locale}/admin/roles'
@@ -787,6 +799,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/_app/legal/'
     | '/{-$locale}/_app/messages/'
     | '/{-$locale}/admin/announcements/'
+    | '/{-$locale}/admin/api-keys/'
     | '/{-$locale}/admin/changelog/'
     | '/{-$locale}/admin/reports/'
     | '/{-$locale}/admin/roles/'
@@ -974,6 +987,13 @@ declare module '@tanstack/react-router' {
       path: '/changelog'
       fullPath: '/{-$locale}/admin/changelog/'
       preLoaderRoute: typeof Char123LocaleChar125AdminChangelogIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
+    }
+    '/{-$locale}/admin/api-keys/': {
+      id: '/{-$locale}/admin/api-keys/'
+      path: '/api-keys'
+      fullPath: '/{-$locale}/admin/api-keys/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminApiKeysIndexRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
     '/{-$locale}/admin/announcements/': {
@@ -1398,6 +1418,7 @@ interface Char123LocaleChar125AdminRouteChildren {
   Char123LocaleChar125AdminTicketsTicketIdRoute: typeof Char123LocaleChar125AdminTicketsTicketIdRoute
   Char123LocaleChar125AdminUsersUserIdRoute: typeof Char123LocaleChar125AdminUsersUserIdRoute
   Char123LocaleChar125AdminAnnouncementsIndexRoute: typeof Char123LocaleChar125AdminAnnouncementsIndexRoute
+  Char123LocaleChar125AdminApiKeysIndexRoute: typeof Char123LocaleChar125AdminApiKeysIndexRoute
   Char123LocaleChar125AdminChangelogIndexRoute: typeof Char123LocaleChar125AdminChangelogIndexRoute
   Char123LocaleChar125AdminReportsIndexRoute: typeof Char123LocaleChar125AdminReportsIndexRoute
   Char123LocaleChar125AdminRolesIndexRoute: typeof Char123LocaleChar125AdminRolesIndexRoute
@@ -1420,6 +1441,8 @@ const Char123LocaleChar125AdminRouteChildren: Char123LocaleChar125AdminRouteChil
       Char123LocaleChar125AdminUsersUserIdRoute,
     Char123LocaleChar125AdminAnnouncementsIndexRoute:
       Char123LocaleChar125AdminAnnouncementsIndexRoute,
+    Char123LocaleChar125AdminApiKeysIndexRoute:
+      Char123LocaleChar125AdminApiKeysIndexRoute,
     Char123LocaleChar125AdminChangelogIndexRoute:
       Char123LocaleChar125AdminChangelogIndexRoute,
     Char123LocaleChar125AdminReportsIndexRoute:

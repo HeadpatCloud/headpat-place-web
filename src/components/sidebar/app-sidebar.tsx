@@ -8,6 +8,7 @@ import {
 	FileIcon,
 	HeartHandshakeIcon,
 	HomeIcon,
+	KeyRoundIcon,
 	LayoutPanelLeftIcon,
 	MapIcon,
 	MegaphoneIcon,
@@ -105,6 +106,11 @@ export function AppSidebar({
 				name: nav("adminUsers"),
 				url: "/admin/users",
 				icon: UserSearchIcon,
+			},
+			{
+				name: nav("adminApiKeys"),
+				url: "/admin/api-keys",
+				icon: KeyRoundIcon,
 			},
 		],
 		adminOps: [
