@@ -534,9 +534,10 @@ export function ChatSidebar({ className }: { className?: string }) {
 								{meName}
 							</div>
 							<div className="truncate text-xs text-muted-foreground">
-								{meId
-									? (presenceOf(meId)?.status ?? t("statusOffline"))
-									: t("statusOffline")}
+								{(meId && presenceOf(meId)?.customStatus) ||
+									(meId
+										? (presenceOf(meId)?.status ?? t("statusOffline"))
+										: t("statusOffline"))}
 							</div>
 						</div>
 					</button>
