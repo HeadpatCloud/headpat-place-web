@@ -7,6 +7,8 @@ export const TILES = {
 export const ATTRIBUTION =
 	'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
 export const ACCENT = "#10b981";
+/** Distinct from event green — shared-user location markers. */
+export const PERSON_COLOR = "#6366f1";
 
 let leafletPromise: Promise<typeof LType> | null = null;
 /** Lazily load Leaflet client-side (it touches `window`, so never on the server). */
@@ -44,6 +46,8 @@ export function tileLayer(L: typeof LType, dark: boolean): LType.TileLayer {
 		attribution: ATTRIBUTION,
 		subdomains: "abcd",
 		maxZoom: 20,
+		// Don't repeat the basemap horizontally — one world only.
+		noWrap: true,
 	});
 }
 
@@ -128,6 +132,21 @@ export function timezoneToView(tz?: string | null): MapPosition | null {
 	if (!tz) return null;
 	if (TZ_VIEWS[tz]) return TZ_VIEWS[tz];
 	return PREFIX_VIEWS[tz.split("/")[0]] ?? null;
+}
+
+/** Round avatar-style marker with the user's initial, for shared locations. */
+export function personIcon(L: typeof LType, label: string): LType.DivIcon {
+	const ch = (label || "?").trim().charAt(0).toUpperCase() || "?";
+	const initial =
+		ch === "<" || ch === ">" || ch === "&" || ch === '"' ? "?" : ch;
+	const html = `<div style="width:32px;height:32px;border-radius:9999px;background:${PERSON_COLOR};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)">${initial}</div>`;
+	return L.divIcon({
+		html,
+		className: "",
+		iconSize: [32, 32],
+		iconAnchor: [16, 16],
+		popupAnchor: [0, -18],
+	});
 }
 
 export function pinIcon(L: typeof LType): LType.DivIcon {

@@ -2,13 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import type * as LType from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useTheme } from "next-themes";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useLiveLocations } from "@/components/contexts/PresenceProvider";
+import { useSession } from "@/lib/auth-client";
 import { orpc } from "@/lib/orpc";
 import {
 	ACCENT,
 	loadLeaflet,
 	localTimezone,
+	PERSON_COLOR,
 	parseLatLng,
+	personIcon,
 	pinIcon,
 	tileLayer,
 	timezoneToView,
@@ -38,11 +42,21 @@ export function MapView() {
 	const mapRef = useRef<LType.Map | null>(null);
 	const tileRef = useRef<LType.TileLayer | null>(null);
 	const groupRef = useRef<LType.LayerGroup | null>(null);
+	const peopleRef = useRef<LType.LayerGroup | null>(null);
 	const fittedRef = useRef(false);
+	const [mapReady, setMapReady] = useState(false);
 
+	const { data: session } = useSession();
+	const liveLocations = useLiveLocations();
 	const events = useQuery(
 		orpc.event.mapList.queryOptions({ input: undefined }),
 	);
+	// Users who share their location with the signed-in viewer (initial set;
+	// positions then update live over the websocket).
+	const shared = useQuery({
+		...orpc.location.visibleLocations.queryOptions({ input: {} }),
+		enabled: !!session?.user,
+	});
 
 	useEffect(() => {
 		return () => {
@@ -73,10 +87,19 @@ export function MapView() {
 				mapRef.current = L.map(containerRef.current, {
 					center: [25, 0],
 					zoom: 2,
-					worldCopyJump: true,
+					minZoom: 2,
+					// Stop the world repeating horizontally: hard-bound to a single
+					// world and bounce back at the edges (tiles also get noWrap below).
+					maxBounds: [
+						[-85, -180],
+						[85, 180],
+					],
+					maxBoundsViscosity: 1,
 				});
 				groupRef.current = L.layerGroup().addTo(mapRef.current);
+				peopleRef.current = L.layerGroup().addTo(mapRef.current);
 				setTimeout(() => mapRef.current?.invalidateSize(), 80);
+				setMapReady(true);
 			}
 			const map = mapRef.current;
 
@@ -150,6 +173,46 @@ export function MapView() {
 			cancelled = true;
 		};
 	}, [dark, events.data]);
+
+	// Shared-user markers: merge the initial visibleLocations set with live
+	// websocket deltas (null delta = the share ended). Own layer so frequent
+	// position updates don't rebuild the event zones.
+	useEffect(() => {
+		const L = LRef.current;
+		const group = peopleRef.current;
+		if (!mapReady || !L || !group) return;
+		group.clearLayers();
+		for (const p of shared.data ?? []) {
+			const live = liveLocations[p.userId];
+			if (live === null) continue; // share ended
+			const lat = live ? live.lat : p.lat;
+			const lng = live ? live.lng : p.lng;
+			const label = p.displayName || p.name || "?";
+			const approx = p.precision === "approximate";
+			const status = p.statusText
+				? `<br><span style="opacity:.7;font-size:12px">${escapeHtml(p.statusText)}</span>`
+				: "";
+			const approxNote = approx
+				? `<br><span style="opacity:.55;font-size:11px">Approximate location</span>`
+				: "";
+			const link = p.profileUrl
+				? `<br><a href="/user/${encodeURIComponent(p.profileUrl)}" style="color:${PERSON_COLOR}">View profile →</a>`
+				: "";
+			const popup = `<div style="min-width:150px"><strong>${escapeHtml(label)}</strong>${status}${approxNote}${link}</div>`;
+			if (approx) {
+				L.circle([lat, lng], {
+					radius: 1500,
+					color: PERSON_COLOR,
+					weight: 1,
+					fillColor: PERSON_COLOR,
+					fillOpacity: 0.15,
+				}).addTo(group);
+			}
+			L.marker([lat, lng], { icon: personIcon(L, label) })
+				.addTo(group)
+				.bindPopup(popup);
+		}
+	}, [mapReady, shared.data, liveLocations]);
 
 	return (
 		<div className="relative h-full w-full">

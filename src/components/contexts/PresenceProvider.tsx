@@ -10,6 +10,14 @@ type Entry = {
 	customStatusEmoji: string | null;
 };
 
+export type LiveLoc = {
+	lat: number;
+	lng: number;
+	accuracy?: number | null;
+	heading?: number | null;
+	speed?: number | null;
+};
+
 type WsIn = {
 	type?: string;
 	entries?: {
@@ -25,6 +33,7 @@ type WsIn = {
 	conversationId?: string;
 	channelId?: string;
 	message?: { senderId?: string };
+	location?: LiveLoc;
 };
 
 type Ctx = {
@@ -32,6 +41,8 @@ type Ctx = {
 	typingIn: (conversationId: string) => string[];
 	sendTyping: (conversationId: string) => void;
 	sendChannelTyping: (channelId: string) => void;
+	// Live location deltas keyed by sharer userId. `null` = the share ended.
+	liveLocations: Record<string, LiveLoc | null>;
 };
 
 const PresenceContext = createContext<Ctx>({
@@ -39,7 +50,12 @@ const PresenceContext = createContext<Ctx>({
 	typingIn: () => [],
 	sendTyping: () => {},
 	sendChannelTyping: () => {},
+	liveLocations: {},
 });
+
+export function useLiveLocations() {
+	return useContext(PresenceContext).liveLocations;
+}
 
 export function usePresence() {
 	return useContext(PresenceContext);
@@ -53,17 +69,24 @@ export function PresenceProvider({ children }: { children: React.ReactNode }) {
 	const signedIn = !!session?.user;
 	const queryClient = useQueryClient();
 	const [map, setMap] = useState<Record<string, Entry>>({});
+	const [liveLocations, setLiveLocations] = useState<
+		Record<string, LiveLoc | null>
+	>({});
 	// conversationId -> userId -> expiry timestamp (ms)
 	const [typing, setTyping] = useState<Record<string, Record<string, number>>>(
 		{},
 	);
 	const wsRef = useRef<WebSocket | null>(null);
 	const lastTypingSent = useRef<Record<string, number>>({});
+	// Sharers we've already pulled a profile for this session (via visibleLocations).
+	const seenSharers = useRef<Set<string>>(new Set());
 
 	useEffect(() => {
 		if (!signedIn) {
 			setMap({});
 			setTyping({});
+			setLiveLocations({});
+			seenSharers.current = new Set();
 			return;
 		}
 		let heartbeat: ReturnType<typeof setInterval> | null = null;
@@ -85,6 +108,11 @@ export function PresenceProvider({ children }: { children: React.ReactNode }) {
 				queryClient.invalidateQueries({
 					queryKey: orpc.message.myConversations.key(),
 				});
+				// Resync map data on (re)connect — we may have missed deltas.
+				queryClient.invalidateQueries({
+					queryKey: orpc.location.visibleLocations.key(),
+				});
+				queryClient.invalidateQueries({ queryKey: orpc.event.mapList.key() });
 			};
 			ws.onmessage = (e) => {
 				let msg: WsIn;
@@ -142,6 +170,27 @@ export function PresenceProvider({ children }: { children: React.ReactNode }) {
 							[who]: Date.now() + TYPING_TTL_MS,
 						},
 					}));
+				} else if (msg.type === "location" && msg.userId && msg.location) {
+					const id = msg.userId;
+					const loc = msg.location;
+					// First delta from a sharer this session → pull their profile row.
+					if (!seenSharers.current.has(id)) {
+						seenSharers.current.add(id);
+						queryClient.invalidateQueries({
+							queryKey: orpc.location.visibleLocations.key(),
+						});
+					}
+					setLiveLocations((prev) => ({ ...prev, [id]: loc }));
+				} else if (msg.type === "location-share-ended" && msg.userId) {
+					const id = msg.userId;
+					setLiveLocations((prev) => ({ ...prev, [id]: null }));
+					queryClient.invalidateQueries({
+						queryKey: orpc.location.visibleLocations.key(),
+					});
+				} else if (msg.type === "event-changed") {
+					queryClient.invalidateQueries({
+						queryKey: orpc.event.mapList.key(),
+					});
 				}
 			};
 			ws.onclose = () => {
@@ -215,6 +264,7 @@ export function PresenceProvider({ children }: { children: React.ReactNode }) {
 				typingIn,
 				sendTyping,
 				sendChannelTyping,
+				liveLocations,
 			}}
 		>
 			{children}
