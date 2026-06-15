@@ -19,8 +19,11 @@ export const Route = createFileRoute("/{-$locale}/_app/map")({
 });
 
 function MapPage() {
+	// isolate: keep Leaflet's internal z-indexes (panes/controls up to ~1000) in
+	// their own stacking context so they don't cover portaled UI such as the
+	// sidebar user dropdown.
 	return (
-		<div className="h-full w-full overflow-hidden border-t border-border bg-card">
+		<div className="isolate h-full w-full overflow-hidden border-t border-border bg-card">
 			<MapView />
 		</div>
 	);
