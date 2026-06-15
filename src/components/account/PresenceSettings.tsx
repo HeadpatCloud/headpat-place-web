@@ -1,5 +1,5 @@
-import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,22 +12,35 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { useTranslations } from "@/lib/i18n";
-import { client } from "@/lib/orpc";
+import { client, orpc } from "@/lib/orpc";
 
 const STATUS_VALUES = ["online", "away", "dnd", "invisible"] as const;
 
 export function PresenceSettings() {
 	const t = useTranslations("accountPages");
+	const qc = useQueryClient();
+	const mine = useQuery(orpc.presence.mine.queryOptions({ input: undefined }));
 	const [status, setStatus] =
 		useState<(typeof STATUS_VALUES)[number]>("online");
 	const [custom, setCustom] = useState("");
+
+	// Initialize the form from the saved presence once it loads.
+	useEffect(() => {
+		if (!mine.data) return;
+		setStatus(mine.data.manualStatus as (typeof STATUS_VALUES)[number]);
+		setCustom(mine.data.customStatus ?? "");
+	}, [mine.data]);
+
 	const save = useMutation({
 		mutationFn: () =>
 			client.presence.setStatus({
 				manualStatus: status,
 				customStatus: custom.trim() || null,
 			}),
-		onSuccess: () => toast.success(t("presenceUpdated")),
+		onSuccess: () => {
+			qc.invalidateQueries({ queryKey: orpc.presence.mine.queryKey() });
+			toast.success(t("presenceUpdated"));
+		},
 		onError: (e: Error) => toast.error(e.message),
 	});
 
