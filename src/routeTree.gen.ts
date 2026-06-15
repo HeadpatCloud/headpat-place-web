@@ -35,7 +35,6 @@ import { Route as Char123LocaleChar125AdminReportsIndexRouteImport } from './rou
 import { Route as Char123LocaleChar125AdminChangelogIndexRouteImport } from './routes/{-$locale}/admin/changelog/index'
 import { Route as Char123LocaleChar125AdminApiKeysIndexRouteImport } from './routes/{-$locale}/admin/api-keys/index'
 import { Route as Char123LocaleChar125AdminAnnouncementsIndexRouteImport } from './routes/{-$locale}/admin/announcements/index'
-import { Route as Char123LocaleChar125AppMessagesIndexRouteImport } from './routes/{-$locale}/_app/messages/index'
 import { Route as Char123LocaleChar125AppLegalIndexRouteImport } from './routes/{-$locale}/_app/legal/index'
 import { Route as Char123LocaleChar125AppGalleryIndexRouteImport } from './routes/{-$locale}/_app/gallery/index'
 import { Route as Char123LocaleChar125AppEventsIndexRouteImport } from './routes/{-$locale}/_app/events/index'
@@ -52,7 +51,6 @@ import { Route as Char123LocaleChar125AdminAnnouncementsAnnouncementIdRouteImpor
 import { Route as Char123LocaleChar125AuthLoginMfaRouteImport } from './routes/{-$locale}/_auth/login/mfa'
 import { Route as Char123LocaleChar125AuthIVerifyEmailRouteImport } from './routes/{-$locale}/_auth/i/verify-email'
 import { Route as Char123LocaleChar125AuthIResetPasswordRouteImport } from './routes/{-$locale}/_auth/i/reset-password'
-import { Route as Char123LocaleChar125AppMessagesConversationIdRouteImport } from './routes/{-$locale}/_app/messages/$conversationId'
 import { Route as Char123LocaleChar125AppLegalPrivacypolicyRouteImport } from './routes/{-$locale}/_app/legal/privacypolicy'
 import { Route as Char123LocaleChar125AppLegalImpressumRouteImport } from './routes/{-$locale}/_app/legal/impressum'
 import { Route as Char123LocaleChar125AppLegalEulaRouteImport } from './routes/{-$locale}/_app/legal/eula'
@@ -224,12 +222,6 @@ const Char123LocaleChar125AdminAnnouncementsIndexRoute =
     path: '/announcements/',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
-const Char123LocaleChar125AppMessagesIndexRoute =
-  Char123LocaleChar125AppMessagesIndexRouteImport.update({
-    id: '/messages/',
-    path: '/messages/',
-    getParentRoute: () => Char123LocaleChar125AppRoute,
-  } as any)
 const Char123LocaleChar125AppLegalIndexRoute =
   Char123LocaleChar125AppLegalIndexRouteImport.update({
     id: '/legal/',
@@ -325,12 +317,6 @@ const Char123LocaleChar125AuthIResetPasswordRoute =
     id: '/i/reset-password',
     path: '/i/reset-password',
     getParentRoute: () => Char123LocaleChar125AuthRoute,
-  } as any)
-const Char123LocaleChar125AppMessagesConversationIdRoute =
-  Char123LocaleChar125AppMessagesConversationIdRouteImport.update({
-    id: '/messages/$conversationId',
-    path: '/messages/$conversationId',
-    getParentRoute: () => Char123LocaleChar125AppRoute,
   } as any)
 const Char123LocaleChar125AppLegalPrivacypolicyRoute =
   Char123LocaleChar125AppLegalPrivacypolicyRouteImport.update({
@@ -469,7 +455,6 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/legal/eula': typeof Char123LocaleChar125AppLegalEulaRoute
   '/{-$locale}/legal/impressum': typeof Char123LocaleChar125AppLegalImpressumRoute
   '/{-$locale}/legal/privacypolicy': typeof Char123LocaleChar125AppLegalPrivacypolicyRoute
-  '/{-$locale}/messages/$conversationId': typeof Char123LocaleChar125AppMessagesConversationIdRoute
   '/{-$locale}/i/reset-password': typeof Char123LocaleChar125AuthIResetPasswordRoute
   '/{-$locale}/i/verify-email': typeof Char123LocaleChar125AuthIVerifyEmailRoute
   '/{-$locale}/login/mfa': typeof Char123LocaleChar125AuthLoginMfaRoute
@@ -486,7 +471,6 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/events/': typeof Char123LocaleChar125AppEventsIndexRoute
   '/{-$locale}/gallery/': typeof Char123LocaleChar125AppGalleryIndexRoute
   '/{-$locale}/legal/': typeof Char123LocaleChar125AppLegalIndexRoute
-  '/{-$locale}/messages/': typeof Char123LocaleChar125AppMessagesIndexRoute
   '/{-$locale}/admin/announcements/': typeof Char123LocaleChar125AdminAnnouncementsIndexRoute
   '/{-$locale}/admin/api-keys/': typeof Char123LocaleChar125AdminApiKeysIndexRoute
   '/{-$locale}/admin/changelog/': typeof Char123LocaleChar125AdminChangelogIndexRoute
@@ -528,7 +512,6 @@ export interface FileRoutesByTo {
   '/{-$locale}/legal/eula': typeof Char123LocaleChar125AppLegalEulaRoute
   '/{-$locale}/legal/impressum': typeof Char123LocaleChar125AppLegalImpressumRoute
   '/{-$locale}/legal/privacypolicy': typeof Char123LocaleChar125AppLegalPrivacypolicyRoute
-  '/{-$locale}/messages/$conversationId': typeof Char123LocaleChar125AppMessagesConversationIdRoute
   '/{-$locale}/i/reset-password': typeof Char123LocaleChar125AuthIResetPasswordRoute
   '/{-$locale}/i/verify-email': typeof Char123LocaleChar125AuthIVerifyEmailRoute
   '/{-$locale}/login/mfa': typeof Char123LocaleChar125AuthLoginMfaRoute
@@ -545,7 +528,6 @@ export interface FileRoutesByTo {
   '/{-$locale}/events': typeof Char123LocaleChar125AppEventsIndexRoute
   '/{-$locale}/gallery': typeof Char123LocaleChar125AppGalleryIndexRoute
   '/{-$locale}/legal': typeof Char123LocaleChar125AppLegalIndexRoute
-  '/{-$locale}/messages': typeof Char123LocaleChar125AppMessagesIndexRoute
   '/{-$locale}/admin/announcements': typeof Char123LocaleChar125AdminAnnouncementsIndexRoute
   '/{-$locale}/admin/api-keys': typeof Char123LocaleChar125AdminApiKeysIndexRoute
   '/{-$locale}/admin/changelog': typeof Char123LocaleChar125AdminChangelogIndexRoute
@@ -593,7 +575,6 @@ export interface FileRoutesById {
   '/{-$locale}/_app/legal/eula': typeof Char123LocaleChar125AppLegalEulaRoute
   '/{-$locale}/_app/legal/impressum': typeof Char123LocaleChar125AppLegalImpressumRoute
   '/{-$locale}/_app/legal/privacypolicy': typeof Char123LocaleChar125AppLegalPrivacypolicyRoute
-  '/{-$locale}/_app/messages/$conversationId': typeof Char123LocaleChar125AppMessagesConversationIdRoute
   '/{-$locale}/_auth/i/reset-password': typeof Char123LocaleChar125AuthIResetPasswordRoute
   '/{-$locale}/_auth/i/verify-email': typeof Char123LocaleChar125AuthIVerifyEmailRoute
   '/{-$locale}/_auth/login/mfa': typeof Char123LocaleChar125AuthLoginMfaRoute
@@ -610,7 +591,6 @@ export interface FileRoutesById {
   '/{-$locale}/_app/events/': typeof Char123LocaleChar125AppEventsIndexRoute
   '/{-$locale}/_app/gallery/': typeof Char123LocaleChar125AppGalleryIndexRoute
   '/{-$locale}/_app/legal/': typeof Char123LocaleChar125AppLegalIndexRoute
-  '/{-$locale}/_app/messages/': typeof Char123LocaleChar125AppMessagesIndexRoute
   '/{-$locale}/admin/announcements/': typeof Char123LocaleChar125AdminAnnouncementsIndexRoute
   '/{-$locale}/admin/api-keys/': typeof Char123LocaleChar125AdminApiKeysIndexRoute
   '/{-$locale}/admin/changelog/': typeof Char123LocaleChar125AdminChangelogIndexRoute
@@ -657,7 +637,6 @@ export interface FileRouteTypes {
     | '/{-$locale}/legal/eula'
     | '/{-$locale}/legal/impressum'
     | '/{-$locale}/legal/privacypolicy'
-    | '/{-$locale}/messages/$conversationId'
     | '/{-$locale}/i/reset-password'
     | '/{-$locale}/i/verify-email'
     | '/{-$locale}/login/mfa'
@@ -674,7 +653,6 @@ export interface FileRouteTypes {
     | '/{-$locale}/events/'
     | '/{-$locale}/gallery/'
     | '/{-$locale}/legal/'
-    | '/{-$locale}/messages/'
     | '/{-$locale}/admin/announcements/'
     | '/{-$locale}/admin/api-keys/'
     | '/{-$locale}/admin/changelog/'
@@ -716,7 +694,6 @@ export interface FileRouteTypes {
     | '/{-$locale}/legal/eula'
     | '/{-$locale}/legal/impressum'
     | '/{-$locale}/legal/privacypolicy'
-    | '/{-$locale}/messages/$conversationId'
     | '/{-$locale}/i/reset-password'
     | '/{-$locale}/i/verify-email'
     | '/{-$locale}/login/mfa'
@@ -733,7 +710,6 @@ export interface FileRouteTypes {
     | '/{-$locale}/events'
     | '/{-$locale}/gallery'
     | '/{-$locale}/legal'
-    | '/{-$locale}/messages'
     | '/{-$locale}/admin/announcements'
     | '/{-$locale}/admin/api-keys'
     | '/{-$locale}/admin/changelog'
@@ -780,7 +756,6 @@ export interface FileRouteTypes {
     | '/{-$locale}/_app/legal/eula'
     | '/{-$locale}/_app/legal/impressum'
     | '/{-$locale}/_app/legal/privacypolicy'
-    | '/{-$locale}/_app/messages/$conversationId'
     | '/{-$locale}/_auth/i/reset-password'
     | '/{-$locale}/_auth/i/verify-email'
     | '/{-$locale}/_auth/login/mfa'
@@ -797,7 +772,6 @@ export interface FileRouteTypes {
     | '/{-$locale}/_app/events/'
     | '/{-$locale}/_app/gallery/'
     | '/{-$locale}/_app/legal/'
-    | '/{-$locale}/_app/messages/'
     | '/{-$locale}/admin/announcements/'
     | '/{-$locale}/admin/api-keys/'
     | '/{-$locale}/admin/changelog/'
@@ -1003,13 +977,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125AdminAnnouncementsIndexRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
-    '/{-$locale}/_app/messages/': {
-      id: '/{-$locale}/_app/messages/'
-      path: '/messages'
-      fullPath: '/{-$locale}/messages/'
-      preLoaderRoute: typeof Char123LocaleChar125AppMessagesIndexRouteImport
-      parentRoute: typeof Char123LocaleChar125AppRoute
-    }
     '/{-$locale}/_app/legal/': {
       id: '/{-$locale}/_app/legal/'
       path: '/legal'
@@ -1121,13 +1088,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/{-$locale}/i/reset-password'
       preLoaderRoute: typeof Char123LocaleChar125AuthIResetPasswordRouteImport
       parentRoute: typeof Char123LocaleChar125AuthRoute
-    }
-    '/{-$locale}/_app/messages/$conversationId': {
-      id: '/{-$locale}/_app/messages/$conversationId'
-      path: '/messages/$conversationId'
-      fullPath: '/{-$locale}/messages/$conversationId'
-      preLoaderRoute: typeof Char123LocaleChar125AppMessagesConversationIdRouteImport
-      parentRoute: typeof Char123LocaleChar125AppRoute
     }
     '/{-$locale}/_app/legal/privacypolicy': {
       id: '/{-$locale}/_app/legal/privacypolicy'
@@ -1277,14 +1237,12 @@ interface Char123LocaleChar125AppRouteChildren {
   Char123LocaleChar125AppLegalEulaRoute: typeof Char123LocaleChar125AppLegalEulaRoute
   Char123LocaleChar125AppLegalImpressumRoute: typeof Char123LocaleChar125AppLegalImpressumRoute
   Char123LocaleChar125AppLegalPrivacypolicyRoute: typeof Char123LocaleChar125AppLegalPrivacypolicyRoute
-  Char123LocaleChar125AppMessagesConversationIdRoute: typeof Char123LocaleChar125AppMessagesConversationIdRoute
   Char123LocaleChar125AppAccountIndexRoute: typeof Char123LocaleChar125AppAccountIndexRoute
   Char123LocaleChar125AppAnnouncementsIndexRoute: typeof Char123LocaleChar125AppAnnouncementsIndexRoute
   Char123LocaleChar125AppCommunityIndexRoute: typeof Char123LocaleChar125AppCommunityIndexRoute
   Char123LocaleChar125AppEventsIndexRoute: typeof Char123LocaleChar125AppEventsIndexRoute
   Char123LocaleChar125AppGalleryIndexRoute: typeof Char123LocaleChar125AppGalleryIndexRoute
   Char123LocaleChar125AppLegalIndexRoute: typeof Char123LocaleChar125AppLegalIndexRoute
-  Char123LocaleChar125AppMessagesIndexRoute: typeof Char123LocaleChar125AppMessagesIndexRoute
   Char123LocaleChar125AppCommunityCommunityIdAdminRoute: typeof Char123LocaleChar125AppCommunityCommunityIdAdminRoute
   Char123LocaleChar125AppCommunityCommunityIdFollowersRoute: typeof Char123LocaleChar125AppCommunityCommunityIdFollowersRoute
   Char123LocaleChar125AppEventsEventIdEditRoute: typeof Char123LocaleChar125AppEventsEventIdEditRoute
@@ -1327,8 +1285,6 @@ const Char123LocaleChar125AppRouteChildren: Char123LocaleChar125AppRouteChildren
       Char123LocaleChar125AppLegalImpressumRoute,
     Char123LocaleChar125AppLegalPrivacypolicyRoute:
       Char123LocaleChar125AppLegalPrivacypolicyRoute,
-    Char123LocaleChar125AppMessagesConversationIdRoute:
-      Char123LocaleChar125AppMessagesConversationIdRoute,
     Char123LocaleChar125AppAccountIndexRoute:
       Char123LocaleChar125AppAccountIndexRoute,
     Char123LocaleChar125AppAnnouncementsIndexRoute:
@@ -1341,8 +1297,6 @@ const Char123LocaleChar125AppRouteChildren: Char123LocaleChar125AppRouteChildren
       Char123LocaleChar125AppGalleryIndexRoute,
     Char123LocaleChar125AppLegalIndexRoute:
       Char123LocaleChar125AppLegalIndexRoute,
-    Char123LocaleChar125AppMessagesIndexRoute:
-      Char123LocaleChar125AppMessagesIndexRoute,
     Char123LocaleChar125AppCommunityCommunityIdAdminRoute:
       Char123LocaleChar125AppCommunityCommunityIdAdminRoute,
     Char123LocaleChar125AppCommunityCommunityIdFollowersRoute:
