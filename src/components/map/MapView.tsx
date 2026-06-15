@@ -5,7 +5,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useRef, useState } from "react";
 import { useLiveLocations } from "@/components/contexts/PresenceProvider";
 import { useSession } from "@/lib/auth-client";
-import { orpc } from "@/lib/orpc";
+import { client, orpc } from "@/lib/orpc";
 import {
 	ACCENT,
 	loadLeaflet,
@@ -45,6 +45,9 @@ export function MapView() {
 	const peopleRef = useRef<LType.LayerGroup | null>(null);
 	const fittedRef = useRef(false);
 	const [mapReady, setMapReady] = useState(false);
+	// Resolved presigned avatar URLs keyed by fileId (fetched once per fileId).
+	const [avatarUrls, setAvatarUrls] = useState<Record<string, string>>({});
+	const requestedAvatars = useRef<Set<string>>(new Set());
 
 	const { data: session } = useSession();
 	const liveLocations = useLiveLocations();
@@ -174,6 +177,44 @@ export function MapView() {
 		};
 	}, [dark, events.data]);
 
+	// Resolve a presigned URL for each sharer's avatar once. Long expiry so it
+	// survives a long-open map; falls back to the initial when absent/failed.
+	useEffect(() => {
+		const ids = [
+			...new Set(
+				(shared.data ?? [])
+					.map((p) => p.avatarFileId)
+					.filter((x): x is string => !!x),
+			),
+		].filter((id) => !requestedAvatars.current.has(id));
+		if (ids.length === 0) return;
+		for (const id of ids) requestedAvatars.current.add(id);
+		let cancelled = false;
+		Promise.all(
+			ids.map(async (fileId) => {
+				try {
+					const r = await client.storage.url({
+						kind: "avatar",
+						fileId,
+						expirySec: 3600,
+					});
+					return [fileId, r.url] as const;
+				} catch {
+					return null;
+				}
+			}),
+		).then((pairs) => {
+			if (cancelled) return;
+			const add: Record<string, string> = {};
+			for (const p of pairs) if (p) add[p[0]] = p[1];
+			if (Object.keys(add).length)
+				setAvatarUrls((prev) => ({ ...prev, ...add }));
+		});
+		return () => {
+			cancelled = true;
+		};
+	}, [shared.data]);
+
 	// Shared-user markers: merge the initial visibleLocations set with live
 	// websocket deltas (null delta = the share ended). Own layer so frequent
 	// position updates don't rebuild the event zones.
@@ -208,11 +249,12 @@ export function MapView() {
 					fillOpacity: 0.15,
 				}).addTo(group);
 			}
-			L.marker([lat, lng], { icon: personIcon(L, label) })
+			const avatarUrl = p.avatarFileId ? avatarUrls[p.avatarFileId] : undefined;
+			L.marker([lat, lng], { icon: personIcon(L, label, avatarUrl) })
 				.addTo(group)
 				.bindPopup(popup);
 		}
-	}, [mapReady, shared.data, liveLocations]);
+	}, [mapReady, shared.data, liveLocations, avatarUrls]);
 
 	return (
 		<div className="relative h-full w-full">

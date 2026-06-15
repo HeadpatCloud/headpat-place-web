@@ -134,12 +134,21 @@ export function timezoneToView(tz?: string | null): MapPosition | null {
 	return PREFIX_VIEWS[tz.split("/")[0]] ?? null;
 }
 
-/** Round avatar-style marker with the user's initial, for shared locations. */
-export function personIcon(L: typeof LType, label: string): LType.DivIcon {
+/** Round avatar marker for shared locations: the profile picture if there is
+ *  one, otherwise the user's initial. The initial sits behind the image so it
+ *  shows through if the avatar fails to load. */
+export function personIcon(
+	L: typeof LType,
+	label: string,
+	avatarUrl?: string | null,
+): LType.DivIcon {
 	const ch = (label || "?").trim().charAt(0).toUpperCase() || "?";
 	const initial =
 		ch === "<" || ch === ">" || ch === "&" || ch === '"' ? "?" : ch;
-	const html = `<div style="width:32px;height:32px;border-radius:9999px;background:${PERSON_COLOR};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)">${initial}</div>`;
+	const img = avatarUrl
+		? `<img src="${avatarUrl.replace(/"/g, "%22")}" alt="" onerror="this.style.display='none'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" />`
+		: "";
+	const html = `<div style="position:relative;width:32px;height:32px;border-radius:9999px;overflow:hidden;background:${PERSON_COLOR};color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)">${initial}${img}</div>`;
 	return L.divIcon({
 		html,
 		className: "",
