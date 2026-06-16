@@ -20,8 +20,8 @@ import { StorageImage } from "@/components/StorageImage";
 import { useTranslations } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
-import { applyDragResult, type ChatLayout } from "./sidebar-layout";
 import { type RailServer, ServerFolder } from "./ServerFolder";
+import { applyDragResult, type ChatLayout } from "./sidebar-layout";
 
 function SortableServerIcon({
 	server,
