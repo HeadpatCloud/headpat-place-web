@@ -14,6 +14,8 @@
     "lint:fix": "biome format --write . && biome lint --fix ."
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
     "@geoman-io/leaflet-geoman-free": "^2.19.3",
     "@hookform/resolvers": "^3.10.0",
     "@icons-pack/react-simple-icons": "^13.7.0",
