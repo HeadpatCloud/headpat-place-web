@@ -106,6 +106,7 @@ export function MessagePane({ source }: { source: Source }) {
 	const fmt = useDateFormat();
 	const navigate = useNavigate();
 	const recents = useRecentChats();
+	const draftLoadedRef = useRef(false);
 	const [draft, setDraft] = useState("");
 	const [showMembers, setShowMembers] = useState(false);
 	const [renaming, setRenaming] = useState(false);
@@ -134,6 +135,12 @@ export function MessagePane({ source }: { source: Source }) {
 	const dmConversationId =
 		source.kind === "dm" ? source.conversationId : "__none__";
 	const channelId = source.kind === "channel" ? source.channelId : "__none__";
+
+	const draftQ = useQuery(
+		orpc.draft.get.queryOptions({
+			input: { kind: source.kind, targetId: sourceId },
+		}),
+	);
 
 	const participants = useQuery({
 		...orpc.message.participants.queryOptions({
@@ -210,6 +217,7 @@ export function MessagePane({ source }: { source: Source }) {
 		onSuccess: async () => {
 			setDraft("");
 			setPending([]);
+			void client.draft.delete({ kind: source.kind, targetId: sourceId });
 			await invalidateThread();
 		},
 		onError: (e: Error) => toast.error(e.message),
@@ -337,8 +345,28 @@ export function MessagePane({ source }: { source: Source }) {
 	}, [messages.data]);
 
 	useEffect(() => {
+		draftLoadedRef.current = false;
 		recents.push(source.kind, sourceId);
 	}, [source.kind, sourceId, recents.push]);
+
+	useEffect(() => {
+		if (draftLoadedRef.current) return;
+		if (draftQ.isLoading) return;
+		draftLoadedRef.current = true;
+		const body = draftQ.data?.body;
+		// never clobber what the user is already typing
+		if (body && draft.trim() === "") setDraft(body);
+	}, [draftQ.isLoading, draftQ.data, draft]);
+
+	useEffect(() => {
+		if (!draftLoadedRef.current) return;
+		const kind = source.kind;
+		const targetId = sourceId;
+		const h = setTimeout(() => {
+			void client.draft.upsert({ kind, targetId, body: draft });
+		}, 600);
+		return () => clearTimeout(h);
+	}, [draft, source.kind, sourceId]);
 
 	const parts: ParticipantInfo[] = participants.data ?? [];
 	const byUser = new Map(parts.map((p) => [p.userId, p]));
