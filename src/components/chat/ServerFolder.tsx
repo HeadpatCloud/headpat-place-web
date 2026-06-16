@@ -1,4 +1,5 @@
 import { HeartHandshakeIcon, PencilIcon, Trash2Icon } from "lucide-react";
+import { useState } from "react";
 import { StorageImage } from "@/components/StorageImage";
 import {
 	DropdownMenu,
@@ -89,20 +90,26 @@ export function ServerFolder({
 	onRemove: (folderId: string) => void;
 }) {
 	const t = useTranslations("chatUi");
+	const [menuOpen, setMenuOpen] = useState(false);
 	const byId = (sid: string) => servers.find((s) => s.id === sid);
 
 	return (
 		<div className="flex flex-col items-center">
-			<DropdownMenu>
+			<DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
 				<DropdownMenuTrigger asChild>
 					<button
 						type="button"
 						onClick={() => onToggle(id)}
+						onPointerDown={(e) => e.preventDefault()}
+						onKeyDown={(e) => {
+							if (e.key === "Enter" || e.key === " ") {
+								e.preventDefault();
+								onToggle(id);
+							}
+						}}
 						onContextMenu={(e) => {
 							e.preventDefault();
-							e.currentTarget.dispatchEvent(
-								new MouseEvent("pointerdown", { bubbles: true }),
-							);
+							setMenuOpen(true);
 						}}
 						title={name}
 						aria-label={name}
