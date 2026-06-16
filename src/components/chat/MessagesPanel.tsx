@@ -1,13 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "@tanstack/react-router";
-import { PlusIcon, UsersIcon } from "lucide-react";
-import { useMemo, useState } from "react";
+import { SearchIcon, UsersIcon } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import { StatusDot } from "@/components/StatusDot";
 import { StorageImage } from "@/components/StorageImage";
 import { useTranslations } from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
 import { orpc } from "@/lib/orpc";
-import { NewConversationDialog } from "./NewConversationDialog";
+import { QuickSwitcher } from "./QuickSwitcher";
 
 function initials(name: string | null | undefined, fallback: string): string {
 	const source = name?.trim() || fallback;
@@ -17,7 +17,18 @@ function initials(name: string | null | undefined, fallback: string): string {
 export function MessagesPanel() {
 	const t = useTranslations("chatUi");
 	const location = useLocation();
-	const [composing, setComposing] = useState(false);
+	const [paletteOpen, setPaletteOpen] = useState(false);
+
+	useEffect(() => {
+		const onKey = (e: KeyboardEvent) => {
+			if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+				e.preventDefault();
+				setPaletteOpen((v) => !v);
+			}
+		};
+		window.addEventListener("keydown", onKey);
+		return () => window.removeEventListener("keydown", onKey);
+	}, []);
 
 	const activeConversationId = useMemo(() => {
 		const m = location.pathname.match(/\/chat\/dm\/([^/]+)/);
@@ -32,17 +43,14 @@ export function MessagesPanel() {
 
 	return (
 		<div className="flex h-full min-h-0 flex-col">
-			<div className="flex h-13 shrink-0 items-center gap-2 border-b border-border px-3.5">
-				<span className="flex-1 text-sm font-semibold text-foreground">
-					{t("messagesHeading")}
-				</span>
+			<div className="flex h-13 shrink-0 items-center border-b border-border px-3.5">
 				<button
 					type="button"
-					onClick={() => setComposing(true)}
-					className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-					aria-label={t("newMessage")}
+					onClick={() => setPaletteOpen(true)}
+					className="flex w-full items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
 				>
-					<PlusIcon className="size-4" />
+					<SearchIcon className="size-4 shrink-0 opacity-80" />
+					<span className="truncate">{t("findOrStart")}</span>
 				</button>
 			</div>
 
@@ -101,7 +109,7 @@ export function MessagesPanel() {
 				})}
 			</div>
 
-			<NewConversationDialog open={composing} onOpenChange={setComposing} />
+			<QuickSwitcher open={paletteOpen} onOpenChange={setPaletteOpen} />
 		</div>
 	);
 }

@@ -6,7 +6,6 @@ import { LocalizedLink as Link } from "@/lib/localized-nav";
 import { orpc } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
 import { MessagesPanel } from "./MessagesPanel";
-import { QuickSwitcher } from "./QuickSwitcher";
 import { ServerPanel } from "./ServerPanel";
 import { ServerRail } from "./ServerRail";
 import { SidebarUserPanel } from "./SidebarUserPanel";
@@ -28,19 +27,6 @@ export function ChatSidebar({ className }: { className?: string }) {
 		}),
 		enabled: !!activeChannelId,
 	});
-
-	const [switcherOpen, setSwitcherOpen] = useState(false);
-
-	useEffect(() => {
-		const onKeyDown = (e: KeyboardEvent) => {
-			if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-				e.preventDefault();
-				setSwitcherOpen((v) => !v);
-			}
-		};
-		window.addEventListener("keydown", onKeyDown);
-		return () => window.removeEventListener("keydown", onKeyDown);
-	}, []);
 
 	// URL-derived view, overridable by clicking a rail icon (spec A.6).
 	const [override, setOverride] = useState<View | null>(null);
@@ -93,8 +79,6 @@ export function ChatSidebar({ className }: { className?: string }) {
 
 				<SidebarUserPanel />
 			</div>
-
-			<QuickSwitcher open={switcherOpen} onOpenChange={setSwitcherOpen} />
 		</aside>
 	);
 }
