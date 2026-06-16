@@ -60,6 +60,7 @@ import { useDateFormat } from "@/lib/datetime";
 import { useTranslations } from "@/lib/i18n";
 import { useLocalizedNavigate as useNavigate } from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
+import { useRecentChats } from "@/lib/use-recent-chats";
 
 type Source =
 	| { kind: "dm"; conversationId: string }
@@ -104,6 +105,7 @@ export function MessagePane({ source }: { source: Source }) {
 	const qc = useQueryClient();
 	const fmt = useDateFormat();
 	const navigate = useNavigate();
+	const recents = useRecentChats();
 	const [draft, setDraft] = useState("");
 	const [showMembers, setShowMembers] = useState(false);
 	const [renaming, setRenaming] = useState(false);
@@ -333,6 +335,10 @@ export function MessagePane({ source }: { source: Source }) {
 	useEffect(() => {
 		scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
 	}, [messages.data]);
+
+	useEffect(() => {
+		recents.push(source.kind, sourceId);
+	}, [source.kind, sourceId, recents]);
 
 	const parts: ParticipantInfo[] = participants.data ?? [];
 	const byUser = new Map(parts.map((p) => [p.userId, p]));
