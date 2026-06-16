@@ -1,8 +1,11 @@
 import {
+	type CollisionDetection,
 	closestCenter,
 	DndContext,
 	type DragEndEvent,
 	PointerSensor,
+	pointerWithin,
+	useDroppable,
 	useSensor,
 	useSensors,
 } from "@dnd-kit/core";
@@ -14,7 +17,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { HeartHandshakeIcon, MessageSquareIcon } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { StorageImage } from "@/components/StorageImage";
 import { useTranslations } from "@/lib/i18n";
@@ -22,6 +25,8 @@ import { client, orpc } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
 import { type RailServer, ServerFolder } from "./ServerFolder";
 import { applyDragResult, type ChatLayout } from "./sidebar-layout";
+
+const MERGE = "merge:";
 
 function SortableServerIcon({
 	server,
@@ -41,6 +46,8 @@ function SortableServerIcon({
 		transition,
 		isDragging,
 	} = useSortable({ id });
+	// centered drop zone: hovering it combines into a folder, edges reorder.
+	const merge = useDroppable({ id: `${MERGE}${id}` });
 	return (
 		<button
 			ref={setNodeRef}
@@ -50,8 +57,9 @@ function SortableServerIcon({
 			aria-label={server?.name}
 			style={{ transform: CSS.Transform.toString(transform), transition }}
 			className={cn(
-				"rounded-md transition-transform hover:scale-105",
+				"relative rounded-md transition-transform hover:scale-105",
 				active && "ring-2 ring-primary ring-offset-1 ring-offset-background",
+				merge.isOver && "ring-2 ring-emerald-500 ring-offset-1",
 				isDragging && "opacity-50",
 			)}
 			{...attributes}
@@ -67,6 +75,11 @@ function SortableServerIcon({
 						<HeartHandshakeIcon className="size-5" />
 					</div>
 				}
+			/>
+			<span
+				ref={merge.setNodeRef}
+				aria-hidden
+				className="pointer-events-none absolute inset-2 rounded-md"
 			/>
 		</button>
 	);
@@ -102,7 +115,11 @@ export function ServerRail({
 			client.sidebarLayout.save({ items }),
 		onSuccess: () =>
 			qc.invalidateQueries({ queryKey: orpc.sidebarLayout.get.queryKey() }),
-		onError: (e: Error) => toast.error(e.message),
+		onError: (e: Error) => {
+			toast.error(e.message);
+			// roll the rail back to the last server-confirmed layout
+			qc.invalidateQueries({ queryKey: orpc.sidebarLayout.get.queryKey() });
+		},
 	});
 
 	const saveTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -110,28 +127,51 @@ export function ServerRail({
 		clearTimeout(saveTimer.current);
 		saveTimer.current = setTimeout(() => save.mutate(next.items), 500);
 	};
+	useEffect(() => () => clearTimeout(saveTimer.current), []);
 
 	const sensors = useSensors(
 		useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
 	);
 
+	const folderIds = useMemo(
+		() =>
+			new Set(layout.items.filter((i) => i.type === "folder").map((i) => i.id)),
+		[layout.items],
+	);
+
+	// prefer a combine target (centered server merge-zone or a folder) under the
+	// pointer; otherwise fall back to the closest sortable server for reordering.
+	const collision: CollisionDetection = useCallback(
+		(args) => {
+			const isCombine = (id: string) =>
+				id.startsWith(MERGE) || folderIds.has(id);
+			const within = pointerWithin(args).filter((c) => isCombine(String(c.id)));
+			if (within.length > 0) return [within[0]];
+			return closestCenter(args).filter((c) => !isCombine(String(c.id)));
+		},
+		[folderIds],
+	);
+
 	const onDragEnd = (e: DragEndEvent) => {
 		const activeId = String(e.active.id);
-		const overId = e.over ? String(e.over.id) : null;
-		if (!overId || activeId === overId) return;
-		const overIsServer = layout.items.some(
-			(i) => i.type === "server" && i.id === overId,
-		);
+		const raw = e.over ? String(e.over.id) : null;
+		if (!raw) return;
+		const intoFolder = raw.startsWith(MERGE);
+		const overId = intoFolder ? raw.slice(MERGE.length) : raw;
+		if (activeId === overId) return;
 		const next = applyDragResult(layout, activeId, overId, {
 			makeFolderName: t("newFolder"),
-			intoFolder: overIsServer,
+			intoFolder,
 		});
 		setLayout(next);
 		queueSave(next);
 	};
 
 	const activeServerId = view === "messages" ? null : view.serverId;
-	const sortableIds = layout.items.map((i) => i.id);
+	// only top-level servers are sortable; folders are droppable but not dragged.
+	const sortableIds = layout.items
+		.filter((i) => i.type === "server")
+		.map((i) => i.id);
 
 	return (
 		<div className="flex h-full w-16 shrink-0 flex-col items-center gap-2 border-r border-border bg-card py-3">
@@ -152,7 +192,7 @@ export function ServerRail({
 			<div className="flex flex-1 flex-col items-center gap-2 overflow-y-auto">
 				<DndContext
 					sensors={sensors}
-					collisionDetection={closestCenter}
+					collisionDetection={collision}
 					onDragEnd={onDragEnd}
 				>
 					<SortableContext
@@ -187,7 +227,7 @@ export function ServerRail({
 										const cur = folder?.type === "folder" ? folder.name : "";
 										const name = window.prompt(t("renameFolder"), cur);
 										if (name == null) return;
-										const trimmed = name.trim();
+										const trimmed = name.trim().slice(0, 64);
 										if (!trimmed) return;
 										const next: ChatLayout = {
 											items: layout.items.map((i) =>

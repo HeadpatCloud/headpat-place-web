@@ -136,11 +136,15 @@ export function MessagePane({ source }: { source: Source }) {
 		source.kind === "dm" ? source.conversationId : "__none__";
 	const channelId = source.kind === "channel" ? source.channelId : "__none__";
 
-	const draftQ = useQuery(
-		orpc.draft.get.queryOptions({
+	const draftQ = useQuery({
+		...orpc.draft.get.queryOptions({
 			input: { kind: source.kind, targetId: sourceId },
 		}),
-	);
+		// global staleTime is 60s; the draft must be fresh each time a
+		// conversation opens or a saved draft fails to restore on quick switch.
+		staleTime: 0,
+		refetchOnMount: "always",
+	});
 
 	const participants = useQuery({
 		...orpc.message.participants.queryOptions({

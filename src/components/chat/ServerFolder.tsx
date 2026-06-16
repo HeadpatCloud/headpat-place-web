@@ -1,3 +1,4 @@
+import { useDroppable } from "@dnd-kit/core";
 import { HeartHandshakeIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 import { StorageImage } from "@/components/StorageImage";
@@ -91,10 +92,11 @@ export function ServerFolder({
 }) {
 	const t = useTranslations("chatUi");
 	const [menuOpen, setMenuOpen] = useState(false);
+	const { setNodeRef, isOver } = useDroppable({ id });
 	const byId = (sid: string) => servers.find((s) => s.id === sid);
 
 	return (
-		<div className="flex flex-col items-center">
+		<div ref={setNodeRef} className="flex flex-col items-center">
 			<DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
 				<DropdownMenuTrigger asChild>
 					<button
@@ -116,6 +118,7 @@ export function ServerFolder({
 						className={cn(
 							"grid size-11 grid-cols-2 grid-rows-2 place-items-center gap-0.5 rounded-md bg-muted/60 p-1 transition-colors hover:bg-muted",
 							expanded && "bg-muted",
+							isOver && "ring-2 ring-emerald-500",
 						)}
 					>
 						{serverIds.slice(0, 4).map((sid) => (
