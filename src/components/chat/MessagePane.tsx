@@ -338,7 +338,7 @@ export function MessagePane({ source }: { source: Source }) {
 
 	useEffect(() => {
 		recents.push(source.kind, sourceId);
-	}, [source.kind, sourceId, recents]);
+	}, [source.kind, sourceId, recents.push]);
 
 	const parts: ParticipantInfo[] = participants.data ?? [];
 	const byUser = new Map(parts.map((p) => [p.userId, p]));
