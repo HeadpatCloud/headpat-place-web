@@ -164,7 +164,11 @@ export function QuickSwitcher({
 
 	return (
 		<>
-			<CommandDialog open={open} onOpenChange={onOpenChange}>
+			<CommandDialog
+				open={open}
+				onOpenChange={onOpenChange}
+				shouldFilter={false}
+			>
 				<CommandInput
 					placeholder={t("searchPlaceholder")}
 					value={query}
