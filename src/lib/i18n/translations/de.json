@@ -1112,6 +1112,7 @@
 		"deleteChannelDescription": "Dadurch werden der Kanal und seine Nachrichten dauerhaft gelöscht. Das lässt sich nicht rückgängig machen.",
 		"messagesHeading": "Nachrichten",
 		"newMessage": "Neue Nachricht",
+		"findOrStart": "Unterhaltung finden oder starten",
 		"serversHeading": "Server",
 		"conversationFallback": "Unterhaltung",
 		"youFallback": "du",
