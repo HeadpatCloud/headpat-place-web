@@ -7,5 +7,7 @@ export const Route = createFileRoute("/{-$locale}/chat/dm/$conversationId")({
 
 function DmPane() {
 	const { conversationId } = Route.useParams();
-	return <MessagePane source={{ kind: "dm", conversationId }} />;
+	return (
+		<MessagePane key={conversationId} source={{ kind: "dm", conversationId }} />
+	);
 }

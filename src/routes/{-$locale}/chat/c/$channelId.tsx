@@ -7,5 +7,7 @@ export const Route = createFileRoute("/{-$locale}/chat/c/$channelId")({
 
 function ChannelPane() {
 	const { channelId } = Route.useParams();
-	return <MessagePane source={{ kind: "channel", channelId }} />;
+	return (
+		<MessagePane key={channelId} source={{ kind: "channel", channelId }} />
+	);
 }
