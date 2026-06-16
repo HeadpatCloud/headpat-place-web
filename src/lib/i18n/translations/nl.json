@@ -1157,7 +1157,13 @@
 		"leaveGroupDescription": "Je ontvangt dan geen berichten meer en kunt pas weer meedoen als iemand je opnieuw toevoegt.",
 		"leave": "Verlaten",
 		"deleteMessageConfirm": "Bericht verwijderen?",
-		"deleteMessageDescription": "Hiermee verwijder je het bericht definitief voor iedereen. Dit kan niet ongedaan worden gemaakt."
+		"deleteMessageDescription": "Hiermee verwijder je het bericht definitief voor iedereen. Dit kan niet ongedaan worden gemaakt.",
+		"searchPlaceholder": "Zoek mensen, kanalen, berichten…",
+		"recentHeading": "Recent",
+		"draftsHeading": "Concepten",
+		"channelsHeading": "Kanalen",
+		"newGroup": "Nieuwe groep…",
+		"emptySearch": "Geen resultaten."
 	},
 	"adminPanel": {
 		"noAccess": "Hier heb je geen toegang toe.",

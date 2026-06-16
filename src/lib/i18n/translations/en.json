@@ -1157,7 +1157,13 @@
 		"leaveGroupDescription": "You'll stop receiving its messages and won't be able to rejoin unless someone adds you back.",
 		"leave": "Leave",
 		"deleteMessageConfirm": "Delete message?",
-		"deleteMessageDescription": "This permanently removes the message for everyone. This cannot be undone."
+		"deleteMessageDescription": "This permanently removes the message for everyone. This cannot be undone.",
+		"searchPlaceholder": "Search people, channels, messages…",
+		"recentHeading": "Recent",
+		"draftsHeading": "Drafts",
+		"channelsHeading": "Channels",
+		"newGroup": "New group…",
+		"emptySearch": "No matches."
 	},
 	"adminPanel": {
 		"noAccess": "You don't have access to this.",

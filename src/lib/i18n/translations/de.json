@@ -1157,7 +1157,13 @@
 		"leaveGroupDescription": "Du erhältst dann keine Nachrichten mehr und kannst erst wieder beitreten, wenn dich jemand erneut hinzufügt.",
 		"leave": "Verlassen",
 		"deleteMessageConfirm": "Nachricht löschen?",
-		"deleteMessageDescription": "Dadurch wird die Nachricht für alle dauerhaft entfernt. Das lässt sich nicht rückgängig machen."
+		"deleteMessageDescription": "Dadurch wird die Nachricht für alle dauerhaft entfernt. Das lässt sich nicht rückgängig machen.",
+		"searchPlaceholder": "Personen, Kanäle, Nachrichten suchen…",
+		"recentHeading": "Zuletzt",
+		"draftsHeading": "Entwürfe",
+		"channelsHeading": "Kanäle",
+		"newGroup": "Neue Gruppe…",
+		"emptySearch": "Keine Treffer."
 	},
 	"adminPanel": {
 		"noAccess": "Dafür hast du keine Berechtigung.",
