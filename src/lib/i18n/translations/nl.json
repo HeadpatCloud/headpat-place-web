@@ -1085,6 +1085,9 @@
 		"deleteCommunityConfirmDescription": "Dit kan niet ongedaan worden gemaakt. Alle evenementen, volgers en instellingen worden ook verwijderd."
 	},
 	"chatUi": {
+		"newFolder": "Nieuwe map",
+		"renameFolder": "Map hernoemen",
+		"removeFolder": "Map verwijderen",
 		"emptyStatePrompt": "Kies een gesprek of kanaal om te beginnen met chatten.",
 		"newMessageTitle": "Nieuw bericht",
 		"groupNameOptional": "Groepsnaam (optioneel)",

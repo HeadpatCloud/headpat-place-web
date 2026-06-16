@@ -1085,6 +1085,9 @@
 		"deleteCommunityConfirmDescription": "This cannot be undone. All events, follows, and settings will be deleted along with it."
 	},
 	"chatUi": {
+		"newFolder": "New folder",
+		"renameFolder": "Rename folder",
+		"removeFolder": "Remove folder",
 		"emptyStatePrompt": "Pick a conversation or channel to start chatting.",
 		"newMessageTitle": "New message",
 		"groupNameOptional": "Group name (optional)",

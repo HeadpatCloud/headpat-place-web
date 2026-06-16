@@ -1085,6 +1085,9 @@
 		"deleteCommunityConfirmDescription": "Das kann nicht rückgängig gemacht werden. Alle Veranstaltungen, Follower und Einstellungen werden ebenfalls gelöscht."
 	},
 	"chatUi": {
+		"newFolder": "Neuer Ordner",
+		"renameFolder": "Ordner umbenennen",
+		"removeFolder": "Ordner entfernen",
 		"emptyStatePrompt": "Wähle eine Unterhaltung oder einen Kanal, um loszulegen.",
 		"newMessageTitle": "Neue Nachricht",
 		"groupNameOptional": "Gruppenname (optional)",
