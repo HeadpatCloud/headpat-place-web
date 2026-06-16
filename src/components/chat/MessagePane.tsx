@@ -355,12 +355,14 @@ export function MessagePane({ source }: { source: Source }) {
 
 	useEffect(() => {
 		if (draftLoadedRef.current) return;
-		if (draftQ.isLoading) return;
+		// wait for the forced refetch (staleTime:0) to land, not just the initial
+		// load — isLoading is false when a stale cached entry exists.
+		if (draftQ.isFetching) return;
 		draftLoadedRef.current = true;
 		const body = draftQ.data?.body;
 		// never clobber what the user is already typing
 		if (body && draft.trim() === "") setDraft(body);
-	}, [draftQ.isLoading, draftQ.data, draft]);
+	}, [draftQ.isFetching, draftQ.data, draft]);
 
 	useEffect(() => {
 		if (!draftLoadedRef.current) return;
