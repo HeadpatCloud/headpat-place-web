@@ -33,7 +33,12 @@ export function MessageAttachment({
 
 	if (mime.startsWith("image/")) {
 		return (
-			<a href={q.data.url} target="_blank" rel="noreferrer" className="block">
+			<a
+				href={q.data.url}
+				target="_blank"
+				rel="noreferrer"
+				className="block w-fit"
+			>
 				{/* biome-ignore lint/a11y/useAltText: chat image attachment */}
 				<img
 					src={q.data.url}
