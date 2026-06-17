@@ -22,18 +22,10 @@ export function summarizeNames(
 	return { shown, moreCount };
 }
 
-export function distinctReactorCount(groups: ReactorGroup[]): number {
-	const seen = new Set<string>();
-	for (const group of groups) {
-		for (const user of group.users) {
-			seen.add(user.userId);
-		}
-	}
-	return seen.size;
-}
-
-export function shouldShowAllTab(groups: ReactorGroup[]): boolean {
-	return distinctReactorCount(groups) <= 100;
+// distinctCount is the TRUE distinct reactor total from the API (the per-emoji
+// user lists are capped at 100, so it can't be recomputed client-side).
+export function shouldShowAllTab(distinctCount: number): boolean {
+	return distinctCount <= 100;
 }
 
 export function buildAllReactors(

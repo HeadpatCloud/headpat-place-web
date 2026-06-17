@@ -1,7 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import {
 	buildAllReactors,
-	distinctReactorCount,
 	type ReactorGroup,
 	shouldShowAllTab,
 	summarizeNames,
@@ -43,35 +42,13 @@ describe("summarizeNames", () => {
 	});
 });
 
-describe("distinctReactorCount", () => {
-	test("dedupes the same user across emojis", () => {
-		const groups: ReactorGroup[] = [
-			{ emoji: "👍", count: 2, users: [user("a", "Alice"), user("b", "Bob")] },
-			{
-				emoji: "🔥",
-				count: 2,
-				users: [user("a", "Alice"), user("c", "Charlie")],
-			},
-		];
-		expect(distinctReactorCount(groups)).toBe(3);
-	});
-});
-
 describe("shouldShowAllTab", () => {
 	test("true when distinct reactors is exactly 100", () => {
-		const users = Array.from({ length: 100 }, (_, i) =>
-			user(`u${i}`, `User ${i}`),
-		);
-		const groups: ReactorGroup[] = [{ emoji: "👍", count: 100, users }];
-		expect(shouldShowAllTab(groups)).toBe(true);
+		expect(shouldShowAllTab(100)).toBe(true);
 	});
 
 	test("false when distinct reactors exceeds 100", () => {
-		const users = Array.from({ length: 101 }, (_, i) =>
-			user(`u${i}`, `User ${i}`),
-		);
-		const groups: ReactorGroup[] = [{ emoji: "👍", count: 101, users }];
-		expect(shouldShowAllTab(groups)).toBe(false);
+		expect(shouldShowAllTab(101)).toBe(false);
 	});
 });
 

@@ -87,8 +87,12 @@ export function ReactionsModal({
 	});
 
 	const groups = reactorsQ.data?.reactions ?? [];
-	const showAll = shouldShowAllTab(groups);
-	const active = selected ?? (showAll ? ALL : groups[0]?.emoji) ?? null;
+	const showAll = shouldShowAllTab(reactorsQ.data?.distinctCount ?? 0);
+	const fallback = (showAll ? ALL : groups[0]?.emoji) ?? null;
+	// guard a stale selection whose emoji vanished (last reactor un-reacted)
+	const valid =
+		selected === ALL ? showAll : groups.some((g) => g.emoji === selected);
+	const active = valid ? selected : fallback;
 
 	const allReactors = buildAllReactors(groups);
 	const selectedGroup =
