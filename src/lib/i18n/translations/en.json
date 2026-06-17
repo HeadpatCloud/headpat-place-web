@@ -1172,7 +1172,10 @@
 		"moreReacted": "+%{count} more reacted",
 		"resend": "Resend",
 		"sending": "Sending…",
-		"sendFailed": "Failed to send"
+		"sendFailed": "Failed to send",
+		"gifButton": "GIF",
+		"gifSearchPlaceholder": "Search GIFs",
+		"gifsUnavailable": "GIFs unavailable"
 	},
 	"adminPanel": {
 		"noAccess": "You don't have access to this.",

@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { GifPicker } from "@/components/chat/GifPicker";
 import { MessageAttachment } from "@/components/chat/MessageAttachment";
 import {
 	addOutgoing,
@@ -86,6 +87,7 @@ type Msg = {
 	id: string;
 	senderId: string;
 	body: string;
+	messageType?: string;
 	createdAt: string | Date;
 	editedAt?: string | Date | null;
 	author?: {
@@ -101,6 +103,16 @@ type Msg = {
 
 function initials(name: string): string {
 	return (name.trim().charAt(0) || "?").toUpperCase();
+}
+
+function isGifMessage(m: Msg): boolean {
+	if (m.messageType !== "gif") return false;
+	try {
+		const h = new URL(m.body).hostname;
+		return h === "giphy.com" || h.endsWith(".giphy.com");
+	} catch {
+		return false;
+	}
 }
 
 export function MessagePane({ source }: { source: Source }) {
@@ -469,6 +481,26 @@ export function MessagePane({ source }: { source: Source }) {
 		sendMut.mutate({ body, attachments, tempId });
 	}
 
+	async function sendGif(url: string) {
+		try {
+			if (source.kind === "dm")
+				await client.message.send({
+					conversationId: source.conversationId,
+					messageType: "gif",
+					body: url,
+				});
+			else
+				await client.channel.send({
+					channelId: source.channelId,
+					messageType: "gif",
+					body: url,
+				});
+			await invalidateThread();
+		} catch (e) {
+			toast.error(e instanceof Error ? e.message : String(e));
+		}
+	}
+
 	const list = (messages.data ?? []) as Msg[];
 
 	return (
@@ -618,7 +650,7 @@ export function MessagePane({ source }: { source: Source }) {
 														</EmojiPicker>
 													</PopoverContent>
 												</Popover>
-												{isMine ? (
+												{isMine && m.messageType !== "gif" ? (
 													<button
 														type="button"
 														onClick={() => {
@@ -672,7 +704,21 @@ export function MessagePane({ source }: { source: Source }) {
 													</span>
 												</div>
 											)}
-											{editingId === m.id ? (
+											{isGifMessage(m) ? (
+												<a
+													href={m.body}
+													target="_blank"
+													rel="noreferrer"
+													className="block w-fit"
+												>
+													{/* biome-ignore lint/a11y/useAltText: chat gif message */}
+													<img
+														src={m.body}
+														className="max-h-80 max-w-xs rounded-lg"
+														loading="lazy"
+													/>
+												</a>
+											) : editingId === m.id ? (
 												<form
 													onSubmit={(e) => {
 														e.preventDefault();
@@ -984,6 +1030,7 @@ export function MessagePane({ source }: { source: Source }) {
 						disabled={sendMut.isPending}
 					/>
 					<div className="flex shrink-0 items-center gap-1">
+						<GifPicker onSelect={sendGif} />
 						<Popover open={composerEmoji} onOpenChange={setComposerEmoji}>
 							<PopoverTrigger asChild>
 								<button

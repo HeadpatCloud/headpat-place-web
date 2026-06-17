@@ -1172,7 +1172,10 @@
 		"moreReacted": "+%{count} weitere reagiert",
 		"resend": "Erneut senden",
 		"sending": "Wird gesendet…",
-		"sendFailed": "Senden fehlgeschlagen"
+		"sendFailed": "Senden fehlgeschlagen",
+		"gifButton": "GIF",
+		"gifSearchPlaceholder": "GIFs suchen",
+		"gifsUnavailable": "GIFs nicht verfügbar"
 	},
 	"adminPanel": {
 		"noAccess": "Dafür hast du keine Berechtigung.",

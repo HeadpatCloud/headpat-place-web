@@ -1172,7 +1172,10 @@
 		"moreReacted": "+%{count} meer gereageerd",
 		"resend": "Opnieuw verzenden",
 		"sending": "Verzenden…",
-		"sendFailed": "Verzenden mislukt"
+		"sendFailed": "Verzenden mislukt",
+		"gifButton": "GIF",
+		"gifSearchPlaceholder": "GIFs zoeken",
+		"gifsUnavailable": "GIFs niet beschikbaar"
 	},
 	"adminPanel": {
 		"noAccess": "Hier heb je geen toegang toe.",
