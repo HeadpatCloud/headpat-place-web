@@ -1169,7 +1169,10 @@
 		"andNMore": "en nog %{count}",
 		"reactionsTitle": "Reacties",
 		"allReactions": "Alle",
-		"moreReacted": "+%{count} meer gereageerd"
+		"moreReacted": "+%{count} meer gereageerd",
+		"resend": "Opnieuw verzenden",
+		"sending": "Verzenden…",
+		"sendFailed": "Verzenden mislukt"
 	},
 	"adminPanel": {
 		"noAccess": "Hier heb je geen toegang toe.",

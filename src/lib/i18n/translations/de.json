@@ -1169,7 +1169,10 @@
 		"andNMore": "und %{count} weitere",
 		"reactionsTitle": "Reaktionen",
 		"allReactions": "Alle",
-		"moreReacted": "+%{count} weitere reagiert"
+		"moreReacted": "+%{count} weitere reagiert",
+		"resend": "Erneut senden",
+		"sending": "Wird gesendet…",
+		"sendFailed": "Senden fehlgeschlagen"
 	},
 	"adminPanel": {
 		"noAccess": "Dafür hast du keine Berechtigung.",

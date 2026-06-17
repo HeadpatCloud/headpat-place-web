@@ -20,6 +20,12 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { MessageAttachment } from "@/components/chat/MessageAttachment";
+import {
+	addOutgoing,
+	type OutgoingMessage,
+	removeOutgoing,
+	setOutgoingStatus,
+} from "@/components/chat/outgoing-messages";
 import { ReactionPill } from "@/components/chat/ReactionPill";
 import { ReactionsModal } from "@/components/chat/ReactionsModal";
 import { usePresence } from "@/components/contexts/PresenceProvider";
@@ -147,6 +153,7 @@ export function MessagePane({ source }: { source: Source }) {
 			status: "uploading" | "done" | "error";
 		}[]
 	>([]);
+	const [outgoing, setOutgoing] = useState<OutgoingMessage[]>([]);
 	const scrollRef = useRef<HTMLDivElement>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -224,7 +231,11 @@ export function MessagePane({ source }: { source: Source }) {
 	};
 
 	const sendMut = useMutation({
-		mutationFn: async (vars: { body: string; attachments: string[] }) =>
+		mutationFn: async (vars: {
+			body: string;
+			attachments: string[];
+			tempId: string;
+		}) =>
 			source.kind === "dm"
 				? client.message.send({
 						conversationId: source.conversationId,
@@ -236,13 +247,12 @@ export function MessagePane({ source }: { source: Source }) {
 						body: vars.body || undefined,
 						attachments: vars.attachments.length ? vars.attachments : undefined,
 					}),
-		onSuccess: async () => {
-			setDraft("");
-			setPending([]);
-			void client.draft.delete({ kind: source.kind, targetId: sourceId });
+		onSuccess: async (_data, vars) => {
 			await invalidateThread();
+			setOutgoing((o) => removeOutgoing(o, vars.tempId));
 		},
-		onError: (e: Error) => toast.error(e.message),
+		onError: (_e, vars) =>
+			setOutgoing((o) => setOutgoingStatus(o, vars.tempId, "failed")),
 	});
 
 	function onPickFiles(files: FileList | null) {
@@ -438,12 +448,25 @@ export function MessagePane({ source }: { source: Source }) {
 
 	function onSend() {
 		const body = draft.trim();
-		const ready = pending
+		const attachments = pending
 			.filter((p) => p.status === "done" && p.key)
 			.map((p) => p.key as string);
-		if (!body && ready.length === 0) return;
+		if (!body && attachments.length === 0) return;
 		if (pending.some((p) => p.status === "uploading")) return;
-		sendMut.mutate({ body, attachments: ready });
+		setDraft("");
+		setPending([]);
+		void client.draft.delete({ kind: source.kind, targetId: sourceId });
+		const tempId = crypto.randomUUID();
+		setOutgoing((o) =>
+			addOutgoing(o, {
+				tempId,
+				body,
+				attachments,
+				createdAt: Date.now(),
+				status: "sending",
+			}),
+		);
+		sendMut.mutate({ body, attachments, tempId });
 	}
 
 	const list = (messages.data ?? []) as Msg[];
@@ -530,7 +553,7 @@ export function MessagePane({ source }: { source: Source }) {
 				>
 					{messages.isPending ? (
 						<p className="py-4 text-muted-foreground">{t("loadingMessages")}</p>
-					) : list.length === 0 ? (
+					) : list.length === 0 && outgoing.length === 0 ? (
 						<p className="py-8 text-center text-muted-foreground">
 							{t("noMessagesYet")}
 						</p>
@@ -723,6 +746,89 @@ export function MessagePane({ source }: { source: Source }) {
 															}
 														/>
 													))}
+												</div>
+											) : null}
+										</div>
+									</div>
+								);
+							})}
+							{outgoing.map((o) => {
+								const failed = o.status === "failed";
+								return (
+									<div
+										key={o.tempId}
+										className="group relative mt-1.5 flex gap-4 rounded-md px-2 py-1"
+									>
+										<div className="w-10.5 shrink-0">
+											<StorageImage
+												kind="avatar"
+												fileId={byUser.get(meId ?? "")?.avatarFileId}
+												variant="md"
+												className="size-10.5 rounded-full object-cover bg-muted"
+												fallback={
+													<div className="flex size-10.5 items-center justify-center rounded-full bg-primary/20 text-sm font-semibold text-primary">
+														{initials(
+															session?.user?.name ?? t("youCapitalized"),
+														)}
+													</div>
+												}
+											/>
+										</div>
+										<div className="min-w-0 flex-1">
+											<div className="mb-1 flex items-baseline gap-2.5">
+												<span className="text-sm font-semibold text-foreground">
+													{session?.user?.name ?? t("youCapitalized")}
+												</span>
+												<span className="text-xs text-muted-foreground">
+													{failed ? t("sendFailed") : t("sending")}
+												</span>
+											</div>
+											<div
+												className={`whitespace-pre-wrap break-words text-sm leading-relaxed ${
+													failed
+														? "text-destructive"
+														: "animate-pulse text-muted-foreground"
+												}`}
+											>
+												{o.body}
+											</div>
+											{o.attachments.length > 0 ? (
+												<div className="mt-1 text-xs text-muted-foreground">
+													{o.attachments.length === 1
+														? t("fileFallback")
+														: `${o.attachments.length} × ${t("fileFallback")}`}
+												</div>
+											) : null}
+											{failed ? (
+												<div className="mt-1 flex gap-2 text-xs">
+													<button
+														type="button"
+														className="text-primary underline"
+														onClick={() => {
+															setOutgoing((arr) =>
+																setOutgoingStatus(arr, o.tempId, "sending"),
+															);
+															sendMut.mutate({
+																body: o.body,
+																attachments: o.attachments,
+																tempId: o.tempId,
+															});
+														}}
+													>
+														{t("resend")}
+													</button>
+													<button
+														type="button"
+														className="text-muted-foreground underline"
+														onClick={() =>
+															setOutgoing((arr) =>
+																removeOutgoing(arr, o.tempId),
+															)
+														}
+														aria-label={c("cancel")}
+													>
+														×
+													</button>
 												</div>
 											) : null}
 										</div>
