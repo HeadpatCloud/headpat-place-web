@@ -20,6 +20,8 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { MessageAttachment } from "@/components/chat/MessageAttachment";
+import { ReactionPill } from "@/components/chat/ReactionPill";
+import { ReactionsModal } from "@/components/chat/ReactionsModal";
 import { usePresence } from "@/components/contexts/PresenceProvider";
 import { StorageImage } from "@/components/StorageImage";
 import {
@@ -118,6 +120,10 @@ export function MessagePane({ source }: { source: Source }) {
 	const [editDraft, setEditDraft] = useState("");
 	const [deletingId, setDeletingId] = useState<string | null>(null);
 	const [reactingId, setReactingId] = useState<string | null>(null);
+	const [reactorsModal, setReactorsModal] = useState<{
+		messageId: string;
+		emoji: string;
+	} | null>(null);
 	const [composerEmoji, setComposerEmoji] = useState(false);
 	const [pending, setPending] = useState<
 		{
@@ -281,7 +287,14 @@ export function MessagePane({ source }: { source: Source }) {
 	const reactMut = useMutation({
 		mutationFn: (vars: { id: string; emoji: string }) =>
 			client.message.react({ messageId: vars.id, emoji: vars.emoji }),
-		onSuccess: () => invalidateThread(),
+		onSuccess: async (_data, vars) => {
+			await invalidateThread();
+			await qc.invalidateQueries({
+				queryKey: orpc.message.reactors.queryKey({
+					input: { messageId: vars.id },
+				}),
+			});
+		},
 		onError: (e: Error) => toast.error(e.message),
 	});
 
@@ -684,23 +697,19 @@ export function MessagePane({ source }: { source: Source }) {
 												m.reactions.length > 0 ? (
 												<div className="mt-1 flex flex-wrap gap-1">
 													{m.reactions.map((r) => (
-														<button
+														<ReactionPill
 															key={r.emoji}
-															type="button"
-															onClick={() =>
-																reactMut.mutate({ id: m.id, emoji: r.emoji })
+															messageId={m.id}
+															emoji={r.emoji}
+															count={r.count}
+															mine={r.mine}
+															onReact={(emoji) =>
+																reactMut.mutate({ id: m.id, emoji })
 															}
-															className={`flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs transition-colors ${
-																r.mine
-																	? "border-primary/40 bg-primary/15 text-foreground"
-																	: "border-border bg-card text-muted-foreground hover:bg-muted"
-															}`}
-														>
-															<span className="text-sm leading-none">
-																{r.emoji}
-															</span>
-															<span className="tabular-nums">{r.count}</span>
-														</button>
+															onOpenModal={(emoji) =>
+																setReactorsModal({ messageId: m.id, emoji })
+															}
+														/>
 													))}
 												</div>
 											) : null}
@@ -1061,6 +1070,15 @@ export function MessagePane({ source }: { source: Source }) {
 					</AlertDialogFooter>
 				</AlertDialogContent>
 			</AlertDialog>
+
+			<ReactionsModal
+				open={!!reactorsModal}
+				onOpenChange={(o) => {
+					if (!o) setReactorsModal(null);
+				}}
+				messageId={reactorsModal?.messageId ?? "__none__"}
+				initialEmoji={reactorsModal?.emoji ?? null}
+			/>
 		</div>
 	);
 }
