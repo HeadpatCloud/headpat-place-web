@@ -111,6 +111,18 @@ export function MessagePane({ source }: { source: Source }) {
 	const draftLoadedRef = useRef(false);
 	const [draft, setDraft] = useState("");
 	const [showMembers, setShowMembers] = useState(false);
+	const membersLoadedRef = useRef(false);
+	// persist the members panel open/closed across conversation switches
+	// (MessagePane remounts per conversation, so restore/save it via localStorage)
+	useEffect(() => {
+		if (typeof localStorage === "undefined") return;
+		if (!membersLoadedRef.current) {
+			membersLoadedRef.current = true;
+			setShowMembers(localStorage.getItem("hp-chat-members-open") === "1");
+			return;
+		}
+		localStorage.setItem("hp-chat-members-open", showMembers ? "1" : "0");
+	}, [showMembers]);
 	const [renaming, setRenaming] = useState(false);
 	const [renameDraft, setRenameDraft] = useState("");
 	const [adding, setAdding] = useState(false);

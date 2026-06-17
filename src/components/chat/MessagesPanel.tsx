@@ -56,8 +56,9 @@ export function MessagesPanel() {
 
 			<div className="flex-1 overflow-y-auto px-2 py-2">
 				{conversations.data?.items.map((c) => {
-					const isGroup = c.others.length > 1;
+					const isGroup = !!c.name || c.others.length > 1;
 					const other = c.others[0];
+					const memberCount = c.others.length + 1;
 					const label = c.name
 						? c.name
 						: isGroup
@@ -76,9 +77,14 @@ export function MessagesPanel() {
 						>
 							<span className="relative shrink-0">
 								{isGroup ? (
-									<div className="flex size-6.5 items-center justify-center rounded-full bg-muted text-muted-foreground">
-										<UsersIcon className="size-3.5" />
-									</div>
+									<>
+										<div className="flex size-6.5 items-center justify-center rounded-full bg-muted text-muted-foreground">
+											<UsersIcon className="size-3.5" />
+										</div>
+										<span className="absolute -right-1 -bottom-1 flex h-4 min-w-4 items-center justify-center rounded-full border border-background bg-primary px-1 text-[10px] font-semibold leading-none text-primary-foreground tabular-nums">
+											{memberCount}
+										</span>
+									</>
 								) : (
 									<>
 										<StorageImage
