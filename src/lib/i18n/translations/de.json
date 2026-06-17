@@ -1164,7 +1164,12 @@
 		"draftsHeading": "Entwürfe",
 		"channelsHeading": "Kanäle",
 		"newGroup": "Neue Gruppe…",
-		"emptySearch": "Keine Treffer."
+		"emptySearch": "Keine Treffer.",
+		"reactedBy": "Reagiert von",
+		"andNMore": "und %{count} weitere",
+		"reactionsTitle": "Reaktionen",
+		"allReactions": "Alle",
+		"moreReacted": "+%{count} weitere reagiert"
 	},
 	"adminPanel": {
 		"noAccess": "Dafür hast du keine Berechtigung.",

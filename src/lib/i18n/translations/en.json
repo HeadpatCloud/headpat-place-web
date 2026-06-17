@@ -1164,7 +1164,12 @@
 		"draftsHeading": "Drafts",
 		"channelsHeading": "Channels",
 		"newGroup": "New group…",
-		"emptySearch": "No matches."
+		"emptySearch": "No matches.",
+		"reactedBy": "Reacted by",
+		"andNMore": "and %{count} more",
+		"reactionsTitle": "Reactions",
+		"allReactions": "All",
+		"moreReacted": "+%{count} more reacted"
 	},
 	"adminPanel": {
 		"noAccess": "You don't have access to this.",

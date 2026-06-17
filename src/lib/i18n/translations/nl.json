@@ -1164,7 +1164,12 @@
 		"draftsHeading": "Concepten",
 		"channelsHeading": "Kanalen",
 		"newGroup": "Nieuwe groep…",
-		"emptySearch": "Geen resultaten."
+		"emptySearch": "Geen resultaten.",
+		"reactedBy": "Gereageerd door",
+		"andNMore": "en nog %{count}",
+		"reactionsTitle": "Reacties",
+		"allReactions": "Alle",
+		"moreReacted": "+%{count} meer gereageerd"
 	},
 	"adminPanel": {
 		"noAccess": "Hier heb je geen toegang toe.",
