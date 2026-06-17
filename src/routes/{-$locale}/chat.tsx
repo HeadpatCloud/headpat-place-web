@@ -1,5 +1,8 @@
 import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { ChatSidebar } from "@/components/chat/ChatSidebar";
+import { useSession } from "@/lib/auth-client";
+import { useLocalizedNavigate } from "@/lib/localized-nav";
 
 export const Route = createFileRoute("/{-$locale}/chat")({
 	component: ChatLayout,
@@ -7,6 +10,18 @@ export const Route = createFileRoute("/{-$locale}/chat")({
 
 function ChatLayout() {
 	const location = useLocation();
+	const navigate = useLocalizedNavigate();
+	const { data: session, isPending } = useSession();
+	// only redirect once the session has resolved — never bounce a logged-in
+	// user while the session is still loading.
+	const loggedOut = !isPending && !session?.user;
+
+	useEffect(() => {
+		if (loggedOut) navigate({ to: "/login" as never });
+	}, [loggedOut, navigate]);
+
+	if (loggedOut) return null;
+
 	const hasActive = /\/chat\/(dm|c)\//.test(location.pathname);
 	return (
 		<div className="flex h-svh w-full overflow-hidden bg-background text-foreground">
