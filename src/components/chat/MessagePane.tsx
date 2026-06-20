@@ -7,6 +7,7 @@ import {
 import {
 	CheckIcon,
 	ChevronLeftIcon,
+	CrownIcon,
 	FileIcon,
 	HashIcon,
 	Loader2Icon,
@@ -34,6 +35,7 @@ import {
 } from "@/components/chat/outgoing-messages";
 import { ReactionPill } from "@/components/chat/ReactionPill";
 import { ReactionsModal } from "@/components/chat/ReactionsModal";
+import { UserContextMenu } from "@/components/chat/UserContextMenu";
 import { usePresence } from "@/components/contexts/PresenceProvider";
 import { StorageImage } from "@/components/StorageImage";
 import {
@@ -86,6 +88,7 @@ type ParticipantInfo = {
 	displayName: string | null;
 	profileUrl: string | null;
 	avatarFileId?: string | null;
+	role?: "owner" | "moderator" | "member";
 };
 
 type Msg = {
@@ -151,6 +154,7 @@ export function MessagePane({ source }: { source: Source }) {
 	const [adding, setAdding] = useState(false);
 	const [toAdd, setToAdd] = useState<Set<string>>(new Set());
 	const [leaving, setLeaving] = useState(false);
+	const [successorId, setSuccessorId] = useState<string | null>(null);
 	const [editingId, setEditingId] = useState<string | null>(null);
 	const [editDraft, setEditDraft] = useState("");
 	const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -418,8 +422,11 @@ export function MessagePane({ source }: { source: Source }) {
 	});
 
 	const leaveMut = useMutation({
-		mutationFn: () =>
-			client.message.leave({ conversationId: dmConversationId }),
+		mutationFn: (newOwnerId?: string) =>
+			client.message.leave({
+				conversationId: dmConversationId,
+				newOwnerId,
+			}),
 		onSuccess: async () => {
 			await qc.invalidateQueries({
 				queryKey: orpc.message.myConversations.key(),
@@ -494,11 +501,18 @@ export function MessagePane({ source }: { source: Source }) {
 		return () => clearTimeout(h);
 	}, [draft, source.kind, sourceId]);
 
-	const parts: ParticipantInfo[] = participants.data ?? [];
+	const parts: ParticipantInfo[] = (participants.data ??
+		[]) as ParticipantInfo[];
 	const byUser = new Map(parts.map((p) => [p.userId, p]));
 	const meId = session?.user?.id;
 	const others = parts.filter((p) => p.userId !== meId);
 	const isGroup = source.kind === "dm" && others.length > 1;
+	const myRole = parts.find((p) => p.userId === meId)?.role;
+	const roleRank = { owner: 0, moderator: 1, member: 2 } as const;
+	const sortedParts = [...parts].sort(
+		(a, b) =>
+			(roleRank[a.role ?? "member"] ?? 2) - (roleRank[b.role ?? "member"] ?? 2),
+	);
 	const partIds = new Set(parts.map((p) => p.userId));
 	const candidates = (followingQ.data?.items ?? []).filter(
 		(u) => !partIds.has(u.userId),
@@ -618,19 +632,21 @@ export function MessagePane({ source }: { source: Source }) {
 					<span className="flex-1" />
 				)}
 				<div className="flex shrink-0 items-center gap-3">
-					<button
-						type="button"
-						onClick={() => setShowMembers((v) => !v)}
-						aria-pressed={showMembers}
-						aria-label={t("toggleMembers")}
-						className={`flex size-8.5 items-center justify-center rounded-md transition-colors ${
-							showMembers
-								? "bg-primary/15 text-foreground"
-								: "text-muted-foreground hover:bg-muted hover:text-foreground"
-						}`}
-					>
-						<UsersIcon className="size-4" />
-					</button>
+					{source.kind === "channel" || isGroup ? (
+						<button
+							type="button"
+							onClick={() => setShowMembers((v) => !v)}
+							aria-pressed={showMembers}
+							aria-label={t("toggleMembers")}
+							className={`flex size-8.5 items-center justify-center rounded-md transition-colors ${
+								showMembers
+									? "bg-primary/15 text-foreground"
+									: "text-muted-foreground hover:bg-muted hover:text-foreground"
+							}`}
+						>
+							<UsersIcon className="size-4" />
+						</button>
+					) : null}
 					<div className="hidden w-48 cursor-text items-center gap-2 rounded-md border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground md:flex">
 						<SearchIcon className="size-3.5 opacity-80" />
 						<span>{c("search")}</span>
@@ -690,187 +706,210 @@ export function MessagePane({ source }: { source: Source }) {
 									const avatarFileId =
 										m.author?.avatarFileId ??
 										byUser.get(m.senderId)?.avatarFileId;
+									const senderProfileUrl =
+										m.author?.profileUrl ??
+										byUser.get(m.senderId)?.profileUrl ??
+										null;
+									const senderRole = byUser.get(m.senderId)?.role;
 									return (
-										<div
+										<UserContextMenu
 											key={m.id}
-											className={`group relative flex gap-4 rounded-md px-2 py-1 hover:bg-foreground/[0.015] ${
-												grouped ? "" : "mt-1.5"
-											}`}
+											target={{
+												userId: m.senderId,
+												profileUrl: senderProfileUrl,
+												displayName,
+											}}
+											meId={meId}
+											conversationId={
+												source.kind === "dm" ? source.conversationId : undefined
+											}
+											viewerRole={myRole}
+											targetRole={senderRole}
+											isGroup={isGroup}
+											onChanged={() => participants.refetch()}
 										>
-											{editingId === m.id ? null : (
-												<div className="absolute right-2 top-0 flex items-center gap-0.5 rounded-md border border-border bg-card opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
-													<Popover
-														open={reactingId === m.id}
-														onOpenChange={(o) => setReactingId(o ? m.id : null)}
-													>
-														<PopoverTrigger asChild>
+											<div
+												className={`group relative flex gap-4 rounded-md px-2 py-1 hover:bg-foreground/[0.015] ${
+													grouped ? "" : "mt-1.5"
+												}`}
+											>
+												{editingId === m.id ? null : (
+													<div className="absolute right-2 top-0 flex items-center gap-0.5 rounded-md border border-border bg-card opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
+														<Popover
+															open={reactingId === m.id}
+															onOpenChange={(o) =>
+																setReactingId(o ? m.id : null)
+															}
+														>
+															<PopoverTrigger asChild>
+																<button
+																	type="button"
+																	className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+																	aria-label={t("addReaction")}
+																>
+																	<SmilePlusIcon className="size-3.5" />
+																</button>
+															</PopoverTrigger>
+															<PopoverContent className="w-fit p-0" align="end">
+																<EmojiPicker
+																	className="h-[320px]"
+																	onEmojiSelect={({ emoji }) => {
+																		reactMut.mutate({ id: m.id, emoji });
+																		setReactingId(null);
+																	}}
+																>
+																	<EmojiPickerSearch />
+																	<EmojiPickerContent />
+																</EmojiPicker>
+															</PopoverContent>
+														</Popover>
+														{isMine && m.messageType !== "gif" ? (
 															<button
 																type="button"
-																className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
-																aria-label={t("addReaction")}
-															>
-																<SmilePlusIcon className="size-3.5" />
-															</button>
-														</PopoverTrigger>
-														<PopoverContent className="w-fit p-0" align="end">
-															<EmojiPicker
-																className="h-[320px]"
-																onEmojiSelect={({ emoji }) => {
-																	reactMut.mutate({ id: m.id, emoji });
-																	setReactingId(null);
+																onClick={() => {
+																	setEditingId(m.id);
+																	setEditDraft(m.body);
 																}}
+																className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+																aria-label={t("editMessage")}
 															>
-																<EmojiPickerSearch />
-																<EmojiPickerContent />
-															</EmojiPicker>
-														</PopoverContent>
-													</Popover>
-													{isMine && m.messageType !== "gif" ? (
-														<button
-															type="button"
-															onClick={() => {
-																setEditingId(m.id);
-																setEditDraft(m.body);
-															}}
-															className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
-															aria-label={t("editMessage")}
-														>
-															<PencilIcon className="size-3.5" />
-														</button>
-													) : null}
-													{canDelete ? (
-														<button
-															type="button"
-															onClick={() => setDeletingId(m.id)}
-															className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-															aria-label={t("deleteMessage")}
-														>
-															<TrashIcon className="size-3.5" />
-														</button>
-													) : null}
-												</div>
-											)}
-											<div className="w-10.5 shrink-0">
-												{grouped ? null : (
-													<StorageImage
-														kind="avatar"
-														fileId={avatarFileId}
-														variant="md"
-														className="size-10.5 rounded-full object-cover bg-muted"
-														fallback={
-															<div className="flex size-10.5 items-center justify-center rounded-full bg-primary/20 text-sm font-semibold text-primary">
-																{initials(displayName)}
-															</div>
-														}
-													/>
-												)}
-											</div>
-											<div className="min-w-0 flex-1">
-												{grouped ? null : (
-													<div className="mb-1 flex items-baseline gap-2.5">
-														<span className="text-sm font-semibold text-foreground">
-															{displayName}
-														</span>
-														<span className="text-xs text-muted-foreground">
-															{fmt.time(m.createdAt, {
-																hour: "2-digit",
-																minute: "2-digit",
-															})}
-														</span>
-													</div>
-												)}
-												{isGifMessage(m) ? (
-													<a
-														href={m.body}
-														target="_blank"
-														rel="noreferrer"
-														className="block w-fit"
-													>
-														{/* biome-ignore lint/a11y/useAltText: chat gif message */}
-														<img
-															src={m.body}
-															className="max-h-80 max-w-xs rounded-lg"
-															loading="lazy"
-														/>
-													</a>
-												) : editingId === m.id ? (
-													<form
-														onSubmit={(e) => {
-															e.preventDefault();
-															const body = editDraft.trim();
-															if (body && body !== m.body)
-																editMut.mutate({ id: m.id, body });
-															else setEditingId(null);
-														}}
-														className="mt-0.5"
-													>
-														<input
-															className="w-full rounded-md border border-border bg-card px-2 py-1 text-sm text-foreground focus:border-ring focus:outline-none"
-															value={editDraft}
-															onChange={(e) => setEditDraft(e.target.value)}
-															onKeyDown={(e) => {
-																if (e.key === "Escape") setEditingId(null);
-															}}
-															maxLength={10000}
-															// biome-ignore lint/a11y/noAutofocus: inline editor focus is expected
-															autoFocus
-														/>
-														<div className="mt-1 flex gap-2 text-xs text-muted-foreground">
+																<PencilIcon className="size-3.5" />
+															</button>
+														) : null}
+														{canDelete ? (
 															<button
 																type="button"
-																className="underline"
-																onClick={() => setEditingId(null)}
+																onClick={() => setDeletingId(m.id)}
+																className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+																aria-label={t("deleteMessage")}
 															>
-																{t("editCancel")}
+																<TrashIcon className="size-3.5" />
 															</button>
-															<button
-																type="submit"
-																className="underline"
-																disabled={editMut.isPending}
-															>
-																{t("editSave")}
-															</button>
-														</div>
-													</form>
-												) : (
-													<div className="whitespace-pre-wrap break-words text-sm leading-relaxed text-foreground">
-														{m.body}
-														{m.editedAt ? (
-															<span className="ml-1.5 text-[10px] text-muted-foreground">
-																{t("edited")}
-															</span>
 														) : null}
 													</div>
 												)}
-												{m.attachments && m.attachments.length > 0 ? (
-													<div className="mt-1.5 flex flex-col gap-1.5">
-														{m.attachments.map((k) => (
-															<MessageAttachment key={k} attachmentKey={k} />
-														))}
-													</div>
-												) : null}
-												{editingId === m.id ? null : m.reactions &&
-													m.reactions.length > 0 ? (
-													<div className="mt-1 flex flex-wrap gap-1">
-														{m.reactions.map((r) => (
-															<ReactionPill
-																key={r.emoji}
-																messageId={m.id}
-																emoji={r.emoji}
-																count={r.count}
-																mine={r.mine}
-																onReact={(emoji) =>
-																	reactMut.mutate({ id: m.id, emoji })
-																}
-																onOpenModal={(emoji) =>
-																	setReactorsModal({ messageId: m.id, emoji })
-																}
+												<div className="w-10.5 shrink-0">
+													{grouped ? null : (
+														<StorageImage
+															kind="avatar"
+															fileId={avatarFileId}
+															variant="md"
+															className="size-10.5 rounded-full object-cover bg-muted"
+															fallback={
+																<div className="flex size-10.5 items-center justify-center rounded-full bg-primary/20 text-sm font-semibold text-primary">
+																	{initials(displayName)}
+																</div>
+															}
+														/>
+													)}
+												</div>
+												<div className="min-w-0 flex-1">
+													{grouped ? null : (
+														<div className="mb-1 flex items-baseline gap-2.5">
+															<span className="text-sm font-semibold text-foreground">
+																{displayName}
+															</span>
+															<span className="text-xs text-muted-foreground">
+																{fmt.time(m.createdAt, {
+																	hour: "2-digit",
+																	minute: "2-digit",
+																})}
+															</span>
+														</div>
+													)}
+													{isGifMessage(m) ? (
+														<a
+															href={m.body}
+															target="_blank"
+															rel="noreferrer"
+															className="block w-fit"
+														>
+															{/* biome-ignore lint/a11y/useAltText: chat gif message */}
+															<img
+																src={m.body}
+																className="max-h-80 max-w-xs rounded-lg"
+																loading="lazy"
 															/>
-														))}
-													</div>
-												) : null}
+														</a>
+													) : editingId === m.id ? (
+														<form
+															onSubmit={(e) => {
+																e.preventDefault();
+																const body = editDraft.trim();
+																if (body && body !== m.body)
+																	editMut.mutate({ id: m.id, body });
+																else setEditingId(null);
+															}}
+															className="mt-0.5"
+														>
+															<input
+																className="w-full rounded-md border border-border bg-card px-2 py-1 text-sm text-foreground focus:border-ring focus:outline-none"
+																value={editDraft}
+																onChange={(e) => setEditDraft(e.target.value)}
+																onKeyDown={(e) => {
+																	if (e.key === "Escape") setEditingId(null);
+																}}
+																maxLength={10000}
+																// biome-ignore lint/a11y/noAutofocus: inline editor focus is expected
+																autoFocus
+															/>
+															<div className="mt-1 flex gap-2 text-xs text-muted-foreground">
+																<button
+																	type="button"
+																	className="underline"
+																	onClick={() => setEditingId(null)}
+																>
+																	{t("editCancel")}
+																</button>
+																<button
+																	type="submit"
+																	className="underline"
+																	disabled={editMut.isPending}
+																>
+																	{t("editSave")}
+																</button>
+															</div>
+														</form>
+													) : (
+														<div className="whitespace-pre-wrap break-words text-sm leading-relaxed text-foreground">
+															{m.body}
+															{m.editedAt ? (
+																<span className="ml-1.5 text-[10px] text-muted-foreground">
+																	{t("edited")}
+																</span>
+															) : null}
+														</div>
+													)}
+													{m.attachments && m.attachments.length > 0 ? (
+														<div className="mt-1.5 flex flex-col gap-1.5">
+															{m.attachments.map((k) => (
+																<MessageAttachment key={k} attachmentKey={k} />
+															))}
+														</div>
+													) : null}
+													{editingId === m.id ? null : m.reactions &&
+														m.reactions.length > 0 ? (
+														<div className="mt-1 flex flex-wrap gap-1">
+															{m.reactions.map((r) => (
+																<ReactionPill
+																	key={r.emoji}
+																	messageId={m.id}
+																	emoji={r.emoji}
+																	count={r.count}
+																	mine={r.mine}
+																	onReact={(emoji) =>
+																		reactMut.mutate({ id: m.id, emoji })
+																	}
+																	onOpenModal={(emoji) =>
+																		setReactorsModal({ messageId: m.id, emoji })
+																	}
+																/>
+															))}
+														</div>
+													) : null}
+												</div>
 											</div>
-										</div>
+										</UserContextMenu>
 									);
 								})}
 								{outgoing.map((o) => {
@@ -961,7 +1000,7 @@ export function MessagePane({ source }: { source: Source }) {
 					</div>
 				</div>
 
-				{showMembers ? (
+				{showMembers && (source.kind === "channel" || isGroup) ? (
 					<aside className="absolute inset-0 z-20 w-full overflow-y-auto border-l border-border bg-background px-3 py-4 md:static md:inset-auto md:w-56 md:shrink-0">
 						{isGroup ? (
 							<div className="mb-3 flex flex-col gap-1.5 border-b border-border px-2 pb-3">
@@ -998,24 +1037,46 @@ export function MessagePane({ source }: { source: Source }) {
 							{t("membersHeading")}
 						</div>
 						{source.kind === "dm" ? (
-							parts.map((p) => (
-								<div
+							sortedParts.map((p) => (
+								<UserContextMenu
 									key={p.userId}
-									className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-foreground"
+									target={{
+										userId: p.userId,
+										profileUrl: p.profileUrl,
+										displayName: nameOf(p.userId),
+									}}
+									meId={meId}
+									conversationId={source.conversationId}
+									viewerRole={myRole}
+									targetRole={p.role}
+									isGroup={isGroup}
+									onChanged={() => participants.refetch()}
 								>
-									<StorageImage
-										kind="avatar"
-										fileId={p.avatarFileId}
-										variant="sm"
-										className="size-6.5 rounded-full object-cover bg-muted"
-										fallback={
-											<div className="flex size-6.5 items-center justify-center rounded-full bg-muted text-xs font-semibold">
-												{initials(nameOf(p.userId))}
-											</div>
-										}
-									/>
-									<span className="truncate">{nameOf(p.userId)}</span>
-								</div>
+									<div className="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-foreground">
+										<StorageImage
+											kind="avatar"
+											fileId={p.avatarFileId}
+											variant="sm"
+											className="size-6.5 rounded-full object-cover bg-muted"
+											fallback={
+												<div className="flex size-6.5 items-center justify-center rounded-full bg-muted text-xs font-semibold">
+													{initials(nameOf(p.userId))}
+												</div>
+											}
+										/>
+										<span className="truncate">{nameOf(p.userId)}</span>
+										{p.role === "owner" ? (
+											<span className="ml-auto flex shrink-0 items-center gap-1 text-xs text-muted-foreground">
+												<CrownIcon className="size-3.5" />
+												{t("ownerBadge")}
+											</span>
+										) : p.role === "moderator" ? (
+											<span className="ml-auto shrink-0 rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+												{t("modBadge")}
+											</span>
+										) : null}
+									</div>
+								</UserContextMenu>
 							))
 						) : (
 							<p className="px-2 text-sm text-muted-foreground">
@@ -1259,27 +1320,71 @@ export function MessagePane({ source }: { source: Source }) {
 				</DialogContent>
 			</Dialog>
 
-			<AlertDialog open={leaving} onOpenChange={setLeaving}>
+			<AlertDialog
+				open={leaving}
+				onOpenChange={(o) => {
+					setLeaving(o);
+					if (!o) setSuccessorId(null);
+				}}
+			>
 				<AlertDialogContent>
-					<AlertDialogHeader>
-						<AlertDialogTitle>{t("leaveGroupConfirm")}</AlertDialogTitle>
-						<AlertDialogDescription>
-							{t("leaveGroupDescription")}
-						</AlertDialogDescription>
-					</AlertDialogHeader>
-					<AlertDialogFooter>
-						<AlertDialogCancel>{c("cancel")}</AlertDialogCancel>
-						<AlertDialogAction
-							className="bg-destructive text-white hover:bg-destructive/90"
-							onClick={(e) => {
-								e.preventDefault();
-								leaveMut.mutate();
-							}}
-							disabled={leaveMut.isPending}
-						>
-							{t("leave")}
-						</AlertDialogAction>
-					</AlertDialogFooter>
+					{myRole === "owner" && parts.length > 1 ? (
+						<>
+							<AlertDialogHeader>
+								<AlertDialogTitle>{t("chooseNewOwnerTitle")}</AlertDialogTitle>
+								<AlertDialogDescription>
+									{t("chooseNewOwnerBody")}
+								</AlertDialogDescription>
+							</AlertDialogHeader>
+							<select
+								value={successorId ?? ""}
+								onChange={(e) => setSuccessorId(e.target.value || null)}
+								className="w-full rounded-md border border-border bg-card px-2 py-2 text-sm text-foreground focus:border-ring focus:outline-none"
+							>
+								<option value="">{t("chooseNewOwnerTitle")}</option>
+								{others.map((p) => (
+									<option key={p.userId} value={p.userId}>
+										{nameOf(p.userId)}
+									</option>
+								))}
+							</select>
+							<AlertDialogFooter>
+								<AlertDialogCancel>{c("cancel")}</AlertDialogCancel>
+								<AlertDialogAction
+									className="bg-destructive text-white hover:bg-destructive/90"
+									onClick={(e) => {
+										e.preventDefault();
+										if (successorId) leaveMut.mutate(successorId);
+									}}
+									disabled={leaveMut.isPending || !successorId}
+								>
+									{t("transferAndLeave")}
+								</AlertDialogAction>
+							</AlertDialogFooter>
+						</>
+					) : (
+						<>
+							<AlertDialogHeader>
+								<AlertDialogTitle>{t("leaveGroupConfirm")}</AlertDialogTitle>
+								<AlertDialogDescription>
+									{t("leaveGroupDescription")}
+								</AlertDialogDescription>
+							</AlertDialogHeader>
+							<AlertDialogFooter>
+								<AlertDialogCancel>{c("cancel")}</AlertDialogCancel>
+								<AlertDialogAction
+									className="bg-destructive text-white hover:bg-destructive/90"
+									onClick={(e) => {
+										e.preventDefault();
+										leaveMut.mutate(undefined);
+									}}
+									disabled={leaveMut.isPending}
+								>
+									{t("leave")}
+								</AlertDialogAction>
+							</AlertDialogFooter>
+						</>
+					)}
 				</AlertDialogContent>
 			</AlertDialog>
 
