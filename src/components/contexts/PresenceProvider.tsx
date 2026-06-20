@@ -108,6 +108,8 @@ export function PresenceProvider({ children }: { children: React.ReactNode }) {
 				queryClient.invalidateQueries({
 					queryKey: orpc.message.myConversations.key(),
 				});
+				// MessagePane's infinite queries use hand-rolled ["chat", ...] keys.
+				queryClient.invalidateQueries({ queryKey: ["chat"] });
 				// Resync map data on (re)connect — we may have missed deltas.
 				queryClient.invalidateQueries({
 					queryKey: orpc.location.visibleLocations.key(),
@@ -146,6 +148,15 @@ export function PresenceProvider({ children }: { children: React.ReactNode }) {
 					queryClient.invalidateQueries({
 						queryKey: orpc.channel.messages.key(),
 					});
+					// MessagePane's infinite queries use these hand-rolled keys.
+					if (msg.conversationId)
+						queryClient.invalidateQueries({
+							queryKey: ["chat", "dm", msg.conversationId, "messages"],
+						});
+					if (msg.channelId)
+						queryClient.invalidateQueries({
+							queryKey: ["chat", "channel", msg.channelId, "messages"],
+						});
 					const sender = msg.message?.senderId;
 					const conv = msg.conversationId ?? msg.channelId;
 					if (sender && conv) {
