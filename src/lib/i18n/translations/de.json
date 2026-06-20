@@ -1191,6 +1191,7 @@
 		"unmuteUser": "Stummschaltung aufheben",
 		"blockUser": "Blockieren",
 		"unblockUser": "Blockierung aufheben",
+		"blockedComposerNotice": "Du hast diesen Nutzer blockiert. Hebe die Blockierung auf, um ihm zu schreiben.",
 		"promoteToModerator": "Zum Moderator befördern",
 		"demoteToMember": "Zum Mitglied herabstufen",
 		"transferOwnership": "Eigentümerschaft übertragen…",

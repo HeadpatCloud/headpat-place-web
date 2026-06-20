@@ -181,9 +181,11 @@ export function UserContextMenu({
 							>
 								{t("viewProfile")}
 							</ContextMenuItem>
-							<ContextMenuItem onSelect={() => void messageDirectly()}>
-								{t("messageDirectly")}
-							</ContextMenuItem>
+							{isBlocked ? null : (
+								<ContextMenuItem onSelect={() => void messageDirectly()}>
+									{t("messageDirectly")}
+								</ContextMenuItem>
+							)}
 							<ContextMenuSeparator />
 							<ContextMenuItem onSelect={() => void toggleRelation("isMuted")}>
 								{isMuted ? t("unmuteUser") : t("muteUser")}

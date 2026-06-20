@@ -1191,6 +1191,7 @@
 		"unmuteUser": "Dempen opheffen",
 		"blockUser": "Blokkeren",
 		"unblockUser": "Blokkering opheffen",
+		"blockedComposerNotice": "Je hebt deze gebruiker geblokkeerd. Hef de blokkering op om een bericht te sturen.",
 		"promoteToModerator": "Promoveren tot moderator",
 		"demoteToMember": "Degraderen tot lid",
 		"transferOwnership": "Eigenaarschap overdragen…",

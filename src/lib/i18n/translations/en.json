@@ -1191,6 +1191,7 @@
 		"unmuteUser": "Unmute",
 		"blockUser": "Block",
 		"unblockUser": "Unblock",
+		"blockedComposerNotice": "You blocked this user. Unblock to message them.",
 		"promoteToModerator": "Promote to moderator",
 		"demoteToMember": "Demote to member",
 		"transferOwnership": "Transfer ownership…",

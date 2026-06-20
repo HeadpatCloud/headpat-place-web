@@ -507,6 +507,31 @@ export function MessagePane({ source }: { source: Source }) {
 	const meId = session?.user?.id;
 	const others = parts.filter((p) => p.userId !== meId);
 	const isGroup = source.kind === "dm" && others.length > 1;
+	const dmOther =
+		source.kind === "dm" && others.length === 1 ? others[0] : null;
+	const relationQ = useQuery({
+		...orpc.relation.toUser.queryOptions({
+			input: { targetUserId: dmOther?.userId ?? "" },
+		}),
+		enabled: !!dmOther,
+	});
+	const iBlockedDmOther = !!relationQ.data?.isBlocked;
+	const unblockMut = useMutation({
+		mutationFn: () =>
+			client.relation.set({
+				targetUserId: dmOther?.userId ?? "",
+				isBlocked: false,
+			}),
+		onSuccess: async () => {
+			await qc.invalidateQueries({
+				queryKey: orpc.relation.toUser.queryKey({
+					input: { targetUserId: dmOther?.userId ?? "" },
+				}),
+			});
+			toast.success(t("unblockUser"));
+		},
+		onError: (e: Error) => toast.error(e.message),
+	});
 	const myRole = parts.find((p) => p.userId === meId)?.role;
 	const roleRank = { owner: 0, moderator: 1, member: 2 } as const;
 	const sortedParts = [...parts].sort(
@@ -1140,71 +1165,86 @@ export function MessagePane({ source }: { source: Source }) {
 						e.target.value = "";
 					}}
 				/>
-				<form
-					className="flex items-center gap-3 rounded-2xl border border-border bg-card px-1.5 py-1.5 transition-colors focus-within:border-ring"
-					onSubmit={(e) => {
-						e.preventDefault();
-						onSend();
-					}}
-				>
-					<button
-						type="button"
-						onClick={() => fileInputRef.current?.click()}
-						className="flex size-9.5 shrink-0 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-						aria-label={t("attach")}
-					>
-						<PlusIcon className="size-5" />
-					</button>
-					<input
-						className="flex-1 bg-transparent px-1 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
-						placeholder={placeholder}
-						value={draft}
-						onChange={(e) => {
-							setDraft(e.target.value);
-							if (source.kind === "dm") sendTyping(source.conversationId);
-							else sendChannelTyping(source.channelId);
-						}}
-						disabled={sendMut.isPending}
-					/>
-					<div className="flex shrink-0 items-center gap-1">
-						<GifPicker onSelect={sendGif} />
-						<Popover open={composerEmoji} onOpenChange={setComposerEmoji}>
-							<PopoverTrigger asChild>
-								<button
-									type="button"
-									className="flex size-9.5 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-									aria-label={t("emoji")}
-								>
-									<SmileIcon className="size-4.5" />
-								</button>
-							</PopoverTrigger>
-							<PopoverContent className="w-fit p-0" align="end" side="top">
-								<EmojiPicker
-									className="h-[320px]"
-									onEmojiSelect={({ emoji }) => {
-										setDraft((d) => d + emoji);
-										setComposerEmoji(false);
-									}}
-								>
-									<EmojiPickerSearch />
-									<EmojiPickerContent />
-								</EmojiPicker>
-							</PopoverContent>
-						</Popover>
-						<button
-							type="submit"
-							disabled={
-								sendMut.isPending ||
-								(!draft.trim() &&
-									pending.filter((p) => p.status === "done").length === 0)
-							}
-							className="flex size-9.5 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-[filter,transform] hover:brightness-110 disabled:opacity-50"
-							aria-label={t("send")}
+				{iBlockedDmOther ? (
+					<div className="flex items-center justify-center gap-3 rounded-2xl border border-border bg-card px-4 py-3 text-sm text-muted-foreground">
+						<span>{t("blockedComposerNotice")}</span>
+						<Button
+							type="button"
+							size="sm"
+							variant="outline"
+							disabled={unblockMut.isPending}
+							onClick={() => unblockMut.mutate()}
 						>
-							<SendHorizontalIcon className="size-4" />
-						</button>
+							{t("unblockUser")}
+						</Button>
 					</div>
-				</form>
+				) : (
+					<form
+						className="flex items-center gap-3 rounded-2xl border border-border bg-card px-1.5 py-1.5 transition-colors focus-within:border-ring"
+						onSubmit={(e) => {
+							e.preventDefault();
+							onSend();
+						}}
+					>
+						<button
+							type="button"
+							onClick={() => fileInputRef.current?.click()}
+							className="flex size-9.5 shrink-0 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+							aria-label={t("attach")}
+						>
+							<PlusIcon className="size-5" />
+						</button>
+						<input
+							className="flex-1 bg-transparent px-1 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+							placeholder={placeholder}
+							value={draft}
+							onChange={(e) => {
+								setDraft(e.target.value);
+								if (source.kind === "dm") sendTyping(source.conversationId);
+								else sendChannelTyping(source.channelId);
+							}}
+							disabled={sendMut.isPending}
+						/>
+						<div className="flex shrink-0 items-center gap-1">
+							<GifPicker onSelect={sendGif} />
+							<Popover open={composerEmoji} onOpenChange={setComposerEmoji}>
+								<PopoverTrigger asChild>
+									<button
+										type="button"
+										className="flex size-9.5 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+										aria-label={t("emoji")}
+									>
+										<SmileIcon className="size-4.5" />
+									</button>
+								</PopoverTrigger>
+								<PopoverContent className="w-fit p-0" align="end" side="top">
+									<EmojiPicker
+										className="h-[320px]"
+										onEmojiSelect={({ emoji }) => {
+											setDraft((d) => d + emoji);
+											setComposerEmoji(false);
+										}}
+									>
+										<EmojiPickerSearch />
+										<EmojiPickerContent />
+									</EmojiPicker>
+								</PopoverContent>
+							</Popover>
+							<button
+								type="submit"
+								disabled={
+									sendMut.isPending ||
+									(!draft.trim() &&
+										pending.filter((p) => p.status === "done").length === 0)
+								}
+								className="flex size-9.5 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-[filter,transform] hover:brightness-110 disabled:opacity-50"
+								aria-label={t("send")}
+							>
+								<SendHorizontalIcon className="size-4" />
+							</button>
+						</div>
+					</form>
+				)}
 			</div>
 
 			<Dialog open={renaming} onOpenChange={setRenaming}>
