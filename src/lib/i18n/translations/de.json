@@ -213,6 +213,10 @@
 			"failedTitle": "Anmeldung fehlgeschlagen",
 			"googleA11y": "Weiter mit Google",
 			"discordA11y": "Weiter mit Discord"
+		},
+		"errors": {
+			"oauthEmailMismatch": "Die E-Mail dieses Kontos stimmt nicht mit deiner Headpat-E-Mail überein, daher konnten wir es nicht verknüpfen.",
+			"oauthGeneric": "Die Anmeldung konnte nicht abgeschlossen werden. Bitte versuche es erneut."
 		}
 	},
 	"home": {

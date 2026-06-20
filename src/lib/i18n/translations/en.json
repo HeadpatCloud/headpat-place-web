@@ -213,6 +213,10 @@
 			"failedTitle": "Sign-in failed",
 			"googleA11y": "Continue with Google",
 			"discordA11y": "Continue with Discord"
+		},
+		"errors": {
+			"oauthEmailMismatch": "That account's email doesn't match your Headpat email, so we couldn't link it.",
+			"oauthGeneric": "We couldn't complete sign-in. Please try again."
 		}
 	},
 	"home": {

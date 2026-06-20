@@ -22,6 +22,7 @@ import {
 	LocalizedLink as Link,
 	useLocalizedNavigate as useNavigate,
 } from "@/lib/localized-nav";
+import { useOAuthErrorToast } from "@/lib/use-oauth-error";
 
 export const Route = createFileRoute("/{-$locale}/_auth/login")({
 	component: LoginPage,
@@ -39,22 +40,26 @@ async function startOAuth(provider: string) {
 	// Absolute URL on the web origin — the API and web are different origins, so a
 	// relative callbackURL would resolve against the API (api.headpat.place).
 	const callbackURL = `${window.location.origin}/account`;
+	const errorCallbackURL = `${window.location.origin}/login`;
 	if (provider === "eurofurence") {
 		await authClient.signIn.oauth2({
 			providerId: "eurofurence",
 			callbackURL,
+			errorCallbackURL,
 		});
 		return;
 	}
 	await signIn.social({
 		provider: provider as Parameters<typeof signIn.social>[0]["provider"],
 		callbackURL,
+		errorCallbackURL,
 	});
 }
 
 function LoginPage() {
 	const t = useTranslations("authPages");
 	const navigate = useNavigate();
+	useOAuthErrorToast();
 	const { data: session } = useSession();
 	const [isRegistering, setIsRegistering] = useState(false);
 	const [authError, setAuthError] = useState<string | null>(null);

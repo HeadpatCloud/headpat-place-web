@@ -32,6 +32,7 @@ import { authClient, useSession } from "@/lib/auth-client";
 import { useTranslations } from "@/lib/i18n";
 import { useLocalizedNavigate as useNavigate } from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
+import { useOAuthErrorToast } from "@/lib/use-oauth-error";
 
 export const Route = createFileRoute("/{-$locale}/_app/account/")({
 	component: AccountPage,
@@ -65,6 +66,7 @@ function AccountPage() {
 	const t = useTranslations("accountPages");
 	const c = useTranslations("common");
 	const navigate = useNavigate();
+	useOAuthErrorToast();
 	const { data: session, isPending } = useSession();
 	const queryClient = useQueryClient();
 	const [active, setActive] = useState("profile");

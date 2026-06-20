@@ -62,6 +62,7 @@ export function ConnectedAccounts() {
 				typeof authClient.linkSocial
 			>[0]["provider"],
 			callbackURL: window.location.href,
+			errorCallbackURL: `${window.location.origin}/account`,
 		});
 		if (r.error)
 			toast.error(r.error.message ?? t("connectFailed", { provider }));

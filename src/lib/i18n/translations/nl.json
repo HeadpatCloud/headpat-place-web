@@ -213,6 +213,10 @@
 			"failedTitle": "Inloggen mislukt",
 			"googleA11y": "Verdergaan met Google",
 			"discordA11y": "Verdergaan met Discord"
+		},
+		"errors": {
+			"oauthEmailMismatch": "Het e-mailadres van dat account komt niet overeen met je Headpat-e-mailadres, dus we konden het niet koppelen.",
+			"oauthGeneric": "We konden het inloggen niet voltooien. Probeer het opnieuw."
 		}
 	},
 	"home": {
