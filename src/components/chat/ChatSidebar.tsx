@@ -1,8 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "@tanstack/react-router";
-import { ChevronLeftIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { LocalizedLink as Link } from "@/lib/localized-nav";
 import { orpc } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
 import { MessagesPanel } from "./MessagesPanel";
@@ -58,14 +56,6 @@ export function ChatSidebar({ className }: { className?: string }) {
 			/>
 
 			<div className="flex min-w-0 flex-1 flex-col">
-				<Link
-					to="/"
-					className="flex h-13 shrink-0 items-center gap-2 border-b border-border bg-card px-4 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
-				>
-					<ChevronLeftIcon className="size-4 text-muted-foreground" />
-					<span>headpat</span>
-				</Link>
-
 				<div className="min-h-0 flex-1">
 					{view === "messages" ? (
 						<MessagesPanel />

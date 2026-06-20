@@ -1115,6 +1115,7 @@
 		"deleteChannelConfirm": "Delete #%{name}?",
 		"deleteChannelDescription": "This permanently deletes the channel and its messages. This cannot be undone.",
 		"messagesHeading": "Messages",
+		"backToHeadpat": "Back to headpat",
 		"newMessage": "New message",
 		"findOrStart": "Find or start a chat",
 		"serversHeading": "Servers",

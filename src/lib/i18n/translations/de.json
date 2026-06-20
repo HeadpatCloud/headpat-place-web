@@ -1115,6 +1115,7 @@
 		"deleteChannelConfirm": "#%{name} löschen?",
 		"deleteChannelDescription": "Dadurch werden der Kanal und seine Nachrichten dauerhaft gelöscht. Das lässt sich nicht rückgängig machen.",
 		"messagesHeading": "Nachrichten",
+		"backToHeadpat": "Zurück zu headpat",
 		"newMessage": "Neue Nachricht",
 		"findOrStart": "Chat finden oder starten",
 		"serversHeading": "Server",

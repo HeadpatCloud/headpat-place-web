@@ -1115,6 +1115,7 @@
 		"deleteChannelConfirm": "#%{name} verwijderen?",
 		"deleteChannelDescription": "Hiermee verwijder je het kanaal en alle berichten definitief. Dit kan niet ongedaan worden gemaakt.",
 		"messagesHeading": "Berichten",
+		"backToHeadpat": "Terug naar headpat",
 		"newMessage": "Nieuw bericht",
 		"findOrStart": "Chat zoeken of starten",
 		"serversHeading": "Servers",
