@@ -1179,7 +1179,21 @@
 		"sendFailed": "Verzenden mislukt",
 		"gifButton": "GIF",
 		"gifSearchPlaceholder": "GIFs zoeken",
-		"gifsUnavailable": "GIFs niet beschikbaar"
+		"gifsUnavailable": "GIFs niet beschikbaar",
+		"viewProfile": "Profiel bekijken",
+		"messageDirectly": "Direct bericht sturen",
+		"muteUser": "Dempen",
+		"unmuteUser": "Dempen opheffen",
+		"blockUser": "Blokkeren",
+		"unblockUser": "Blokkering opheffen",
+		"promoteToModerator": "Promoveren tot moderator",
+		"demoteToMember": "Degraderen tot lid",
+		"transferOwnership": "Eigenaarschap overdragen…",
+		"transferOwnershipConfirmTitle": "Eigenaarschap overdragen?",
+		"transferOwnershipConfirmBody": "%{name} wordt eigenaar van deze groep en jij wordt gedegradeerd tot moderator. Dit kun je niet alleen ongedaan maken.",
+		"removeFromGroup": "Uit groep verwijderen",
+		"removeFromGroupConfirmTitle": "Uit groep verwijderen?",
+		"removeFromGroupConfirmBody": "%{name} wordt uit deze groep verwijderd en kan niet opnieuw deelnemen, tenzij iemand de persoon weer toevoegt."
 	},
 	"adminPanel": {
 		"noAccess": "Hier heb je geen toegang toe.",

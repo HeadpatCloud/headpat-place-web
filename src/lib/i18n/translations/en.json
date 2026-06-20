@@ -1179,7 +1179,21 @@
 		"sendFailed": "Failed to send",
 		"gifButton": "GIF",
 		"gifSearchPlaceholder": "Search GIFs",
-		"gifsUnavailable": "GIFs unavailable"
+		"gifsUnavailable": "GIFs unavailable",
+		"viewProfile": "View profile",
+		"messageDirectly": "Message directly",
+		"muteUser": "Mute",
+		"unmuteUser": "Unmute",
+		"blockUser": "Block",
+		"unblockUser": "Unblock",
+		"promoteToModerator": "Promote to moderator",
+		"demoteToMember": "Demote to member",
+		"transferOwnership": "Transfer ownership…",
+		"transferOwnershipConfirmTitle": "Transfer ownership?",
+		"transferOwnershipConfirmBody": "%{name} will become the owner of this group and you'll be demoted to moderator. This can't be undone by you alone.",
+		"removeFromGroup": "Remove from group",
+		"removeFromGroupConfirmTitle": "Remove from group?",
+		"removeFromGroupConfirmBody": "%{name} will be removed from this group and won't be able to rejoin unless someone adds them back."
 	},
 	"adminPanel": {
 		"noAccess": "You don't have access to this.",

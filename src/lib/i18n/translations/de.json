@@ -1179,7 +1179,21 @@
 		"sendFailed": "Senden fehlgeschlagen",
 		"gifButton": "GIF",
 		"gifSearchPlaceholder": "GIFs suchen",
-		"gifsUnavailable": "GIFs nicht verfügbar"
+		"gifsUnavailable": "GIFs nicht verfügbar",
+		"viewProfile": "Profil ansehen",
+		"messageDirectly": "Direkt schreiben",
+		"muteUser": "Stummschalten",
+		"unmuteUser": "Stummschaltung aufheben",
+		"blockUser": "Blockieren",
+		"unblockUser": "Blockierung aufheben",
+		"promoteToModerator": "Zum Moderator befördern",
+		"demoteToMember": "Zum Mitglied herabstufen",
+		"transferOwnership": "Eigentümerschaft übertragen…",
+		"transferOwnershipConfirmTitle": "Eigentümerschaft übertragen?",
+		"transferOwnershipConfirmBody": "%{name} wird Eigentümer dieser Gruppe und du wirst zum Moderator herabgestuft. Das kannst du nicht allein rückgängig machen.",
+		"removeFromGroup": "Aus Gruppe entfernen",
+		"removeFromGroupConfirmTitle": "Aus Gruppe entfernen?",
+		"removeFromGroupConfirmBody": "%{name} wird aus dieser Gruppe entfernt und kann nicht wieder beitreten, es sei denn, jemand fügt die Person erneut hinzu."
 	},
 	"adminPanel": {
 		"noAccess": "Dafür hast du keine Berechtigung.",
