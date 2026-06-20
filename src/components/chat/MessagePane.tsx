@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+	useInfiniteQuery,
+	useMutation,
+	useQuery,
+	useQueryClient,
+} from "@tanstack/react-query";
 import {
 	CheckIcon,
 	ChevronLeftIcon,
@@ -171,6 +176,10 @@ export function MessagePane({ source }: { source: Source }) {
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	// keep the view pinned to the newest message unless the user scrolled up
 	const stickToBottomRef = useRef(true);
+	// while an older page loads we anchor on the saved height instead of
+	// sticking to the bottom, so prepended messages don't jump the viewport
+	const prependingRef = useRef(false);
+	const prevHeightRef = useRef(0);
 
 	const scrollToBottom = useCallback(() => {
 		const el = scrollRef.current;
@@ -183,6 +192,16 @@ export function MessagePane({ source }: { source: Source }) {
 		if (!el) return;
 		stickToBottomRef.current =
 			el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+		if (
+			el.scrollTop < 120 &&
+			messages.hasNextPage &&
+			!messages.isFetchingNextPage &&
+			!prependingRef.current
+		) {
+			prependingRef.current = true;
+			prevHeightRef.current = el.scrollHeight;
+			void messages.fetchNextPage();
+		}
 	}
 
 	const dmConversationId =
@@ -226,36 +245,46 @@ export function MessagePane({ source }: { source: Source }) {
 		myChannelRole.data?.role === "admin" ||
 		myChannelRole.data?.role === "moderator";
 
-	const dmMessages = useQuery({
-		...orpc.message.list.queryOptions({
-			input: { conversationId: dmConversationId, limit: 200 },
-		}),
+	const PAGE_SIZE = 30;
+	const dmMessagesKey = ["chat", "dm", dmConversationId, "messages"];
+	const channelMessagesKey = ["chat", "channel", channelId, "messages"];
+
+	// API returns each page oldest-first; the `before` cursor for the next
+	// (older) page is the oldest loaded message's createdAt = page[0].
+	const dmMessages = useInfiniteQuery({
+		queryKey: dmMessagesKey,
+		queryFn: ({ pageParam }) =>
+			client.message.list({
+				conversationId: dmConversationId,
+				before: pageParam,
+				limit: PAGE_SIZE,
+			}),
+		initialPageParam: undefined as Date | string | undefined,
+		getNextPageParam: (lastPage) =>
+			lastPage.length === PAGE_SIZE ? lastPage[0]?.createdAt : undefined,
 		enabled: source.kind === "dm",
 		refetchInterval: 15000,
 	});
-	const channelMessages = useQuery({
-		...orpc.channel.messages.queryOptions({
-			input: { channelId, limit: 200 },
-		}),
+	const channelMessages = useInfiniteQuery({
+		queryKey: channelMessagesKey,
+		queryFn: ({ pageParam }) =>
+			client.channel.messages({
+				channelId,
+				before: pageParam,
+				limit: PAGE_SIZE,
+			}),
+		initialPageParam: undefined as Date | string | undefined,
+		getNextPageParam: (lastPage) =>
+			lastPage.length === PAGE_SIZE ? lastPage[0]?.createdAt : undefined,
 		enabled: source.kind === "channel",
 		refetchInterval: 15000,
 	});
 	const messages = source.kind === "dm" ? dmMessages : channelMessages;
 
 	const invalidateThread = async () => {
-		if (source.kind === "dm") {
-			await qc.invalidateQueries({
-				queryKey: orpc.message.list.queryKey({
-					input: { conversationId: source.conversationId, limit: 200 },
-				}),
-			});
-		} else {
-			await qc.invalidateQueries({
-				queryKey: orpc.channel.messages.queryKey({
-					input: { channelId: source.channelId, limit: 200 },
-				}),
-			});
-		}
+		await qc.invalidateQueries({
+			queryKey: source.kind === "dm" ? dmMessagesKey : channelMessagesKey,
+		});
 	};
 
 	const sendMut = useMutation({
@@ -407,18 +436,37 @@ export function MessagePane({ source }: { source: Source }) {
 		enabled: adding,
 	});
 
+	// pages arrive newest-page-first, each page oldest-first; flatten to a
+	// single ascending list (oldest message first, newest last)
+	const list = (
+		messages.data ? [...messages.data.pages].reverse().flat() : []
+	) as Msg[];
+
+	// restore scroll position right after an older page prepends, so the
+	// viewport stays put instead of jumping with the new content above it
+	// biome-ignore lint/correctness/useExhaustiveDependencies: anchor on list growth
+	useEffect(() => {
+		if (!prependingRef.current || messages.isFetchingNextPage) return;
+		const el = scrollRef.current;
+		if (el) el.scrollTop += el.scrollHeight - prevHeightRef.current;
+		prependingRef.current = false;
+	}, [list.length, messages.isFetchingNextPage]);
+
 	// biome-ignore lint/correctness/useExhaustiveDependencies: re-scroll when the thread changes
 	useEffect(() => {
-		scrollToBottom();
+		// only pin to the bottom when the user is already there; after a
+		// scroll-up prepend they are at the top, so leave the viewport alone
+		if (stickToBottomRef.current && !prependingRef.current) scrollToBottom();
 		const content = contentRef.current;
 		if (!content) return;
-		// re-pin as avatars/gifs/images finish loading and grow the content
+		// re-pin as avatars/gifs/images finish loading and grow the content,
+		// but never while an older page is prepending above the viewport
 		const ro = new ResizeObserver(() => {
-			if (stickToBottomRef.current) scrollToBottom();
+			if (stickToBottomRef.current && !prependingRef.current) scrollToBottom();
 		});
 		ro.observe(content);
 		return () => ro.disconnect();
-	}, [messages.data, outgoing.length, scrollToBottom]);
+	}, [list.length, outgoing.length, scrollToBottom]);
 
 	useEffect(() => {
 		draftLoadedRef.current = false;
@@ -525,8 +573,6 @@ export function MessagePane({ source }: { source: Source }) {
 			toast.error(e instanceof Error ? e.message : String(e));
 		}
 	}
-
-	const list = (messages.data ?? []) as Msg[];
 
 	return (
 		<div className="flex h-full flex-col bg-background text-foreground">
