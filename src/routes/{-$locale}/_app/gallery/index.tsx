@@ -76,7 +76,7 @@ function GalleryPage() {
 							<Link
 								key={g.id}
 								to={`/gallery/${g.id}` as never}
-								className="zoom-parent block break-inside-avoid overflow-hidden rounded-xl relative"
+								className="group zoom-parent block break-inside-avoid overflow-hidden rounded-xl relative"
 							>
 								<ResponsiveImage
 									kind="gallery"
@@ -91,8 +91,10 @@ function GalleryPage() {
 										NSFW
 									</span>
 								) : null}
-								<div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3">
-									<p className="truncate font-semibold text-white">{g.name}</p>
+								<div className="pointer-events-none absolute inset-x-2 bottom-2 translate-y-1 rounded-lg border border-white/20 bg-black/40 px-3 py-2 opacity-0 shadow-lg backdrop-blur-md transition duration-200 group-hover:translate-y-0 group-hover:opacity-100 motion-reduce:translate-y-0 motion-reduce:transition-none">
+									<p className="truncate text-sm font-semibold text-white">
+										{g.name}
+									</p>
 								</div>
 							</Link>
 						))}
