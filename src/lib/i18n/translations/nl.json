@@ -2,6 +2,7 @@
 	"galleryPages": {
 		"title": "Galerij",
 		"upload": "+ Uploaden",
+		"showNsfw": "NSFW tonen",
 		"empty": "Nog geen afbeeldingen.",
 		"deleted": "Verwijderd.",
 		"notFound": "Niet gevonden.",

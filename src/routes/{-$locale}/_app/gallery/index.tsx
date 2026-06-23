@@ -1,10 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pager } from "@/components/Pager";
 import { ResponsiveImage } from "@/components/ResponsiveImage";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
+import { useSession } from "@/lib/auth-client";
 import {
 	DEFAULT_LOCALE,
 	type Locale,
@@ -47,19 +50,57 @@ const PAGE_SIZE = 24;
 
 function GalleryPage() {
 	const t = useTranslations("galleryPages");
+	const { data: session } = useSession();
 	const [page, setPage] = useState(1);
 	const query = useQuery(
 		orpc.gallery.list.queryOptions({ input: { page, pageSize: PAGE_SIZE } }),
 	);
-	const items = query.data?.items ?? [];
+
+	const profileQuery = useQuery({
+		...orpc.profile.me.queryOptions({ input: undefined }),
+		enabled: !!session?.user,
+	});
+	const nsfwEnabled = Boolean(
+		(profileQuery.data as { nsfwEnabled?: boolean } | undefined)?.nsfwEnabled,
+	);
+
+	// per-device gallery NSFW toggle, only shown when the account allows NSFW
+	const [showNsfw, setShowNsfw] = useState(true);
+	useEffect(() => {
+		setShowNsfw(localStorage.getItem("gallery:showNsfw") !== "false");
+	}, []);
+	function toggleNsfw(v: boolean) {
+		setShowNsfw(v);
+		localStorage.setItem("gallery:showNsfw", String(v));
+	}
+
+	const hideNsfw = nsfwEnabled && !showNsfw;
+	const items = (query.data?.items ?? []).filter((g) => !hideNsfw || !g.nsfw);
 
 	return (
 		<main className="space-y-4">
-			<div className="flex items-center justify-between">
+			<div className="flex flex-wrap items-center justify-between gap-3">
 				<h2 className="text-2xl font-bold">{t("title")}</h2>
-				<Button asChild>
-					<Link to={"/gallery/upload" as never}>{t("upload")}</Link>
-				</Button>
+				<div className="flex items-center gap-4">
+					{nsfwEnabled ? (
+						<div className="flex items-center gap-2">
+							<Switch
+								id="gallery-nsfw"
+								checked={showNsfw}
+								onCheckedChange={toggleNsfw}
+							/>
+							<Label
+								htmlFor="gallery-nsfw"
+								className="cursor-pointer select-none text-sm text-muted-foreground"
+							>
+								{t("showNsfw")}
+							</Label>
+						</div>
+					) : null}
+					<Button asChild>
+						<Link to={"/gallery/upload" as never}>{t("upload")}</Link>
+					</Button>
+				</div>
 			</div>
 			{query.isPending ? (
 				<div className="columns-2 gap-3 sm:columns-3 lg:columns-4 [&>*]:mb-3">

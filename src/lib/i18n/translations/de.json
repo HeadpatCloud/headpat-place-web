@@ -2,6 +2,7 @@
 	"galleryPages": {
 		"title": "Galerie",
 		"upload": "+ Hochladen",
+		"showNsfw": "NSFW anzeigen",
 		"empty": "Noch keine Bilder.",
 		"deleted": "Gelöscht.",
 		"notFound": "Nicht gefunden.",
