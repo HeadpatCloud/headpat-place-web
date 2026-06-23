@@ -21,6 +21,7 @@ interface InputFieldProps {
 	type?: string;
 	maxLength?: number;
 	className?: string;
+	prefix?: string;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -31,6 +32,7 @@ const InputField: React.FC<InputFieldProps> = ({
 	type = "text",
 	maxLength,
 	className,
+	prefix,
 }) => {
 	return (
 		<FormItem className={className}>
@@ -49,15 +51,23 @@ const InputField: React.FC<InputFieldProps> = ({
 					)}
 				</FormLabel>
 			)}
-			<FormControl>
-				<Input
-					type={type}
-					placeholder={placeholder}
-					value={field.value} // Bind the value directly from `field.value`
-					onChange={field.onChange} // Use `field.onChange` directly
-					maxLength={maxLength}
-				/>
-			</FormControl>
+			<div className={prefix ? "flex items-stretch" : undefined}>
+				{prefix && (
+					<span className="inline-flex select-none items-center whitespace-nowrap rounded-l-md border border-r-0 border-input bg-muted px-3 text-sm text-muted-foreground">
+						{prefix}
+					</span>
+				)}
+				<FormControl>
+					<Input
+						type={type}
+						placeholder={placeholder}
+						value={field.value} // Bind the value directly from `field.value`
+						onChange={field.onChange} // Use `field.onChange` directly
+						maxLength={maxLength}
+						className={prefix ? "rounded-l-none" : undefined}
+					/>
+				</FormControl>
+			</div>
 			<FormMessage />
 		</FormItem>
 	);

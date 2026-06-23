@@ -224,6 +224,7 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 										label="Telegram"
 										description=""
 										placeholder=""
+										prefix="t.me/"
 										field={field}
 										maxLength={60}
 									/>
@@ -237,6 +238,7 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 										label="FurAffinity"
 										description=""
 										placeholder=""
+										prefix="furaffinity.net/user/"
 										field={field}
 										maxLength={60}
 									/>
@@ -250,6 +252,7 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 										label="X / Twitter"
 										description=""
 										placeholder=""
+										prefix="x.com/"
 										field={field}
 										maxLength={60}
 									/>
@@ -263,6 +266,7 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 										label="Twitch"
 										description=""
 										placeholder=""
+										prefix="twitch.tv/"
 										field={field}
 										maxLength={60}
 									/>
@@ -276,6 +280,7 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 										label="Bluesky"
 										description=""
 										placeholder=""
+										prefix="bsky.app/profile/"
 										field={field}
 										maxLength={60}
 									/>
