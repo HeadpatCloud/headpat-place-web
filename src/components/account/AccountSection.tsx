@@ -177,8 +177,8 @@ export function AccountSection({
 							name="profileUrl"
 							render={({ field }) => (
 								<FormItem>
-									<div className="flex rounded-md border border-input focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50">
-										<span className="flex select-none items-center pl-3 text-sm text-muted-foreground">
+									<div className="flex items-stretch">
+										<span className="inline-flex select-none items-center whitespace-nowrap rounded-l-md border border-r-0 border-input bg-muted px-3 text-sm text-muted-foreground">
 											headpat.place/user/
 										</span>
 										<FormControl>
@@ -186,7 +186,7 @@ export function AccountSection({
 												{...field}
 												type="text"
 												placeholder={profile.profileUrl}
-												className="w-full min-w-0 flex-1 rounded-none rounded-r-md border-0 pl-1 !ring-0 focus:ring-0 sm:text-sm"
+												className="rounded-l-none"
 											/>
 										</FormControl>
 									</div>
