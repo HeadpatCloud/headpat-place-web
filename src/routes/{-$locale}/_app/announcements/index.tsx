@@ -12,6 +12,7 @@ import {
 } from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
 import { orpc } from "@/lib/orpc";
+import { htmlToText } from "@/lib/rich-text";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/{-$locale}/_app/announcements/")({
@@ -59,7 +60,7 @@ function AnnouncementsPage() {
 										</CardHeader>
 									) : null}
 									<CardContent>
-										<p className="line-clamp-3">{a.description}</p>
+										<p className="line-clamp-3">{htmlToText(a.description)}</p>
 										<p className="text-xs text-muted-foreground mt-1">
 											{fmt.date(a.createdAt)}
 										</p>

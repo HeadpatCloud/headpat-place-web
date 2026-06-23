@@ -105,10 +105,12 @@ export function RichBioEditor({
 	initialHtml,
 	onChange,
 	onUploadingChange,
+	enableImages = true,
 }: {
 	initialHtml: string;
 	onChange: (html: string) => void;
 	onUploadingChange?: (uploading: boolean) => void;
+	enableImages?: boolean;
 }) {
 	const [linkOpen, setLinkOpen] = useState(false);
 	const [linkUrl, setLinkUrl] = useState("");
@@ -333,37 +335,41 @@ export function RichBioEditor({
 				>
 					<TableIcon className="size-4" />
 				</TBtn>
-				<TBtn
-					title="Image"
-					onClick={() => {
-						if (uploading) return;
-						setLinkOpen(false);
-						fileInputRef.current?.click();
-					}}
-				>
-					{uploading ? (
-						<Loader2 className="size-4 animate-spin" />
-					) : (
-						<ImageIcon className="size-4" />
-					)}
-				</TBtn>
+				{enableImages ? (
+					<TBtn
+						title="Image"
+						onClick={() => {
+							if (uploading) return;
+							setLinkOpen(false);
+							fileInputRef.current?.click();
+						}}
+					>
+						{uploading ? (
+							<Loader2 className="size-4 animate-spin" />
+						) : (
+							<ImageIcon className="size-4" />
+						)}
+					</TBtn>
+				) : null}
 				<TBtn
 					title="Divider"
 					onClick={() => editor.chain().focus().setHorizontalRule().run()}
 				>
 					<Minus className="size-4" />
 				</TBtn>
-				<input
-					ref={fileInputRef}
-					type="file"
-					accept={BIO_IMAGE_ACCEPT}
-					className="hidden"
-					onChange={(e) => {
-						const file = e.target.files?.[0];
-						e.target.value = "";
-						if (file) uploadImage(file);
-					}}
-				/>
+				{enableImages ? (
+					<input
+						ref={fileInputRef}
+						type="file"
+						accept={BIO_IMAGE_ACCEPT}
+						className="hidden"
+						onChange={(e) => {
+							const file = e.target.files?.[0];
+							e.target.value = "";
+							if (file) uploadImage(file);
+						}}
+					/>
+				) : null}
 			</div>
 
 			{s?.inTable ? (

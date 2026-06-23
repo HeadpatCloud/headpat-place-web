@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { RichBioEditor } from "@/components/profile/RichBioEditor";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -17,10 +18,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useTranslations } from "@/lib/i18n";
 import { useLocalizedNavigate as useNavigate } from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
+import { ensureHtml } from "@/lib/rich-text";
 
 export const Route = createFileRoute(
 	"/{-$locale}/admin/announcements/$announcementId",
@@ -49,7 +50,7 @@ function AnnouncementEditor() {
 		if (!a) return;
 		setTitle(a.title ?? "");
 		setSideText(a.sideText ?? "");
-		setDescription(a.description);
+		setDescription(ensureHtml(a.description));
 		setValidUntil(toDateInput(a.validUntil));
 	}, [entry.data]);
 
@@ -139,13 +140,11 @@ function AnnouncementEditor() {
 						</div>
 					</div>
 					<div className="space-y-1.5">
-						<Label htmlFor="an-desc">{t("description")}</Label>
-						<Textarea
-							id="an-desc"
-							value={description}
-							onChange={(e) => setDescription(e.target.value)}
-							maxLength={10000}
-							rows={5}
+						<Label>{t("description")}</Label>
+						<RichBioEditor
+							initialHtml={ensureHtml(entry.data.description)}
+							onChange={setDescription}
+							enableImages={false}
 						/>
 					</div>
 					<div className="flex items-center gap-2">

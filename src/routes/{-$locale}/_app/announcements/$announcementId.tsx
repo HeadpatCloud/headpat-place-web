@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { RichBio } from "@/components/profile/RichBio";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDateFormat } from "@/lib/datetime";
 import {
@@ -9,6 +10,7 @@ import {
 	useTranslations,
 } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
+import { ensureHtml } from "@/lib/rich-text";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute(
@@ -64,7 +66,7 @@ function AnnouncementPage() {
 					</CardHeader>
 				) : null}
 				<CardContent>
-					<p className="whitespace-pre-wrap">{a.description}</p>
+					<RichBio html={ensureHtml(a.description)} />
 					<p className="text-xs text-muted-foreground mt-4">
 						{fmt.dateTime(a.createdAt)}
 					</p>
