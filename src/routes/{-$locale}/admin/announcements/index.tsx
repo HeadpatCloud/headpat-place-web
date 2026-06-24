@@ -12,6 +12,7 @@ import {
 	useLocalizedNavigate as useNavigate,
 } from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
+import { htmlToText } from "@/lib/rich-text";
 
 export const Route = createFileRoute("/{-$locale}/admin/announcements/")({
 	component: AnnouncementsAdmin,
@@ -77,7 +78,7 @@ function AnnouncementsAdmin() {
 												{a.title || t("untitled")}
 											</span>
 											<span className="block truncate text-xs text-muted-foreground">
-												{a.description}
+												{htmlToText(a.description)}
 											</span>
 										</span>
 										{expired ? (
