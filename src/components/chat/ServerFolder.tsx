@@ -1,4 +1,10 @@
 import { useDroppable } from "@dnd-kit/core";
+import {
+	SortableContext,
+	useSortable,
+	verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import { HeartHandshakeIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 import { StorageImage } from "@/components/StorageImage";
@@ -63,6 +69,55 @@ function ServerIcon({
 			)}
 		>
 			{img}
+		</button>
+	);
+}
+
+function SortableFolderServer({
+	server,
+	active,
+	onClick,
+}: {
+	server: RailServer | undefined;
+	active: boolean;
+	onClick: () => void;
+}) {
+	const id = server?.id ?? "";
+	const {
+		attributes,
+		listeners,
+		setNodeRef,
+		transform,
+		transition,
+		isDragging,
+	} = useSortable({ id });
+	return (
+		<button
+			ref={setNodeRef}
+			type="button"
+			onClick={onClick}
+			title={server?.name}
+			aria-label={server?.name}
+			style={{ transform: CSS.Transform.toString(transform), transition }}
+			className={cn(
+				"rounded-md transition-transform hover:scale-105",
+				active && "ring-2 ring-primary ring-offset-1 ring-offset-background",
+				isDragging && "opacity-50",
+			)}
+			{...attributes}
+			{...listeners}
+		>
+			<StorageImage
+				kind="community-avatar"
+				fileId={server?.avatarFileId}
+				variant="sm"
+				className="size-11 rounded-md object-cover bg-muted"
+				fallback={
+					<div className="flex size-11 items-center justify-center rounded-md bg-muted text-muted-foreground">
+						<HeartHandshakeIcon className="size-5" />
+					</div>
+				}
+			/>
 		</button>
 	);
 }
@@ -143,15 +198,19 @@ export function ServerFolder({
 
 			{expanded ? (
 				<div className="mt-1 flex flex-col items-center gap-1.5 rounded-md bg-muted/40 p-1.5">
-					{serverIds.map((sid) => (
-						<ServerIcon
-							key={sid}
-							server={byId(sid)}
-							size="full"
-							active={sid === activeServerId}
-							onClick={() => onSelectServer(sid)}
-						/>
-					))}
+					<SortableContext
+						items={serverIds}
+						strategy={verticalListSortingStrategy}
+					>
+						{serverIds.map((sid) => (
+							<SortableFolderServer
+								key={sid}
+								server={byId(sid)}
+								active={sid === activeServerId}
+								onClick={() => onSelectServer(sid)}
+							/>
+						))}
+					</SortableContext>
 				</div>
 			) : null}
 		</div>

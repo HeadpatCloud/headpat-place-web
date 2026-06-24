@@ -97,6 +97,16 @@ describe("applyDragResult", () => {
 		);
 	});
 
+	test("reorders servers within the same folder", () => {
+		const layout: ChatLayout = {
+			items: [folder("f1", ["a", "b", "c"])],
+		};
+		const out = applyDragResult(layout, "a", "c", { makeFolderName: "New" });
+		const f = out.items.find((i) => i.type === "folder");
+		if (f?.type === "folder") expect(f.serverIds).toEqual(["b", "c", "a"]);
+		expect(out.items.some((i) => i.type === "server")).toBe(false);
+	});
+
 	test("never duplicates a moved server id across the tree", () => {
 		const layout: ChatLayout = {
 			items: [folder("f1", ["a", "b"]), folder("f2", ["c"])],

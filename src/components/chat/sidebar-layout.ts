@@ -63,6 +63,31 @@ export function applyDragResult(
 ): ChatLayout {
 	if (activeId === overId) return layout;
 
+	// reorder within a single folder when both servers live in the same one
+	if (!opts.intoFolder) {
+		const sameFolder = layout.items.find(
+			(i) =>
+				i.type === "folder" &&
+				i.serverIds.includes(activeId) &&
+				i.serverIds.includes(overId),
+		);
+		if (sameFolder?.type === "folder") {
+			const fromPos = sameFolder.serverIds.indexOf(activeId);
+			const toPos = sameFolder.serverIds.indexOf(overId);
+			const ids = sameFolder.serverIds.filter((s) => s !== activeId);
+			const at =
+				fromPos < toPos ? ids.indexOf(overId) + 1 : ids.indexOf(overId);
+			ids.splice(at, 0, activeId);
+			return {
+				items: layout.items.map((i) =>
+					i.type === "folder" && i.id === sameFolder.id
+						? { ...i, serverIds: ids }
+						: i,
+				),
+			};
+		}
+	}
+
 	const stripped = removeServer(layout.items, activeId);
 
 	// drop onto a folder -> move into it
