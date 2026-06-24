@@ -64,7 +64,9 @@ function ChangelogPage() {
 	const t = useTranslations("miscPages");
 	const c = useTranslations("common");
 	const list = useQuery(
-		orpc.changelog.list.queryOptions({ input: { page, pageSize: PAGE_SIZE } }),
+		orpc.changelog.list.queryOptions({
+			input: { page, pageSize: PAGE_SIZE, type: "web" },
+		}),
 	);
 	const items = (list.data?.items ?? []) as Entry[];
 
