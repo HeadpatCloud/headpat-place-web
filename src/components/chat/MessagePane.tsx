@@ -506,7 +506,10 @@ export function MessagePane({ source }: { source: Source }) {
 	const byUser = new Map(parts.map((p) => [p.userId, p]));
 	const meId = session?.user?.id;
 	const others = parts.filter((p) => p.userId !== meId);
-	const isGroup = source.kind === "dm" && others.length > 1;
+	const convType = conversation.data?.type;
+	const isGroup =
+		source.kind === "dm" &&
+		(convType ? convType === "group" : others.length > 1);
 	const dmOther =
 		source.kind === "dm" && others.length === 1 ? others[0] : null;
 	const relationQ = useQuery({

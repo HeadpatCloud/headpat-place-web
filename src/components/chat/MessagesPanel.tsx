@@ -56,7 +56,7 @@ export function MessagesPanel() {
 
 			<div className="flex-1 overflow-y-auto px-2 py-2">
 				{conversations.data?.items.map((c) => {
-					const isGroup = !!c.name || c.others.length > 1;
+					const isGroup = c.type === "group" || c.others.length > 1;
 					const other = c.others[0];
 					const memberCount = c.others.length + 1;
 					const label = c.name

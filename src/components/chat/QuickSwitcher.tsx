@@ -21,6 +21,7 @@ import { type RecentKind, useRecentChats } from "@/lib/use-recent-chats";
 type DmConversation = {
 	id: string;
 	name: string | null;
+	type: "dm" | "group";
 	others: {
 		userId: string;
 		displayName: string | null;
@@ -123,7 +124,10 @@ export function QuickSwitcher({
 
 	const openDmWith = async (userId: string) => {
 		const existing = convItems.find(
-			(c) => c.others.length === 1 && c.others[0]?.userId === userId,
+			(c) =>
+				c.type === "dm" &&
+				c.others.length === 1 &&
+				c.others[0]?.userId === userId,
 		);
 		if (existing) return go(`/chat/dm/${existing.id}`);
 		const conv = await client.message.startConversation({
