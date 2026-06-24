@@ -11,7 +11,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
+import { Switch } from "@/components/ui/switch";
 import { useTranslations } from "@/lib/i18n";
 import { useLocalizedNavigate as useNavigate } from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
@@ -315,6 +317,25 @@ function UploadPage() {
 									}}
 								/>
 							</div>
+							<FormField
+								control={form.control}
+								name="nsfw"
+								render={({ field }) => (
+									<div className="flex items-center gap-2">
+										<Switch
+											id="nsfw"
+											checked={field.value ?? false}
+											onCheckedChange={field.onChange}
+										/>
+										<Label
+											htmlFor="nsfw"
+											className="cursor-pointer select-none text-sm"
+										>
+											{t("markNsfw")}
+										</Label>
+									</div>
+								)}
+							/>
 							{submit.isPending ? (
 								<div className="space-y-1">
 									<Progress

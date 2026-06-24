@@ -3,6 +3,7 @@
 		"title": "Gallery",
 		"upload": "+ Upload",
 		"showNsfw": "Show NSFW",
+		"markNsfw": "Mark as NSFW",
 		"empty": "No images yet.",
 		"deleted": "Deleted.",
 		"notFound": "Not found.",
