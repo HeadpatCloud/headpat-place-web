@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import type * as LType from "leaflet";
 import "leaflet/dist/leaflet.css";
+import "leaflet.markercluster/dist/MarkerCluster.css";
 import { useTheme } from "next-themes";
 import { useEffect, useRef, useState } from "react";
 import { useLiveLocations } from "@/components/contexts/PresenceProvider";
@@ -8,7 +9,9 @@ import { useSession } from "@/lib/auth-client";
 import { client, orpc } from "@/lib/orpc";
 import {
 	ACCENT,
+	clusterIcon,
 	loadLeaflet,
+	loadMarkerCluster,
 	localTimezone,
 	PERSON_COLOR,
 	parseLatLng,
@@ -42,6 +45,7 @@ export function MapView() {
 	const mapRef = useRef<LType.Map | null>(null);
 	const tileRef = useRef<LType.TileLayer | null>(null);
 	const groupRef = useRef<LType.LayerGroup | null>(null);
+	const clusterRef = useRef<LType.MarkerClusterGroup | null>(null);
 	const peopleRef = useRef<LType.LayerGroup | null>(null);
 	const fittedRef = useRef(false);
 	const [mapReady, setMapReady] = useState(false);
@@ -84,6 +88,7 @@ export function MapView() {
 		(async () => {
 			if (!LRef.current) LRef.current = await loadLeaflet();
 			const L = LRef.current;
+			await loadMarkerCluster();
 			if (cancelled || !containerRef.current) return;
 
 			if (!mapRef.current) {
@@ -100,6 +105,12 @@ export function MapView() {
 					maxBoundsViscosity: 1,
 				});
 				groupRef.current = L.layerGroup().addTo(mapRef.current);
+				clusterRef.current = L.markerClusterGroup({
+					showCoverageOnHover: false,
+					maxClusterRadius: 60,
+					iconCreateFunction: (cluster) =>
+						clusterIcon(L, cluster.getChildCount()),
+				}).addTo(mapRef.current);
 				peopleRef.current = L.layerGroup().addTo(mapRef.current);
 				setTimeout(() => mapRef.current?.invalidateSize(), 80);
 				setMapReady(true);
@@ -111,10 +122,12 @@ export function MapView() {
 			tileRef.current = tileLayer(L, dark).addTo(map);
 			tileRef.current.bringToBack();
 
-			// event zones + pins
+			// event zones + pins (pins cluster when they overlap at low zoom)
 			const group = groupRef.current;
-			if (!group) return;
+			const cluster = clusterRef.current;
+			if (!group || !cluster) return;
 			group.clearLayers();
+			cluster.clearLayers();
 			const bounds = L.latLngBounds([]);
 			for (const ev of (events.data ?? []) as MapEvent[]) {
 				const coords = (ev.coordinates ?? [])
@@ -155,9 +168,9 @@ export function MapView() {
 					bounds.extend(circ.getBounds());
 				}
 				if (center) {
-					L.marker(center, { icon: pinIcon(L) })
-						.addTo(group)
-						.bindPopup(popup);
+					cluster.addLayer(
+						L.marker(center, { icon: pinIcon(L) }).bindPopup(popup),
+					);
 				}
 			}
 			if (!fittedRef.current) {

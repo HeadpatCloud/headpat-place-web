@@ -28,6 +28,15 @@ export function loadGeoman(): Promise<unknown> {
 	return geomanPromise;
 }
 
+let clusterPromise: Promise<unknown> | null = null;
+/** Load markercluster, which adds `L.markerClusterGroup`. Call after loadLeaflet, before creating a cluster group. */
+export function loadMarkerCluster(): Promise<unknown> {
+	if (!clusterPromise) {
+		clusterPromise = import("leaflet.markercluster");
+	}
+	return clusterPromise;
+}
+
 /** Shared fill/stroke for drawn + rendered event zones. */
 export const ZONE_STYLE = {
 	color: ACCENT,
@@ -155,6 +164,20 @@ export function personIcon(
 		iconSize: [32, 32],
 		iconAnchor: [16, 16],
 		popupAnchor: [0, -18],
+	});
+}
+
+/** Count badge for a group of overlapping event pins; size + halo scale with the
+ *  number of events so a dense area reads as a bigger circle. */
+export function clusterIcon(L: typeof LType, count: number): LType.DivIcon {
+	const size = count < 10 ? 36 : count < 100 ? 44 : 52;
+	const inner = size - 10;
+	const html = `<div style="display:flex;align-items:center;justify-content:center;width:${size}px;height:${size}px;border-radius:9999px;background:rgba(16,185,129,.30)"><div style="display:flex;align-items:center;justify-content:center;width:${inner}px;height:${inner}px;border-radius:9999px;background:${ACCENT};color:#fff;font-weight:700;font-size:${count < 100 ? 14 : 13}px;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)">${count}</div></div>`;
+	return L.divIcon({
+		html,
+		className: "",
+		iconSize: [size, size],
+		iconAnchor: [size / 2, size / 2],
 	});
 }
 
