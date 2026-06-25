@@ -96,6 +96,9 @@ export function MapView() {
 					center: [25, 0],
 					zoom: 2,
 					minZoom: 2,
+					// markercluster needs a finite maxZoom; the cluster group is added
+					// before the tile layer, so the map must carry it (matches tiles).
+					maxZoom: 20,
 					// Stop the world repeating horizontally: hard-bound to a single
 					// world and bounce back at the edges (tiles also get noWrap below).
 					maxBounds: [
