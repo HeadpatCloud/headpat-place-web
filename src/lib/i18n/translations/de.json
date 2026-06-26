@@ -1371,6 +1371,7 @@
 		"followingTitle": "%{name} folgt",
 		"followingEmpty": "Folgt noch niemandem.",
 		"birthdayToday": "Ich habe heute Geburtstag!",
+		"joinedLabel": "Dabei seit %{date}",
 		"followersLabel": "Follower",
 		"followingLabel": "folgt",
 		"profileAbout": "Über mich",

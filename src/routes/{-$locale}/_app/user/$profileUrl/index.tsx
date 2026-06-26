@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import confetti from "canvas-confetti";
-import { CakeIcon } from "lucide-react";
+import { CakeIcon, CalendarDaysIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { GradientBanner } from "@/components/GradientBanner";
@@ -65,6 +65,13 @@ function isBirthdayToday(birthday: string | Date | null | undefined) {
 function formatBirthday(birthday: string | Date) {
 	return new Date(birthday).toLocaleDateString("en-GB", {
 		day: "2-digit",
+		month: "long",
+		year: "numeric",
+	});
+}
+
+function formatJoined(registeredAt: string | Date) {
+	return new Date(registeredAt).toLocaleDateString("en-GB", {
 		month: "long",
 		year: "numeric",
 	});
@@ -157,6 +164,12 @@ function UserProfilePage() {
 								<Badge variant="secondary" className="gap-1">
 									<CakeIcon className="size-3.5" />
 									{formatBirthday(p.birthday)}
+								</Badge>
+							) : null}
+							{p.registeredAt ? (
+								<Badge variant="secondary" className="gap-1">
+									<CalendarDaysIcon className="size-3.5" />
+									{t("joinedLabel", { date: formatJoined(p.registeredAt) })}
 								</Badge>
 							) : null}
 							{(p.badges ?? []).map((b) => (

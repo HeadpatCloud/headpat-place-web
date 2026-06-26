@@ -1371,6 +1371,7 @@
 		"followingTitle": "%{name} is following",
 		"followingEmpty": "Not following anyone yet.",
 		"birthdayToday": "It's my birthday today!",
+		"joinedLabel": "Joined %{date}",
 		"followersLabel": "followers",
 		"followingLabel": "following",
 		"profileAbout": "About",

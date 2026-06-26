@@ -1371,6 +1371,7 @@
 		"followingTitle": "%{name} volgt",
 		"followingEmpty": "Volgt nog niemand.",
 		"birthdayToday": "Ik ben vandaag jarig!",
+		"joinedLabel": "Lid sinds %{date}",
 		"followersLabel": "volgers",
 		"followingLabel": "volgend",
 		"profileAbout": "Over mij",
