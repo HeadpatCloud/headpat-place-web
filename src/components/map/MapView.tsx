@@ -116,6 +116,10 @@ export function MapView() {
 				}).addTo(mapRef.current);
 				peopleRef.current = L.layerGroup().addTo(mapRef.current);
 				setTimeout(() => mapRef.current?.invalidateSize(), 80);
+				// re-measure after a zoom so the map always repaints to fill its box
+				mapRef.current.on("zoomend", () =>
+					mapRef.current?.invalidateSize({ pan: false }),
+				);
 				setMapReady(true);
 			}
 			const map = mapRef.current;
