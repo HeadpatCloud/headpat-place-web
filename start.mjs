@@ -1,3 +1,4 @@
+import { randomBytes } from "node:crypto";
 import { createReadStream, existsSync, statSync } from "node:fs";
 import { createServer } from "node:http";
 import { extname, join } from "node:path";
@@ -44,27 +45,35 @@ const MIME_TYPES = {
 
 const apiUrl = process.env.VITE_API_URL || "";
 
-const securityHeaders = {
-  "Content-Security-Policy": [
-    "default-src 'self'",
-    "img-src 'self' https: data: blob:",
-    "font-src 'self' https: data:",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-    `script-src 'self' 'unsafe-inline'`,
-    "frame-src 'none'",
-    `connect-src 'self' https: wss: ${apiUrl}`.trim(),
-    "frame-ancestors 'none'",
-    "base-uri 'self'",
-    "form-action 'self'",
-    "object-src 'none'",
-  ].join("; "),
-  "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
-  "X-Content-Type-Options": "nosniff",
-  "X-Frame-Options": "DENY",
-  "Referrer-Policy": "strict-origin-when-cross-origin",
-  "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
-  "Cross-Origin-Opener-Policy": "same-origin",
-};
+const BASE_SCRIPT_SRC = "script-src 'self'";
+
+// SSR HTML carries inline scripts (theme, next-themes, hydration), so its CSP
+// gets a per-request nonce instead of 'unsafe-inline'. Same-origin bundles and
+// dynamic imports still load via 'self'. Static/non-HTML responses have no inline
+// scripts, so they use the base script-src.
+function securityHeaders(scriptSrc) {
+  return {
+    "Content-Security-Policy": [
+      "default-src 'self'",
+      "img-src 'self' https: data: blob:",
+      "font-src 'self' https: data:",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      scriptSrc,
+      "frame-src 'none'",
+      `connect-src 'self' https: wss: ${apiUrl}`.trim(),
+      "frame-ancestors 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "object-src 'none'",
+    ].join("; "),
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
+    "Cross-Origin-Opener-Policy": "same-origin",
+  };
+}
 
 function isPathAllowed(pathname) {
   if (pathname.includes("/.")) return false;
@@ -91,7 +100,7 @@ function tryServeStatic(req, res) {
   const headers = {
     "Content-Type": contentType,
     "Content-Length": stat.size,
-    ...securityHeaders,
+    ...securityHeaders(BASE_SCRIPT_SRC),
   };
 
   if (url.pathname.startsWith("/assets/")) {
@@ -179,7 +188,7 @@ const server = createServer(async (req, res) => {
 
   const host = validateHost(req.headers.host);
   if (!host) {
-    res.writeHead(400, securityHeaders);
+    res.writeHead(400, securityHeaders(BASE_SCRIPT_SRC));
     res.end("Bad Request: host not allowed");
     return;
   }
@@ -204,9 +213,31 @@ const server = createServer(async (req, res) => {
     }),
   );
 
+  const contentType = response.headers.get("content-type") || "";
+
+  // SSR HTML: stamp a per-request nonce onto every inline script and serve a
+  // nonce-based CSP (no 'unsafe-inline'). Buffered so the whole document shares
+  // one nonce; pages are small enough that giving up streaming here is fine.
+  if (contentType.includes("text/html")) {
+    const nonce = randomBytes(16).toString("base64");
+    const html = await response.text();
+    const nonced = html.replace(
+      /<script(?![^>]*\snonce=)/gi,
+      `<script nonce="${nonce}"`,
+    );
+    const responseHeaders = {
+      ...Object.fromEntries(response.headers.entries()),
+      ...securityHeaders(`script-src 'self' 'nonce-${nonce}'`),
+    };
+    delete responseHeaders["content-length"];
+    res.writeHead(response.status, responseHeaders);
+    res.end(nonced);
+    return;
+  }
+
   const responseHeaders = {
     ...Object.fromEntries(response.headers.entries()),
-    ...securityHeaders,
+    ...securityHeaders(BASE_SCRIPT_SRC),
   };
 
   res.writeHead(response.status, responseHeaders);
