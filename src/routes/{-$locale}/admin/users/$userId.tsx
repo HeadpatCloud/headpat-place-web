@@ -176,6 +176,15 @@ function UserDetail() {
 		onError: (e: Error) => toast.error(e.message),
 	});
 
+	const verifyEmail = useMutation({
+		mutationFn: () => client.adminUser.verifyEmail({ userId }),
+		onSuccess: () => {
+			toast.success(t("emailVerifiedDone"));
+			invalidateUser();
+		},
+		onError: (e: Error) => toast.error(e.message),
+	});
+
 	if (userQ.isError)
 		return <p className="text-muted-foreground">{t("noAccess")}</p>;
 	if (userQ.isPending)
@@ -422,6 +431,47 @@ function UserDetail() {
 				</CardHeader>
 				<CardContent className="space-y-4">
 					<div className="flex items-center justify-between gap-3">
+						<div className="min-w-0">
+							<p className="text-sm font-medium">{t("email")}</p>
+							<p className="truncate text-xs text-muted-foreground">
+								{u.email} ·{" "}
+								{u.emailVerified ? t("emailVerified") : t("emailUnverified")}
+							</p>
+						</div>
+						{u.emailVerified ? (
+							<Badge variant="secondary">{t("emailVerified")}</Badge>
+						) : (
+							<AlertDialog>
+								<AlertDialogTrigger asChild>
+									<Button
+										variant="outline"
+										size="sm"
+										disabled={verifyEmail.isPending}
+									>
+										{t("verifyEmail")}
+									</Button>
+								</AlertDialogTrigger>
+								<AlertDialogContent>
+									<AlertDialogHeader>
+										<AlertDialogTitle>
+											{t("verifyEmailConfirmTitle")}
+										</AlertDialogTitle>
+										<AlertDialogDescription>
+											{t("verifyEmailConfirmBody")}
+										</AlertDialogDescription>
+									</AlertDialogHeader>
+									<AlertDialogFooter>
+										<AlertDialogCancel>{c("cancel")}</AlertDialogCancel>
+										<AlertDialogAction onClick={() => verifyEmail.mutate()}>
+											{t("verifyEmail")}
+										</AlertDialogAction>
+									</AlertDialogFooter>
+								</AlertDialogContent>
+							</AlertDialog>
+						)}
+					</div>
+					<Separator />
+					<div className="flex items-center justify-between gap-3">
 						<div>
 							<p className="text-sm font-medium">{t("twoFactor")}</p>
 							<p className="text-xs text-muted-foreground">
@@ -450,7 +500,10 @@ function UserDetail() {
 									</AlertDialogHeader>
 									<AlertDialogFooter>
 										<AlertDialogCancel>{c("cancel")}</AlertDialogCancel>
-										<AlertDialogAction onClick={() => disable2fa.mutate()}>
+										<AlertDialogAction
+											onClick={() => disable2fa.mutate()}
+											className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+										>
 											{t("disable2fa")}
 										</AlertDialogAction>
 									</AlertDialogFooter>
