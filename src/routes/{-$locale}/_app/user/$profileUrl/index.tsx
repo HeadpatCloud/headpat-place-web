@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useSession } from "@/lib/auth-client";
+import { formatBirthday, isBirthdayToday } from "@/lib/birthday";
 import {
 	DEFAULT_LOCALE,
 	type Locale,
@@ -53,22 +54,6 @@ export const Route = createFileRoute("/{-$locale}/_app/user/$profileUrl/")({
 		});
 	},
 });
-
-function isBirthdayToday(birthday: string | Date | null | undefined) {
-	if (!birthday) return false;
-	const d = new Date(birthday);
-	if (Number.isNaN(d.getTime())) return false;
-	const now = new Date();
-	return d.getDate() === now.getDate() && d.getMonth() === now.getMonth();
-}
-
-function formatBirthday(birthday: string | Date) {
-	return new Date(birthday).toLocaleDateString("en-GB", {
-		day: "2-digit",
-		month: "long",
-		year: "numeric",
-	});
-}
 
 function formatJoined(registeredAt: string | Date) {
 	return new Date(registeredAt).toLocaleDateString("en-GB", {
@@ -117,11 +102,13 @@ function UserProfilePage() {
 	if (profile.isError || !profile.data)
 		return <p className="p-4">{t("profileNotFound")}</p>;
 	const p = profile.data;
-	const birthday = isBirthdayToday(p.birthday);
+	const showDay = p.birthdayShowDay ?? true;
+	const showYear = p.birthdayShowYear ?? true;
+	const isBday = isBirthdayToday(p.birthday, showDay);
 
 	return (
 		<main className="space-y-6">
-			{birthday ? <BirthdayConfetti /> : null}
+			{isBday ? <BirthdayConfetti /> : null}
 			<div className="overflow-hidden rounded-2xl border">
 				<GradientBanner kind="banner" fileId={p.bannerFileId} aspect="3/1" />
 				<div className="px-6 pb-6">
@@ -147,7 +134,7 @@ function UserProfilePage() {
 						<FollowButton targetUserId={p.userId} />
 					</div>
 					<div className="mt-4 space-y-4">
-						{birthday ? (
+						{isBday ? (
 							<div className="flex items-center gap-2 rounded-xl bg-primary/10 px-4 py-2 text-primary">
 								<CakeIcon className="size-5" />
 								<span className="font-semibold">{t("birthdayToday")}</span>
@@ -163,7 +150,7 @@ function UserProfilePage() {
 							{p.birthday ? (
 								<Badge variant="secondary" className="gap-1">
 									<CakeIcon className="size-3.5" />
-									{formatBirthday(p.birthday)}
+									{formatBirthday(p.birthday, { showDay, showYear })}
 								</Badge>
 							) : null}
 							{p.registeredAt ? (

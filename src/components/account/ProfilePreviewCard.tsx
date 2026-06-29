@@ -5,6 +5,7 @@ import { useStorageUrl } from "@/components/StorageImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { formatBirthday } from "@/lib/birthday";
 import { useTranslations } from "@/lib/i18n";
 
 export type PreviewData = {
@@ -15,6 +16,8 @@ export type PreviewData = {
 	pronouns?: string | null;
 	location?: string | null;
 	birthday?: string | Date | null;
+	birthdayShowDay?: boolean;
+	birthdayShowYear?: boolean;
 	discordName?: string | null;
 	telegramName?: string | null;
 	furaffinityName?: string | null;
@@ -102,9 +105,9 @@ export function ProfilePreviewCard({
 							{data.birthday ? (
 								<Badge variant="secondary" className="gap-1">
 									<CakeIcon className="size-3.5" />
-									{new Date(data.birthday).toLocaleDateString("en-GB", {
-										day: "2-digit",
-										month: "long",
+									{formatBirthday(data.birthday, {
+										showDay: data.birthdayShowDay ?? true,
+										showYear: data.birthdayShowYear ?? true,
 									})}
 								</Badge>
 							) : null}

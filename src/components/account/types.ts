@@ -18,6 +18,8 @@ export type AccountProfile = {
 	bioHtml?: string | null;
 	pronouns?: string | null;
 	birthday?: string | Date | null;
+	birthdayShowDay?: boolean;
+	birthdayShowYear?: boolean;
 	location?: string | null;
 	timezone?: string | null;
 	discordName?: string | null;

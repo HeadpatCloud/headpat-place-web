@@ -15,6 +15,7 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { useTranslations } from "@/lib/i18n";
 import { BirthdayPicker } from "./BirthdayPicker";
 import { ProfilePreviewCard } from "./ProfilePreviewCard";
@@ -27,6 +28,8 @@ const schema = z.object({
 	pronouns: z.string().max(60).optional(),
 	location: z.string().max(120).optional(),
 	birthday: z.date().nullable().optional(),
+	birthdayShowDay: z.boolean().optional(),
+	birthdayShowYear: z.boolean().optional(),
 	discordName: z.string().max(60).optional(),
 	telegramName: z.string().max(60).optional(),
 	furaffinityName: z.string().max(60).optional(),
@@ -64,6 +67,8 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 			pronouns: "",
 			location: "",
 			birthday: null,
+			birthdayShowDay: true,
+			birthdayShowYear: true,
 			discordName: "",
 			telegramName: "",
 			furaffinityName: "",
@@ -85,6 +90,8 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 				pronouns: profile.pronouns ?? "",
 				location: profile.location ?? "",
 				birthday: profile.birthday ? new Date(profile.birthday) : null,
+				birthdayShowDay: profile.birthdayShowDay ?? true,
+				birthdayShowYear: profile.birthdayShowYear ?? true,
 				discordName: profile.discordName ?? "",
 				telegramName: profile.telegramName ?? "",
 				furaffinityName: profile.furaffinityName ?? "",
@@ -196,6 +203,47 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 								</FormItem>
 							)}
 						/>
+						{form.watch("birthday") ? (
+							<div className="flex flex-col gap-3 rounded-lg border border-border p-3">
+								<span className="text-xs font-medium text-muted-foreground">
+									{t("birthdayVisibility")}
+								</span>
+								<FormField
+									control={form.control}
+									name="birthdayShowDay"
+									render={({ field }) => (
+										<FormItem className="flex items-center justify-between gap-2 space-y-0">
+											<FormLabel className="font-normal">
+												{t("showBirthdayDay")}
+											</FormLabel>
+											<FormControl>
+												<Switch
+													checked={field.value ?? true}
+													onCheckedChange={field.onChange}
+												/>
+											</FormControl>
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="birthdayShowYear"
+									render={({ field }) => (
+										<FormItem className="flex items-center justify-between gap-2 space-y-0">
+											<FormLabel className="font-normal">
+												{t("showBirthdayYear")}
+											</FormLabel>
+											<FormControl>
+												<Switch
+													checked={field.value ?? true}
+													onCheckedChange={field.onChange}
+												/>
+											</FormControl>
+										</FormItem>
+									)}
+								/>
+							</div>
+						) : null}
 					</div>
 
 					<div className="space-y-4">
