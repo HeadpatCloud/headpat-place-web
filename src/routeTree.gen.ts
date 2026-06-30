@@ -30,6 +30,7 @@ import { Route as Char123LocaleChar125AppMapRouteImport } from './routes/{-$loca
 import { Route as Char123LocaleChar125AppChangelogRouteImport } from './routes/{-$locale}/_app/changelog'
 import { Route as Char123LocaleChar125AdminUsersIndexRouteImport } from './routes/{-$locale}/admin/users/index'
 import { Route as Char123LocaleChar125AdminTicketsIndexRouteImport } from './routes/{-$locale}/admin/tickets/index'
+import { Route as Char123LocaleChar125AdminSettingsIndexRouteImport } from './routes/{-$locale}/admin/settings/index'
 import { Route as Char123LocaleChar125AdminRolesIndexRouteImport } from './routes/{-$locale}/admin/roles/index'
 import { Route as Char123LocaleChar125AdminReportsIndexRouteImport } from './routes/{-$locale}/admin/reports/index'
 import { Route as Char123LocaleChar125AdminChangelogIndexRouteImport } from './routes/{-$locale}/admin/changelog/index'
@@ -190,6 +191,12 @@ const Char123LocaleChar125AdminTicketsIndexRoute =
   Char123LocaleChar125AdminTicketsIndexRouteImport.update({
     id: '/tickets/',
     path: '/tickets/',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AdminSettingsIndexRoute =
+  Char123LocaleChar125AdminSettingsIndexRouteImport.update({
+    id: '/settings/',
+    path: '/settings/',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
 const Char123LocaleChar125AdminRolesIndexRoute =
@@ -476,6 +483,7 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/admin/changelog/': typeof Char123LocaleChar125AdminChangelogIndexRoute
   '/{-$locale}/admin/reports/': typeof Char123LocaleChar125AdminReportsIndexRoute
   '/{-$locale}/admin/roles/': typeof Char123LocaleChar125AdminRolesIndexRoute
+  '/{-$locale}/admin/settings/': typeof Char123LocaleChar125AdminSettingsIndexRoute
   '/{-$locale}/admin/tickets/': typeof Char123LocaleChar125AdminTicketsIndexRoute
   '/{-$locale}/admin/users/': typeof Char123LocaleChar125AdminUsersIndexRoute
   '/{-$locale}/community/$communityId/admin': typeof Char123LocaleChar125AppCommunityCommunityIdAdminRoute
@@ -533,6 +541,7 @@ export interface FileRoutesByTo {
   '/{-$locale}/admin/changelog': typeof Char123LocaleChar125AdminChangelogIndexRoute
   '/{-$locale}/admin/reports': typeof Char123LocaleChar125AdminReportsIndexRoute
   '/{-$locale}/admin/roles': typeof Char123LocaleChar125AdminRolesIndexRoute
+  '/{-$locale}/admin/settings': typeof Char123LocaleChar125AdminSettingsIndexRoute
   '/{-$locale}/admin/tickets': typeof Char123LocaleChar125AdminTicketsIndexRoute
   '/{-$locale}/admin/users': typeof Char123LocaleChar125AdminUsersIndexRoute
   '/{-$locale}/community/$communityId/admin': typeof Char123LocaleChar125AppCommunityCommunityIdAdminRoute
@@ -596,6 +605,7 @@ export interface FileRoutesById {
   '/{-$locale}/admin/changelog/': typeof Char123LocaleChar125AdminChangelogIndexRoute
   '/{-$locale}/admin/reports/': typeof Char123LocaleChar125AdminReportsIndexRoute
   '/{-$locale}/admin/roles/': typeof Char123LocaleChar125AdminRolesIndexRoute
+  '/{-$locale}/admin/settings/': typeof Char123LocaleChar125AdminSettingsIndexRoute
   '/{-$locale}/admin/tickets/': typeof Char123LocaleChar125AdminTicketsIndexRoute
   '/{-$locale}/admin/users/': typeof Char123LocaleChar125AdminUsersIndexRoute
   '/{-$locale}/_app/community/$communityId/admin': typeof Char123LocaleChar125AppCommunityCommunityIdAdminRoute
@@ -658,6 +668,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/changelog/'
     | '/{-$locale}/admin/reports/'
     | '/{-$locale}/admin/roles/'
+    | '/{-$locale}/admin/settings/'
     | '/{-$locale}/admin/tickets/'
     | '/{-$locale}/admin/users/'
     | '/{-$locale}/community/$communityId/admin'
@@ -715,6 +726,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/changelog'
     | '/{-$locale}/admin/reports'
     | '/{-$locale}/admin/roles'
+    | '/{-$locale}/admin/settings'
     | '/{-$locale}/admin/tickets'
     | '/{-$locale}/admin/users'
     | '/{-$locale}/community/$communityId/admin'
@@ -777,6 +789,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/changelog/'
     | '/{-$locale}/admin/reports/'
     | '/{-$locale}/admin/roles/'
+    | '/{-$locale}/admin/settings/'
     | '/{-$locale}/admin/tickets/'
     | '/{-$locale}/admin/users/'
     | '/{-$locale}/_app/community/$communityId/admin'
@@ -940,6 +953,13 @@ declare module '@tanstack/react-router' {
       path: '/tickets'
       fullPath: '/{-$locale}/admin/tickets/'
       preLoaderRoute: typeof Char123LocaleChar125AdminTicketsIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
+    }
+    '/{-$locale}/admin/settings/': {
+      id: '/{-$locale}/admin/settings/'
+      path: '/settings'
+      fullPath: '/{-$locale}/admin/settings/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminSettingsIndexRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
     '/{-$locale}/admin/roles/': {
@@ -1376,6 +1396,7 @@ interface Char123LocaleChar125AdminRouteChildren {
   Char123LocaleChar125AdminChangelogIndexRoute: typeof Char123LocaleChar125AdminChangelogIndexRoute
   Char123LocaleChar125AdminReportsIndexRoute: typeof Char123LocaleChar125AdminReportsIndexRoute
   Char123LocaleChar125AdminRolesIndexRoute: typeof Char123LocaleChar125AdminRolesIndexRoute
+  Char123LocaleChar125AdminSettingsIndexRoute: typeof Char123LocaleChar125AdminSettingsIndexRoute
   Char123LocaleChar125AdminTicketsIndexRoute: typeof Char123LocaleChar125AdminTicketsIndexRoute
   Char123LocaleChar125AdminUsersIndexRoute: typeof Char123LocaleChar125AdminUsersIndexRoute
 }
@@ -1403,6 +1424,8 @@ const Char123LocaleChar125AdminRouteChildren: Char123LocaleChar125AdminRouteChil
       Char123LocaleChar125AdminReportsIndexRoute,
     Char123LocaleChar125AdminRolesIndexRoute:
       Char123LocaleChar125AdminRolesIndexRoute,
+    Char123LocaleChar125AdminSettingsIndexRoute:
+      Char123LocaleChar125AdminSettingsIndexRoute,
     Char123LocaleChar125AdminTicketsIndexRoute:
       Char123LocaleChar125AdminTicketsIndexRoute,
     Char123LocaleChar125AdminUsersIndexRoute:

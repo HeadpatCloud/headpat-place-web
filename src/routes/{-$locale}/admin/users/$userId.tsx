@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
 	ExternalLinkIcon,
+	HistoryIcon,
 	KeyIcon,
 	MonitorIcon,
 	ShieldCheckIcon,
@@ -9,6 +10,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { UserAuditLog } from "@/components/admin/UserAuditLog";
 import { StorageImage } from "@/components/StorageImage";
 import {
 	AlertDialog,
@@ -240,14 +242,25 @@ function UserDetail() {
 							{t("joined", { date: fmt.date(u.createdAt) })}
 						</p>
 					</div>
-					{u.profileUrl ? (
-						<Button asChild variant="outline" size="sm" className="shrink-0">
-							<Link to={`/user/${u.profileUrl}` as never}>
-								{t("viewProfile")}
-								<ExternalLinkIcon className="size-4" />
-							</Link>
-						</Button>
-					) : null}
+					<div className="flex shrink-0 flex-col gap-2">
+						{u.profileUrl ? (
+							<Button asChild variant="outline" size="sm">
+								<Link to={`/user/${u.profileUrl}` as never}>
+									{t("viewProfile")}
+									<ExternalLinkIcon className="size-4" />
+								</Link>
+							</Button>
+						) : null}
+						<UserAuditLog
+							userId={userId}
+							trigger={
+								<Button type="button" variant="outline" size="sm">
+									<HistoryIcon className="size-4" />
+									{t("auditLog")}
+								</Button>
+							}
+						/>
+					</div>
 				</CardContent>
 			</Card>
 

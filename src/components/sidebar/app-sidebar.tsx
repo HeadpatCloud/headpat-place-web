@@ -15,6 +15,7 @@ import {
 	MessagesSquareIcon,
 	PencilIcon,
 	RocketIcon,
+	SettingsIcon,
 	ShieldIcon,
 	UserSearchIcon,
 } from "lucide-react";
@@ -133,6 +134,11 @@ export function AppSidebar({
 				name: nav("adminAnnouncements"),
 				url: "/admin/announcements",
 				icon: MegaphoneIcon,
+			},
+			{
+				name: nav("adminSettings"),
+				url: "/admin/settings",
+				icon: SettingsIcon,
 			},
 		],
 		adminBack: [{ name: nav("backToHeadpat"), url: "/", icon: HomeIcon }],
