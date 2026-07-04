@@ -64,6 +64,8 @@ function LoginPage() {
 	const [isRegistering, setIsRegistering] = useState(false);
 	const [authError, setAuthError] = useState<string | null>(null);
 	const [shakeKey, setShakeKey] = useState(0);
+	const [unverifiedEmail, setUnverifiedEmail] = useState<string | null>(null);
+	const [registeredEmail, setRegisteredEmail] = useState<string | null>(null);
 	const cardRef = useRef<HTMLDivElement>(null);
 
 	const loginSchema = useMemo(
@@ -115,7 +117,6 @@ function LoginPage() {
 		if (session?.user) navigate({ to: "/account" as never });
 	}, [session, navigate]);
 
-	// Wiggle the card on a failed attempt — visible, immediate feedback.
 	useEffect(() => {
 		if (shakeKey === 0) return;
 		if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
@@ -139,6 +140,7 @@ function LoginPage() {
 
 	async function submitLogin(data: LoginFormData) {
 		setAuthError(null);
+		setUnverifiedEmail(null);
 		try {
 			const r = await signIn.email({
 				email: data.email,
@@ -152,6 +154,11 @@ function LoginPage() {
 					navigate({ to: "/login/mfa" as never });
 					return;
 				}
+				if (r.error.code === "EMAIL_NOT_VERIFIED") {
+					setUnverifiedEmail(data.email);
+					fail(t("emailNotVerifiedHint"));
+					return;
+				}
 				fail(humanizeError(r.error.message ?? t("wrongEmailOrPassword")));
 				return;
 			}
@@ -162,6 +169,18 @@ function LoginPage() {
 		}
 	}
 
+	async function resendVerification() {
+		if (!unverifiedEmail) return;
+		const r = await authClient.sendVerificationEmail({
+			email: unverifiedEmail,
+		});
+		if (r.error) {
+			toast.error(r.error.message ?? t("somethingWentWrong"));
+			return;
+		}
+		toast.success(t("verificationEmailSent"));
+	}
+
 	async function submitRegister(data: RegisterFormData) {
 		setAuthError(null);
 		try {
@@ -169,14 +188,12 @@ function LoginPage() {
 				email: data.email,
 				password: data.password,
 				name: data.username,
-				callbackURL: `${window.location.origin}/account`,
 			});
 			if (r.error) {
 				fail(humanizeError(r.error.message ?? t("couldNotCreateAccount")));
 				return;
 			}
-			toast.success(t("loggedInSuccess"));
-			navigate({ to: "/account" as never });
+			setRegisteredEmail(data.email);
 		} catch (e) {
 			fail(humanizeError(e instanceof Error ? e.message : null));
 		}
@@ -217,197 +234,235 @@ function LoginPage() {
 						<span>{authError}</span>
 					</div>
 				) : null}
+				{unverifiedEmail ? (
+					<div className="mx-6 mt-2 text-center">
+						<Button variant="link" type="button" onClick={resendVerification}>
+							{t("resendVerification")}
+						</Button>
+					</div>
+				) : null}
 
-				<div className="mt-4">
-					{isRegistering ? (
-						<Form key="register" {...registerForm}>
-							<form
-								className="space-y-6"
-								onSubmit={registerForm.handleSubmit(submitRegister)}
-							>
-								<div className="mx-auto max-w-4xl space-y-6 p-6">
-									<div className="space-y-4">
-										<FormField
-											control={registerForm.control}
-											name="username"
-											render={({ field }) => (
-												<InputField
-													label={t("displayNameLabel")}
-													description=""
-													placeholder=""
-													field={field}
-												/>
-											)}
-										/>
-										<FormField
-											control={registerForm.control}
-											name="email"
-											render={({ field }) => (
-												<InputField
-													label={t("emailLabel")}
-													description=""
-													placeholder=""
-													field={field}
-												/>
-											)}
-										/>
-										<FormField
-											control={registerForm.control}
-											name="password"
-											render={({ field }) => (
-												<InputField
-													label={t("passwordLabel")}
-													description=""
-													placeholder=""
-													field={field}
-													type="password"
-												/>
-											)}
-										/>
-										<FormField
-											control={registerForm.control}
-											name="acceptedTerms"
-											render={({ field }) => (
-												<CheckboxField
-													label={t("acceptTermsLabel")}
-													description=""
-													field={field}
-												/>
-											)}
-										/>
-										<Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
-											{t("registerButton")}
-										</Button>
-										<Link to={"/forgot-password" as never}>
-											<Button variant="link" type="button" className="p-0">
-												{t("forgotPasswordLink")}
+				{registeredEmail ? (
+					<div className="mx-auto max-w-4xl space-y-4 p-6 text-center">
+						<h5 className="text-lg font-semibold">{t("checkInboxTitle")}</h5>
+						<p className="text-sm text-gray-500">{t("checkInboxBody")}</p>
+						<Button
+							type="button"
+							className="w-full"
+							onClick={() => {
+								setRegisteredEmail(null);
+								setIsRegistering(false);
+							}}
+						>
+							{t("backToSignIn")}
+						</Button>
+					</div>
+				) : (
+					<div className="mt-4">
+						{isRegistering ? (
+							<Form key="register" {...registerForm}>
+								<form
+									className="space-y-6"
+									onSubmit={registerForm.handleSubmit(submitRegister)}
+								>
+									<div className="mx-auto max-w-4xl space-y-6 p-6">
+										<div className="space-y-4">
+											<FormField
+												control={registerForm.control}
+												name="username"
+												render={({ field }) => (
+													<InputField
+														label={t("displayNameLabel")}
+														description=""
+														placeholder=""
+														field={field}
+													/>
+												)}
+											/>
+											<FormField
+												control={registerForm.control}
+												name="email"
+												render={({ field }) => (
+													<InputField
+														label={t("emailLabel")}
+														description=""
+														placeholder=""
+														field={field}
+													/>
+												)}
+											/>
+											<FormField
+												control={registerForm.control}
+												name="password"
+												render={({ field }) => (
+													<InputField
+														label={t("passwordLabel")}
+														description=""
+														placeholder=""
+														field={field}
+														type="password"
+													/>
+												)}
+											/>
+											<FormField
+												control={registerForm.control}
+												name="acceptedTerms"
+												render={({ field }) => (
+													<CheckboxField
+														label={t("acceptTermsLabel")}
+														description=""
+														field={field}
+													/>
+												)}
+											/>
+											<Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+												{t("registerButton")}
 											</Button>
-										</Link>
+											<Link to={"/forgot-password" as never}>
+												<Button variant="link" type="button" className="p-0">
+													{t("forgotPasswordLink")}
+												</Button>
+											</Link>
+										</div>
 									</div>
-								</div>
-							</form>
-						</Form>
-					) : (
-						<Form key="login" {...loginForm}>
-							<form
-								className="space-y-6"
-								onSubmit={loginForm.handleSubmit(submitLogin)}
-							>
-								<div className="mx-auto max-w-4xl space-y-6 p-6">
-									<div className="space-y-4">
-										<FormField
-											control={loginForm.control}
-											name="email"
-											render={({ field }) => (
-												<InputField
-													label={t("emailLabel")}
-													description=""
-													placeholder=""
-													field={field}
-												/>
-											)}
-										/>
-										<FormField
-											control={loginForm.control}
-											name="password"
-											render={({ field }) => (
-												<InputField
-													label={t("passwordLabel")}
-													description=""
-													placeholder=""
-													field={field}
-													type="password"
-												/>
-											)}
-										/>
-										<Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
-											{t("loginButton")}
-										</Button>
-										<Link to={"/forgot-password" as never}>
-											<Button variant="link" type="button" className="p-0">
-												{t("forgotPasswordLink")}
+								</form>
+							</Form>
+						) : (
+							<Form key="login" {...loginForm}>
+								<form
+									className="space-y-6"
+									onSubmit={loginForm.handleSubmit(submitLogin)}
+								>
+									<div className="mx-auto max-w-4xl space-y-6 p-6">
+										<div className="space-y-4">
+											<FormField
+												control={loginForm.control}
+												name="email"
+												render={({ field }) => (
+													<InputField
+														label={t("emailLabel")}
+														description=""
+														placeholder=""
+														field={field}
+													/>
+												)}
+											/>
+											<FormField
+												control={loginForm.control}
+												name="password"
+												render={({ field }) => (
+													<InputField
+														label={t("passwordLabel")}
+														description=""
+														placeholder=""
+														field={field}
+														type="password"
+													/>
+												)}
+											/>
+											<Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+												{t("loginButton")}
 											</Button>
-										</Link>
+											<Link to={"/forgot-password" as never}>
+												<Button variant="link" type="button" className="p-0">
+													{t("forgotPasswordLink")}
+												</Button>
+											</Link>
+										</div>
 									</div>
+								</form>
+							</Form>
+						)}
+
+						<div className="mt-8">
+							<div className="relative">
+								<div
+									className="absolute inset-0 flex items-center"
+									aria-hidden="true"
+								>
+									<div className="w-full border-t border-gray-200" />
 								</div>
-							</form>
-						</Form>
-					)}
-
-					<div className="mt-8">
-						<div className="relative">
-							<div
-								className="absolute inset-0 flex items-center"
-								aria-hidden="true"
-							>
-								<div className="w-full border-t border-gray-200" />
+								<div className="relative flex justify-center text-sm font-medium leading-6">
+									<span className="bg-background rounded-xl px-6">
+										{t("orContinueWith")}
+									</span>
+								</div>
 							</div>
-							<div className="relative flex justify-center text-sm font-medium leading-6">
-								<span className="bg-background rounded-xl px-6">
-									{t("orContinueWith")}
-								</span>
+
+							<div className="mt-6 grid grid-cols-2 gap-4">
+								<button
+									onClick={() => startOAuth("discord")}
+									className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#5865F2] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#1D9BF0] dark:border-white/20"
+									type="button"
+								>
+									<SiDiscord className="h-5" />
+									<span className="text-sm font-semibold leading-6">
+										Discord
+									</span>
+								</button>
+
+								<button
+									onClick={() => startOAuth("eurofurence")}
+									className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#005953] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#1D9BF0] dark:border-white/20"
+									type="button"
+								>
+									<img
+										src="/logos/eurofurence.webp"
+										alt="Eurofurence"
+										className="rounded-xl"
+										width={20}
+										height={20}
+									/>
+									<span className="text-sm font-semibold leading-6">
+										Eurofurence
+									</span>
+								</button>
+
+								<button
+									onClick={() => startOAuth("github")}
+									className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#24292F] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#24292F] dark:border-white/20"
+									type="button"
+								>
+									<SiGithub className="h-5" />
+									<span className="text-sm font-semibold leading-6">
+										GitHub
+									</span>
+								</button>
+
+								<button
+									onClick={() => startOAuth("apple")}
+									className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#000000] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#24292F] dark:border-white/20"
+									type="button"
+								>
+									<SiApple className="h-5" />
+									<span className="text-sm font-semibold leading-6">Apple</span>
+								</button>
+
+								<button
+									onClick={() => startOAuth("google")}
+									className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#131314] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#24292F] dark:border-white/20"
+									type="button"
+								>
+									<SiGoogle className="h-4" />
+									<span className="text-sm font-semibold leading-6">
+										Google
+									</span>
+								</button>
+
+								<button
+									onClick={() => startOAuth("twitch")}
+									className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#6441A5] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#24292F] dark:border-white/20"
+									type="button"
+								>
+									<SiTwitch className="h-5" />
+									<span className="text-sm font-semibold leading-6">
+										Twitch
+									</span>
+								</button>
 							</div>
-						</div>
-
-						<div className="mt-6 grid grid-cols-2 gap-4">
-							<button
-								onClick={() => startOAuth("discord")}
-								className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#5865F2] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#1D9BF0] dark:border-white/20"
-							>
-								<SiDiscord className="h-5" />
-								<span className="text-sm font-semibold leading-6">Discord</span>
-							</button>
-
-							<button
-								onClick={() => startOAuth("eurofurence")}
-								className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#005953] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#1D9BF0] dark:border-white/20"
-							>
-								<img
-									src="/logos/eurofurence.webp"
-									alt="Eurofurence"
-									className="rounded-xl"
-									width={20}
-									height={20}
-								/>
-								<span className="text-sm font-semibold leading-6">
-									Eurofurence
-								</span>
-							</button>
-
-							<button
-								onClick={() => startOAuth("github")}
-								className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#24292F] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#24292F] dark:border-white/20"
-							>
-								<SiGithub className="h-5" />
-								<span className="text-sm font-semibold leading-6">GitHub</span>
-							</button>
-
-							<button
-								onClick={() => startOAuth("apple")}
-								className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#000000] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#24292F] dark:border-white/20"
-							>
-								<SiApple className="h-5" />
-								<span className="text-sm font-semibold leading-6">Apple</span>
-							</button>
-
-							<button
-								onClick={() => startOAuth("google")}
-								className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#131314] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#24292F] dark:border-white/20"
-							>
-								<SiGoogle className="h-4" />
-								<span className="text-sm font-semibold leading-6">Google</span>
-							</button>
-
-							<button
-								onClick={() => startOAuth("twitch")}
-								className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#6441A5] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#24292F] dark:border-white/20"
-							>
-								<SiTwitch className="h-5" />
-								<span className="text-sm font-semibold leading-6">Twitch</span>
-							</button>
 						</div>
 					</div>
-				</div>
+				)}
 			</div>
 		</div>
 	);
