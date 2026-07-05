@@ -6,6 +6,7 @@ import {
 	KeyIcon,
 	MonitorIcon,
 	ShieldCheckIcon,
+	Trash2Icon,
 	XIcon,
 } from "lucide-react";
 import { useState } from "react";
@@ -35,9 +36,13 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 import { useDateFormat } from "@/lib/datetime";
 import { useTranslations } from "@/lib/i18n";
-import { LocalizedLink as Link } from "@/lib/localized-nav";
+import {
+	LocalizedLink as Link,
+	useLocalizedNavigate as useNavigate,
+} from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/{-$locale}/admin/users/$userId")({
@@ -93,9 +98,20 @@ function UserDetail() {
 	const c = useTranslations("common");
 	const { userId } = Route.useParams();
 	const qc = useQueryClient();
+	const navigate = useNavigate();
 	const fmt = useDateFormat();
 	const [reason, setReason] = useState("");
 	const [roleToAdd, setRoleToAdd] = useState("");
+	const [noteBody, setNoteBody] = useState("");
+
+	const permsQ = useQuery(
+		orpc.adminRole.myPermissions.queryOptions({ input: undefined }),
+	);
+	const mine = new Set(permsQ.data ?? []);
+	const canDelete =
+		mine.has("*:*") || mine.has("users:*") || mine.has("users:delete");
+	const canNotes =
+		mine.has("*:*") || mine.has("users:*") || mine.has("users:notes");
 
 	const userQ = useQuery(
 		orpc.adminUser.get.queryOptions({ input: { userId } }),
@@ -110,6 +126,10 @@ function UserDetail() {
 	const keysQ = useQuery(
 		orpc.adminUser.apiKeys.queryOptions({ input: { userId } }),
 	);
+	const notesQ = useQuery({
+		...orpc.adminUser.notes.queryOptions({ input: { userId } }),
+		enabled: canNotes,
+	});
 
 	function invalidateUser() {
 		qc.invalidateQueries({
@@ -184,6 +204,34 @@ function UserDetail() {
 			toast.success(t("emailVerifiedDone"));
 			invalidateUser();
 		},
+		onError: (e: Error) => toast.error(e.message),
+	});
+
+	const deleteUser = useMutation({
+		mutationFn: () => client.adminUser.deleteUser({ userId }),
+		onSuccess: () => {
+			toast.success(t("userDeletedDone"));
+			navigate({ to: "/admin/users" as never });
+		},
+		onError: (e: Error) => toast.error(e.message),
+	});
+
+	function invalidateNotes() {
+		qc.invalidateQueries({
+			queryKey: orpc.adminUser.notes.queryKey({ input: { userId } }),
+		});
+	}
+	const addNote = useMutation({
+		mutationFn: (body: string) => client.adminUser.addNote({ userId, body }),
+		onSuccess: () => {
+			setNoteBody("");
+			invalidateNotes();
+		},
+		onError: (e: Error) => toast.error(e.message),
+	});
+	const deleteNote = useMutation({
+		mutationFn: (noteId: string) => client.adminUser.deleteNote({ noteId }),
+		onSuccess: () => invalidateNotes(),
 		onError: (e: Error) => toast.error(e.message),
 	});
 
@@ -690,6 +738,116 @@ function UserDetail() {
 					)}
 				</CardContent>
 			</Card>
+
+			{canNotes ? (
+				<Card>
+					<CardHeader>
+						<CardTitle>{t("notes")}</CardTitle>
+					</CardHeader>
+					<CardContent className="space-y-3">
+						<div className="space-y-2">
+							<Textarea
+								value={noteBody}
+								onChange={(e) => setNoteBody(e.target.value)}
+								placeholder={t("notePlaceholder")}
+								rows={3}
+							/>
+							<div className="flex justify-end">
+								<Button
+									disabled={!noteBody.trim() || addNote.isPending}
+									onClick={() => addNote.mutate(noteBody.trim())}
+									className="bg-primary text-primary-foreground hover:bg-primary/90"
+								>
+									{t("noteAdd")}
+								</Button>
+							</div>
+						</div>
+						{notesQ.isPending ? (
+							<p className="text-sm text-muted-foreground">{c("loading")}</p>
+						) : (notesQ.data ?? []).length === 0 ? (
+							<p className="text-sm text-muted-foreground">{t("notesEmpty")}</p>
+						) : (
+							<div className="space-y-2">
+								{(notesQ.data ?? []).map((n) => (
+									<div
+										key={n.id}
+										className="rounded-md border border-border p-2.5"
+									>
+										<div className="flex items-start justify-between gap-3">
+											<p className="min-w-0 whitespace-pre-wrap text-sm">
+												{n.body}
+											</p>
+											<Button
+												variant="ghost"
+												size="sm"
+												disabled={deleteNote.isPending}
+												onClick={() => deleteNote.mutate(n.id)}
+												className="shrink-0"
+											>
+												<XIcon className="size-4" />
+											</Button>
+										</div>
+										<p className="mt-1 text-xs text-muted-foreground">
+											{t("noteBy", {
+												name: n.authorName || t("noteUnknownAuthor"),
+												date: fmt.date(n.createdAt),
+											})}
+										</p>
+									</div>
+								))}
+							</div>
+						)}
+					</CardContent>
+				</Card>
+			) : null}
+
+			{canDelete ? (
+				<Card className="border-destructive/50">
+					<CardHeader>
+						<CardTitle className="text-destructive">
+							{t("dangerZone")}
+						</CardTitle>
+					</CardHeader>
+					<CardContent className="flex items-center justify-between gap-3">
+						<p className="text-sm text-muted-foreground">
+							{t("deleteUserHint")}
+						</p>
+						<AlertDialog>
+							<AlertDialogTrigger asChild>
+								<Button
+									variant="destructive"
+									disabled={deleteUser.isPending}
+									className="shrink-0"
+								>
+									<Trash2Icon className="size-4" />
+									{t("deleteUser")}
+								</Button>
+							</AlertDialogTrigger>
+							<AlertDialogContent>
+								<AlertDialogHeader>
+									<AlertDialogTitle>
+										{t("deleteUserConfirmTitle")}
+									</AlertDialogTitle>
+									<AlertDialogDescription>
+										{t("deleteUserConfirmBody", {
+											name: u.displayName || u.name || u.profileUrl,
+										})}
+									</AlertDialogDescription>
+								</AlertDialogHeader>
+								<AlertDialogFooter>
+									<AlertDialogCancel>{c("cancel")}</AlertDialogCancel>
+									<AlertDialogAction
+										onClick={() => deleteUser.mutate()}
+										className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+									>
+										{t("deleteUser")}
+									</AlertDialogAction>
+								</AlertDialogFooter>
+							</AlertDialogContent>
+						</AlertDialog>
+					</CardContent>
+				</Card>
+			) : null}
 		</div>
 	);
 }
