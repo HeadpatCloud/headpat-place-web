@@ -255,7 +255,7 @@ function UploadPage() {
 								) : null}
 								{file ? (
 									<p className="text-xs text-muted-foreground">
-										{file.name} — {formatBytes(file.size)}
+										{file.name} - {formatBytes(file.size)}
 									</p>
 								) : null}
 							</div>

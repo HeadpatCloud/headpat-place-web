@@ -465,7 +465,7 @@ function UserDetail() {
 										) : null}
 									</p>
 									<p className="truncate text-xs text-muted-foreground">
-										{s.ipAddress || "—"} ·{" "}
+										{s.ipAddress || "-"} ·{" "}
 										{t("sessionExpires", { date: fmt.date(s.expiresAt) })}
 									</p>
 								</div>

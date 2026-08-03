@@ -1,10 +1,10 @@
 const NETWORK_FAILURE_MESSAGES = [
-	"Couldn't reach the server. It might be napping — try again in a sec.",
+	"Couldn't reach the server. It might be napping - try again in a sec.",
 	"The server isn't answering. Maybe it wandered off chasing a laser pointer.",
 	"We lost the server somewhere. Give it another shot?",
 	"No response from our end. The hamster running the servers needs a snack.",
 	"The connection dropped. The server is probably hiding under the bed.",
-	"Couldn't talk to the server — it left us on read. Try again?",
+	"Couldn't talk to the server - it left us on read. Try again?",
 	"The server's being shy right now. One more try might coax it out.",
 	"The internet gremlins ate that request. Please try again.",
 	"Our server stepped out for head pats. Try again in a moment.",

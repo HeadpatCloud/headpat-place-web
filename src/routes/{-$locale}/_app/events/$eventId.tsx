@@ -179,7 +179,7 @@ function EventDetailPage() {
 				</div>
 				<p className="text-sm opacity-90">
 					{fmt.dateTime(e.startsAt)}
-					{e.endsAt ? ` — ${fmt.dateTime(e.endsAt)}` : ""}
+					{e.endsAt ? ` - ${fmt.dateTime(e.endsAt)}` : ""}
 				</p>
 				{e.locationText ? (
 					<p className="text-sm opacity-90">{e.locationText}</p>

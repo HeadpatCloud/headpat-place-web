@@ -23,7 +23,7 @@ export function TicketAttachInput({ files, onChange, disabled }: Props) {
 		const allowed = incoming.filter(isAllowedTicketFile);
 		if (allowed.length < incoming.length) {
 			toast.error(
-				"Skipped some files — only images, PDF and text are allowed.",
+				"Skipped some files - only images, PDF and text are allowed.",
 			);
 		}
 		let next = [...files, ...allowed];

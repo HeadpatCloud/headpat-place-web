@@ -32,7 +32,7 @@ export const Route = createRootRoute({
 			{
 				name: "description",
 				content:
-					"Headpat.place — a social media platform for the next generation.",
+					"Headpat.place - a social media platform for the next generation.",
 			},
 			{ name: "theme-color", content: "#0a0a0a" },
 			{ property: "og:site_name", content: "Headpat" },

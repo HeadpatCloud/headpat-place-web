@@ -19,7 +19,7 @@ export const Route = createFileRoute("/{-$locale}/_app/")({
 			...seo({
 				title: SITE_NAME,
 				description:
-					"Headpat — communities, a creative gallery, and events. Join the pack.",
+					"Headpat - communities, a creative gallery, and events. Join the pack.",
 				path: "/",
 				locale,
 			}),
