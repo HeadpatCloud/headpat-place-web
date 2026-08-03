@@ -13,6 +13,19 @@ export function formatBirthday(
 	});
 }
 
+/** Adult content is 18+. The stored birthday is always a full date — showDay and
+ *  showYear only affect display — so age is computable even when the year is hidden. */
+export function isAdult(birthday: string | Date | null | undefined): boolean {
+	if (!birthday) return false;
+	const d = new Date(birthday);
+	if (Number.isNaN(d.getTime())) return false;
+	const now = new Date();
+	let age = now.getFullYear() - d.getFullYear();
+	const months = now.getMonth() - d.getMonth();
+	if (months < 0 || (months === 0 && now.getDate() < d.getDate())) age--;
+	return age >= 18;
+}
+
 /** The "it's my birthday" state is suppressed when the day is hidden, so it can't
  *  reveal a day the user chose not to show. */
 export function isBirthdayToday(

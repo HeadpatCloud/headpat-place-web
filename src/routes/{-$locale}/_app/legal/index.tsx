@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Paperclip } from "lucide-react";
+import { FileText } from "lucide-react";
 import {
 	DEFAULT_LOCALE,
 	type Locale,
@@ -24,29 +24,15 @@ export const Route = createFileRoute("/{-$locale}/_app/legal/")({
 type LegalLink = {
 	labelKey: string;
 	href: string;
-	ext?: string;
-	tanstack?: boolean;
 };
 
 const links: LegalLink[] = [
-	{ labelKey: "legalLinkImpressum", href: "/legal/impressum", tanstack: true },
-	{ labelKey: "legalLinkTerms", href: "/legal/termsofservice.pdf", ext: "PDF" },
-	{
-		labelKey: "legalLinkPrivacy",
-		href: "/legal/privacypolicy",
-		tanstack: true,
-	},
-	{ labelKey: "legalLinkEula", href: "/legal/eula", tanstack: true },
-	{
-		labelKey: "legalLinkDisclaimer",
-		href: "/legal/disclaimer.pdf",
-		ext: "PDF",
-	},
-	{
-		labelKey: "legalLinkAcceptableUse",
-		href: "/legal/acceptableuse.pdf",
-		ext: "PDF",
-	},
+	{ labelKey: "legalLinkImpressum", href: "/legal/impressum" },
+	{ labelKey: "legalLinkTerms", href: "/legal/termsofservice" },
+	{ labelKey: "legalLinkPrivacy", href: "/legal/privacypolicy" },
+	{ labelKey: "legalLinkEula", href: "/legal/eula" },
+	{ labelKey: "legalLinkDisclaimer", href: "/legal/disclaimer" },
+	{ labelKey: "legalLinkAcceptableUse", href: "/legal/acceptableuse" },
 ];
 
 function LegalPage() {
@@ -78,7 +64,7 @@ function LegalPage() {
 					</div>
 					<div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
 						<dt className="text-sm font-medium leading-6">
-							{t("legalAttachments")}
+							{t("legalDocuments")}
 						</dt>
 						<dd className="mt-2 text-sm sm:col-span-2 sm:mt-0">
 							<ul
@@ -91,7 +77,7 @@ function LegalPage() {
 										className="flex items-center justify-between py-4 pl-4 pr-5 text-sm leading-6"
 									>
 										<div className="flex w-0 flex-1 items-center">
-											<Paperclip
+											<FileText
 												className="h-5 w-5 shrink-0 text-gray-400"
 												aria-hidden="true"
 											/>
@@ -99,29 +85,15 @@ function LegalPage() {
 												<span className="truncate font-medium">
 													{t(l.labelKey)}
 												</span>
-												{l.ext ? (
-													<span className="shrink-0 text-gray-400">
-														{l.ext}
-													</span>
-												) : null}
 											</div>
 										</div>
 										<div className="ml-4 shrink-0">
-											{l.tanstack ? (
-												<Link
-													to={l.href as never}
-													className="text-link hover:text-link/80 font-medium"
-												>
-													{t("legalView")}
-												</Link>
-											) : (
-												<a
-													href={l.href}
-													className="text-link hover:text-link/80 font-medium"
-												>
-													{t("legalView")}
-												</a>
-											)}
+											<Link
+												to={l.href as never}
+												className="text-link hover:text-link/80 font-medium"
+											>
+												{t("legalView")}
+											</Link>
 										</div>
 									</li>
 								))}

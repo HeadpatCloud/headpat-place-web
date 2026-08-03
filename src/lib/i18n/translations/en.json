@@ -4,6 +4,8 @@
 		"upload": "+ Upload",
 		"showNsfw": "Show NSFW",
 		"markNsfw": "Mark as NSFW",
+		"aiDeclaration": "I confirm this is my own work and not AI-generated.",
+		"aiDeclarationPolicyLink": "Read the AI rules in our Acceptable Use Policy",
 		"empty": "No images yet.",
 		"deleted": "Deleted.",
 		"notFound": "Not found.",
@@ -823,6 +825,7 @@
 		"indexingDescription": "Let search engines and the user discovery page find you.",
 		"nsfwTitle": "Show NSFW content",
 		"nsfwDescription": "Reveal posts and gallery items flagged as NSFW.",
+		"nsfwNeedsAge": "Add a date of birth showing you are 18 or over to turn this on.",
 		"followers": "followers",
 		"following": "following",
 		"loadSessionsFailed": "Failed to load sessions",
@@ -1463,7 +1466,7 @@
 		"legalSubtitle": "Notices, terms and policies governing your use of headpat.place.",
 		"legalAbout": "About",
 		"legalQuestions": "Questions? Reach out at",
-		"legalAttachments": "Attachments",
+		"legalDocuments": "Documents",
 		"legalView": "View",
 		"legalLinkImpressum": "Impressum",
 		"legalLinkTerms": "Terms of Service",
@@ -1554,5 +1557,13 @@
 		"logOut": "Log out",
 		"logIn": "Log in",
 		"login": "Login"
+	},
+	"footer": {
+		"navLabel": "Legal links",
+		"privacy": "Privacy policy",
+		"terms": "Terms of Service",
+		"acceptableUse": "Acceptable use",
+		"imprint": "Impressum",
+		"legal": "Legal"
 	}
 }

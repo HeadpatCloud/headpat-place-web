@@ -1,5 +1,6 @@
 ﻿import { Separator } from "@radix-ui/react-separator";
 import * as React from "react";
+import { Footer } from "../Footer";
 import { LanguageSwitcher } from "../LanguageSwitcher";
 import { ThemeToggle } from "../ThemeToggle";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "../ui/sidebar";
@@ -19,10 +20,12 @@ function HeaderProvider({
 	children,
 	sidebar,
 	containerClassName,
+	showFooter,
 }: {
 	children: React.ReactNode;
 	sidebar?: React.ReactNode;
 	containerClassName?: string;
+	showFooter?: boolean;
 }) {
 	const [headerComponents, setHeaderComponents] = React.useState<
 		React.ReactNode[]
@@ -67,6 +70,7 @@ function HeaderProvider({
 				>
 					{children}
 				</div>
+				{showFooter ? <Footer /> : null}
 			</SidebarInset>
 		</HeaderContext.Provider>
 	);
@@ -76,16 +80,22 @@ interface HeaderClientProps {
 	children: React.ReactNode;
 	sidebar?: React.ReactNode;
 	containerClassName?: string;
+	showFooter?: boolean;
 }
 
 export default function HeaderClient({
 	children,
 	sidebar,
 	containerClassName,
+	showFooter,
 }: HeaderClientProps) {
 	return (
 		<SidebarProvider>
-			<HeaderProvider sidebar={sidebar} containerClassName={containerClassName}>
+			<HeaderProvider
+				sidebar={sidebar}
+				containerClassName={containerClassName}
+				showFooter={showFooter}
+			>
 				{children}
 			</HeaderProvider>
 		</SidebarProvider>

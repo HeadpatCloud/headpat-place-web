@@ -91,4 +91,25 @@
     <xhtml:link rel="alternate" hreflang="nl" href="https://headpat.place/nl/legal/impressum"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://headpat.place/legal/impressum"/>
   </url>
+  <url>
+    <loc>https://headpat.place/legal/termsofservice</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://headpat.place/legal/termsofservice"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://headpat.place/de/legal/termsofservice"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://headpat.place/nl/legal/termsofservice"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://headpat.place/legal/termsofservice"/>
+  </url>
+  <url>
+    <loc>https://headpat.place/legal/acceptableuse</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://headpat.place/legal/acceptableuse"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://headpat.place/de/legal/acceptableuse"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://headpat.place/nl/legal/acceptableuse"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://headpat.place/legal/acceptableuse"/>
+  </url>
+  <url>
+    <loc>https://headpat.place/legal/disclaimer</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://headpat.place/legal/disclaimer"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://headpat.place/de/legal/disclaimer"/>
+    <xhtml:link rel="alternate" hreflang="nl" href="https://headpat.place/nl/legal/disclaimer"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://headpat.place/legal/disclaimer"/>
+  </url>
 </urlset>

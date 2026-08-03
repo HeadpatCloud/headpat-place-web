@@ -10,6 +10,7 @@ function AppLayout() {
 	return (
 		<HeaderClient
 			containerClassName={fullWidth ? "flex min-h-0 w-full flex-1" : undefined}
+			showFooter={!fullWidth}
 		>
 			<Outlet />
 		</HeaderClient>

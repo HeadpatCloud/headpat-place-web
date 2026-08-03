@@ -52,9 +52,12 @@ import { Route as Char123LocaleChar125AdminAnnouncementsAnnouncementIdRouteImpor
 import { Route as Char123LocaleChar125AuthLoginMfaRouteImport } from './routes/{-$locale}/_auth/login/mfa'
 import { Route as Char123LocaleChar125AuthIVerifyEmailRouteImport } from './routes/{-$locale}/_auth/i/verify-email'
 import { Route as Char123LocaleChar125AuthIResetPasswordRouteImport } from './routes/{-$locale}/_auth/i/reset-password'
+import { Route as Char123LocaleChar125AppLegalTermsofserviceRouteImport } from './routes/{-$locale}/_app/legal/termsofservice'
 import { Route as Char123LocaleChar125AppLegalPrivacypolicyRouteImport } from './routes/{-$locale}/_app/legal/privacypolicy'
 import { Route as Char123LocaleChar125AppLegalImpressumRouteImport } from './routes/{-$locale}/_app/legal/impressum'
 import { Route as Char123LocaleChar125AppLegalEulaRouteImport } from './routes/{-$locale}/_app/legal/eula'
+import { Route as Char123LocaleChar125AppLegalDisclaimerRouteImport } from './routes/{-$locale}/_app/legal/disclaimer'
+import { Route as Char123LocaleChar125AppLegalAcceptableuseRouteImport } from './routes/{-$locale}/_app/legal/acceptableuse'
 import { Route as Char123LocaleChar125AppGalleryUploadRouteImport } from './routes/{-$locale}/_app/gallery/upload'
 import { Route as Char123LocaleChar125AppGalleryGalleryIdRouteImport } from './routes/{-$locale}/_app/gallery/$galleryId'
 import { Route as Char123LocaleChar125AppEventsNewRouteImport } from './routes/{-$locale}/_app/events/new'
@@ -325,6 +328,12 @@ const Char123LocaleChar125AuthIResetPasswordRoute =
     path: '/i/reset-password',
     getParentRoute: () => Char123LocaleChar125AuthRoute,
   } as any)
+const Char123LocaleChar125AppLegalTermsofserviceRoute =
+  Char123LocaleChar125AppLegalTermsofserviceRouteImport.update({
+    id: '/legal/termsofservice',
+    path: '/legal/termsofservice',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
 const Char123LocaleChar125AppLegalPrivacypolicyRoute =
   Char123LocaleChar125AppLegalPrivacypolicyRouteImport.update({
     id: '/legal/privacypolicy',
@@ -341,6 +350,18 @@ const Char123LocaleChar125AppLegalEulaRoute =
   Char123LocaleChar125AppLegalEulaRouteImport.update({
     id: '/legal/eula',
     path: '/legal/eula',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppLegalDisclaimerRoute =
+  Char123LocaleChar125AppLegalDisclaimerRouteImport.update({
+    id: '/legal/disclaimer',
+    path: '/legal/disclaimer',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppLegalAcceptableuseRoute =
+  Char123LocaleChar125AppLegalAcceptableuseRouteImport.update({
+    id: '/legal/acceptableuse',
+    path: '/legal/acceptableuse',
     getParentRoute: () => Char123LocaleChar125AppRoute,
   } as any)
 const Char123LocaleChar125AppGalleryUploadRoute =
@@ -459,9 +480,12 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/events/new': typeof Char123LocaleChar125AppEventsNewRoute
   '/{-$locale}/gallery/$galleryId': typeof Char123LocaleChar125AppGalleryGalleryIdRoute
   '/{-$locale}/gallery/upload': typeof Char123LocaleChar125AppGalleryUploadRoute
+  '/{-$locale}/legal/acceptableuse': typeof Char123LocaleChar125AppLegalAcceptableuseRoute
+  '/{-$locale}/legal/disclaimer': typeof Char123LocaleChar125AppLegalDisclaimerRoute
   '/{-$locale}/legal/eula': typeof Char123LocaleChar125AppLegalEulaRoute
   '/{-$locale}/legal/impressum': typeof Char123LocaleChar125AppLegalImpressumRoute
   '/{-$locale}/legal/privacypolicy': typeof Char123LocaleChar125AppLegalPrivacypolicyRoute
+  '/{-$locale}/legal/termsofservice': typeof Char123LocaleChar125AppLegalTermsofserviceRoute
   '/{-$locale}/i/reset-password': typeof Char123LocaleChar125AuthIResetPasswordRoute
   '/{-$locale}/i/verify-email': typeof Char123LocaleChar125AuthIVerifyEmailRoute
   '/{-$locale}/login/mfa': typeof Char123LocaleChar125AuthLoginMfaRoute
@@ -517,9 +541,12 @@ export interface FileRoutesByTo {
   '/{-$locale}/events/new': typeof Char123LocaleChar125AppEventsNewRoute
   '/{-$locale}/gallery/$galleryId': typeof Char123LocaleChar125AppGalleryGalleryIdRoute
   '/{-$locale}/gallery/upload': typeof Char123LocaleChar125AppGalleryUploadRoute
+  '/{-$locale}/legal/acceptableuse': typeof Char123LocaleChar125AppLegalAcceptableuseRoute
+  '/{-$locale}/legal/disclaimer': typeof Char123LocaleChar125AppLegalDisclaimerRoute
   '/{-$locale}/legal/eula': typeof Char123LocaleChar125AppLegalEulaRoute
   '/{-$locale}/legal/impressum': typeof Char123LocaleChar125AppLegalImpressumRoute
   '/{-$locale}/legal/privacypolicy': typeof Char123LocaleChar125AppLegalPrivacypolicyRoute
+  '/{-$locale}/legal/termsofservice': typeof Char123LocaleChar125AppLegalTermsofserviceRoute
   '/{-$locale}/i/reset-password': typeof Char123LocaleChar125AuthIResetPasswordRoute
   '/{-$locale}/i/verify-email': typeof Char123LocaleChar125AuthIVerifyEmailRoute
   '/{-$locale}/login/mfa': typeof Char123LocaleChar125AuthLoginMfaRoute
@@ -581,9 +608,12 @@ export interface FileRoutesById {
   '/{-$locale}/_app/events/new': typeof Char123LocaleChar125AppEventsNewRoute
   '/{-$locale}/_app/gallery/$galleryId': typeof Char123LocaleChar125AppGalleryGalleryIdRoute
   '/{-$locale}/_app/gallery/upload': typeof Char123LocaleChar125AppGalleryUploadRoute
+  '/{-$locale}/_app/legal/acceptableuse': typeof Char123LocaleChar125AppLegalAcceptableuseRoute
+  '/{-$locale}/_app/legal/disclaimer': typeof Char123LocaleChar125AppLegalDisclaimerRoute
   '/{-$locale}/_app/legal/eula': typeof Char123LocaleChar125AppLegalEulaRoute
   '/{-$locale}/_app/legal/impressum': typeof Char123LocaleChar125AppLegalImpressumRoute
   '/{-$locale}/_app/legal/privacypolicy': typeof Char123LocaleChar125AppLegalPrivacypolicyRoute
+  '/{-$locale}/_app/legal/termsofservice': typeof Char123LocaleChar125AppLegalTermsofserviceRoute
   '/{-$locale}/_auth/i/reset-password': typeof Char123LocaleChar125AuthIResetPasswordRoute
   '/{-$locale}/_auth/i/verify-email': typeof Char123LocaleChar125AuthIVerifyEmailRoute
   '/{-$locale}/_auth/login/mfa': typeof Char123LocaleChar125AuthLoginMfaRoute
@@ -644,9 +674,12 @@ export interface FileRouteTypes {
     | '/{-$locale}/events/new'
     | '/{-$locale}/gallery/$galleryId'
     | '/{-$locale}/gallery/upload'
+    | '/{-$locale}/legal/acceptableuse'
+    | '/{-$locale}/legal/disclaimer'
     | '/{-$locale}/legal/eula'
     | '/{-$locale}/legal/impressum'
     | '/{-$locale}/legal/privacypolicy'
+    | '/{-$locale}/legal/termsofservice'
     | '/{-$locale}/i/reset-password'
     | '/{-$locale}/i/verify-email'
     | '/{-$locale}/login/mfa'
@@ -702,9 +735,12 @@ export interface FileRouteTypes {
     | '/{-$locale}/events/new'
     | '/{-$locale}/gallery/$galleryId'
     | '/{-$locale}/gallery/upload'
+    | '/{-$locale}/legal/acceptableuse'
+    | '/{-$locale}/legal/disclaimer'
     | '/{-$locale}/legal/eula'
     | '/{-$locale}/legal/impressum'
     | '/{-$locale}/legal/privacypolicy'
+    | '/{-$locale}/legal/termsofservice'
     | '/{-$locale}/i/reset-password'
     | '/{-$locale}/i/verify-email'
     | '/{-$locale}/login/mfa'
@@ -765,9 +801,12 @@ export interface FileRouteTypes {
     | '/{-$locale}/_app/events/new'
     | '/{-$locale}/_app/gallery/$galleryId'
     | '/{-$locale}/_app/gallery/upload'
+    | '/{-$locale}/_app/legal/acceptableuse'
+    | '/{-$locale}/_app/legal/disclaimer'
     | '/{-$locale}/_app/legal/eula'
     | '/{-$locale}/_app/legal/impressum'
     | '/{-$locale}/_app/legal/privacypolicy'
+    | '/{-$locale}/_app/legal/termsofservice'
     | '/{-$locale}/_auth/i/reset-password'
     | '/{-$locale}/_auth/i/verify-email'
     | '/{-$locale}/_auth/login/mfa'
@@ -1109,6 +1148,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125AuthIResetPasswordRouteImport
       parentRoute: typeof Char123LocaleChar125AuthRoute
     }
+    '/{-$locale}/_app/legal/termsofservice': {
+      id: '/{-$locale}/_app/legal/termsofservice'
+      path: '/legal/termsofservice'
+      fullPath: '/{-$locale}/legal/termsofservice'
+      preLoaderRoute: typeof Char123LocaleChar125AppLegalTermsofserviceRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
+    }
     '/{-$locale}/_app/legal/privacypolicy': {
       id: '/{-$locale}/_app/legal/privacypolicy'
       path: '/legal/privacypolicy'
@@ -1128,6 +1174,20 @@ declare module '@tanstack/react-router' {
       path: '/legal/eula'
       fullPath: '/{-$locale}/legal/eula'
       preLoaderRoute: typeof Char123LocaleChar125AppLegalEulaRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
+    }
+    '/{-$locale}/_app/legal/disclaimer': {
+      id: '/{-$locale}/_app/legal/disclaimer'
+      path: '/legal/disclaimer'
+      fullPath: '/{-$locale}/legal/disclaimer'
+      preLoaderRoute: typeof Char123LocaleChar125AppLegalDisclaimerRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
+    }
+    '/{-$locale}/_app/legal/acceptableuse': {
+      id: '/{-$locale}/_app/legal/acceptableuse'
+      path: '/legal/acceptableuse'
+      fullPath: '/{-$locale}/legal/acceptableuse'
+      preLoaderRoute: typeof Char123LocaleChar125AppLegalAcceptableuseRouteImport
       parentRoute: typeof Char123LocaleChar125AppRoute
     }
     '/{-$locale}/_app/gallery/upload': {
@@ -1254,9 +1314,12 @@ interface Char123LocaleChar125AppRouteChildren {
   Char123LocaleChar125AppEventsNewRoute: typeof Char123LocaleChar125AppEventsNewRoute
   Char123LocaleChar125AppGalleryGalleryIdRoute: typeof Char123LocaleChar125AppGalleryGalleryIdRoute
   Char123LocaleChar125AppGalleryUploadRoute: typeof Char123LocaleChar125AppGalleryUploadRoute
+  Char123LocaleChar125AppLegalAcceptableuseRoute: typeof Char123LocaleChar125AppLegalAcceptableuseRoute
+  Char123LocaleChar125AppLegalDisclaimerRoute: typeof Char123LocaleChar125AppLegalDisclaimerRoute
   Char123LocaleChar125AppLegalEulaRoute: typeof Char123LocaleChar125AppLegalEulaRoute
   Char123LocaleChar125AppLegalImpressumRoute: typeof Char123LocaleChar125AppLegalImpressumRoute
   Char123LocaleChar125AppLegalPrivacypolicyRoute: typeof Char123LocaleChar125AppLegalPrivacypolicyRoute
+  Char123LocaleChar125AppLegalTermsofserviceRoute: typeof Char123LocaleChar125AppLegalTermsofserviceRoute
   Char123LocaleChar125AppAccountIndexRoute: typeof Char123LocaleChar125AppAccountIndexRoute
   Char123LocaleChar125AppAnnouncementsIndexRoute: typeof Char123LocaleChar125AppAnnouncementsIndexRoute
   Char123LocaleChar125AppCommunityIndexRoute: typeof Char123LocaleChar125AppCommunityIndexRoute
@@ -1299,12 +1362,18 @@ const Char123LocaleChar125AppRouteChildren: Char123LocaleChar125AppRouteChildren
       Char123LocaleChar125AppGalleryGalleryIdRoute,
     Char123LocaleChar125AppGalleryUploadRoute:
       Char123LocaleChar125AppGalleryUploadRoute,
+    Char123LocaleChar125AppLegalAcceptableuseRoute:
+      Char123LocaleChar125AppLegalAcceptableuseRoute,
+    Char123LocaleChar125AppLegalDisclaimerRoute:
+      Char123LocaleChar125AppLegalDisclaimerRoute,
     Char123LocaleChar125AppLegalEulaRoute:
       Char123LocaleChar125AppLegalEulaRoute,
     Char123LocaleChar125AppLegalImpressumRoute:
       Char123LocaleChar125AppLegalImpressumRoute,
     Char123LocaleChar125AppLegalPrivacypolicyRoute:
       Char123LocaleChar125AppLegalPrivacypolicyRoute,
+    Char123LocaleChar125AppLegalTermsofserviceRoute:
+      Char123LocaleChar125AppLegalTermsofserviceRoute,
     Char123LocaleChar125AppAccountIndexRoute:
       Char123LocaleChar125AppAccountIndexRoute,
     Char123LocaleChar125AppAnnouncementsIndexRoute:

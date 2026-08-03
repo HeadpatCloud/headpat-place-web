@@ -9,13 +9,17 @@ import { z } from "zod";
 import InputField from "@/components/fields/InputField";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
 import { useTranslations } from "@/lib/i18n";
-import { useLocalizedNavigate as useNavigate } from "@/lib/localized-nav";
+import {
+	LocalizedLink as Link,
+	useLocalizedNavigate as useNavigate,
+} from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
 
 export const Route = createFileRoute("/{-$locale}/_app/gallery/upload")({
@@ -26,6 +30,7 @@ const schema = z.object({
 	name: z.string().min(1).max(200),
 	longText: z.string().max(10000).optional(),
 	nsfw: z.boolean().optional(),
+	aiDeclaration: z.boolean().refine((v) => v === true),
 });
 
 function makeFileId(): string {
@@ -129,8 +134,14 @@ function UploadPage() {
 
 	const form = useForm<z.infer<typeof schema>>({
 		resolver: zodResolver(schema),
-		defaultValues: { name: "", longText: "", nsfw: false },
+		defaultValues: {
+			name: "",
+			longText: "",
+			nsfw: false,
+			aiDeclaration: false,
+		},
 	});
+	const aiDeclared = form.watch("aiDeclaration");
 
 	const submit = useMutation({
 		mutationFn: async (v: z.infer<typeof schema>) => {
@@ -156,6 +167,7 @@ function UploadPage() {
 				name: v.name,
 				longText: v.longText || undefined,
 				nsfw: v.nsfw ?? false,
+				aiDeclaration: v.aiDeclaration,
 				tags,
 				fileId,
 				mimeType: file.type || undefined,
@@ -336,6 +348,37 @@ function UploadPage() {
 									</div>
 								)}
 							/>
+							<FormField
+								control={form.control}
+								name="aiDeclaration"
+								render={({ field }) => (
+									<div className="flex items-start gap-2 rounded-lg border border-input p-3">
+										<Checkbox
+											id="ai-declaration"
+											className="mt-0.5"
+											checked={field.value}
+											onCheckedChange={(v) => field.onChange(v === true)}
+										/>
+										<div className="space-y-1">
+											<Label
+												htmlFor="ai-declaration"
+												className="cursor-pointer select-none text-sm leading-snug"
+											>
+												{t("aiDeclaration")}
+											</Label>
+											<p className="text-xs text-muted-foreground">
+												<Link
+													to="/legal/acceptableuse"
+													hash="ai-generated-content"
+													className="text-link hover:text-link/80"
+												>
+													{t("aiDeclarationPolicyLink")}
+												</Link>
+											</p>
+										</div>
+									</div>
+								)}
+							/>
 							{submit.isPending ? (
 								<div className="space-y-1">
 									<Progress
@@ -352,7 +395,7 @@ function UploadPage() {
 							) : null}
 							<Button
 								type="submit"
-								disabled={submit.isPending || !file}
+								disabled={submit.isPending || !file || !aiDeclared}
 								className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
 							>
 								{submit.isPending ? t("uploading") : t("submit")}

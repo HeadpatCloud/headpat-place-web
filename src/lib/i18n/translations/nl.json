@@ -4,6 +4,8 @@
 		"upload": "+ Uploaden",
 		"showNsfw": "NSFW tonen",
 		"markNsfw": "Markeer als NSFW",
+		"aiDeclaration": "Ik bevestig dat dit mijn eigen werk is en niet door AI is gegenereerd.",
+		"aiDeclarationPolicyLink": "Lees de AI-regels in onze gebruiksvoorwaarden",
 		"empty": "Nog geen afbeeldingen.",
 		"deleted": "Verwijderd.",
 		"notFound": "Niet gevonden.",
@@ -823,6 +825,7 @@
 		"indexingDescription": "Laat zoekmachines en de gebruikerspagina je vinden.",
 		"nsfwTitle": "NSFW-content tonen",
 		"nsfwDescription": "Toon berichten en galerij-items die als NSFW zijn gemarkeerd.",
+		"nsfwNeedsAge": "Voeg een geboortedatum toe waaruit blijkt dat je 18 of ouder bent om dit aan te zetten.",
 		"followers": "volgers",
 		"following": "volgend",
 		"loadSessionsFailed": "Sessies laden mislukt",
@@ -1463,7 +1466,7 @@
 		"legalSubtitle": "Mededelingen, voorwaarden en beleid voor je gebruik van headpat.place.",
 		"legalAbout": "Over",
 		"legalQuestions": "Vragen? Neem contact op via",
-		"legalAttachments": "Bijlagen",
+		"legalDocuments": "Documenten",
 		"legalView": "Bekijken",
 		"legalLinkImpressum": "Colofon",
 		"legalLinkTerms": "Servicevoorwaarden",
@@ -1554,5 +1557,13 @@
 		"logOut": "Uitloggen",
 		"logIn": "Inloggen",
 		"login": "Inloggen"
+	},
+	"footer": {
+		"navLabel": "Juridische links",
+		"privacy": "Privacybeleid",
+		"terms": "Servicevoorwaarden",
+		"acceptableUse": "Gebruiksvoorwaarden",
+		"imprint": "Colofon",
+		"legal": "Juridisch"
 	}
 }
