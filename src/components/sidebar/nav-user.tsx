@@ -3,6 +3,7 @@ import {
 	Bell,
 	ChevronsUpDown,
 	LifeBuoy,
+	LogIn,
 	LogOut,
 } from "lucide-react";
 import { useUser } from "@/components/contexts/UserContext";
@@ -25,12 +26,47 @@ import {
 } from "@/components/ui/sidebar";
 import { useTranslations } from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
+import { navUserMode } from "./nav-user-mode";
 
 export function NavUser() {
 	const t = useTranslations("commonUi");
 	const { isMobile, toggleSidebar } = useSidebar();
-	const { userData, current, logout } = useUser();
+	const { userData, current, logout, isPending } = useUser();
 	const avatarUrl = useStorageUrl("avatar", userData?.avatarId, "md").data?.url;
+	const mode = navUserMode({ isPending, signedIn: !!current });
+
+	if (mode !== "signed-in") {
+		return (
+			<SidebarMenu>
+				<SidebarMenuItem>
+					<SidebarMenuButton size="lg" asChild={mode === "signed-out"}>
+						{mode === "signed-out" ? (
+							<Link
+								to={"/login" as never}
+								onClick={isMobile ? toggleSidebar : undefined}
+							>
+								<Avatar className="h-8 w-8 rounded-lg">
+									<AvatarFallback className="rounded-lg">
+										<LogIn className="size-4" />
+									</AvatarFallback>
+								</Avatar>
+								<span className="truncate font-medium">{t("logIn")}</span>
+							</Link>
+						) : (
+							<>
+								<Avatar className="h-8 w-8 rounded-lg">
+									<AvatarFallback className="rounded-lg" />
+								</Avatar>
+								<div className="grid flex-1 text-left text-sm leading-tight">
+									<span className="h-4 w-24 animate-pulse rounded bg-sidebar-accent" />
+								</div>
+							</>
+						)}
+					</SidebarMenuButton>
+				</SidebarMenuItem>
+			</SidebarMenu>
+		);
+	}
 
 	return (
 		<SidebarMenu>
@@ -52,7 +88,7 @@ export function NavUser() {
 							</Avatar>
 							<div className="grid flex-1 text-left text-sm leading-tight">
 								<span className="truncate font-medium">
-									{userData?.displayName || userData?.$id || t("login")}
+									{userData?.displayName || userData?.$id}
 								</span>
 							</div>
 							<ChevronsUpDown className="ml-auto size-4" />
@@ -77,7 +113,7 @@ export function NavUser() {
 								</Avatar>
 								<div className="grid flex-1 text-left text-sm leading-tight">
 									<span className="truncate font-medium">
-										{userData?.displayName || userData?.$id || t("login")}
+										{userData?.displayName || userData?.$id}
 									</span>
 								</div>
 							</div>
@@ -113,27 +149,15 @@ export function NavUser() {
 							</Link>
 						</DropdownMenuGroup>
 						<DropdownMenuSeparator />
-						{current ? (
-							<DropdownMenuItem
-								onSelect={() => {
-									if (isMobile) toggleSidebar();
-									void logout(true);
-								}}
-							>
-								<LogOut />
-								{t("logOut")}
-							</DropdownMenuItem>
-						) : (
-							<Link
-								to={"/login" as never}
-								onClick={isMobile ? toggleSidebar : undefined}
-							>
-								<DropdownMenuItem>
-									<LogOut />
-									{t("logIn")}
-								</DropdownMenuItem>
-							</Link>
-						)}
+						<DropdownMenuItem
+							onSelect={() => {
+								if (isMobile) toggleSidebar();
+								void logout(true);
+							}}
+						>
+							<LogOut />
+							{t("logOut")}
+						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</SidebarMenuItem>

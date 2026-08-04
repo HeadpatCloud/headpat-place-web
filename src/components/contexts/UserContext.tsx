@@ -31,7 +31,7 @@ export type UserDataDocumentsType = {
 };
 
 export function useUser() {
-	const { data: session } = useSession();
+	const { data: session, isPending } = useSession();
 
 	const current: AccountPrefs | null = session?.user
 		? {
@@ -93,6 +93,9 @@ export function useUser() {
 	return {
 		current,
 		userData,
+		// Session resolution is async: without this, `current === null` can't tell
+		// "signed out" from "not known yet" and signed-in users flash logged-out UI.
+		isPending,
 		login,
 		logout,
 		register,
