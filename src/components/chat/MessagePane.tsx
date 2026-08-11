@@ -23,7 +23,7 @@ import {
 	UsersIcon,
 	XIcon,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { GifPicker } from "@/components/chat/GifPicker";
 import { MessageAttachment } from "@/components/chat/MessageAttachment";
@@ -72,6 +72,7 @@ import {
 	type UploadedAttachment,
 	uploadAttachment,
 } from "@/lib/chat-attachments";
+import { dayKey, dayLabel, daySeparatorIndexes } from "@/lib/chat-day";
 import { useDateFormat } from "@/lib/datetime";
 import { useTranslations } from "@/lib/i18n";
 import { useLocalizedNavigate as useNavigate } from "@/lib/localized-nav";
@@ -132,6 +133,8 @@ export function MessagePane({ source }: { source: Source }) {
 	const { typingIn, sendTyping, sendChannelTyping } = usePresence();
 	const qc = useQueryClient();
 	const fmt = useDateFormat();
+	const todayKey = dayKey(Date.now(), fmt.timeZone);
+	const yesterdayKey = dayKey(Date.now() - 86_400_000, fmt.timeZone);
 	const navigate = useNavigate();
 	const recents = useRecentChats();
 	const draftLoadedRef = useRef(false);
@@ -448,6 +451,7 @@ export function MessagePane({ source }: { source: Source }) {
 	const list = (
 		messages.data ? [...messages.data.pages].reverse().flat() : []
 	) as Msg[];
+	const separators = daySeparatorIndexes(list, fmt.timeZone);
 
 	// restore scroll position right after an older page prepends, so the
 	// viewport stays put instead of jumping with the new content above it
@@ -710,14 +714,8 @@ export function MessagePane({ source }: { source: Source }) {
 							</p>
 						) : (
 							<>
-								<div className="my-4 flex items-center gap-3.5">
-									<span className="h-px flex-1 bg-border" />
-									<span className="text-xs font-semibold text-muted-foreground">
-										{t("today")}
-									</span>
-									<span className="h-px flex-1 bg-border" />
-								</div>
 								{list.map((m, i) => {
+									const daySep = separators.get(i);
 									const prev = list[i - 1];
 									const grouped = prev?.senderId === m.senderId;
 									const isMe = m.senderId === meId;
@@ -739,205 +737,242 @@ export function MessagePane({ source }: { source: Source }) {
 										byUser.get(m.senderId)?.profileUrl ??
 										null;
 									const senderRole = byUser.get(m.senderId)?.role;
+									const sepLabel = daySep
+										? dayLabel(
+												daySep,
+												todayKey,
+												yesterdayKey,
+												fmt.date(m.createdAt, {
+													day: "numeric",
+													month: "long",
+													year: "numeric",
+												}),
+											)
+										: null;
 									return (
-										<UserContextMenu
-											key={m.id}
-											target={{
-												userId: m.senderId,
-												profileUrl: senderProfileUrl,
-												displayName,
-											}}
-											meId={meId}
-											conversationId={
-												source.kind === "dm" ? source.conversationId : undefined
-											}
-											viewerRole={myRole}
-											targetRole={senderRole}
-											isGroup={isGroup}
-											onChanged={() => participants.refetch()}
-										>
-											<div
-												className={`group relative flex gap-4 rounded-md px-2 py-1 hover:bg-foreground/[0.015] ${
-													grouped ? "" : "mt-1.5"
-												}`}
-											>
-												{editingId === m.id ? null : (
-													<div className="absolute right-2 top-0 flex items-center gap-0.5 rounded-md border border-border bg-card opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
-														<Popover
-															open={reactingId === m.id}
-															onOpenChange={(o) =>
-																setReactingId(o ? m.id : null)
-															}
-														>
-															<PopoverTrigger asChild>
-																<button
-																	type="button"
-																	className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
-																	aria-label={t("addReaction")}
-																>
-																	<SmilePlusIcon className="size-3.5" />
-																</button>
-															</PopoverTrigger>
-															<PopoverContent className="w-fit p-0" align="end">
-																<EmojiPicker
-																	className="h-[320px]"
-																	onEmojiSelect={({ emoji }) => {
-																		reactMut.mutate({ id: m.id, emoji });
-																		setReactingId(null);
-																	}}
-																>
-																	<EmojiPickerSearch />
-																	<EmojiPickerContent />
-																</EmojiPicker>
-															</PopoverContent>
-														</Popover>
-														{isMine && m.messageType !== "gif" ? (
-															<button
-																type="button"
-																onClick={() => {
-																	setEditingId(m.id);
-																	setEditDraft(m.body);
-																}}
-																className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
-																aria-label={t("editMessage")}
-															>
-																<PencilIcon className="size-3.5" />
-															</button>
-														) : null}
-														{canDelete ? (
-															<button
-																type="button"
-																onClick={() => setDeletingId(m.id)}
-																className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-																aria-label={t("deleteMessage")}
-															>
-																<TrashIcon className="size-3.5" />
-															</button>
-														) : null}
-													</div>
-												)}
-												<div className="w-10.5 shrink-0">
-													{grouped ? null : (
-														<StorageImage
-															kind="avatar"
-															fileId={avatarFileId}
-															variant="md"
-															className="size-10.5 rounded-full object-cover bg-muted"
-															fallback={
-																<div className="flex size-10.5 items-center justify-center rounded-full bg-primary/20 text-sm font-semibold text-primary">
-																	{initials(displayName)}
-																</div>
-															}
-														/>
-													)}
+										<Fragment key={m.id}>
+											{sepLabel ? (
+												<div className="my-4 flex items-center gap-3.5">
+													<span className="h-px flex-1 bg-border" />
+													<span className="text-xs font-semibold text-muted-foreground">
+														{sepLabel.kind === "today"
+															? t("today")
+															: sepLabel.kind === "yesterday"
+																? t("yesterday")
+																: sepLabel.at}
+													</span>
+													<span className="h-px flex-1 bg-border" />
 												</div>
-												<div className="min-w-0 flex-1">
-													{grouped ? null : (
-														<div className="mb-1 flex items-baseline gap-2.5">
-															<span className="text-sm font-semibold text-foreground">
-																{displayName}
-															</span>
-															<span className="text-xs text-muted-foreground">
-																{fmt.time(m.createdAt, {
-																	hour: "2-digit",
-																	minute: "2-digit",
-																})}
-															</span>
-														</div>
-													)}
-													{isGifMessage(m) ? (
-														<a
-															href={m.body}
-															target="_blank"
-															rel="noreferrer"
-															className="block w-fit"
-														>
-															{/* biome-ignore lint/a11y/useAltText: chat gif message */}
-															<img
-																src={m.body}
-																className="max-h-80 max-w-xs rounded-lg"
-																loading="lazy"
-															/>
-														</a>
-													) : editingId === m.id ? (
-														<form
-															onSubmit={(e) => {
-																e.preventDefault();
-																const body = editDraft.trim();
-																if (body && body !== m.body)
-																	editMut.mutate({ id: m.id, body });
-																else setEditingId(null);
-															}}
-															className="mt-0.5"
-														>
-															<input
-																className="w-full rounded-md border border-border bg-card px-2 py-1 text-sm text-foreground focus:border-ring focus:outline-none"
-																value={editDraft}
-																onChange={(e) => setEditDraft(e.target.value)}
-																onKeyDown={(e) => {
-																	if (e.key === "Escape") setEditingId(null);
-																}}
-																maxLength={10000}
-																// biome-ignore lint/a11y/noAutofocus: inline editor focus is expected
-																autoFocus
-															/>
-															<div className="mt-1 flex gap-2 text-xs text-muted-foreground">
+											) : null}
+											<UserContextMenu
+												target={{
+													userId: m.senderId,
+													profileUrl: senderProfileUrl,
+													displayName,
+												}}
+												meId={meId}
+												conversationId={
+													source.kind === "dm"
+														? source.conversationId
+														: undefined
+												}
+												viewerRole={myRole}
+												targetRole={senderRole}
+												isGroup={isGroup}
+												onChanged={() => participants.refetch()}
+											>
+												<div
+													className={`group relative flex gap-4 rounded-md px-2 py-1 hover:bg-foreground/[0.015] ${
+														grouped ? "" : "mt-1.5"
+													}`}
+												>
+													{editingId === m.id ? null : (
+														<div className="absolute right-2 top-0 flex items-center gap-0.5 rounded-md border border-border bg-card opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
+															<Popover
+																open={reactingId === m.id}
+																onOpenChange={(o) =>
+																	setReactingId(o ? m.id : null)
+																}
+															>
+																<PopoverTrigger asChild>
+																	<button
+																		type="button"
+																		className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+																		aria-label={t("addReaction")}
+																	>
+																		<SmilePlusIcon className="size-3.5" />
+																	</button>
+																</PopoverTrigger>
+																<PopoverContent
+																	className="w-fit p-0"
+																	align="end"
+																>
+																	<EmojiPicker
+																		className="h-[320px]"
+																		onEmojiSelect={({ emoji }) => {
+																			reactMut.mutate({ id: m.id, emoji });
+																			setReactingId(null);
+																		}}
+																	>
+																		<EmojiPickerSearch />
+																		<EmojiPickerContent />
+																	</EmojiPicker>
+																</PopoverContent>
+															</Popover>
+															{isMine && m.messageType !== "gif" ? (
 																<button
 																	type="button"
-																	className="underline"
-																	onClick={() => setEditingId(null)}
+																	onClick={() => {
+																		setEditingId(m.id);
+																		setEditDraft(m.body);
+																	}}
+																	className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
+																	aria-label={t("editMessage")}
 																>
-																	{t("editCancel")}
+																	<PencilIcon className="size-3.5" />
 																</button>
+															) : null}
+															{canDelete ? (
 																<button
-																	type="submit"
-																	className="underline"
-																	disabled={editMut.isPending}
+																	type="button"
+																	onClick={() => setDeletingId(m.id)}
+																	className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+																	aria-label={t("deleteMessage")}
 																>
-																	{t("editSave")}
+																	<TrashIcon className="size-3.5" />
 																</button>
-															</div>
-														</form>
-													) : (
-														<div className="whitespace-pre-wrap break-words text-sm leading-relaxed text-foreground">
-															{m.body}
-															{m.editedAt ? (
-																<span className="ml-1.5 text-[10px] text-muted-foreground">
-																	{t("edited")}
-																</span>
 															) : null}
 														</div>
 													)}
-													{m.attachments && m.attachments.length > 0 ? (
-														<div className="mt-1.5 flex flex-col gap-1.5">
-															{m.attachments.map((k) => (
-																<MessageAttachment key={k} attachmentKey={k} />
-															))}
-														</div>
-													) : null}
-													{editingId === m.id ? null : m.reactions &&
-														m.reactions.length > 0 ? (
-														<div className="mt-1 flex flex-wrap gap-1">
-															{m.reactions.map((r) => (
-																<ReactionPill
-																	key={r.emoji}
-																	messageId={m.id}
-																	emoji={r.emoji}
-																	count={r.count}
-																	mine={r.mine}
-																	onReact={(emoji) =>
-																		reactMut.mutate({ id: m.id, emoji })
-																	}
-																	onOpenModal={(emoji) =>
-																		setReactorsModal({ messageId: m.id, emoji })
-																	}
+													<div className="w-10.5 shrink-0">
+														{grouped ? null : (
+															<StorageImage
+																kind="avatar"
+																fileId={avatarFileId}
+																variant="md"
+																className="size-10.5 rounded-full object-cover bg-muted"
+																fallback={
+																	<div className="flex size-10.5 items-center justify-center rounded-full bg-primary/20 text-sm font-semibold text-primary">
+																		{initials(displayName)}
+																	</div>
+																}
+															/>
+														)}
+													</div>
+													<div className="min-w-0 flex-1">
+														{grouped ? null : (
+															<div className="mb-1 flex items-baseline gap-2.5">
+																<span className="text-sm font-semibold text-foreground">
+																	{displayName}
+																</span>
+																<span className="text-xs text-muted-foreground">
+																	{fmt.time(m.createdAt, {
+																		hour: "2-digit",
+																		minute: "2-digit",
+																	})}
+																</span>
+															</div>
+														)}
+														{isGifMessage(m) ? (
+															<a
+																href={m.body}
+																target="_blank"
+																rel="noreferrer"
+																className="block w-fit"
+															>
+																{/* biome-ignore lint/a11y/useAltText: chat gif message */}
+																<img
+																	src={m.body}
+																	className="max-h-80 max-w-xs rounded-lg"
+																	loading="lazy"
 																/>
-															))}
-														</div>
-													) : null}
+															</a>
+														) : editingId === m.id ? (
+															<form
+																onSubmit={(e) => {
+																	e.preventDefault();
+																	const body = editDraft.trim();
+																	if (body && body !== m.body)
+																		editMut.mutate({ id: m.id, body });
+																	else setEditingId(null);
+																}}
+																className="mt-0.5"
+															>
+																<input
+																	className="w-full rounded-md border border-border bg-card px-2 py-1 text-sm text-foreground focus:border-ring focus:outline-none"
+																	value={editDraft}
+																	onChange={(e) => setEditDraft(e.target.value)}
+																	onKeyDown={(e) => {
+																		if (e.key === "Escape") setEditingId(null);
+																	}}
+																	maxLength={10000}
+																	// biome-ignore lint/a11y/noAutofocus: inline editor focus is expected
+																	autoFocus
+																/>
+																<div className="mt-1 flex gap-2 text-xs text-muted-foreground">
+																	<button
+																		type="button"
+																		className="underline"
+																		onClick={() => setEditingId(null)}
+																	>
+																		{t("editCancel")}
+																	</button>
+																	<button
+																		type="submit"
+																		className="underline"
+																		disabled={editMut.isPending}
+																	>
+																		{t("editSave")}
+																	</button>
+																</div>
+															</form>
+														) : (
+															<div className="whitespace-pre-wrap break-words text-sm leading-relaxed text-foreground">
+																{m.body}
+																{m.editedAt ? (
+																	<span className="ml-1.5 text-[10px] text-muted-foreground">
+																		{t("edited")}
+																	</span>
+																) : null}
+															</div>
+														)}
+														{m.attachments && m.attachments.length > 0 ? (
+															<div className="mt-1.5 flex flex-col gap-1.5">
+																{m.attachments.map((k) => (
+																	<MessageAttachment
+																		key={k}
+																		attachmentKey={k}
+																	/>
+																))}
+															</div>
+														) : null}
+														{editingId === m.id ? null : m.reactions &&
+															m.reactions.length > 0 ? (
+															<div className="mt-1 flex flex-wrap gap-1">
+																{m.reactions.map((r) => (
+																	<ReactionPill
+																		key={r.emoji}
+																		messageId={m.id}
+																		emoji={r.emoji}
+																		count={r.count}
+																		mine={r.mine}
+																		onReact={(emoji) =>
+																			reactMut.mutate({ id: m.id, emoji })
+																		}
+																		onOpenModal={(emoji) =>
+																			setReactorsModal({
+																				messageId: m.id,
+																				emoji,
+																			})
+																		}
+																	/>
+																))}
+															</div>
+														) : null}
+													</div>
 												</div>
-											</div>
-										</UserContextMenu>
+											</UserContextMenu>
+										</Fragment>
 									);
 								})}
 								{outgoing.map((o) => {

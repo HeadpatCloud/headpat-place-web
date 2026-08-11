@@ -18,6 +18,7 @@ export type AccountProfile = {
 	bioHtml?: string | null;
 	pronouns?: string | null;
 	birthday?: string | Date | null;
+	birthdayVisible?: boolean;
 	birthdayShowDay?: boolean;
 	birthdayShowYear?: boolean;
 	location?: string | null;

@@ -1,12 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { FadeIn } from "@/components/FadeIn";
 import { StorageImage } from "@/components/StorageImage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useSession } from "@/lib/auth-client";
 import { useDateFormat } from "@/lib/datetime";
-import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n";
+import { DEFAULT_LOCALE, type Locale, useTranslations } from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
 import { orpc } from "@/lib/orpc";
 import { SITE_NAME, SITE_URL, seo } from "@/lib/seo";
@@ -55,12 +56,16 @@ export const Route = createFileRoute("/{-$locale}/_app/")({
 
 function Landing() {
 	const { data: session } = useSession();
+	const t = useTranslations("home");
 	const fmt = useDateFormat();
+	// New sample each visit; the API orders by md5(seed || id) so it stays
+	// stable while this mount lives.
+	const [seed] = useState(() => Math.random().toString(36).slice(2, 12));
 	const communities = useQuery(
-		orpc.community.list.queryOptions({ input: { pageSize: 3 } }),
+		orpc.community.list.queryOptions({ input: { pageSize: 3, seed } }),
 	);
 	const users = useQuery(
-		orpc.profile.list.queryOptions({ input: { pageSize: 3 } }),
+		orpc.profile.list.queryOptions({ input: { pageSize: 3, seed } }),
 	);
 	const events = useQuery(
 		orpc.event.upcoming.queryOptions({ input: { limit: 3 } }),
@@ -133,7 +138,7 @@ function Landing() {
 			) : null}
 
 			<section>
-				<h2 className="mb-3 text-xl font-bold">Popular communities</h2>
+				<h2 className="mb-3 text-xl font-bold">{t("discoverCommunities")}</h2>
 				<div className="grid gap-4 sm:grid-cols-3">
 					{topCommunities.map((c, i) => (
 						<Link key={c.id} to={`/community/${c.id}` as never}>
@@ -164,7 +169,7 @@ function Landing() {
 			</section>
 
 			<section>
-				<h2 className="mb-3 text-xl font-bold">Suggested users</h2>
+				<h2 className="mb-3 text-xl font-bold">{t("discoverUsers")}</h2>
 				<div className="grid gap-4 sm:grid-cols-3">
 					{topUsers.map((u, i) => (
 						<Link key={u.userId} to={`/user/${u.profileUrl}` as never}>

@@ -6,12 +6,13 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { GradientBanner } from "@/components/GradientBanner";
 import { RichBio } from "@/components/profile/RichBio";
-import { useStorageUrl } from "@/components/StorageImage";
+import { StorageImage, useStorageUrl } from "@/components/StorageImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSession } from "@/lib/auth-client";
 import { formatBirthday, isBirthdayToday } from "@/lib/birthday";
 import {
@@ -104,7 +105,8 @@ function UserProfilePage() {
 	const p = profile.data;
 	const showDay = p.birthdayShowDay ?? true;
 	const showYear = p.birthdayShowYear ?? true;
-	const isBday = isBirthdayToday(p.birthday, showDay);
+	const showBirthday = (p.birthdayVisible ?? true) && !!p.birthday;
+	const isBday = showBirthday && isBirthdayToday(p.birthday, showDay);
 
 	return (
 		<main className="space-y-6">
@@ -147,7 +149,7 @@ function UserProfilePage() {
 							{p.location ? (
 								<Badge variant="secondary">{p.location}</Badge>
 							) : null}
-							{p.birthday ? (
+							{showBirthday && p.birthday ? (
 								<Badge variant="secondary" className="gap-1">
 									<CakeIcon className="size-3.5" />
 									{formatBirthday(p.birthday, { showDay, showYear })}
@@ -187,21 +189,25 @@ function UserProfilePage() {
 							</Link>
 						</div>
 						<SocialLinks profile={p} />
-						{p.bioHtml || p.bio ? (
-							<>
-								<Separator />
-								<div>
-									<p className="mb-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
-										{t("profileAbout")}
-									</p>
-									{p.bioHtml ? (
-										<RichBio html={p.bioHtml} />
-									) : (
-										<p className="whitespace-pre-wrap">{p.bio}</p>
-									)}
-								</div>
-							</>
-						) : null}
+						<Separator />
+						<Tabs defaultValue="about">
+							<TabsList className="grid w-full grid-cols-2">
+								<TabsTrigger value="about">{t("profileAbout")}</TabsTrigger>
+								<TabsTrigger value="gallery">{t("profileGallery")}</TabsTrigger>
+							</TabsList>
+							<TabsContent value="about" className="pt-4">
+								{p.bioHtml ? (
+									<RichBio html={p.bioHtml} />
+								) : p.bio ? (
+									<p className="whitespace-pre-wrap">{p.bio}</p>
+								) : (
+									<p className="text-muted-foreground">{t("usersNoBio")}</p>
+								)}
+							</TabsContent>
+							<TabsContent value="gallery" className="pt-4">
+								<ProfileGallery userId={p.userId} />
+							</TabsContent>
+						</Tabs>
 					</div>
 				</div>
 			</div>
@@ -404,6 +410,34 @@ function FollowButton({ targetUserId }: { targetUserId: string }) {
 			{status.data.followsMe ? (
 				<Badge variant="secondary">{t("followsYou")}</Badge>
 			) : null}
+		</div>
+	);
+}
+
+function ProfileGallery({ userId }: { userId: string }) {
+	const t = useTranslations("galleryPages");
+	const q = useQuery(
+		orpc.gallery.list.queryOptions({ input: { userId, pageSize: 12 } }),
+	);
+	const items = q.data?.items ?? [];
+	if (q.isPending) return <p className="text-muted-foreground">{t("title")}</p>;
+	if (!items.length)
+		return <p className="text-muted-foreground">{t("empty")}</p>;
+	return (
+		<div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+			{items.map((g) => (
+				<Link key={g.id} to={`/gallery/${g.id}` as never}>
+					<StorageImage
+						kind="gallery"
+						fileId={g.fileId}
+						variant="md"
+						className="aspect-square w-full rounded-xl border border-border object-cover bg-muted"
+						fallback={
+							<div className="aspect-square w-full rounded-xl border border-border bg-muted" />
+						}
+					/>
+				</Link>
+			))}
 		</div>
 	);
 }

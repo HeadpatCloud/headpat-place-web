@@ -28,6 +28,7 @@ const schema = z.object({
 	pronouns: z.string().max(60).optional(),
 	location: z.string().max(120).optional(),
 	birthday: z.date().nullable().optional(),
+	birthdayVisible: z.boolean().optional(),
 	birthdayShowDay: z.boolean().optional(),
 	birthdayShowYear: z.boolean().optional(),
 	discordName: z.string().max(60).optional(),
@@ -67,6 +68,7 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 			pronouns: "",
 			location: "",
 			birthday: null,
+			birthdayVisible: true,
 			birthdayShowDay: true,
 			birthdayShowYear: true,
 			discordName: "",
@@ -90,6 +92,7 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 				pronouns: profile.pronouns ?? "",
 				location: profile.location ?? "",
 				birthday: profile.birthday ? new Date(profile.birthday) : null,
+				birthdayVisible: profile.birthdayVisible ?? true,
 				birthdayShowDay: profile.birthdayShowDay ?? true,
 				birthdayShowYear: profile.birthdayShowYear ?? true,
 				discordName: profile.discordName ?? "",
@@ -210,11 +213,11 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 								</span>
 								<FormField
 									control={form.control}
-									name="birthdayShowDay"
+									name="birthdayVisible"
 									render={({ field }) => (
 										<FormItem className="flex items-center justify-between gap-2 space-y-0">
 											<FormLabel className="font-normal">
-												{t("showBirthdayDay")}
+												{t("showBirthdayAtAll")}
 											</FormLabel>
 											<FormControl>
 												<Switch
@@ -225,23 +228,44 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 										</FormItem>
 									)}
 								/>
-								<FormField
-									control={form.control}
-									name="birthdayShowYear"
-									render={({ field }) => (
-										<FormItem className="flex items-center justify-between gap-2 space-y-0">
-											<FormLabel className="font-normal">
-												{t("showBirthdayYear")}
-											</FormLabel>
-											<FormControl>
-												<Switch
-													checked={field.value ?? true}
-													onCheckedChange={field.onChange}
-												/>
-											</FormControl>
-										</FormItem>
-									)}
-								/>
+								{form.watch("birthdayVisible") !== false ? (
+									<>
+										<FormField
+											control={form.control}
+											name="birthdayShowDay"
+											render={({ field }) => (
+												<FormItem className="flex items-center justify-between gap-2 space-y-0">
+													<FormLabel className="font-normal">
+														{t("showBirthdayDay")}
+													</FormLabel>
+													<FormControl>
+														<Switch
+															checked={field.value ?? true}
+															onCheckedChange={field.onChange}
+														/>
+													</FormControl>
+												</FormItem>
+											)}
+										/>
+										<FormField
+											control={form.control}
+											name="birthdayShowYear"
+											render={({ field }) => (
+												<FormItem className="flex items-center justify-between gap-2 space-y-0">
+													<FormLabel className="font-normal">
+														{t("showBirthdayYear")}
+													</FormLabel>
+													<FormControl>
+														<Switch
+															checked={field.value ?? true}
+															onCheckedChange={field.onChange}
+														/>
+													</FormControl>
+												</FormItem>
+											)}
+										/>
+									</>
+								) : null}
 							</div>
 						) : null}
 					</div>
