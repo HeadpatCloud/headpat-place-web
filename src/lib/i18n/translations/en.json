@@ -1478,6 +1478,7 @@
 		"legalLinkDisclaimer": "Disclaimer",
 		"legalLinkAcceptableUse": "Acceptable use",
 		"profileNotFound": "Profile not found.",
+		"profileLoadFailed": "Couldn't load this profile. Try again in a moment.",
 		"seoTitle": "User profile",
 		"followersTitle": "%{name}'s followers",
 		"followersEmpty": "No followers yet.",

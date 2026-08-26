@@ -10,8 +10,10 @@ import { StorageImage, useStorageUrl } from "@/components/StorageImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useSession } from "@/lib/auth-client";
 import { formatBirthday, isBirthdayToday } from "@/lib/birthday";
@@ -23,6 +25,7 @@ import {
 } from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
+import { isNotFoundError, retryUnlessNotFound } from "@/lib/query-retry";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/{-$locale}/_app/user/$profileUrl/")({
@@ -66,9 +69,11 @@ function formatJoined(registeredAt: string | Date) {
 function UserProfilePage() {
 	const { profileUrl } = Route.useParams();
 	const t = useTranslations("miscPages");
-	const profile = useQuery(
-		orpc.profile.byUrl.queryOptions({ input: { profileUrl } }),
-	);
+	const c = useTranslations("common");
+	const profile = useQuery({
+		...orpc.profile.byUrl.queryOptions({ input: { profileUrl } }),
+		retry: retryUnlessNotFound,
+	});
 	const avatarUrl = useStorageUrl("avatar", profile.data?.avatarFileId, "md");
 
 	if (profile.isPending)
@@ -100,8 +105,20 @@ function UserProfilePage() {
 				</div>
 			</main>
 		);
-	if (profile.isError || !profile.data)
-		return <p className="p-4">{t("profileNotFound")}</p>;
+	if (profile.isError || !profile.data) {
+		// A transient failure used to render as "profile not found", which reads
+		// as the account being gone rather than a blip worth retrying.
+		if (isNotFoundError(profile.error))
+			return <p className="p-4">{t("profileNotFound")}</p>;
+		return (
+			<div className="flex flex-col items-start gap-3 p-4">
+				<p className="text-muted-foreground">{t("profileLoadFailed")}</p>
+				<Button variant="outline" onClick={() => profile.refetch()}>
+					{c("retry")}
+				</Button>
+			</div>
+		);
+	}
 	const p = profile.data;
 	const showDay = p.birthdayShowDay ?? true;
 	const showYear = p.birthdayShowYear ?? true;
@@ -416,13 +433,63 @@ function FollowButton({ targetUserId }: { targetUserId: string }) {
 
 function ProfileGallery({ userId }: { userId: string }) {
 	const t = useTranslations("galleryPages");
+	const { data: session } = useSession();
 	const q = useQuery(
 		orpc.gallery.list.queryOptions({ input: { userId, pageSize: 12 } }),
 	);
-	const items = q.data?.items ?? [];
+	const me = useQuery({
+		...orpc.profile.me.queryOptions({ input: undefined }),
+		enabled: !!session?.user,
+	});
+	const nsfwEnabled = Boolean(
+		(me.data as { nsfwEnabled?: boolean } | undefined)?.nsfwEnabled,
+	);
+
+	// Shares the gallery's key so the preference follows the viewer around.
+	const [showNsfw, setShowNsfw] = useState(true);
+	useEffect(() => {
+		setShowNsfw(localStorage.getItem("gallery:showNsfw") !== "false");
+	}, []);
+	function toggleNsfw(v: boolean) {
+		setShowNsfw(v);
+		localStorage.setItem("gallery:showNsfw", String(v));
+	}
+
+	const hideNsfw = nsfwEnabled && !showNsfw;
+	const items = (q.data?.items ?? []).filter((g) => !hideNsfw || !g.nsfw);
+
 	if (q.isPending) return <p className="text-muted-foreground">{t("title")}</p>;
-	if (!items.length)
-		return <p className="text-muted-foreground">{t("empty")}</p>;
+	return (
+		<div className="space-y-3">
+			{nsfwEnabled ? (
+				<div className="flex items-center justify-end gap-2">
+					<Switch
+						id="profile-nsfw"
+						checked={showNsfw}
+						onCheckedChange={toggleNsfw}
+					/>
+					<Label
+						htmlFor="profile-nsfw"
+						className="cursor-pointer select-none text-sm text-muted-foreground"
+					>
+						{t("showNsfw")}
+					</Label>
+				</div>
+			) : null}
+			{items.length ? (
+				<ProfileGalleryGrid items={items} />
+			) : (
+				<p className="text-muted-foreground">{t("empty")}</p>
+			)}
+		</div>
+	);
+}
+
+function ProfileGalleryGrid({
+	items,
+}: {
+	items: { id: string; fileId: string | null }[];
+}) {
 	return (
 		<div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
 			{items.map((g) => (

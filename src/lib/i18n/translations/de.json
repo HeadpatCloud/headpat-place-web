@@ -1479,6 +1479,7 @@
 		"legalLinkDisclaimer": "Haftungsausschluss",
 		"legalLinkAcceptableUse": "Nutzungsrichtlinie",
 		"profileNotFound": "Profil nicht gefunden.",
+		"profileLoadFailed": "Dieses Profil konnte nicht geladen werden. Versuche es gleich noch einmal.",
 		"seoTitle": "Benutzerprofil",
 		"followersTitle": "Follower von %{name}",
 		"followersEmpty": "Noch keine Follower.",

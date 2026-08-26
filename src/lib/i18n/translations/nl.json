@@ -1479,6 +1479,7 @@
 		"legalLinkDisclaimer": "Disclaimer",
 		"legalLinkAcceptableUse": "Gebruiksvoorwaarden",
 		"profileNotFound": "Profiel niet gevonden.",
+		"profileLoadFailed": "Kon dit profiel niet laden. Probeer het zo nog eens.",
 		"seoTitle": "Gebruikersprofiel",
 		"followersTitle": "Volgers van %{name}",
 		"followersEmpty": "Nog geen volgers.",
