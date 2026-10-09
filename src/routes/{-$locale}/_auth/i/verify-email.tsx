@@ -1,6 +1,5 @@
 import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { z } from "zod";
 import { ErrorMessage, SuccessMessage } from "@/components/alerts";
 import { BrandLogo } from "@/components/BrandLogo";
 import { Button } from "@/components/ui/button";
@@ -8,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { useTranslations } from "@/lib/i18n";
 import { useLocalizedNavigate as useNavigate } from "@/lib/localized-nav";
+import { z } from "@/lib/zod";
 
 const searchSchema = z.object({
 	token: z.string().optional(),
@@ -25,7 +25,11 @@ function emailFromToken(token: string | undefined): string | null {
 	}
 }
 
+import { pageHead } from "@/lib/seo";
 export const Route = createFileRoute("/{-$locale}/_auth/i/verify-email")({
+	head: pageHead("authPages.checkInboxTitle", "/i/verify-email", {
+		noindex: true,
+	}),
 	validateSearch: searchSchema,
 	component: VerifyEmailPage,
 });

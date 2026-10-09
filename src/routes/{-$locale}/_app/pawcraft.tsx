@@ -1,9 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslations } from "@/lib/i18n";
 
+import { pageHead } from "@/lib/seo";
 export const Route = createFileRoute("/{-$locale}/_app/pawcraft")({
 	component: PawcraftPage,
-	head: () => ({ meta: [{ title: "Pawcraft" }] }),
+	head: pageHead("titles.pawcraft", "/pawcraft", {
+		descriptionKey: "miscPages.pawcraftSubtitle",
+	}),
 });
 
 function PawcraftPage() {

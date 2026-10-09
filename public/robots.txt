@@ -7,10 +7,12 @@ Disallow: /admin
 Disallow: /chat
 Disallow: /messages
 Disallow: /notifications
+Disallow: /search
 Disallow: /*/account
 Disallow: /*/admin
 Disallow: /*/chat
 Disallow: /*/messages
 Disallow: /*/notifications
+Disallow: /*/search
 
 Sitemap: https://headpat.place/sitemap.xml

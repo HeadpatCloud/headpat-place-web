@@ -25,8 +25,10 @@ import {
 } from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
+import { profileJsonLd } from "@/lib/profile-seo";
 import { isNotFoundError, retryUnlessNotFound } from "@/lib/query-retry";
-import { seo } from "@/lib/seo";
+import { jsonLdString, localeUrl, seo } from "@/lib/seo";
+import { type SocialProfile, socialLinks } from "@/lib/social";
 
 export const Route = createFileRoute("/{-$locale}/_app/user/$profileUrl/")({
 	component: UserProfilePage,
@@ -37,11 +39,24 @@ export const Route = createFileRoute("/{-$locale}/_app/user/$profileUrl/")({
 		try {
 			const p = await client.profile.byUrl({ profileUrl: params.profileUrl });
 			const name = p.displayName || p.name || p.profileUrl;
+			const locale = (params as { locale?: Locale }).locale ?? DEFAULT_LOCALE;
+			const noindex = p.indexingEnabled === false;
 			return {
 				title: `${name} (@${p.profileUrl})`,
 				description: p.bio
 					? p.bio.replace(/\s+/g, " ").trim().slice(0, 160)
 					: undefined,
+				noindex,
+				jsonLd: noindex
+					? null
+					: profileJsonLd({
+							url: localeUrl(`/user/${p.profileUrl}`, locale),
+							name,
+							handle: p.profileUrl,
+							bio: p.bio,
+							createdAt: p.registeredAt,
+							social: p,
+						}),
 			};
 		} catch {
 			return null;
@@ -50,12 +65,25 @@ export const Route = createFileRoute("/{-$locale}/_app/user/$profileUrl/")({
 	head: ({ params, loaderData }) => {
 		const locale = (params as { locale?: Locale }).locale ?? DEFAULT_LOCALE;
 		const profileUrl = (params as { profileUrl: string }).profileUrl;
-		return seo({
-			title: loaderData?.title ?? translate(locale, "miscPages.seoTitle"),
-			description: loaderData?.description,
-			path: `/user/${profileUrl}`,
-			locale,
-		});
+		return {
+			...seo({
+				title: loaderData?.title ?? translate(locale, "miscPages.seoTitle"),
+				description: loaderData?.description,
+				path: `/user/${profileUrl}`,
+				locale,
+				noindex: loaderData?.noindex,
+			}),
+			...(loaderData?.jsonLd
+				? {
+						scripts: [
+							{
+								type: "application/ld+json",
+								children: jsonLdString(loaderData.jsonLd),
+							},
+						],
+					}
+				: {}),
+		};
 	},
 });
 
@@ -232,52 +260,9 @@ function UserProfilePage() {
 	);
 }
 
-function SocialLinks({
-	profile,
-}: {
-	profile: {
-		discordName?: string | null;
-		telegramName?: string | null;
-		furaffinityName?: string | null;
-		xName?: string | null;
-		twitchName?: string | null;
-		blueskyName?: string | null;
-	};
-}) {
+function SocialLinks({ profile }: { profile: SocialProfile }) {
 	const t = useTranslations("miscPages");
-	const links: { label: string; value: string; href?: string }[] = [];
-	if (profile.discordName)
-		links.push({ label: "Discord", value: profile.discordName });
-	if (profile.telegramName)
-		links.push({
-			label: "Telegram",
-			value: profile.telegramName,
-			href: `https://t.me/${profile.telegramName}`,
-		});
-	if (profile.furaffinityName)
-		links.push({
-			label: "FA",
-			value: profile.furaffinityName,
-			href: `https://www.furaffinity.net/user/${profile.furaffinityName}`,
-		});
-	if (profile.xName)
-		links.push({
-			label: "X",
-			value: profile.xName,
-			href: `https://x.com/${profile.xName}`,
-		});
-	if (profile.twitchName)
-		links.push({
-			label: "Twitch",
-			value: profile.twitchName,
-			href: `https://www.twitch.tv/${profile.twitchName}`,
-		});
-	if (profile.blueskyName)
-		links.push({
-			label: "Bluesky",
-			value: profile.blueskyName,
-			href: `https://bsky.app/profile/${profile.blueskyName}`,
-		});
+	const links = socialLinks(profile);
 
 	if (links.length === 0) return null;
 

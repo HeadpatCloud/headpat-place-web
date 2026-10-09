@@ -15,11 +15,11 @@ import {
 	MessagesSquareIcon,
 	PencilIcon,
 	RocketIcon,
-	SettingsIcon,
 	ShieldIcon,
 	UserSearchIcon,
 } from "lucide-react";
 import type * as React from "react";
+import { useAuthState } from "@/components/contexts/SessionHint";
 import { NavSecondary } from "@/components/sidebar/nav-secondary";
 import { NavUser } from "@/components/sidebar/nav-user";
 import {
@@ -28,11 +28,12 @@ import {
 	SidebarFooter,
 	SidebarHeader,
 } from "@/components/ui/sidebar";
+import { useSession } from "@/lib/auth-client";
 import { useTranslations } from "@/lib/i18n";
+import { LocalizedLink as Link } from "@/lib/localized-nav";
 import { orpc } from "@/lib/orpc";
-import { Separator } from "../ui/separator";
 import { NavList } from "./nav-list";
-import { TeamSwitcher } from "./team-switcher";
+import { SiteSwitcher } from "./site-switcher";
 
 export function AppSidebar({
 	mode = "app",
@@ -40,8 +41,12 @@ export function AppSidebar({
 }: React.ComponentProps<typeof Sidebar> & { mode?: "app" | "admin" }) {
 	const nav = useTranslations("nav");
 
+	const { data: session } = useSession();
+	const { signedIn, pending } = useAuthState();
+	const signedOut = !pending && !signedIn;
 	const adminPerms = useQuery({
 		...orpc.adminRole.myPermissions.queryOptions({ input: undefined }),
+		enabled: !!session?.user,
 		staleTime: 5 * 60_000,
 	});
 	const isStaff = (adminPerms.data?.length ?? 0) > 0;
@@ -59,19 +64,14 @@ export function AppSidebar({
 				icon: LayoutPanelLeftIcon,
 			},
 			{
-				name: nav("chat"),
-				url: "/chat",
-				icon: MessagesSquareIcon,
+				name: nav("communities"),
+				url: "/community",
+				icon: HeartHandshakeIcon,
 			},
 			{
 				name: nav("announcements"),
 				url: "/announcements",
 				icon: MegaphoneIcon,
-			},
-			{
-				name: nav("notifications"),
-				url: "/notifications",
-				icon: BellIcon,
 			},
 			{
 				name: nav("events"),
@@ -96,9 +96,16 @@ export function AppSidebar({
 				icon: FileIcon,
 			},
 			{
-				name: nav("communities"),
-				url: "/community",
-				icon: HeartHandshakeIcon,
+				name: nav("chat"),
+				url: "/chat",
+				icon: MessagesSquareIcon,
+				disabled: signedOut,
+			},
+			{
+				name: nav("notifications"),
+				url: "/notifications",
+				icon: BellIcon,
+				disabled: signedOut,
 			},
 		],
 		adminAccess: [
@@ -135,11 +142,6 @@ export function AppSidebar({
 				url: "/admin/announcements",
 				icon: MegaphoneIcon,
 			},
-			{
-				name: nav("adminSettings"),
-				url: "/admin/settings",
-				icon: SettingsIcon,
-			},
 		],
 		adminBack: [{ name: nav("backToHeadpat"), url: "/", icon: HomeIcon }],
 		navSecondary: [
@@ -171,71 +173,77 @@ export function AppSidebar({
 				icon: PencilIcon,
 			},
 		],
-		teams: [
-			{
-				name: "Place",
-				activeName: "Headpat Place",
-				logoLight: "/logos/place_dark_x250.webp",
-				logoDark: "/logos/place_light_x250.webp",
-				href: "https://headpat.place",
-			},
-			{
-				name: "Space",
-				logoLight: "/logos/space_dark_x250.webp",
-				logoDark: "/logos/space_light_x250.webp",
-				href: "https://headpat.space",
-			},
-			{
-				name: "Developer",
-				logoLight: "/logos/developer_dark_x250.webp",
-				logoDark: "/logos/developer_light_x250.webp",
-				href: "https://headpat.dev",
-			},
+		footerLinks: [
+			{ name: nav("support"), url: "/support", external: false },
+			{ name: nav("changelog"), url: "/changelog", external: false },
+			{ name: nav("legal"), url: "/legal", external: false },
+			{ name: "Discord", url: "https://discord.gg/EaQTEKRg2A", external: true },
+		],
+		sites: [
+			{ name: "Place", href: "https://headpat.place", active: true },
+			{ name: "Space", href: "https://headpat.space" },
+			{ name: "Dev", href: "https://headpat.dev" },
 		],
 	};
 
 	return (
-		<Sidebar variant="inset" {...props}>
-			<SidebarHeader>
-				<TeamSwitcher teams={data.teams} />
+		<Sidebar variant="floating" {...props}>
+			<SidebarHeader className="px-3 pt-4">
+				<SiteSwitcher sites={data.sites} />
 			</SidebarHeader>
-			<SidebarContent>
+			<SidebarContent className="gap-5 px-3 py-3">
 				{mode === "admin" ? (
 					<>
 						<NavList label="Access" projects={data.adminAccess} />
-						<Separator />
 						<NavList label="Operations" projects={data.adminOps} />
-						<Separator />
 						<NavList projects={data.adminBack} />
 						<NavSecondary items={data.navSecondary} className="mt-auto" />
 					</>
 				) : (
 					<>
-						<NavList projects={data.navMain} />
-						<Separator />
-						<NavList projects={data.secondMain} />
-						{isStaff ? (
-							<>
-								<Separator />
-								<NavList
-									projects={[
-										{ name: "Admin", url: "/admin", icon: ShieldIcon },
-									]}
-								/>
-							</>
-						) : null}
-						<Separator />
-						<NavList projects={data.thirdMain} />
-						<NavSecondary items={data.navSecondary} className="mt-auto" />
+						<NavList label={nav("explore")} projects={data.navMain} />
+						<NavList
+							label={nav("you")}
+							projects={[
+								...data.secondMain,
+								...(isStaff
+									? [{ name: "Admin", url: "/admin", icon: ShieldIcon }]
+									: []),
+							]}
+						/>
 					</>
 				)}
 			</SidebarContent>
-			<SidebarFooter>
-				<Separator />
-				<span className="text-muted-foreground text-center text-sm">
-					BETA {__APP_VERSION__} <RocketIcon className="inline-block size-4" />
+			<SidebarFooter className="gap-3 px-3 pb-3">
+				{mode === "admin" ? null : (
+					<div className="flex flex-wrap gap-x-1 px-1">
+						{data.footerLinks.map((l) =>
+							l.external ? (
+								<a
+									key={l.name}
+									href={l.url}
+									target="_blank"
+									rel="noreferrer"
+									className="rounded-lg px-2 py-1 text-sm font-bold text-muted-foreground hover:text-foreground"
+								>
+									{l.name}
+								</a>
+							) : (
+								<Link
+									key={l.name}
+									to={l.url}
+									className="rounded-lg px-2 py-1 text-sm font-bold text-muted-foreground hover:text-foreground"
+								>
+									{l.name}
+								</Link>
+							),
+						)}
+					</div>
+				)}
+				<span className="text-muted-foreground text-center text-xs">
+					BETA {__APP_VERSION__}{" "}
+					<RocketIcon className="inline-block size-3.5" />
 				</span>
-				<Separator />
 				<NavUser />
 			</SidebarFooter>
 		</Sidebar>

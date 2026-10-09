@@ -4,7 +4,9 @@ import { ChatSidebar } from "@/components/chat/ChatSidebar";
 import { useSession } from "@/lib/auth-client";
 import { useLocalizedNavigate } from "@/lib/localized-nav";
 
+import { pageHead } from "@/lib/seo";
 export const Route = createFileRoute("/{-$locale}/chat")({
+	head: pageHead("nav.chat", "/chat", { noindex: true }),
 	component: ChatLayout,
 });
 

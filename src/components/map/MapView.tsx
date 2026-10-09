@@ -43,7 +43,7 @@ export function MapView() {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const LRef = useRef<typeof LType | null>(null);
 	const mapRef = useRef<LType.Map | null>(null);
-	const tileRef = useRef<LType.TileLayer | null>(null);
+	const tileRef = useRef<LType.Layer | null>(null);
 	const groupRef = useRef<LType.LayerGroup | null>(null);
 	const clusterRef = useRef<LType.MarkerClusterGroup | null>(null);
 	const peopleRef = useRef<LType.LayerGroup | null>(null);
@@ -127,7 +127,6 @@ export function MapView() {
 			// tile layer follows the app theme
 			if (tileRef.current) map.removeLayer(tileRef.current);
 			tileRef.current = tileLayer(L, dark).addTo(map);
-			tileRef.current.bringToBack();
 
 			// event zones + pins (pins cluster when they overlap at low zoom)
 			const group = groupRef.current;

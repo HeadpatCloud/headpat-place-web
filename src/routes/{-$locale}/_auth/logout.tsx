@@ -3,7 +3,9 @@ import { useEffect } from "react";
 import { signOut } from "@/lib/auth-client";
 import { useTranslations } from "@/lib/i18n";
 
+import { pageHead } from "@/lib/seo";
 export const Route = createFileRoute("/{-$locale}/_auth/logout")({
+	head: pageHead("titles.login", "/logout", { noindex: true }),
 	component: LogoutPage,
 });
 

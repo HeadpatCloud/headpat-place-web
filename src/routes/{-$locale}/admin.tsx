@@ -12,7 +12,9 @@ import {
 } from "@/lib/localized-nav";
 import { orpc } from "@/lib/orpc";
 
+import { pageHead } from "@/lib/seo";
 export const Route = createFileRoute("/{-$locale}/admin")({
+	head: pageHead("titles.admin", "/admin", { noindex: true }),
 	component: AdminLayout,
 });
 

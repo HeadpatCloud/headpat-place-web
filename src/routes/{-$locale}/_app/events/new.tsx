@@ -5,9 +5,10 @@ import { useSession } from "@/lib/auth-client";
 import { useTranslations } from "@/lib/i18n";
 import { useLocalizedNavigate as useNavigate } from "@/lib/localized-nav";
 
+import { pageHead } from "@/lib/seo";
 export const Route = createFileRoute("/{-$locale}/_app/events/new")({
 	component: NewEventPage,
-	head: () => ({ meta: [{ title: "New event" }] }),
+	head: pageHead("titles.eventNew", "/events/new", { noindex: true }),
 });
 
 function NewEventPage() {

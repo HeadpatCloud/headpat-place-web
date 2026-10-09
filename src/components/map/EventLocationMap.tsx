@@ -24,7 +24,7 @@ export function EventLocationMap({
 	const containerRef = useRef<HTMLDivElement>(null);
 	const LRef = useRef<typeof LType | null>(null);
 	const mapRef = useRef<LType.Map | null>(null);
-	const tileRef = useRef<LType.TileLayer | null>(null);
+	const tileRef = useRef<LType.Layer | null>(null);
 	const groupRef = useRef<LType.LayerGroup | null>(null);
 
 	useEffect(() => {
@@ -54,7 +54,6 @@ export function EventLocationMap({
 
 			if (tileRef.current) map.removeLayer(tileRef.current);
 			tileRef.current = tileLayer(L, dark).addTo(map);
-			tileRef.current.bringToBack();
 
 			const group = groupRef.current;
 			if (!group) return;

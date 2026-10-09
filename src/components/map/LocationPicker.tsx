@@ -56,7 +56,7 @@ export function LocationPicker({
 	const containerRef = useRef<HTMLDivElement>(null);
 	const LRef = useRef<typeof LType | null>(null);
 	const mapRef = useRef<LType.Map | null>(null);
-	const tileRef = useRef<LType.TileLayer | null>(null);
+	const tileRef = useRef<LType.Layer | null>(null);
 	const layerRef = useRef<LType.Layer | null>(null);
 	const valueRef = useRef(value);
 	const onChangeRef = useRef(onChange);
@@ -86,7 +86,6 @@ export function LocationPicker({
 			// darkRef (not the closure) so a theme that resolved/flipped during the
 			// async import is honored, avoiding a light→dark tile flash
 			tileRef.current = tileLayer(L, darkRef.current).addTo(map);
-			tileRef.current.bringToBack();
 
 			const capture = (layer: LType.Layer) => {
 				if (method === "circle") {
@@ -190,7 +189,6 @@ export function LocationPicker({
 		if (!L || !map) return;
 		if (tileRef.current) map.removeLayer(tileRef.current);
 		tileRef.current = tileLayer(L, dark).addTo(map);
-		tileRef.current.bringToBack();
 	}, [dark]);
 
 	const startDraw = () => {

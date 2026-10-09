@@ -13,9 +13,10 @@ import {
 	useLocalizedNavigate as useNavigate,
 } from "@/lib/localized-nav";
 import { orpc } from "@/lib/orpc";
+import { pageHead } from "@/lib/seo";
 import { cn } from "@/lib/utils";
-
 export const Route = createFileRoute("/{-$locale}/_app/account/tickets")({
+	head: pageHead("titles.tickets", "/account/tickets", { noindex: true }),
 	validateSearch: (s: Record<string, unknown>) =>
 		s.new === "1" || s.new === true ? { new: true as const } : {},
 	component: TicketsPage,

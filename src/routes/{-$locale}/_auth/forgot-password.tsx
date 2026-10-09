@@ -7,7 +7,11 @@ import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { useTranslations } from "@/lib/i18n";
 
+import { pageHead } from "@/lib/seo";
 export const Route = createFileRoute("/{-$locale}/_auth/forgot-password")({
+	head: pageHead("authPages.forgotPasswordTitle", "/forgot-password", {
+		noindex: true,
+	}),
 	component: ForgotPasswordPage,
 });
 

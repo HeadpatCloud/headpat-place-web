@@ -11,7 +11,9 @@ import { twoFactor } from "@/lib/auth-client";
 import { useTranslations } from "@/lib/i18n";
 import { useLocalizedNavigate as useNavigate } from "@/lib/localized-nav";
 
+import { pageHead } from "@/lib/seo";
 export const Route = createFileRoute("/{-$locale}/_auth/login/mfa")({
+	head: pageHead("authPages.mfaTitle", "/login/mfa", { noindex: true }),
 	component: MfaPage,
 });
 

@@ -1,9 +1,7 @@
 import { useParams } from "@tanstack/react-router";
-import { I18n, type TranslateOptions } from "i18n-js";
 import { createContext, type ReactNode, useContext, useMemo } from "react";
-import de from "./translations/de.json";
+import { type TranslateOptions, translateFrom } from "./translate";
 import en from "./translations/en.json";
-import nl from "./translations/nl.json";
 
 export const LOCALES = [
 	{ code: "en", label: "English" },
@@ -18,12 +16,25 @@ export function isLocale(value: unknown): value is Locale {
 	return typeof value === "string" && LOCALES.some((l) => l.code === value);
 }
 
-// Single shared instance. We NEVER set `i18n.locale` per request — that's a
-// global and would race across concurrent SSR renders. The locale is passed
-// per call instead.
-const i18n = new I18n({ en, de, nl });
-i18n.enableFallback = true;
-i18n.defaultLocale = DEFAULT_LOCALE;
+type Messages = typeof en;
+const MESSAGES: Partial<Record<Locale, Messages>> = { en };
+const LOADERS = {
+	de: () => import("./translations/de.json"),
+	nl: () => import("./translations/nl.json"),
+};
+
+async function loadLocale(locale: "de" | "nl") {
+	MESSAGES[locale] ??= (await LOADERS[locale]()).default as Messages;
+}
+
+// Only the active locale ships to the browser (the URL prefix decides it, and a
+// language switch is a full navigation). The server serves every locale.
+if (typeof window === "undefined") {
+	await Promise.all([loadLocale("de"), loadLocale("nl")]);
+} else {
+	const prefix = /^\/(de|nl)(?=\/|$)/.exec(window.location.pathname)?.[1];
+	if (prefix === "de" || prefix === "nl") await loadLocale(prefix);
+}
 
 // English is the canonical key set; de/nl fall back to it. Keys absent here are
 // not yet translated — show a humanised label instead of "[missing …]".
@@ -50,7 +61,9 @@ export function translate(
 	options?: TranslateOptions,
 ): string {
 	if (!keyExists(key)) return humanise(key);
-	return i18n.t(key, { locale, ...options });
+	const own = MESSAGES[locale];
+	const chain = own && locale !== DEFAULT_LOCALE ? [own, en] : [en];
+	return translateFrom(chain, key, options) ?? humanise(key);
 }
 
 interface LocaleContextValue {

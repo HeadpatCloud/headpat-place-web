@@ -1,20 +1,42 @@
 import type * as LType from "leaflet";
 
-export const TILES = {
-	light: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-	dark: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-};
+export const MAP_STYLE = "https://tiles.openfreemap.org/styles/liberty";
 export const ATTRIBUTION =
-	'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>';
+	'<a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> &copy; <a href="https://www.openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a> data from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>';
 export const ACCENT = "#10b981";
 /** Distinct from event green — shared-user location markers. */
 export const PERSON_COLOR = "#6366f1";
 
+// Keeps the map flat and simple: no tunnels or bridges, 3D buildings, road
+// outlines, shields, rail hatching, one-way arrows, airports or borders.
+const DROPPED_LAYERS =
+	/^(tunnel_|bridge_|building-3d$|road_area_pattern$|road_one_way_arrow|aeroway_|boundary_|highway-shield|road_shield|park_outline$)|(_casing|_hatching)$/;
+
+let mapStyle: import("maplibre-gl").StyleSpecification;
+let maplibreGL: typeof import("@maplibre/maplibre-gl-leaflet").maplibreGL;
 let leafletPromise: Promise<typeof LType> | null = null;
 /** Lazily load Leaflet client-side (it touches `window`, so never on the server). */
 export function loadLeaflet(): Promise<typeof LType> {
 	if (!leafletPromise) {
-		leafletPromise = import("leaflet").then((m) => m.default ?? m);
+		leafletPromise = Promise.all([
+			fetch(MAP_STYLE).then((r) => {
+				if (!r.ok) throw new Error(`map style failed: ${r.status}`);
+				return r.json();
+			}),
+			import("leaflet"),
+			import("@maplibre/maplibre-gl-leaflet"),
+			import("maplibre-gl"),
+			import("maplibre-gl/dist/maplibre-gl-worker.mjs?url"),
+			import("maplibre-gl/dist/maplibre-gl.css"),
+		]).then(([style, leaflet, plugin, maplibre, worker]) => {
+			style.layers = style.layers.filter(
+				(l: { id: string }) => !DROPPED_LAYERS.test(l.id),
+			);
+			mapStyle = style as import("maplibre-gl").StyleSpecification;
+			maplibre.setWorkerUrl(worker.default);
+			maplibreGL = plugin.maplibreGL;
+			return leaflet.default ?? leaflet;
+		});
 	}
 	return leafletPromise;
 }
@@ -50,14 +72,18 @@ export function parseLatLng(s: string): [number, number] | null {
 	return Number.isFinite(lat) && Number.isFinite(lng) ? [lat, lng] : null;
 }
 
-export function tileLayer(L: typeof LType, dark: boolean): LType.TileLayer {
-	return L.tileLayer(dark ? TILES.dark : TILES.light, {
+export function tileLayer(_L: typeof LType, dark: boolean): LType.Layer {
+	const layer = maplibreGL({
+		style: mapStyle,
 		attribution: ATTRIBUTION,
-		subdomains: "abcd",
-		maxZoom: 20,
-		// Don't repeat the basemap horizontally — one world only.
-		noWrap: true,
-	});
+		fadeDuration: 0,
+		pixelRatio: Math.min(window.devicePixelRatio, 2),
+		renderWorldCopies: false,
+	} as Parameters<typeof maplibreGL>[0]);
+	layer.once("add", () =>
+		layer.getContainer().classList.toggle("map-tiles-dark", dark),
+	);
+	return layer;
 }
 
 type MapPosition = { center: [number, number]; zoom: number };

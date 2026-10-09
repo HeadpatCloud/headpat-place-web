@@ -7,9 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTranslations } from "@/lib/i18n";
 import { orpc } from "@/lib/orpc";
 
+import { pageHead } from "@/lib/seo";
 export const Route = createFileRoute(
 	"/{-$locale}/_app/community/$communityId/followers",
 )({
+	head: pageHead("titles.followers", "/community", { noindex: true }),
 	component: CommunityFollowersPage,
 });
 

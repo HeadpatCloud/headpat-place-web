@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as Char123LocaleChar125RouteImport } from './routes/{-$locale}'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as Char123LocaleChar125ChatRouteImport } from './routes/{-$locale}/chat'
 import { Route as Char123LocaleChar125AdminRouteImport } from './routes/{-$locale}/admin'
 import { Route as Char123LocaleChar125AuthRouteImport } from './routes/{-$locale}/_auth'
@@ -23,6 +24,7 @@ import { Route as Char123LocaleChar125AuthLoginRouteImport } from './routes/{-$l
 import { Route as Char123LocaleChar125AuthForgotPasswordRouteImport } from './routes/{-$locale}/_auth/forgot-password'
 import { Route as Char123LocaleChar125AppUsersRouteImport } from './routes/{-$locale}/_app/users'
 import { Route as Char123LocaleChar125AppSupportRouteImport } from './routes/{-$locale}/_app/support'
+import { Route as Char123LocaleChar125AppSearchRouteImport } from './routes/{-$locale}/_app/search'
 import { Route as Char123LocaleChar125AppProfileRouteImport } from './routes/{-$locale}/_app/profile'
 import { Route as Char123LocaleChar125AppPawcraftRouteImport } from './routes/{-$locale}/_app/pawcraft'
 import { Route as Char123LocaleChar125AppNotificationsRouteImport } from './routes/{-$locale}/_app/notifications'
@@ -30,7 +32,6 @@ import { Route as Char123LocaleChar125AppMapRouteImport } from './routes/{-$loca
 import { Route as Char123LocaleChar125AppChangelogRouteImport } from './routes/{-$locale}/_app/changelog'
 import { Route as Char123LocaleChar125AdminUsersIndexRouteImport } from './routes/{-$locale}/admin/users/index'
 import { Route as Char123LocaleChar125AdminTicketsIndexRouteImport } from './routes/{-$locale}/admin/tickets/index'
-import { Route as Char123LocaleChar125AdminSettingsIndexRouteImport } from './routes/{-$locale}/admin/settings/index'
 import { Route as Char123LocaleChar125AdminRolesIndexRouteImport } from './routes/{-$locale}/admin/roles/index'
 import { Route as Char123LocaleChar125AdminReportsIndexRouteImport } from './routes/{-$locale}/admin/reports/index'
 import { Route as Char123LocaleChar125AdminChangelogIndexRouteImport } from './routes/{-$locale}/admin/changelog/index'
@@ -77,6 +78,11 @@ import { Route as Char123LocaleChar125AppCommunityCommunityIdEventsIndexRouteImp
 const Char123LocaleChar125Route = Char123LocaleChar125RouteImport.update({
   id: '/{-$locale}',
   path: '/{-$locale}',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Char123LocaleChar125ChatRoute =
@@ -154,6 +160,12 @@ const Char123LocaleChar125AppSupportRoute =
     path: '/support',
     getParentRoute: () => Char123LocaleChar125AppRoute,
   } as any)
+const Char123LocaleChar125AppSearchRoute =
+  Char123LocaleChar125AppSearchRouteImport.update({
+    id: '/search',
+    path: '/search',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
 const Char123LocaleChar125AppProfileRoute =
   Char123LocaleChar125AppProfileRouteImport.update({
     id: '/profile',
@@ -194,12 +206,6 @@ const Char123LocaleChar125AdminTicketsIndexRoute =
   Char123LocaleChar125AdminTicketsIndexRouteImport.update({
     id: '/tickets/',
     path: '/tickets/',
-    getParentRoute: () => Char123LocaleChar125AdminRoute,
-  } as any)
-const Char123LocaleChar125AdminSettingsIndexRoute =
-  Char123LocaleChar125AdminSettingsIndexRouteImport.update({
-    id: '/settings/',
-    path: '/settings/',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
 const Char123LocaleChar125AdminRolesIndexRoute =
@@ -456,6 +462,7 @@ const Char123LocaleChar125AppCommunityCommunityIdEventsIndexRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
   '/{-$locale}/admin': typeof Char123LocaleChar125AdminRouteWithChildren
   '/{-$locale}/chat': typeof Char123LocaleChar125ChatRouteWithChildren
@@ -464,6 +471,7 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/notifications': typeof Char123LocaleChar125AppNotificationsRoute
   '/{-$locale}/pawcraft': typeof Char123LocaleChar125AppPawcraftRoute
   '/{-$locale}/profile': typeof Char123LocaleChar125AppProfileRoute
+  '/{-$locale}/search': typeof Char123LocaleChar125AppSearchRoute
   '/{-$locale}/support': typeof Char123LocaleChar125AppSupportRoute
   '/{-$locale}/users': typeof Char123LocaleChar125AppUsersRoute
   '/{-$locale}/forgot-password': typeof Char123LocaleChar125AuthForgotPasswordRoute
@@ -507,7 +515,6 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/admin/changelog/': typeof Char123LocaleChar125AdminChangelogIndexRoute
   '/{-$locale}/admin/reports/': typeof Char123LocaleChar125AdminReportsIndexRoute
   '/{-$locale}/admin/roles/': typeof Char123LocaleChar125AdminRolesIndexRoute
-  '/{-$locale}/admin/settings/': typeof Char123LocaleChar125AdminSettingsIndexRoute
   '/{-$locale}/admin/tickets/': typeof Char123LocaleChar125AdminTicketsIndexRoute
   '/{-$locale}/admin/users/': typeof Char123LocaleChar125AdminUsersIndexRoute
   '/{-$locale}/community/$communityId/admin': typeof Char123LocaleChar125AppCommunityCommunityIdAdminRoute
@@ -520,12 +527,14 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/community/$communityId/events/': typeof Char123LocaleChar125AppCommunityCommunityIdEventsIndexRoute
 }
 export interface FileRoutesByTo {
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/{-$locale}': typeof Char123LocaleChar125AppIndexRoute
   '/{-$locale}/changelog': typeof Char123LocaleChar125AppChangelogRoute
   '/{-$locale}/map': typeof Char123LocaleChar125AppMapRoute
   '/{-$locale}/notifications': typeof Char123LocaleChar125AppNotificationsRoute
   '/{-$locale}/pawcraft': typeof Char123LocaleChar125AppPawcraftRoute
   '/{-$locale}/profile': typeof Char123LocaleChar125AppProfileRoute
+  '/{-$locale}/search': typeof Char123LocaleChar125AppSearchRoute
   '/{-$locale}/support': typeof Char123LocaleChar125AppSupportRoute
   '/{-$locale}/users': typeof Char123LocaleChar125AppUsersRoute
   '/{-$locale}/forgot-password': typeof Char123LocaleChar125AuthForgotPasswordRoute
@@ -568,7 +577,6 @@ export interface FileRoutesByTo {
   '/{-$locale}/admin/changelog': typeof Char123LocaleChar125AdminChangelogIndexRoute
   '/{-$locale}/admin/reports': typeof Char123LocaleChar125AdminReportsIndexRoute
   '/{-$locale}/admin/roles': typeof Char123LocaleChar125AdminRolesIndexRoute
-  '/{-$locale}/admin/settings': typeof Char123LocaleChar125AdminSettingsIndexRoute
   '/{-$locale}/admin/tickets': typeof Char123LocaleChar125AdminTicketsIndexRoute
   '/{-$locale}/admin/users': typeof Char123LocaleChar125AdminUsersIndexRoute
   '/{-$locale}/community/$communityId/admin': typeof Char123LocaleChar125AppCommunityCommunityIdAdminRoute
@@ -582,6 +590,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/{-$locale}': typeof Char123LocaleChar125RouteWithChildren
   '/{-$locale}/_app': typeof Char123LocaleChar125AppRouteWithChildren
   '/{-$locale}/_auth': typeof Char123LocaleChar125AuthRouteWithChildren
@@ -592,6 +601,7 @@ export interface FileRoutesById {
   '/{-$locale}/_app/notifications': typeof Char123LocaleChar125AppNotificationsRoute
   '/{-$locale}/_app/pawcraft': typeof Char123LocaleChar125AppPawcraftRoute
   '/{-$locale}/_app/profile': typeof Char123LocaleChar125AppProfileRoute
+  '/{-$locale}/_app/search': typeof Char123LocaleChar125AppSearchRoute
   '/{-$locale}/_app/support': typeof Char123LocaleChar125AppSupportRoute
   '/{-$locale}/_app/users': typeof Char123LocaleChar125AppUsersRoute
   '/{-$locale}/_auth/forgot-password': typeof Char123LocaleChar125AuthForgotPasswordRoute
@@ -635,7 +645,6 @@ export interface FileRoutesById {
   '/{-$locale}/admin/changelog/': typeof Char123LocaleChar125AdminChangelogIndexRoute
   '/{-$locale}/admin/reports/': typeof Char123LocaleChar125AdminReportsIndexRoute
   '/{-$locale}/admin/roles/': typeof Char123LocaleChar125AdminRolesIndexRoute
-  '/{-$locale}/admin/settings/': typeof Char123LocaleChar125AdminSettingsIndexRoute
   '/{-$locale}/admin/tickets/': typeof Char123LocaleChar125AdminTicketsIndexRoute
   '/{-$locale}/admin/users/': typeof Char123LocaleChar125AdminUsersIndexRoute
   '/{-$locale}/_app/community/$communityId/admin': typeof Char123LocaleChar125AppCommunityCommunityIdAdminRoute
@@ -650,6 +659,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/sitemap.xml'
     | '/{-$locale}'
     | '/{-$locale}/admin'
     | '/{-$locale}/chat'
@@ -658,6 +668,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/notifications'
     | '/{-$locale}/pawcraft'
     | '/{-$locale}/profile'
+    | '/{-$locale}/search'
     | '/{-$locale}/support'
     | '/{-$locale}/users'
     | '/{-$locale}/forgot-password'
@@ -701,7 +712,6 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/changelog/'
     | '/{-$locale}/admin/reports/'
     | '/{-$locale}/admin/roles/'
-    | '/{-$locale}/admin/settings/'
     | '/{-$locale}/admin/tickets/'
     | '/{-$locale}/admin/users/'
     | '/{-$locale}/community/$communityId/admin'
@@ -714,12 +724,14 @@ export interface FileRouteTypes {
     | '/{-$locale}/community/$communityId/events/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/sitemap.xml'
     | '/{-$locale}'
     | '/{-$locale}/changelog'
     | '/{-$locale}/map'
     | '/{-$locale}/notifications'
     | '/{-$locale}/pawcraft'
     | '/{-$locale}/profile'
+    | '/{-$locale}/search'
     | '/{-$locale}/support'
     | '/{-$locale}/users'
     | '/{-$locale}/forgot-password'
@@ -762,7 +774,6 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/changelog'
     | '/{-$locale}/admin/reports'
     | '/{-$locale}/admin/roles'
-    | '/{-$locale}/admin/settings'
     | '/{-$locale}/admin/tickets'
     | '/{-$locale}/admin/users'
     | '/{-$locale}/community/$communityId/admin'
@@ -775,6 +786,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/community/$communityId/events'
   id:
     | '__root__'
+    | '/sitemap.xml'
     | '/{-$locale}'
     | '/{-$locale}/_app'
     | '/{-$locale}/_auth'
@@ -785,6 +797,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/_app/notifications'
     | '/{-$locale}/_app/pawcraft'
     | '/{-$locale}/_app/profile'
+    | '/{-$locale}/_app/search'
     | '/{-$locale}/_app/support'
     | '/{-$locale}/_app/users'
     | '/{-$locale}/_auth/forgot-password'
@@ -828,7 +841,6 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/changelog/'
     | '/{-$locale}/admin/reports/'
     | '/{-$locale}/admin/roles/'
-    | '/{-$locale}/admin/settings/'
     | '/{-$locale}/admin/tickets/'
     | '/{-$locale}/admin/users/'
     | '/{-$locale}/_app/community/$communityId/admin'
@@ -842,6 +854,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   Char123LocaleChar125Route: typeof Char123LocaleChar125RouteWithChildren
 }
 
@@ -852,6 +865,13 @@ declare module '@tanstack/react-router' {
       path: '/{-$locale}'
       fullPath: '/{-$locale}'
       preLoaderRoute: typeof Char123LocaleChar125RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/{-$locale}/chat': {
@@ -945,6 +965,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125AppSupportRouteImport
       parentRoute: typeof Char123LocaleChar125AppRoute
     }
+    '/{-$locale}/_app/search': {
+      id: '/{-$locale}/_app/search'
+      path: '/search'
+      fullPath: '/{-$locale}/search'
+      preLoaderRoute: typeof Char123LocaleChar125AppSearchRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
+    }
     '/{-$locale}/_app/profile': {
       id: '/{-$locale}/_app/profile'
       path: '/profile'
@@ -992,13 +1019,6 @@ declare module '@tanstack/react-router' {
       path: '/tickets'
       fullPath: '/{-$locale}/admin/tickets/'
       preLoaderRoute: typeof Char123LocaleChar125AdminTicketsIndexRouteImport
-      parentRoute: typeof Char123LocaleChar125AdminRoute
-    }
-    '/{-$locale}/admin/settings/': {
-      id: '/{-$locale}/admin/settings/'
-      path: '/settings'
-      fullPath: '/{-$locale}/admin/settings/'
-      preLoaderRoute: typeof Char123LocaleChar125AdminSettingsIndexRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
     '/{-$locale}/admin/roles/': {
@@ -1304,6 +1324,7 @@ interface Char123LocaleChar125AppRouteChildren {
   Char123LocaleChar125AppNotificationsRoute: typeof Char123LocaleChar125AppNotificationsRoute
   Char123LocaleChar125AppPawcraftRoute: typeof Char123LocaleChar125AppPawcraftRoute
   Char123LocaleChar125AppProfileRoute: typeof Char123LocaleChar125AppProfileRoute
+  Char123LocaleChar125AppSearchRoute: typeof Char123LocaleChar125AppSearchRoute
   Char123LocaleChar125AppSupportRoute: typeof Char123LocaleChar125AppSupportRoute
   Char123LocaleChar125AppUsersRoute: typeof Char123LocaleChar125AppUsersRoute
   Char123LocaleChar125AppIndexRoute: typeof Char123LocaleChar125AppIndexRoute
@@ -1345,6 +1366,7 @@ const Char123LocaleChar125AppRouteChildren: Char123LocaleChar125AppRouteChildren
       Char123LocaleChar125AppNotificationsRoute,
     Char123LocaleChar125AppPawcraftRoute: Char123LocaleChar125AppPawcraftRoute,
     Char123LocaleChar125AppProfileRoute: Char123LocaleChar125AppProfileRoute,
+    Char123LocaleChar125AppSearchRoute: Char123LocaleChar125AppSearchRoute,
     Char123LocaleChar125AppSupportRoute: Char123LocaleChar125AppSupportRoute,
     Char123LocaleChar125AppUsersRoute: Char123LocaleChar125AppUsersRoute,
     Char123LocaleChar125AppIndexRoute: Char123LocaleChar125AppIndexRoute,
@@ -1465,7 +1487,6 @@ interface Char123LocaleChar125AdminRouteChildren {
   Char123LocaleChar125AdminChangelogIndexRoute: typeof Char123LocaleChar125AdminChangelogIndexRoute
   Char123LocaleChar125AdminReportsIndexRoute: typeof Char123LocaleChar125AdminReportsIndexRoute
   Char123LocaleChar125AdminRolesIndexRoute: typeof Char123LocaleChar125AdminRolesIndexRoute
-  Char123LocaleChar125AdminSettingsIndexRoute: typeof Char123LocaleChar125AdminSettingsIndexRoute
   Char123LocaleChar125AdminTicketsIndexRoute: typeof Char123LocaleChar125AdminTicketsIndexRoute
   Char123LocaleChar125AdminUsersIndexRoute: typeof Char123LocaleChar125AdminUsersIndexRoute
 }
@@ -1493,8 +1514,6 @@ const Char123LocaleChar125AdminRouteChildren: Char123LocaleChar125AdminRouteChil
       Char123LocaleChar125AdminReportsIndexRoute,
     Char123LocaleChar125AdminRolesIndexRoute:
       Char123LocaleChar125AdminRolesIndexRoute,
-    Char123LocaleChar125AdminSettingsIndexRoute:
-      Char123LocaleChar125AdminSettingsIndexRoute,
     Char123LocaleChar125AdminTicketsIndexRoute:
       Char123LocaleChar125AdminTicketsIndexRoute,
     Char123LocaleChar125AdminUsersIndexRoute:
@@ -1544,6 +1563,7 @@ const Char123LocaleChar125RouteWithChildren =
   Char123LocaleChar125Route._addFileChildren(Char123LocaleChar125RouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   Char123LocaleChar125Route: Char123LocaleChar125RouteWithChildren,
 }
 export const routeTree = rootRouteImport

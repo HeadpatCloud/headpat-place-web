@@ -21,6 +21,7 @@ interface InputFieldProps {
 	type?: string;
 	maxLength?: number;
 	className?: string;
+	inputClassName?: string;
 	prefix?: string;
 }
 
@@ -32,6 +33,7 @@ const InputField: React.FC<InputFieldProps> = ({
 	type = "text",
 	maxLength,
 	className,
+	inputClassName,
 	prefix,
 }) => {
 	return (
@@ -64,7 +66,7 @@ const InputField: React.FC<InputFieldProps> = ({
 						value={field.value} // Bind the value directly from `field.value`
 						onChange={field.onChange} // Use `field.onChange` directly
 						maxLength={maxLength}
-						className={prefix ? "rounded-l-none" : undefined}
+						className={prefix ? "rounded-l-none" : inputClassName}
 					/>
 				</FormControl>
 			</div>

@@ -1,8 +1,9 @@
 import { randomBytes } from "node:crypto";
-import { createReadStream, existsSync, statSync } from "node:fs";
+import { createReadStream, existsSync, readFileSync, statSync } from "node:fs";
 import { createServer } from "node:http";
 import { extname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { brotliCompressSync, constants, gzipSync } from "node:zlib";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const clientDir = join(__dirname, "dist", "client");
@@ -60,6 +61,7 @@ function securityHeaders(scriptSrc) {
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       scriptSrc,
       "frame-src 'none'",
+      "worker-src 'self'",
       `connect-src 'self' https: wss: ${apiUrl}`.trim(),
       "frame-ancestors 'none'",
       "base-uri 'self'",
@@ -73,6 +75,41 @@ function securityHeaders(scriptSrc) {
     "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
     "Cross-Origin-Opener-Policy": "same-origin",
   };
+}
+
+const cssCache = new Map();
+
+// The stylesheet is the only thing blocking first paint, so ship it inside the
+// document and save the round trip a separate request would cost.
+function inlineStylesheets(html) {
+  return html.replace(
+    /<link rel="stylesheet" href="(\/assets\/[^"]+\.css)"[^>]*\/?>/g,
+    (tag, href) => {
+      let css = cssCache.get(href);
+      if (css === undefined) {
+        const file = join(clientDir, href);
+        css = file.startsWith(clientDir) && existsSync(file) ? readFileSync(file, "utf8") : null;
+        cssCache.set(href, css);
+      }
+      return css === null ? tag : `<style data-href="${href}" data-precedence="default">${css}</style>`;
+    },
+  );
+}
+
+function pickEncoding(req) {
+  const accept = String(req.headers["accept-encoding"] || "");
+  if (/\bbr\b/.test(accept)) return "br";
+  if (/\bgzip\b/.test(accept)) return "gzip";
+  return null;
+}
+
+function compressBuffer(buf, encoding) {
+  if (encoding === "br") {
+    return brotliCompressSync(buf, {
+      params: { [constants.BROTLI_PARAM_QUALITY]: 4 },
+    });
+  }
+  return gzipSync(buf, { level: 6 });
 }
 
 function isPathAllowed(pathname) {
@@ -105,13 +142,27 @@ function tryServeStatic(req, res) {
 
   if (url.pathname.startsWith("/assets/")) {
     headers["Cache-Control"] = "public, max-age=31536000, immutable";
+  } else if (/\.(webp|png|svg|ico)$/.test(ext)) {
+    headers["Cache-Control"] = "public, max-age=604800, stale-while-revalidate=86400";
   }
+
+  let sendPath = filePath;
+  const encoding = pickEncoding(req);
+  if (encoding) {
+    const suffix = encoding === "br" ? ".br" : ".gz";
+    if (existsSync(filePath + suffix)) {
+      sendPath = filePath + suffix;
+      headers["Content-Encoding"] = encoding;
+      headers["Content-Length"] = statSync(sendPath).size;
+    }
+  }
+  headers.Vary = "Accept-Encoding";
 
   res.writeHead(200, headers);
   if (req.method === "HEAD") {
     res.end();
   } else {
-    createReadStream(filePath).pipe(res);
+    createReadStream(sendPath).pipe(res);
   }
   return true;
 }
@@ -221,7 +272,7 @@ const server = createServer(async (req, res) => {
   if (contentType.includes("text/html")) {
     const nonce = randomBytes(16).toString("base64");
     const html = await response.text();
-    const nonced = html.replace(
+    const nonced = inlineStylesheets(html).replace(
       /<script(?![^>]*\snonce=)/gi,
       `<script nonce="${nonce}"`,
     );
@@ -230,6 +281,15 @@ const server = createServer(async (req, res) => {
       ...securityHeaders(`script-src 'self' 'nonce-${nonce}'`),
     };
     delete responseHeaders["content-length"];
+    responseHeaders.vary = "Accept-Encoding, Cookie";
+    const encoding = pickEncoding(req);
+    if (encoding && req.method !== "HEAD") {
+      const packed = compressBuffer(Buffer.from(nonced), encoding);
+      responseHeaders["content-encoding"] = encoding;
+      res.writeHead(response.status, responseHeaders);
+      res.end(packed);
+      return;
+    }
     res.writeHead(response.status, responseHeaders);
     res.end(nonced);
     return;

@@ -16,6 +16,9 @@ import { orpc } from "@/lib/orpc";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/{-$locale}/_app/users")({
+	validateSearch: (s: Record<string, unknown>) => ({
+		q: typeof s.q === "string" ? s.q : undefined,
+	}),
 	component: UsersPage,
 	head: ({ params }) => {
 		const locale = (params as { locale?: Locale }).locale ?? DEFAULT_LOCALE;
@@ -32,7 +35,8 @@ const PAGE_SIZE = 24;
 function UsersPage() {
 	const t = useTranslations("miscPages");
 	const c = useTranslations("common");
-	const [search, setSearch] = useState("");
+	const { q } = Route.useSearch();
+	const [search, setSearch] = useState(q ?? "");
 	const [page, setPage] = useState(1);
 	// One seed per visit so the backend shuffles consistently across pages.
 	const [seed] = useState(() => Math.random().toString(36).slice(2, 12));

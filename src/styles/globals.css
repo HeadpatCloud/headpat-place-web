@@ -3,7 +3,28 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@font-face {
+  font-family: "Nunito Variable";
+  font-style: normal;
+  font-display: optional;
+  font-weight: 200 1000;
+  src: url(../../node_modules/@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2) format("woff2-variations");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+@font-face {
+  font-family: "Fredoka Variable";
+  font-style: normal;
+  font-display: optional;
+  font-weight: 300 700;
+  src: url(../../node_modules/@fontsource-variable/fredoka/files/fredoka-latin-wght-normal.woff2) format("woff2-variations");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
 @theme inline {
+  --font-sans: "Nunito Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fredoka Variable", "Nunito Variable", ui-sans-serif, system-ui, sans-serif;
+
   --breakpoint-xs: 320px;
   --breakpoint-3xl: 1600px;
   --breakpoint-4xl: 1800px;
@@ -177,27 +198,27 @@
 	}
 }
 
-:root,
+:where(:root),
 [data-theme="headpat"] {
-	--background: hsl(0 0% 100%);
-	--foreground: hsl(0 0% 0%);
-	--muted: hsl(0 0% 90%);
-	--muted-foreground: hsl(0 0% 50%);
-	--popover: hsl(0 0% 100%);
-	--popover-foreground: hsl(0 0% 0%);
-	--card: hsl(0 0% 98%);
-	--card-foreground: hsl(0 0% 0%);
-	--border: hsl(0 0% 90%);
+	--background: #F2FAF5;
+	--foreground: #17332A;
+	--muted: #E3F4EA;
+	--muted-foreground: #4A6358;
+	--popover: #FFFFFF;
+	--popover-foreground: #17332A;
+	--card: #FFFFFF;
+	--card-foreground: #17332A;
+	--border: #D3E8DC;
 	--border-primary: hsl(153, 60%, 53%, 0.7);
 	--border-secondary: hsl(0 0% 79%);
 	--border-destructive: hsl(0 100% 60%);
-	--input: hsl(0 0% 85%);
-	--primary: hsl(160 100% 25%);
-	--primary-foreground: hsl(0 0% 100%);
-	--secondary: hsl(0 0% 14%);
-	--secondary-foreground: hsl(0 0% 100%);
-	--accent: hsl(160 100% 25%);
-	--accent-foreground: hsl(0 0% 100%);
+	--input: #D3E8DC;
+	--primary: #0B6B45;
+	--primary-foreground: #FFFFFF;
+	--secondary: #17332A;
+	--secondary-foreground: #FFFFFF;
+	--accent: #1FA37A;
+	--accent-foreground: #17332A;
 	--destructive: hsl(0 100% 30%);
 	--destructive-foreground: hsl(0 0% 100%);
 	--ring: hsl(160 100% 45%);
@@ -208,15 +229,15 @@
 	--chart-4: hsl(160 100% 15%);
 	--chart-5: hsl(160 100% 5%);
 	--code-block: hsl(160 100% 15%);
-	--link: hsl(155 100% 25%);
+	--link: #0B6B45;
 	--loading: hsl(240 3.7% 40.9%);
-	--sidebar: hsl(0 0% 98%);
-	--sidebar-foreground: hsl(240 5.3% 26.1%);
+	--sidebar: #FFFFFF;
+	--sidebar-foreground: #2F4B41;
 	--sidebar-primary: hsl(240 5.9% 10%);
 	--sidebar-primary-foreground: hsl(0 0% 98%);
-	--sidebar-accent: hsl(240 4.8% 95.9%);
-	--sidebar-accent-foreground: hsl(240 5.9% 10%);
-	--sidebar-border: hsl(220 13% 91%);
+	--sidebar-accent: #E3F4EA;
+	--sidebar-accent-foreground: #17332A;
+	--sidebar-border: #D3E8DC;
 	--sidebar-ring: hsl(160 100% 45%);
 }
 
@@ -259,6 +280,10 @@
 	--sidebar-accent-foreground: hsl(240 4.8% 95.9%);
 	--sidebar-border: hsl(240 3.7% 15.9%);
 	--sidebar-ring: hsl(160 100% 45%);
+}
+
+html[data-theme]:not([data-theme="headpat"]) {
+	--link: var(--primary);
 }
 
 .blur {
@@ -496,4 +521,64 @@ pre {
 	.zoom-parent:hover .zoom-img {
 		transform: none;
 	}
+}
+
+@keyframes fade-in-up {
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+.fade-in {
+	animation: fade-in-up 450ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.fade-in-1 {
+	animation-delay: 60ms;
+}
+.fade-in-2 {
+	animation-delay: 120ms;
+}
+.fade-in-3 {
+	animation-delay: 180ms;
+}
+.fade-in-4 {
+	animation-delay: 240ms;
+}
+.fade-in-5 {
+	animation-delay: 300ms;
+}
+.fade-in-6 {
+	animation-delay: 360ms;
+}
+.fade-in-7 {
+	animation-delay: 420ms;
+}
+.fade-in-8 {
+	animation-delay: 480ms;
+}
+.fade-in-9 {
+	animation-delay: 540ms;
+}
+.fade-in-10 {
+	animation-delay: 600ms;
+}
+.fade-in-11 {
+	animation-delay: 660ms;
+}
+.fade-in-12 {
+	animation-delay: 720ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.fade-in {
+		animation: none;
+	}
+}
+
+.map-tiles-dark {
+  filter: invert(1) hue-rotate(180deg) saturate(0.6) brightness(0.9) contrast(0.9);
 }

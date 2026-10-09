@@ -31,43 +31,55 @@ function ImpressumPage() {
 				<p>{t("impressumLegalInfo")}</p>
 				<br />
 				<h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
+					{t("impressumProvider")}
+				</h2>
+				<br />
+				<address className="not-italic">
+					Dominic Stilma
+					<br />
+					Friedhofsweg 10
+					<br />
+					49843 Uelsen
+					<br />
+					{t("impressumCountry")}
+				</address>
+				<br />
+				<h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
 					{t("impressumContact")}
 				</h2>
 				<br />
 				<p>
-					{t("impressumOnRequest")}{" "}
-					<a href="mailto:help@headpat.place">help@headpat.place</a>
-				</p>
-				<br />
-				<p>
-					<strong>{t("impressumContactInfo")}</strong>
-				</p>
-				<p>
 					{t("impressumEmailLabel")}{" "}
-					<a href="mailto:help@headpat.place">help@headpat.place</a>
+					<a
+						className="text-link hover:text-link/80"
+						href="mailto:help@headpat.place"
+					>
+						help@headpat.place
+					</a>
 				</p>
 				<p>
 					{t("impressumWebsiteLabel")}{" "}
-					<a href="https://headpat.place">https://headpat.place</a>
+					<a
+						className="text-link hover:text-link/80"
+						href="https://headpat.place"
+					>
+						https://headpat.place
+					</a>
 				</p>
+				<br />
+				<p>{t("impressumContactPoint")}</p>
+				<br />
+				<h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
+					{t("impressumResponsibleTitle")}
+				</h2>
+				<br />
+				<p>{t("impressumResponsible")}</p>
 				<br />
 				<h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
 					{t("impressumDisputeTitle")}
 				</h2>
-				<p>
-					{t("impressumDisputeIntro")}{" "}
-					<a
-						className="text-link hover:text-link/80"
-						href="https://ec.europa.eu/consumers/odr/"
-						target="_blank"
-						rel="noreferrer"
-					>
-						https://ec.europa.eu/consumers/odr/
-					</a>
-					<br />
-					<br />
-					{t("impressumDisputeStatement")}
-				</p>
+				<br />
+				<p>{t("impressumDisputeStatement")}</p>
 			</div>
 		</div>
 	);

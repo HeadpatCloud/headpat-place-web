@@ -6,9 +6,11 @@ import { useTranslations } from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
 import { orpc } from "@/lib/orpc";
 
+import { pageHead } from "@/lib/seo";
 export const Route = createFileRoute(
 	"/{-$locale}/_app/community/$communityId/events/",
 )({
+	head: pageHead("titles.events", "/community", { noindex: true }),
 	component: CommunityEventsPage,
 });
 

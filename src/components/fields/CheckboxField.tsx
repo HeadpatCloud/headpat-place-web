@@ -26,7 +26,13 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
 }) => {
 	return (
 		<FormItem>
-			<div className="flex flex-col gap-3">
+			<div className="flex items-center gap-3">
+				<FormControl>
+					<Checkbox
+						checked={field.value || false} // Directly use the form value
+						onCheckedChange={(e) => field.onChange(e)}
+					/>
+				</FormControl>
 				<FormLabel>
 					{label || "Label"}
 					{description && (
@@ -40,14 +46,8 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
 						</HoverCard>
 					)}
 				</FormLabel>
-				<FormControl>
-					<Checkbox
-						checked={field.value || false} // Directly use the form value
-						onCheckedChange={(e) => field.onChange(e)}
-					/>
-				</FormControl>
-				<FormMessage />
 			</div>
+			<FormMessage />
 		</FormItem>
 	);
 };

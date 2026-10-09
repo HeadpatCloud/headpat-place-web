@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useSession } from "@/lib/auth-client";
 import { useDateFormat } from "@/lib/datetime";
+import { eventJsonLd } from "@/lib/event-seo";
 import {
 	DEFAULT_LOCALE,
 	type Locale,
@@ -30,7 +31,7 @@ import {
 	useLocalizedNavigate as useNavigate,
 } from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
-import { seo } from "@/lib/seo";
+import { jsonLdString, localeUrl, seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/{-$locale}/_app/events/$eventId")({
 	component: EventDetailPage,
@@ -38,7 +39,14 @@ export const Route = createFileRoute("/{-$locale}/_app/events/$eventId")({
 		if (typeof window !== "undefined") return null;
 		try {
 			const ev = await client.event.byId({ eventId: params.eventId });
-			return { title: ev.title };
+			const locale = (params as { locale?: Locale }).locale ?? DEFAULT_LOCALE;
+			return {
+				title: ev.title,
+				description: ev.description
+					? ev.description.replace(/\s+/g, " ").trim().slice(0, 160)
+					: undefined,
+				jsonLd: eventJsonLd(ev, localeUrl(`/events/${params.eventId}`, locale)),
+			};
 		} catch {
 			return null;
 		}
@@ -46,11 +54,24 @@ export const Route = createFileRoute("/{-$locale}/_app/events/$eventId")({
 	head: ({ params, loaderData }) => {
 		const locale = (params as { locale?: Locale }).locale ?? DEFAULT_LOCALE;
 		const eventId = (params as { locale?: Locale; eventId: string }).eventId;
-		return seo({
-			title: loaderData?.title ?? translate(locale, "eventsPages.seoTitle"),
-			path: `/events/${eventId}`,
-			locale,
-		});
+		return {
+			...seo({
+				title: loaderData?.title ?? translate(locale, "eventsPages.seoTitle"),
+				description: loaderData?.description,
+				path: `/events/${eventId}`,
+				locale,
+			}),
+			...(loaderData?.jsonLd
+				? {
+						scripts: [
+							{
+								type: "application/ld+json",
+								children: jsonLdString(loaderData.jsonLd),
+							},
+						],
+					}
+				: {}),
+		};
 	},
 });
 

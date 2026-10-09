@@ -56,6 +56,7 @@ export const ThemeToggle = () => {
 			onClick={changeTheme}
 			variant={"ghost"}
 			size={"icon"}
+			aria-label={t("toggleTheme")}
 		>
 			<SunDim
 				className="hidden size-5 dark:block"

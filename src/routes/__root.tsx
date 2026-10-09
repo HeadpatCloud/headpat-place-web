@@ -1,18 +1,29 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
 	createRootRoute,
 	HeadContent,
 	Outlet,
 	Scripts,
 } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { createIsomorphicFn } from "@tanstack/react-start";
+import { getRequestHeader } from "@tanstack/react-start/server";
 import { ThemeProvider } from "next-themes";
 import { PresenceProvider } from "@/components/contexts/PresenceProvider";
+import {
+	SessionHintProvider,
+	SessionHintSync,
+} from "@/components/contexts/SessionHint";
 import { ThemeController } from "@/components/contexts/ThemeController";
 import { Toaster } from "@/components/ui/sonner";
 import { LocaleProvider, useResolvedLocale } from "@/lib/i18n";
+import { parseHint } from "@/lib/session-hint";
+import fredokaLatin from "../../node_modules/@fontsource-variable/fredoka/files/fredoka-latin-wght-normal.woff2?url";
+import nunitoLatin from "../../node_modules/@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2?url";
 import "../styles/globals.css";
+
+const readHint = createIsomorphicFn()
+	.server(() => parseHint(getRequestHeader("cookie")))
+	.client(() => parseHint(document.cookie));
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -24,6 +35,7 @@ const queryClient = new QueryClient({
 });
 
 export const Route = createRootRoute({
+	beforeLoad: () => ({ hint: readHint() }),
 	head: () => ({
 		meta: [
 			{ charSet: "utf-8" },
@@ -49,9 +61,21 @@ export const Route = createRootRoute({
 
 function RootComponent() {
 	const locale = useResolvedLocale();
+	const { hint } = Route.useRouteContext();
 	return (
 		<html lang={locale} suppressHydrationWarning>
 			<head>
+				{[nunitoLatin, fredokaLatin].map((href) => (
+					<link
+						key={href}
+						rel="preload"
+						as="font"
+						type="font/woff2"
+						href={href}
+						crossOrigin="anonymous"
+						fetchPriority="high"
+					/>
+				))}
 				<HeadContent />
 				<script
 					// biome-ignore lint/security/noDangerouslySetInnerHtml: pre-paint theme application
@@ -69,22 +93,19 @@ function RootComponent() {
 						disableTransitionOnChange
 					>
 						<ThemeController>
-							<LocaleProvider locale={locale}>
-								<PresenceProvider>
-									<div className="w-full">
-										<Outlet />
-									</div>
-								</PresenceProvider>
-								<Toaster />
-							</LocaleProvider>
+							<SessionHintProvider value={hint}>
+								<SessionHintSync />
+								<LocaleProvider locale={locale}>
+									<PresenceProvider>
+										<div className="w-full">
+											<Outlet />
+										</div>
+									</PresenceProvider>
+									<Toaster />
+								</LocaleProvider>
+							</SessionHintProvider>
 						</ThemeController>
 					</ThemeProvider>
-					{import.meta.env.DEV ? (
-						<>
-							<ReactQueryDevtools initialIsOpen={false} />
-							<TanStackRouterDevtools position="bottom-right" />
-						</>
-					) : null}
 				</QueryClientProvider>
 				<Scripts />
 			</body>

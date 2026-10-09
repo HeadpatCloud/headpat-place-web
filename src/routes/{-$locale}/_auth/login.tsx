@@ -10,7 +10,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
+import { BrandLogo } from "@/components/BrandLogo";
 import CheckboxField from "@/components/fields/CheckboxField";
 import InputField from "@/components/fields/InputField";
 import { Button } from "@/components/ui/button";
@@ -22,9 +22,14 @@ import {
 	LocalizedLink as Link,
 	useLocalizedNavigate as useNavigate,
 } from "@/lib/localized-nav";
+import { pageHead } from "@/lib/seo";
 import { useOAuthErrorToast } from "@/lib/use-oauth-error";
-
+import { z } from "@/lib/zod";
 export const Route = createFileRoute("/{-$locale}/_auth/login")({
+	head: pageHead("titles.login", "/login", { noindex: true }),
+	validateSearch: (s: Record<string, unknown>) => ({
+		ref: s.ref === "profile" ? ("profile" as const) : undefined,
+	}),
 	component: LoginPage,
 });
 
@@ -59,6 +64,7 @@ async function startOAuth(provider: string) {
 function LoginPage() {
 	const t = useTranslations("authPages");
 	const navigate = useNavigate();
+	const { ref } = Route.useSearch();
 	useOAuthErrorToast();
 	const { data: session } = useSession();
 	const [isRegistering, setIsRegistering] = useState(false);
@@ -203,13 +209,30 @@ function LoginPage() {
 		<div className="flex items-center justify-center">
 			<div
 				ref={cardRef}
-				className="min-w-1/3 mx-auto rounded-2xl dark:ring-white"
+				className="w-full rounded-3xl border border-border bg-card p-6 shadow-sm sm:p-8"
 			>
 				<div className="text-center">
-					<h4 className="mt-8 text-2xl font-bold leading-9 tracking-tight">
-						{t("welcomeTitle")}
+					<div className="flex items-center justify-center gap-2.5">
+						<BrandLogo
+							size="sm"
+							alt=""
+							width={40}
+							height={40}
+							className="size-10"
+						/>
+						<span className="font-display text-2xl font-semibold tracking-tight">
+							headpat
+						</span>
+					</div>
+					<h4 className="mt-6 font-display text-3xl font-semibold leading-tight">
+						{ref === "profile" ? t("profileRefTitle") : t("welcomeTitle")}
 					</h4>
-					<p className="mt-2 text-sm leading-6 text-gray-500">
+					{ref === "profile" ? (
+						<p className="mt-2 text-sm font-semibold leading-6 text-foreground/80">
+							{t("profileRefSubtitle")}
+						</p>
+					) : null}
+					<p className="mt-2 text-sm font-semibold leading-6 text-muted-foreground">
 						{isRegistering ? t("alreadyRegistered") : t("notYetRegistered")}{" "}
 						<button
 							type="button"
@@ -228,27 +251,34 @@ function LoginPage() {
 					<div
 						role="alert"
 						aria-live="assertive"
-						className="mx-6 mt-4 flex items-center gap-2 rounded-lg border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm font-medium text-destructive"
+						className="mt-4 flex items-center gap-2 rounded-2xl border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm font-medium text-destructive"
 					>
 						<span aria-hidden="true">😿</span>
 						<span>{authError}</span>
 					</div>
 				) : null}
 				{unverifiedEmail ? (
-					<div className="mx-6 mt-2 text-center">
-						<Button variant="link" type="button" onClick={resendVerification}>
+					<div className="mt-2 text-center">
+						<Button
+							variant="link"
+							type="button"
+							className="text-link"
+							onClick={resendVerification}
+						>
 							{t("resendVerification")}
 						</Button>
 					</div>
 				) : null}
 
 				{registeredEmail ? (
-					<div className="mx-auto max-w-4xl space-y-4 p-6 text-center">
+					<div className="space-y-4 py-6 text-center">
 						<h5 className="text-lg font-semibold">{t("checkInboxTitle")}</h5>
-						<p className="text-sm text-gray-500">{t("checkInboxBody")}</p>
+						<p className="text-sm text-muted-foreground">
+							{t("checkInboxBody")}
+						</p>
 						<Button
 							type="button"
-							className="w-full"
+							className="h-11 w-full rounded-full text-base font-extrabold"
 							onClick={() => {
 								setRegisteredEmail(null);
 								setIsRegistering(false);
@@ -265,7 +295,7 @@ function LoginPage() {
 									className="space-y-6"
 									onSubmit={registerForm.handleSubmit(submitRegister)}
 								>
-									<div className="mx-auto max-w-4xl space-y-6 p-6">
+									<div className="space-y-6 py-4">
 										<div className="space-y-4">
 											<FormField
 												control={registerForm.control}
@@ -275,6 +305,7 @@ function LoginPage() {
 														label={t("displayNameLabel")}
 														description=""
 														placeholder=""
+														inputClassName="h-11 rounded-2xl bg-background"
 														field={field}
 													/>
 												)}
@@ -287,6 +318,7 @@ function LoginPage() {
 														label={t("emailLabel")}
 														description=""
 														placeholder=""
+														inputClassName="h-11 rounded-2xl bg-background"
 														field={field}
 													/>
 												)}
@@ -299,6 +331,7 @@ function LoginPage() {
 														label={t("passwordLabel")}
 														description=""
 														placeholder=""
+														inputClassName="h-11 rounded-2xl bg-background"
 														field={field}
 														type="password"
 													/>
@@ -315,11 +348,15 @@ function LoginPage() {
 													/>
 												)}
 											/>
-											<Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+											<Button className="h-11 w-full rounded-full bg-primary text-base font-extrabold text-primary-foreground hover:bg-primary/90">
 												{t("registerButton")}
 											</Button>
 											<Link to={"/forgot-password" as never}>
-												<Button variant="link" type="button" className="p-0">
+												<Button
+													variant="link"
+													type="button"
+													className="p-0 text-link"
+												>
 													{t("forgotPasswordLink")}
 												</Button>
 											</Link>
@@ -333,7 +370,7 @@ function LoginPage() {
 									className="space-y-6"
 									onSubmit={loginForm.handleSubmit(submitLogin)}
 								>
-									<div className="mx-auto max-w-4xl space-y-6 p-6">
+									<div className="space-y-6 py-4">
 										<div className="space-y-4">
 											<FormField
 												control={loginForm.control}
@@ -343,6 +380,7 @@ function LoginPage() {
 														label={t("emailLabel")}
 														description=""
 														placeholder=""
+														inputClassName="h-11 rounded-2xl bg-background"
 														field={field}
 													/>
 												)}
@@ -355,16 +393,21 @@ function LoginPage() {
 														label={t("passwordLabel")}
 														description=""
 														placeholder=""
+														inputClassName="h-11 rounded-2xl bg-background"
 														field={field}
 														type="password"
 													/>
 												)}
 											/>
-											<Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90">
+											<Button className="h-11 w-full rounded-full bg-primary text-base font-extrabold text-primary-foreground hover:bg-primary/90">
 												{t("loginButton")}
 											</Button>
 											<Link to={"/forgot-password" as never}>
-												<Button variant="link" type="button" className="p-0">
+												<Button
+													variant="link"
+													type="button"
+													className="p-0 text-link"
+												>
 													{t("forgotPasswordLink")}
 												</Button>
 											</Link>
@@ -380,10 +423,10 @@ function LoginPage() {
 									className="absolute inset-0 flex items-center"
 									aria-hidden="true"
 								>
-									<div className="w-full border-t border-gray-200" />
+									<div className="w-full border-t border-border" />
 								</div>
 								<div className="relative flex justify-center text-sm font-medium leading-6">
-									<span className="bg-background rounded-xl px-6">
+									<span className="rounded-full bg-card px-4 text-muted-foreground">
 										{t("orContinueWith")}
 									</span>
 								</div>
@@ -392,7 +435,7 @@ function LoginPage() {
 							<div className="mt-6 grid grid-cols-2 gap-4">
 								<button
 									onClick={() => startOAuth("discord")}
-									className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#5865F2] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#1D9BF0] dark:border-white/20"
+									className="flex w-full items-center justify-center gap-3 h-11 rounded-full border border-black/20 bg-[#5865F2] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#1D9BF0] dark:border-white/20"
 									type="button"
 								>
 									<SiDiscord className="h-5" />
@@ -403,7 +446,7 @@ function LoginPage() {
 
 								<button
 									onClick={() => startOAuth("eurofurence")}
-									className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#005953] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#1D9BF0] dark:border-white/20"
+									className="flex w-full items-center justify-center gap-3 h-11 rounded-full border border-black/20 bg-[#005953] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#1D9BF0] dark:border-white/20"
 									type="button"
 								>
 									<img
@@ -420,7 +463,7 @@ function LoginPage() {
 
 								<button
 									onClick={() => startOAuth("github")}
-									className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#24292F] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#24292F] dark:border-white/20"
+									className="flex w-full items-center justify-center gap-3 h-11 rounded-full border border-black/20 bg-[#24292F] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#24292F] dark:border-white/20"
 									type="button"
 								>
 									<SiGithub className="h-5" />
@@ -431,7 +474,7 @@ function LoginPage() {
 
 								<button
 									onClick={() => startOAuth("apple")}
-									className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#000000] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#24292F] dark:border-white/20"
+									className="flex w-full items-center justify-center gap-3 h-11 rounded-full border border-black/20 bg-[#000000] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#24292F] dark:border-white/20"
 									type="button"
 								>
 									<SiApple className="h-5" />
@@ -440,7 +483,7 @@ function LoginPage() {
 
 								<button
 									onClick={() => startOAuth("google")}
-									className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#131314] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#24292F] dark:border-white/20"
+									className="flex w-full items-center justify-center gap-3 h-11 rounded-full border border-black/20 bg-[#131314] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#24292F] dark:border-white/20"
 									type="button"
 								>
 									<SiGoogle className="h-4" />
@@ -451,7 +494,7 @@ function LoginPage() {
 
 								<button
 									onClick={() => startOAuth("twitch")}
-									className="flex w-full items-center justify-center gap-3 rounded-md border border-black/20 bg-[#6441A5] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#24292F] dark:border-white/20"
+									className="flex w-full items-center justify-center gap-3 h-11 rounded-full border border-black/20 bg-[#6441A5] px-3 py-1.5 text-white focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#24292F] dark:border-white/20"
 									type="button"
 								>
 									<SiTwitch className="h-5" />

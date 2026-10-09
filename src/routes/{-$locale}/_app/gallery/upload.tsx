@@ -5,7 +5,6 @@ import { X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 import InputField from "@/components/fields/InputField";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,8 +20,10 @@ import {
 	useLocalizedNavigate as useNavigate,
 } from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
-
+import { pageHead } from "@/lib/seo";
+import { z } from "@/lib/zod";
 export const Route = createFileRoute("/{-$locale}/_app/gallery/upload")({
+	head: pageHead("titles.galleryUpload", "/gallery/upload", { noindex: true }),
 	component: UploadPage,
 });
 

@@ -1,10 +1,10 @@
 ﻿import { Separator } from "@radix-ui/react-separator";
 import * as React from "react";
 import { Footer } from "../Footer";
-import { LanguageSwitcher } from "../LanguageSwitcher";
-import { ThemeToggle } from "../ThemeToggle";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "../ui/sidebar";
 import { AppSidebar } from "./app-sidebar";
+import HeaderRight from "./header-right";
+import { MobileTabBar } from "./mobile-tab-bar";
 
 // Create a context for header components
 export const HeaderContext = React.createContext<{
@@ -48,19 +48,17 @@ function HeaderProvider({
 		>
 			{sidebar ?? <AppSidebar />}
 			<SidebarInset>
-				<header className="flex h-16 shrink-0 items-center gap-2">
-					<div className="flex items-center gap-2 px-4">
-						<SidebarTrigger className="-ml-1 -mr-2 p-4" />
-						<Separator orientation="vertical" />
-						<LanguageSwitcher />
-						<ThemeToggle />
-					</div>
+				<header className="bg-card sticky top-3 z-20 mx-3 mt-3 flex items-center gap-3 rounded-full border border-border py-2 pr-2 pl-3 shadow-sm">
+					<SidebarTrigger className="size-10 shrink-0 rounded-full" />
 					{headerComponents.length > 0 && (
 						<>
 							<Separator orientation="vertical" />
 							{headerComponents}
 						</>
 					)}
+					<div className="ml-auto flex min-w-0 flex-1 items-center justify-end gap-2">
+						<HeaderRight />
+					</div>
 				</header>
 				<div
 					className={
@@ -71,6 +69,7 @@ function HeaderProvider({
 					{children}
 				</div>
 				{showFooter ? <Footer /> : null}
+				<MobileTabBar />
 			</SidebarInset>
 		</HeaderContext.Provider>
 	);

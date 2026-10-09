@@ -1,6 +1,5 @@
 import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useState } from "react";
-import { z } from "zod";
 import { ErrorMessage, SuccessMessage } from "@/components/alerts";
 import { BrandLogo } from "@/components/BrandLogo";
 import { Button } from "@/components/ui/button";
@@ -9,12 +8,17 @@ import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 import { useTranslations } from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
+import { z } from "@/lib/zod";
 
 const searchSchema = z.object({
 	token: z.string().optional(),
 });
 
+import { pageHead } from "@/lib/seo";
 export const Route = createFileRoute("/{-$locale}/_auth/i/reset-password")({
+	head: pageHead("authPages.resetPasswordTitle", "/i/reset-password", {
+		noindex: true,
+	}),
 	validateSearch: searchSchema,
 	component: ResetPasswordPage,
 });

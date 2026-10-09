@@ -6,6 +6,7 @@ import {
 	LogIn,
 	LogOut,
 } from "lucide-react";
+import { useAuthState } from "@/components/contexts/SessionHint";
 import { useUser } from "@/components/contexts/UserContext";
 import { useStorageUrl } from "@/components/StorageImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -31,15 +32,28 @@ import { navUserMode } from "./nav-user-mode";
 export function NavUser() {
 	const t = useTranslations("commonUi");
 	const { isMobile, toggleSidebar } = useSidebar();
-	const { userData, current, logout, isPending } = useUser();
-	const avatarUrl = useStorageUrl("avatar", userData?.avatarId, "md").data?.url;
-	const mode = navUserMode({ isPending, signedIn: !!current });
+	const { userData, logout } = useUser();
+	const auth = useAuthState();
+	const avatarUrl = useStorageUrl(
+		"avatar",
+		userData?.avatarId ?? auth.avatar,
+		"md",
+	).data?.url;
+	const displayName = userData?.displayName || userData?.$id || auth.name;
+	const mode = navUserMode({
+		isPending: auth.pending,
+		signedIn: auth.signedIn,
+	});
 
 	if (mode !== "signed-in") {
 		return (
 			<SidebarMenu>
 				<SidebarMenuItem>
-					<SidebarMenuButton size="lg" asChild={mode === "signed-out"}>
+					<SidebarMenuButton
+						size="lg"
+						asChild={mode === "signed-out"}
+						className="rounded-2xl bg-background"
+					>
 						{mode === "signed-out" ? (
 							<Link
 								to={"/login" as never}
@@ -75,23 +89,18 @@ export function NavUser() {
 					<DropdownMenuTrigger asChild>
 						<SidebarMenuButton
 							size="lg"
-							className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+							className="rounded-2xl bg-background data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 						>
-							<Avatar className="h-8 w-8 rounded-lg">
-								<AvatarImage
-									src={avatarUrl}
-									alt={userData?.displayName || userData?.$id || ""}
-								/>
-								<AvatarFallback className="rounded-lg">
-									{userData?.displayName?.charAt(0) || "HI"}
+							<Avatar className="size-10 rounded-full">
+								<AvatarImage src={avatarUrl} alt={displayName} />
+								<AvatarFallback className="rounded-full">
+									{displayName.charAt(0) || "HI"}
 								</AvatarFallback>
 							</Avatar>
 							<div className="grid flex-1 text-left text-sm leading-tight">
-								<span className="truncate font-medium">
-									{userData?.displayName || userData?.$id}
-								</span>
+								<span className="truncate font-extrabold">{displayName}</span>
 							</div>
-							<ChevronsUpDown className="ml-auto size-4" />
+							<ChevronsUpDown className="ml-auto size-4 text-muted-foreground" />
 						</SidebarMenuButton>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent
@@ -103,18 +112,13 @@ export function NavUser() {
 						<DropdownMenuLabel className="p-0 font-normal">
 							<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
 								<Avatar className="h-8 w-8 rounded-lg">
-									<AvatarImage
-										src={avatarUrl}
-										alt={userData?.displayName || userData?.$id || ""}
-									/>
+									<AvatarImage src={avatarUrl} alt={displayName} />
 									<AvatarFallback className="rounded-lg">
-										{userData?.displayName?.charAt(0) || "HI"}
+										{displayName.charAt(0) || "HI"}
 									</AvatarFallback>
 								</Avatar>
 								<div className="grid flex-1 text-left text-sm leading-tight">
-									<span className="truncate font-medium">
-										{userData?.displayName || userData?.$id}
-									</span>
+									<span className="truncate font-medium">{displayName}</span>
 								</div>
 							</div>
 						</DropdownMenuLabel>

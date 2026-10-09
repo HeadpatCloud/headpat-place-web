@@ -7,7 +7,9 @@ import { useLocalizedNavigate as useNavigate } from "@/lib/localized-nav";
 import { orpc } from "@/lib/orpc";
 
 // Convenience redirect: /profile → /user/<myProfileUrl>
+import { pageHead } from "@/lib/seo";
 export const Route = createFileRoute("/{-$locale}/_app/profile")({
+	head: pageHead("nav.myprofile", "/profile", { noindex: true }),
 	component: MyProfileRedirect,
 });
 
@@ -22,7 +24,11 @@ function MyProfileRedirect() {
 	useEffect(() => {
 		if (isPending) return;
 		if (!session?.user) {
-			navigate({ to: "/login" as never, replace: true });
+			navigate({
+				to: "/login" as never,
+				search: { ref: "profile" } as never,
+				replace: true,
+			});
 		} else if (me.data?.profileUrl) {
 			navigate({ to: `/user/${me.data.profileUrl}` as never, replace: true });
 		}

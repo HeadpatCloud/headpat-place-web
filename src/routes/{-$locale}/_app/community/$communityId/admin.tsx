@@ -4,7 +4,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "zod";
 import { AvatarBannerUpload } from "@/components/AvatarBannerUpload";
 import InputField from "@/components/fields/InputField";
 import { UserCard } from "@/components/UserCard";
@@ -24,10 +23,12 @@ import { Form, FormField } from "@/components/ui/form";
 import { useTranslations } from "@/lib/i18n";
 import { useLocalizedNavigate as useNavigate } from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
-
+import { pageHead } from "@/lib/seo";
+import { z } from "@/lib/zod";
 export const Route = createFileRoute(
 	"/{-$locale}/_app/community/$communityId/admin",
 )({
+	head: pageHead("titles.communityAdmin", "/community", { noindex: true }),
 	component: AdminPage,
 });
 
