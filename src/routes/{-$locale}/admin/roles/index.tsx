@@ -1,9 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { ShieldIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { AdminPage } from "@/components/admin/AdminPage";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useTranslations } from "@/lib/i18n";
 import {
@@ -44,47 +46,52 @@ function RolesList() {
 	}
 
 	return (
-		<div className="space-y-4">
-			<h1 className="font-display text-3xl font-semibold tracking-tight">
-				{t("roles")}
-			</h1>
-			<div className="flex gap-2">
+		<AdminPage title={t("roles")}>
+			<div className="flex gap-3">
 				<Input
 					value={name}
 					onChange={(e) => setName(e.target.value)}
 					onKeyDown={(e) => e.key === "Enter" && submit()}
 					placeholder={t("newRoleName")}
+					className="h-11"
 				/>
 				<Button
 					disabled={create.isPending}
 					onClick={submit}
-					className="bg-primary text-primary-foreground hover:bg-primary/90 shrink-0"
+					size="lg"
+					className="shrink-0"
 				>
 					{t("newRole")}
 				</Button>
 			</div>
-			<div className="space-y-2">
+			<ul className="grid gap-3">
 				{(roles.data ?? []).map((r) => (
-					<Link key={r.id} to={`/admin/roles/${r.id}` as never}>
-						<Card className="card-hover flex items-center justify-between p-3">
-							<span className="font-semibold">
-								{r.name}
+					<li key={r.id}>
+						<Link
+							to={`/admin/roles/${r.id}` as never}
+							className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-border bg-card px-5 py-4 shadow-sm transition-colors hover:bg-muted/40"
+						>
+							<span className="flex items-center gap-3">
+								<span className="flex size-10 items-center justify-center rounded-2xl bg-primary/10 text-link">
+									<ShieldIcon className="size-5" />
+								</span>
+								<span className="font-display text-lg font-semibold">
+									{r.name}
+								</span>
 								{r.isSystem ? (
-									<span className="ml-2 rounded-md border border-primary px-1.5 py-0.5 text-[10px] text-primary">
-										{t("systemBadge")}
-									</span>
+									<Badge variant="outline">{t("systemBadge")}</Badge>
 								) : null}
 							</span>
-							<span className="text-xs text-muted-foreground">
+							<span className="text-sm font-semibold text-muted-foreground">
 								{t("permissionsMembersCount", {
 									permissions: r.permissionCount,
 									members: r.memberCount,
 								})}
 							</span>
-						</Card>
-					</Link>
+						</Link>
+					</li>
 				))}
-			</div>
-		</div>
+			</ul>
+		</AdminPage>
 	);
 }

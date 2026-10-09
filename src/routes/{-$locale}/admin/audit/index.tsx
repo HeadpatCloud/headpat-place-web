@@ -82,7 +82,7 @@ function AuditLog() {
 								<Th>{t("auditWhen")}</Th>
 								<Th>{t("auditAction")}</Th>
 								<Th>{t("auditAccount")}</Th>
-								<Th>{t("auditBy")}</Th>
+								<Th>{t("auditActor")}</Th>
 							</tr>
 						</thead>
 						<tbody>

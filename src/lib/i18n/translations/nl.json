@@ -1275,6 +1275,7 @@
 		"removeFromGroupConfirmBody": "%{name} wordt uit deze groep verwijderd en kan niet opnieuw deelnemen, tenzij iemand de persoon weer toevoegt."
 	},
 	"adminPanel": {
+		"auditActor": "Door",
 		"dashboardTitle": "Overzicht",
 		"dashboardSubtitle": "Wat er nu gebeurt op Headpat.",
 		"statUsers": "Gebruikers",

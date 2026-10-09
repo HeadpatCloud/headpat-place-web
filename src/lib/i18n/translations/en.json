@@ -1275,6 +1275,7 @@
 		"removeFromGroupConfirmBody": "%{name} will be removed from this group and won't be able to rejoin unless someone adds them back."
 	},
 	"adminPanel": {
+		"auditActor": "By",
 		"dashboardTitle": "Dashboard",
 		"dashboardSubtitle": "What is happening on Headpat right now.",
 		"statUsers": "Users",
