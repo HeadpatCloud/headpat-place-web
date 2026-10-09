@@ -19,6 +19,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { HeartHandshakeIcon, MessageSquareIcon } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
+import { BrandLogo } from "@/components/BrandLogo";
 import { StorageImage } from "@/components/StorageImage";
 import { useTranslations } from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
@@ -182,10 +183,9 @@ export function ServerRail({
 				title={t("backToHeadpat")}
 				className="flex size-11 items-center justify-center rounded-md transition-colors hover:bg-muted"
 			>
-				<img
-					src="/logos/hp_logo_x256.webp"
+				<BrandLogo
+					size="sm"
 					alt={t("backToHeadpat")}
-					draggable={false}
 					className="size-7 rounded-md"
 				/>
 			</Link>

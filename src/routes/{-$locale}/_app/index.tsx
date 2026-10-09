@@ -34,7 +34,7 @@ export const Route = createFileRoute("/{-$locale}/_app/")({
 								"@type": "Organization",
 								name: SITE_NAME,
 								url: SITE_URL,
-								logo: `${SITE_URL}/logos/hp_logo_x512.webp`,
+								logo: `${SITE_URL}/logos/icon_x512.webp`,
 							},
 							{
 								"@type": "WebSite",

@@ -40,8 +40,8 @@ export const Route = createRootRoute({
 		],
 		links: [
 			{ rel: "manifest", href: "/site.webmanifest" },
-			{ rel: "icon", href: "/logos/hp_logo_x256.webp", type: "image/webp" },
-			{ rel: "apple-touch-icon", href: "/logos/hp_logo_x256.webp" },
+			{ rel: "icon", href: "/logos/icon_x256.webp", type: "image/webp" },
+			{ rel: "apple-touch-icon", href: "/logos/icon_x180.png" },
 		],
 	}),
 	component: RootComponent,

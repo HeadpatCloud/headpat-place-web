@@ -4,16 +4,16 @@
 	"description": "Communities, gallery, and events.",
 	"start_url": "/",
 	"display": "standalone",
-	"background_color": "#0a0a0a",
-	"theme_color": "#0a0a0a",
+	"background_color": "#1d1d1b",
+	"theme_color": "#1d1d1b",
 	"icons": [
-		{ "src": "/logos/hp_logo_x256.webp", "sizes": "256x256", "type": "image/webp" },
-		{ "src": "/logos/hp_logo_x512.webp", "sizes": "512x512", "type": "image/webp" },
+		{ "src": "/logos/icon_x256.webp", "sizes": "256x256", "type": "image/webp" },
+		{ "src": "/logos/icon_x512.webp", "sizes": "512x512", "type": "image/webp" },
 		{
-			"src": "/logos/hp_logo_x1024.webp",
-			"sizes": "1024x1024",
-			"type": "image/webp",
-			"purpose": "any maskable"
+			"src": "/logos/icon_maskable_x512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "maskable"
 		}
 	]
 }

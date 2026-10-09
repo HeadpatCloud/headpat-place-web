@@ -2,6 +2,7 @@ import { createFileRoute, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { ErrorMessage, SuccessMessage } from "@/components/alerts";
+import { BrandLogo } from "@/components/BrandLogo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
@@ -84,9 +85,9 @@ function VerifyEmailPage() {
 			)}
 			<div className="flex items-center justify-center px-6 py-12 lg:px-8">
 				<div className="flex flex-col justify-center sm:mx-auto sm:w-full sm:max-w-sm">
-					<img
+					<BrandLogo
+						size="lg"
 						className="mx-auto h-24 w-auto"
-						src="/logos/hp_logo_x512.webp"
 						alt="Headpat Logo"
 						width={128}
 						height={128}
