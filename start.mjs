@@ -58,6 +58,7 @@ function securityHeaders(scriptSrc) {
       "default-src 'self'",
       "img-src 'self' https: data: blob:",
       "font-src 'self' https: data:",
+      "media-src 'self' https: blob:",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       scriptSrc,
       "frame-src 'none'",

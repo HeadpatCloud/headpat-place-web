@@ -9,12 +9,14 @@ import {
 	HeartHandshakeIcon,
 	HomeIcon,
 	KeyRoundIcon,
+	LayoutDashboardIcon,
 	LayoutPanelLeftIcon,
 	MapIcon,
 	MegaphoneIcon,
 	MessagesSquareIcon,
 	PencilIcon,
 	RocketIcon,
+	ScrollTextIcon,
 	ShieldIcon,
 	UserSearchIcon,
 } from "lucide-react";
@@ -108,20 +110,28 @@ export function AppSidebar({
 				disabled: signedOut,
 			},
 		],
-		adminAccess: [
-			{ name: nav("roles"), url: "/admin/roles", icon: ShieldIcon },
+		adminOverview: [
+			{
+				name: nav("adminDashboard"),
+				url: "/admin",
+				icon: LayoutDashboardIcon,
+				exact: true,
+			},
+		],
+		adminPeople: [
 			{
 				name: nav("adminUsers"),
 				url: "/admin/users",
 				icon: UserSearchIcon,
 			},
+			{ name: nav("roles"), url: "/admin/roles", icon: ShieldIcon },
 			{
 				name: nav("adminApiKeys"),
 				url: "/admin/api-keys",
 				icon: KeyRoundIcon,
 			},
 		],
-		adminOps: [
+		adminModeration: [
 			{
 				name: nav("reports"),
 				url: "/admin/reports",
@@ -133,6 +143,23 @@ export function AppSidebar({
 				icon: BadgeHelpIcon,
 			},
 			{
+				name: nav("adminGallery"),
+				url: "/admin/gallery",
+				icon: LayoutPanelLeftIcon,
+			},
+			{
+				name: nav("adminCommunities"),
+				url: "/admin/communities",
+				icon: HeartHandshakeIcon,
+			},
+			{
+				name: nav("adminEvents"),
+				url: "/admin/events",
+				icon: CalendarIcon,
+			},
+		],
+		adminContent: [
+			{
 				name: nav("adminChangelog"),
 				url: "/admin/changelog",
 				icon: PencilIcon,
@@ -141,6 +168,13 @@ export function AppSidebar({
 				name: nav("adminAnnouncements"),
 				url: "/admin/announcements",
 				icon: MegaphoneIcon,
+			},
+		],
+		adminSystem: [
+			{
+				name: nav("adminAudit"),
+				url: "/admin/audit",
+				icon: ScrollTextIcon,
 			},
 		],
 		adminBack: [{ name: nav("backToHeadpat"), url: "/", icon: HomeIcon }],
@@ -194,8 +228,23 @@ export function AppSidebar({
 			<SidebarContent className="gap-5 px-3 py-3">
 				{mode === "admin" ? (
 					<>
-						<NavList label="Access" projects={data.adminAccess} />
-						<NavList label="Operations" projects={data.adminOps} />
+						<NavList projects={data.adminOverview} />
+						<NavList
+							label={nav("adminGroupPeople")}
+							projects={data.adminPeople}
+						/>
+						<NavList
+							label={nav("adminGroupModeration")}
+							projects={data.adminModeration}
+						/>
+						<NavList
+							label={nav("adminGroupContent")}
+							projects={data.adminContent}
+						/>
+						<NavList
+							label={nav("adminGroupSystem")}
+							projects={data.adminSystem}
+						/>
 						<NavList projects={data.adminBack} />
 						<NavSecondary items={data.navSecondary} className="mt-auto" />
 					</>

@@ -31,7 +31,9 @@ function TicketsList() {
 
 	return (
 		<div className="space-y-4">
-			<h1 className="text-2xl font-extrabold tracking-tight">{t("tickets")}</h1>
+			<h1 className="font-display text-3xl font-semibold tracking-tight">
+				{t("tickets")}
+			</h1>
 			<div className="flex gap-2">
 				{filters.map((f) => (
 					<Button

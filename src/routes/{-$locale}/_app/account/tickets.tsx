@@ -66,7 +66,7 @@ function TicketsPage() {
 		<div className="space-y-4 lg:h-[calc(100dvh-7rem)]">
 			<div className="flex items-center justify-between gap-3">
 				<div>
-					<h1 className="text-2xl font-extrabold tracking-tight">
+					<h1 className="font-display text-3xl font-semibold tracking-tight">
 						{t("ticketsTitle")}
 					</h1>
 					<p className="text-sm text-muted-foreground">

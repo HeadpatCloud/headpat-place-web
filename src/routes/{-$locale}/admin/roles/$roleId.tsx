@@ -110,7 +110,7 @@ function RoleEditor() {
 
 	return (
 		<div className="space-y-4">
-			<h1 className="text-2xl font-extrabold tracking-tight">
+			<h1 className="font-display text-3xl font-semibold tracking-tight">
 				{role.data.name}
 			</h1>
 			{isSystem ? (

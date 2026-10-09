@@ -43,7 +43,12 @@ export function Panel({
 	className?: string;
 }) {
 	return (
-		<div className={cn("rounded-xl border border-border bg-card", className)}>
+		<div
+			className={cn(
+				"rounded-3xl border border-border bg-card shadow-sm",
+				className,
+			)}
+		>
 			{children}
 		</div>
 	);

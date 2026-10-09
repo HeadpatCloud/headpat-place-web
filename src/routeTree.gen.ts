@@ -34,7 +34,11 @@ import { Route as Char123LocaleChar125AdminUsersIndexRouteImport } from './route
 import { Route as Char123LocaleChar125AdminTicketsIndexRouteImport } from './routes/{-$locale}/admin/tickets/index'
 import { Route as Char123LocaleChar125AdminRolesIndexRouteImport } from './routes/{-$locale}/admin/roles/index'
 import { Route as Char123LocaleChar125AdminReportsIndexRouteImport } from './routes/{-$locale}/admin/reports/index'
+import { Route as Char123LocaleChar125AdminGalleryIndexRouteImport } from './routes/{-$locale}/admin/gallery/index'
+import { Route as Char123LocaleChar125AdminEventsIndexRouteImport } from './routes/{-$locale}/admin/events/index'
+import { Route as Char123LocaleChar125AdminCommunitiesIndexRouteImport } from './routes/{-$locale}/admin/communities/index'
 import { Route as Char123LocaleChar125AdminChangelogIndexRouteImport } from './routes/{-$locale}/admin/changelog/index'
+import { Route as Char123LocaleChar125AdminAuditIndexRouteImport } from './routes/{-$locale}/admin/audit/index'
 import { Route as Char123LocaleChar125AdminApiKeysIndexRouteImport } from './routes/{-$locale}/admin/api-keys/index'
 import { Route as Char123LocaleChar125AdminAnnouncementsIndexRouteImport } from './routes/{-$locale}/admin/announcements/index'
 import { Route as Char123LocaleChar125AppLegalIndexRouteImport } from './routes/{-$locale}/_app/legal/index'
@@ -220,10 +224,34 @@ const Char123LocaleChar125AdminReportsIndexRoute =
     path: '/reports/',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
+const Char123LocaleChar125AdminGalleryIndexRoute =
+  Char123LocaleChar125AdminGalleryIndexRouteImport.update({
+    id: '/gallery/',
+    path: '/gallery/',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AdminEventsIndexRoute =
+  Char123LocaleChar125AdminEventsIndexRouteImport.update({
+    id: '/events/',
+    path: '/events/',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AdminCommunitiesIndexRoute =
+  Char123LocaleChar125AdminCommunitiesIndexRouteImport.update({
+    id: '/communities/',
+    path: '/communities/',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
 const Char123LocaleChar125AdminChangelogIndexRoute =
   Char123LocaleChar125AdminChangelogIndexRouteImport.update({
     id: '/changelog/',
     path: '/changelog/',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AdminAuditIndexRoute =
+  Char123LocaleChar125AdminAuditIndexRouteImport.update({
+    id: '/audit/',
+    path: '/audit/',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
 const Char123LocaleChar125AdminApiKeysIndexRoute =
@@ -512,7 +540,11 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/legal/': typeof Char123LocaleChar125AppLegalIndexRoute
   '/{-$locale}/admin/announcements/': typeof Char123LocaleChar125AdminAnnouncementsIndexRoute
   '/{-$locale}/admin/api-keys/': typeof Char123LocaleChar125AdminApiKeysIndexRoute
+  '/{-$locale}/admin/audit/': typeof Char123LocaleChar125AdminAuditIndexRoute
   '/{-$locale}/admin/changelog/': typeof Char123LocaleChar125AdminChangelogIndexRoute
+  '/{-$locale}/admin/communities/': typeof Char123LocaleChar125AdminCommunitiesIndexRoute
+  '/{-$locale}/admin/events/': typeof Char123LocaleChar125AdminEventsIndexRoute
+  '/{-$locale}/admin/gallery/': typeof Char123LocaleChar125AdminGalleryIndexRoute
   '/{-$locale}/admin/reports/': typeof Char123LocaleChar125AdminReportsIndexRoute
   '/{-$locale}/admin/roles/': typeof Char123LocaleChar125AdminRolesIndexRoute
   '/{-$locale}/admin/tickets/': typeof Char123LocaleChar125AdminTicketsIndexRoute
@@ -574,7 +606,11 @@ export interface FileRoutesByTo {
   '/{-$locale}/legal': typeof Char123LocaleChar125AppLegalIndexRoute
   '/{-$locale}/admin/announcements': typeof Char123LocaleChar125AdminAnnouncementsIndexRoute
   '/{-$locale}/admin/api-keys': typeof Char123LocaleChar125AdminApiKeysIndexRoute
+  '/{-$locale}/admin/audit': typeof Char123LocaleChar125AdminAuditIndexRoute
   '/{-$locale}/admin/changelog': typeof Char123LocaleChar125AdminChangelogIndexRoute
+  '/{-$locale}/admin/communities': typeof Char123LocaleChar125AdminCommunitiesIndexRoute
+  '/{-$locale}/admin/events': typeof Char123LocaleChar125AdminEventsIndexRoute
+  '/{-$locale}/admin/gallery': typeof Char123LocaleChar125AdminGalleryIndexRoute
   '/{-$locale}/admin/reports': typeof Char123LocaleChar125AdminReportsIndexRoute
   '/{-$locale}/admin/roles': typeof Char123LocaleChar125AdminRolesIndexRoute
   '/{-$locale}/admin/tickets': typeof Char123LocaleChar125AdminTicketsIndexRoute
@@ -642,7 +678,11 @@ export interface FileRoutesById {
   '/{-$locale}/_app/legal/': typeof Char123LocaleChar125AppLegalIndexRoute
   '/{-$locale}/admin/announcements/': typeof Char123LocaleChar125AdminAnnouncementsIndexRoute
   '/{-$locale}/admin/api-keys/': typeof Char123LocaleChar125AdminApiKeysIndexRoute
+  '/{-$locale}/admin/audit/': typeof Char123LocaleChar125AdminAuditIndexRoute
   '/{-$locale}/admin/changelog/': typeof Char123LocaleChar125AdminChangelogIndexRoute
+  '/{-$locale}/admin/communities/': typeof Char123LocaleChar125AdminCommunitiesIndexRoute
+  '/{-$locale}/admin/events/': typeof Char123LocaleChar125AdminEventsIndexRoute
+  '/{-$locale}/admin/gallery/': typeof Char123LocaleChar125AdminGalleryIndexRoute
   '/{-$locale}/admin/reports/': typeof Char123LocaleChar125AdminReportsIndexRoute
   '/{-$locale}/admin/roles/': typeof Char123LocaleChar125AdminRolesIndexRoute
   '/{-$locale}/admin/tickets/': typeof Char123LocaleChar125AdminTicketsIndexRoute
@@ -709,7 +749,11 @@ export interface FileRouteTypes {
     | '/{-$locale}/legal/'
     | '/{-$locale}/admin/announcements/'
     | '/{-$locale}/admin/api-keys/'
+    | '/{-$locale}/admin/audit/'
     | '/{-$locale}/admin/changelog/'
+    | '/{-$locale}/admin/communities/'
+    | '/{-$locale}/admin/events/'
+    | '/{-$locale}/admin/gallery/'
     | '/{-$locale}/admin/reports/'
     | '/{-$locale}/admin/roles/'
     | '/{-$locale}/admin/tickets/'
@@ -771,7 +815,11 @@ export interface FileRouteTypes {
     | '/{-$locale}/legal'
     | '/{-$locale}/admin/announcements'
     | '/{-$locale}/admin/api-keys'
+    | '/{-$locale}/admin/audit'
     | '/{-$locale}/admin/changelog'
+    | '/{-$locale}/admin/communities'
+    | '/{-$locale}/admin/events'
+    | '/{-$locale}/admin/gallery'
     | '/{-$locale}/admin/reports'
     | '/{-$locale}/admin/roles'
     | '/{-$locale}/admin/tickets'
@@ -838,7 +886,11 @@ export interface FileRouteTypes {
     | '/{-$locale}/_app/legal/'
     | '/{-$locale}/admin/announcements/'
     | '/{-$locale}/admin/api-keys/'
+    | '/{-$locale}/admin/audit/'
     | '/{-$locale}/admin/changelog/'
+    | '/{-$locale}/admin/communities/'
+    | '/{-$locale}/admin/events/'
+    | '/{-$locale}/admin/gallery/'
     | '/{-$locale}/admin/reports/'
     | '/{-$locale}/admin/roles/'
     | '/{-$locale}/admin/tickets/'
@@ -1035,11 +1087,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125AdminReportsIndexRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
+    '/{-$locale}/admin/gallery/': {
+      id: '/{-$locale}/admin/gallery/'
+      path: '/gallery'
+      fullPath: '/{-$locale}/admin/gallery/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminGalleryIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
+    }
+    '/{-$locale}/admin/events/': {
+      id: '/{-$locale}/admin/events/'
+      path: '/events'
+      fullPath: '/{-$locale}/admin/events/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminEventsIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
+    }
+    '/{-$locale}/admin/communities/': {
+      id: '/{-$locale}/admin/communities/'
+      path: '/communities'
+      fullPath: '/{-$locale}/admin/communities/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminCommunitiesIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
+    }
     '/{-$locale}/admin/changelog/': {
       id: '/{-$locale}/admin/changelog/'
       path: '/changelog'
       fullPath: '/{-$locale}/admin/changelog/'
       preLoaderRoute: typeof Char123LocaleChar125AdminChangelogIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
+    }
+    '/{-$locale}/admin/audit/': {
+      id: '/{-$locale}/admin/audit/'
+      path: '/audit'
+      fullPath: '/{-$locale}/admin/audit/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminAuditIndexRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
     '/{-$locale}/admin/api-keys/': {
@@ -1484,7 +1564,11 @@ interface Char123LocaleChar125AdminRouteChildren {
   Char123LocaleChar125AdminUsersUserIdRoute: typeof Char123LocaleChar125AdminUsersUserIdRoute
   Char123LocaleChar125AdminAnnouncementsIndexRoute: typeof Char123LocaleChar125AdminAnnouncementsIndexRoute
   Char123LocaleChar125AdminApiKeysIndexRoute: typeof Char123LocaleChar125AdminApiKeysIndexRoute
+  Char123LocaleChar125AdminAuditIndexRoute: typeof Char123LocaleChar125AdminAuditIndexRoute
   Char123LocaleChar125AdminChangelogIndexRoute: typeof Char123LocaleChar125AdminChangelogIndexRoute
+  Char123LocaleChar125AdminCommunitiesIndexRoute: typeof Char123LocaleChar125AdminCommunitiesIndexRoute
+  Char123LocaleChar125AdminEventsIndexRoute: typeof Char123LocaleChar125AdminEventsIndexRoute
+  Char123LocaleChar125AdminGalleryIndexRoute: typeof Char123LocaleChar125AdminGalleryIndexRoute
   Char123LocaleChar125AdminReportsIndexRoute: typeof Char123LocaleChar125AdminReportsIndexRoute
   Char123LocaleChar125AdminRolesIndexRoute: typeof Char123LocaleChar125AdminRolesIndexRoute
   Char123LocaleChar125AdminTicketsIndexRoute: typeof Char123LocaleChar125AdminTicketsIndexRoute
@@ -1508,8 +1592,16 @@ const Char123LocaleChar125AdminRouteChildren: Char123LocaleChar125AdminRouteChil
       Char123LocaleChar125AdminAnnouncementsIndexRoute,
     Char123LocaleChar125AdminApiKeysIndexRoute:
       Char123LocaleChar125AdminApiKeysIndexRoute,
+    Char123LocaleChar125AdminAuditIndexRoute:
+      Char123LocaleChar125AdminAuditIndexRoute,
     Char123LocaleChar125AdminChangelogIndexRoute:
       Char123LocaleChar125AdminChangelogIndexRoute,
+    Char123LocaleChar125AdminCommunitiesIndexRoute:
+      Char123LocaleChar125AdminCommunitiesIndexRoute,
+    Char123LocaleChar125AdminEventsIndexRoute:
+      Char123LocaleChar125AdminEventsIndexRoute,
+    Char123LocaleChar125AdminGalleryIndexRoute:
+      Char123LocaleChar125AdminGalleryIndexRoute,
     Char123LocaleChar125AdminReportsIndexRoute:
       Char123LocaleChar125AdminReportsIndexRoute,
     Char123LocaleChar125AdminRolesIndexRoute:

@@ -305,6 +305,12 @@ html[data-theme]:not([data-theme="headpat"]) {
 		linear-gradient(#000 0 0) content-box;
 }
 
+h1,
+h2,
+h3 {
+	font-family: var(--font-display);
+}
+
 h1 {
 	font-size: 2.25rem;
 	line-height: 2.5rem;

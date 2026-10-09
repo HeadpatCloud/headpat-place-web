@@ -2,7 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "@/lib/zod";
 import InputField from "@/components/fields/InputField";
 import { RichBioEditor } from "@/components/profile/RichBioEditor";
 import { Button } from "@/components/ui/button";
@@ -17,6 +16,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useTranslations } from "@/lib/i18n";
+import { z } from "@/lib/zod";
 import { BirthdayPicker } from "./BirthdayPicker";
 import { ProfilePreviewCard } from "./ProfilePreviewCard";
 import type { AccountProfile } from "./types";

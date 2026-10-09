@@ -45,7 +45,9 @@ function RolesList() {
 
 	return (
 		<div className="space-y-4">
-			<h1 className="text-2xl font-extrabold tracking-tight">{t("roles")}</h1>
+			<h1 className="font-display text-3xl font-semibold tracking-tight">
+				{t("roles")}
+			</h1>
 			<div className="flex gap-2">
 				<Input
 					value={name}

@@ -2,7 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { z } from "@/lib/zod";
 import InputField from "@/components/fields/InputField";
 import { TimezoneSelect } from "@/components/TimezoneSelect";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +18,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { authClient } from "@/lib/auth-client";
 import { useTranslations } from "@/lib/i18n";
+import { z } from "@/lib/zod";
 import type { AccountProfile } from "./types";
 
 const emailSchema = z.object({ email: z.string().email().trim() });

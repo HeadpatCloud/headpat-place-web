@@ -44,7 +44,7 @@ function ChangelogAdmin() {
 	return (
 		<div className="space-y-4">
 			<div className="flex items-center justify-between">
-				<h1 className="text-2xl font-extrabold tracking-tight">
+				<h1 className="font-display text-3xl font-semibold tracking-tight">
 					{t("changelog")}
 				</h1>
 				<Button

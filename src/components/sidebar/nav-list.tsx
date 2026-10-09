@@ -18,6 +18,7 @@ export function NavList({
 		url: string;
 		icon: LucideIcon;
 		disabled?: boolean;
+		exact?: boolean;
 	}[];
 	label?: string;
 }) {
@@ -48,6 +49,7 @@ export function NavList({
 								<Link
 									to={item.url}
 									onClick={isMobile ? toggleSidebar : undefined}
+									activeOptions={{ exact: item.exact ?? item.url === "/" }}
 									activeProps={{
 										className: "bg-primary/15 font-extrabold text-link",
 									}}
