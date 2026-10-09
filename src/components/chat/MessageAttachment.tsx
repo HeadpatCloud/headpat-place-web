@@ -53,6 +53,9 @@ export function MessageAttachment({
 			// biome-ignore lint/a11y/useMediaCaption: user-uploaded chat video has no caption track
 			<video
 				controls
+				playsInline
+				preload="metadata"
+				poster={q.data.posterUrl ?? undefined}
 				className="max-h-80 max-w-xs rounded-lg border border-border"
 			>
 				<source src={q.data.url} type={mime} />
