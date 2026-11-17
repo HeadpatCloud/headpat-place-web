@@ -32,6 +32,10 @@ export function loadLeaflet(): Promise<typeof LType> {
 			style.layers = style.layers.filter(
 				(l: { id: string }) => !DROPPED_LAYERS.test(l.id),
 			);
+			// Protected areas (nature parks, reserves) keep their fill but lose the
+			// bright edge, which the dark-mode filter leaves as green lines.
+			for (const l of style.layers)
+				if (l.id === "park") l.paint["fill-outline-color"] = "rgba(0,0,0,0)";
 			mapStyle = style as import("maplibre-gl").StyleSpecification;
 			maplibre.setWorkerUrl(worker.default);
 			maplibreGL = plugin.maplibreGL;
