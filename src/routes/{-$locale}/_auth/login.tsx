@@ -10,7 +10,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { BrandLogo } from "@/components/BrandLogo";
+import { BrandLockup } from "@/components/BrandLogo";
 import CheckboxField from "@/components/fields/CheckboxField";
 import InputField from "@/components/fields/InputField";
 import { Button } from "@/components/ui/button";
@@ -212,17 +212,8 @@ function LoginPage() {
 				className="w-full rounded-3xl border border-border bg-card p-6 shadow-sm sm:p-8"
 			>
 				<div className="text-center">
-					<div className="flex items-center justify-center gap-2.5">
-						<BrandLogo
-							size="sm"
-							alt=""
-							width={40}
-							height={40}
-							className="size-10"
-						/>
-						<span className="font-display text-2xl font-semibold tracking-tight">
-							headpat
-						</span>
+					<div className="flex justify-center">
+						<BrandLockup alt="headpat.place" className="h-14" />
 					</div>
 					<h4 className="mt-6 font-display text-3xl font-semibold leading-tight">
 						{ref === "profile" ? t("profileRefTitle") : t("welcomeTitle")}

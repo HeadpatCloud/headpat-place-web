@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { ErrorMessage, SuccessMessage } from "@/components/alerts";
-import { BrandLogo } from "@/components/BrandLogo";
+import { BrandLockup } from "@/components/BrandLogo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
@@ -44,13 +44,7 @@ function ForgotPasswordPage() {
 			{error && <ErrorMessage attentionError={error} />}
 			<div className="flex items-center justify-center px-6 py-12 lg:px-8">
 				<div className="flex flex-col justify-center sm:mx-auto sm:w-full sm:max-w-sm">
-					<BrandLogo
-						size="lg"
-						className="mx-auto h-24 w-auto"
-						alt="Headpat Logo"
-						width={128}
-						height={128}
-					/>
+					<BrandLockup alt="headpat.place" className="mx-auto h-16" />
 					<h4 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight">
 						{t("forgotPasswordTitle")}
 					</h4>
