@@ -1,4 +1,4 @@
-import { BrandLogo } from "@/components/BrandLogo";
+import { BrandLockup } from "@/components/BrandLogo";
 import { useTranslations } from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
 
@@ -8,17 +8,8 @@ export function SiteSwitcher({ sites }: { sites: Site[] }) {
 	const t = useTranslations("commonUi");
 	return (
 		<div className="flex flex-col gap-4 pt-2">
-			<Link to="/" className="flex items-center gap-2.5 px-2">
-				<BrandLogo
-					size="sm"
-					alt=""
-					width={40}
-					height={40}
-					className="size-10"
-				/>
-				<span className="font-display text-2xl font-semibold tracking-tight">
-					headpat
-				</span>
+			<Link to="/" className="flex items-center px-2">
+				<BrandLockup alt="headpat.place" className="h-16" />
 			</Link>
 			<nav
 				aria-label={t("siteSwitcher")}

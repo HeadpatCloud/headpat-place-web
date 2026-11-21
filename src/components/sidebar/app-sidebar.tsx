@@ -216,7 +216,6 @@ export function AppSidebar({
 		sites: [
 			{ name: "Place", href: "https://headpat.place", active: true },
 			{ name: "Space", href: "https://headpat.space" },
-			{ name: "Dev", href: "https://headpat.dev" },
 		],
 	};
 
