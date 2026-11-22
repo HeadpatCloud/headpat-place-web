@@ -586,7 +586,10 @@
 		"bellUnread": {
 			"one": "Benachrichtigungen, 1 ungelesen",
 			"other": "Benachrichtigungen, %{count} ungelesen"
-		}
+		},
+		"delete": "Löschen",
+		"today": "Heute",
+		"yesterday": "Gestern"
 	},
 	"account": {
 		"guest": {
@@ -1123,7 +1126,10 @@
 		"paidLabel": "Kostenpflichtige Veranstaltung",
 		"paidHelp": "Kennzeichnet die Veranstaltung als kostenpflichtig.",
 		"saving": "Wird gespeichert…",
-		"saveChanges": "Änderungen speichern"
+		"saveChanges": "Änderungen speichern",
+		"communitySearch": "Deine Communities durchsuchen…",
+		"noCommunityFound": "Keine Community passt dazu.",
+		"communityMoreHint": "%{shown} von %{total} angezeigt. Tippe, um die Liste einzugrenzen."
 	},
 	"communityPages": {
 		"seoTitle": "Community",
@@ -1698,7 +1704,10 @@
 		"tickets": "Tickets",
 		"logOut": "Abmelden",
 		"logIn": "Anmelden",
-		"login": "Anmelden"
+		"login": "Anmelden",
+		"mapUnsupportedTitle": "Die Karte kann hier nicht geladen werden",
+		"mapUnsupportedBody": "Dein Browser oder Gerät unterstützt kein WebGL2, das die Karte zum Zeichnen braucht. Versuch einen anderen Browser oder aktiviere die Hardwarebeschleunigung in deinen Browsereinstellungen.",
+		"mapUnsupportedLink": "Warum braucht die Karte WebGL2?"
 	},
 	"footer": {
 		"navLabel": "Rechtliche Links",

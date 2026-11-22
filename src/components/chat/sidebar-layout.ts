@@ -44,108 +44,118 @@ export function reconcileLayout(
 	return { items };
 }
 
-function removeServer(items: ChatLayoutItem[], id: string): ChatLayoutItem[] {
+/** Where a dragged rail item lands. */
+export type RailDrop =
+	| { kind: "top"; anchorId: string; side: "before" | "after" }
+	| { kind: "top-end" }
+	| {
+			kind: "folder";
+			folderId: string;
+			anchorId: string | null;
+			side: "before" | "after";
+	  }
+	| { kind: "combine"; targetId: string };
+
+function removeItem(items: ChatLayoutItem[], id: string): ChatLayoutItem[] {
 	return items
 		.map((item) => {
 			if (item.type === "server") return item.id === id ? null : item;
+			if (item.id === id) return null;
 			const serverIds = item.serverIds.filter((s) => s !== id);
 			if (serverIds.length === 0) return null;
-			return { ...item, serverIds };
+			return serverIds.length === item.serverIds.length
+				? item
+				: { ...item, serverIds };
 		})
 		.filter((item): item is ChatLayoutItem => item !== null);
 }
 
-export function applyDragResult(
+function insertAt<T>(list: T[], index: number, value: T): T[] {
+	const next = list.slice();
+	next.splice(index, 0, value);
+	return next;
+}
+
+/**
+ * Moves a server or folder (`activeId`) to `drop`. Folders only move between
+ * top-level slots; servers can also go into a folder or combine with another
+ * top-level server into a new folder. Invalid or no-op drops return the
+ * layout unchanged.
+ */
+export function applyDrop(
 	layout: ChatLayout,
 	activeId: string,
-	overId: string,
-	opts: { makeFolderName: string; intoFolder?: boolean },
+	drop: RailDrop,
+	opts: { makeFolderId: () => string; makeFolderName: string },
 ): ChatLayout {
-	if (activeId === overId) return layout;
-
-	// reorder within a single folder when both servers live in the same one
-	if (!opts.intoFolder) {
-		const sameFolder = layout.items.find(
-			(i) =>
-				i.type === "folder" &&
-				i.serverIds.includes(activeId) &&
-				i.serverIds.includes(overId),
+	const activeItem = layout.items.find((i) => i.id === activeId);
+	const activeIsFolder = activeItem?.type === "folder";
+	const known =
+		activeItem !== undefined ||
+		layout.items.some(
+			(i) => i.type === "folder" && i.serverIds.includes(activeId),
 		);
-		if (sameFolder?.type === "folder") {
-			const fromPos = sameFolder.serverIds.indexOf(activeId);
-			const toPos = sameFolder.serverIds.indexOf(overId);
-			const ids = sameFolder.serverIds.filter((s) => s !== activeId);
-			const at =
-				fromPos < toPos ? ids.indexOf(overId) + 1 : ids.indexOf(overId);
-			ids.splice(at, 0, activeId);
-			return {
-				items: layout.items.map((i) =>
-					i.type === "folder" && i.id === sameFolder.id
-						? { ...i, serverIds: ids }
-						: i,
-				),
-			};
-		}
+	if (!known) return layout;
+	const anchor =
+		drop.kind === "top" || drop.kind === "folder"
+			? drop.anchorId
+			: drop.kind === "combine"
+				? drop.targetId
+				: null;
+	if (anchor === activeId) return layout;
+	if (activeIsFolder && (drop.kind === "folder" || drop.kind === "combine"))
+		return layout;
+	if (drop.kind === "folder" && drop.folderId === activeId) return layout;
+
+	const moved: ChatLayoutItem =
+		activeItem ?? ({ type: "server", id: activeId } as const);
+	const stripped = removeItem(layout.items, activeId);
+
+	if (drop.kind === "top-end") return { items: [...stripped, moved] };
+
+	if (drop.kind === "top") {
+		const idx = stripped.findIndex((i) => i.id === drop.anchorId);
+		if (idx === -1) return layout;
+		const at = drop.side === "before" ? idx : idx + 1;
+		return { items: insertAt(stripped, at, moved) };
 	}
 
-	const stripped = removeServer(layout.items, activeId);
-
-	// drop onto a folder -> move into it
-	const overFolderIdx = stripped.findIndex(
-		(i) => i.type === "folder" && i.id === overId,
-	);
-	if (overFolderIdx !== -1) {
-		const next = stripped.slice();
-		const folder = next[overFolderIdx];
-		if (folder.type === "folder" && !folder.serverIds.includes(activeId)) {
-			next[overFolderIdx] = {
-				...folder,
-				serverIds: [...folder.serverIds, activeId],
-			};
+	if (drop.kind === "folder") {
+		const fIdx = stripped.findIndex(
+			(i) => i.type === "folder" && i.id === drop.folderId,
+		);
+		const folder = stripped[fIdx];
+		// the folder vanished because the active server was its only member
+		if (!folder || folder.type !== "folder") return layout;
+		let at = 0;
+		if (drop.anchorId !== null) {
+			const aIdx = folder.serverIds.indexOf(drop.anchorId);
+			if (aIdx === -1) return layout;
+			at = drop.side === "before" ? aIdx : aIdx + 1;
+		} else if (drop.side === "after") {
+			at = folder.serverIds.length;
 		}
-		return { items: next };
-	}
-
-	const overServerIdx = stripped.findIndex(
-		(i) => i.type === "server" && i.id === overId,
-	);
-
-	// drop onto another server -> make a folder of both
-	if (opts.intoFolder && overServerIdx !== -1) {
 		const next = stripped.slice();
-		next[overServerIdx] = {
-			type: "folder",
-			id: crypto.randomUUID(),
-			name: opts.makeFolderName,
-			serverIds: [overId, activeId],
+		next[fIdx] = {
+			...folder,
+			serverIds: insertAt(folder.serverIds, at, activeId),
 		};
 		return { items: next };
 	}
 
-	// reorder: place the active server relative to the over item's position
-	const overIdx =
-		overServerIdx !== -1
-			? overServerIdx
-			: stripped.findIndex((i) => i.type === "folder" && i.id === overId);
-	if (overIdx === -1) {
-		const next = stripped.slice();
-		next.push({ type: "server", id: activeId });
-		return { items: next };
-	}
-
-	const activeOrigin = layout.items.findIndex(
-		(i) =>
-			(i.type === "server" && i.id === activeId) ||
-			(i.type === "folder" && i.serverIds.includes(activeId)),
-	);
-	const overOrigin = layout.items.findIndex(
-		(i) =>
-			(i.type === "server" && i.id === overId) ||
-			(i.type === "folder" && i.id === overId),
-	);
-	// moving down (active was before over) drops after, otherwise before.
-	const at = activeOrigin < overOrigin ? overIdx + 1 : overIdx;
+	// combine: onto a top-level server (new folder) or into a folder (append)
+	const tIdx = stripped.findIndex((i) => i.id === drop.targetId);
+	const target = stripped[tIdx];
+	if (!target) return layout;
 	const next = stripped.slice();
-	next.splice(at, 0, { type: "server", id: activeId });
+	next[tIdx] =
+		target.type === "folder"
+			? { ...target, serverIds: [...target.serverIds, activeId] }
+			: {
+					type: "folder",
+					id: opts.makeFolderId(),
+					name: opts.makeFolderName,
+					serverIds: [target.id, activeId],
+				};
 	return { items: next };
 }

@@ -20,7 +20,7 @@ export function Section({
 	className,
 }: SectionProps) {
 	return (
-		<section id={id} className={cn("scroll-mt-24", className)}>
+		<section id={id} className={cn("scroll-mt-36 lg:scroll-mt-24", className)}>
 			<div className="mb-5 flex items-start justify-between gap-4">
 				<div>
 					<h2 className="text-lg font-semibold tracking-tight">{title}</h2>

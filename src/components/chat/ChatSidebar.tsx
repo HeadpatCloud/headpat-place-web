@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { orpc } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
 import { MessagesPanel } from "./MessagesPanel";
@@ -40,7 +40,15 @@ export function ChatSidebar({ className }: { className?: string }) {
 		setOverride(null);
 	}, [location.pathname]);
 
-	const view: View = override ?? urlView ?? "messages";
+	// while a channel's community is still resolving, keep showing the last
+	// view instead of flashing the messages panel in between
+	const lastView = useRef<View>("messages");
+	const resolving = !!activeChannelId && !activeChannel.data;
+	const view: View =
+		override ?? urlView ?? (resolving ? lastView.current : "messages");
+	useEffect(() => {
+		lastView.current = view;
+	});
 
 	return (
 		<aside

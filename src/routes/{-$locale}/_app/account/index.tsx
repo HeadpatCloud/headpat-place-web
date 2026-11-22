@@ -156,12 +156,12 @@ function AccountPage() {
 				items={SECTIONS}
 				activeId={active}
 				onSelect={goTo}
-				className="sticky top-2 z-20 lg:hidden"
+				className="sticky top-21 z-10 lg:hidden"
 			/>
 
 			<div className="grid gap-8 lg:grid-cols-[200px_minmax(0,1fr)]">
 				<aside className="hidden lg:block">
-					<div className="sticky top-6">
+					<div className="sticky top-24 max-h-[calc(100svh-7rem)] overflow-y-auto">
 						<AccountNav
 							variant="rail"
 							items={SECTIONS}

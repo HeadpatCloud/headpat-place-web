@@ -586,7 +586,10 @@
 		"bellUnread": {
 			"one": "Notifications, 1 unread",
 			"other": "Notifications, %{count} unread"
-		}
+		},
+		"delete": "Delete",
+		"today": "Today",
+		"yesterday": "Yesterday"
 	},
 	"account": {
 		"guest": {
@@ -1123,7 +1126,10 @@
 		"paidLabel": "Paid event",
 		"paidHelp": "Marks the event as paid entry.",
 		"saving": "Saving…",
-		"saveChanges": "Save changes"
+		"saveChanges": "Save changes",
+		"communitySearch": "Search your communities…",
+		"noCommunityFound": "No community matches that.",
+		"communityMoreHint": "Showing %{shown} of %{total}. Type to narrow it down."
 	},
 	"communityPages": {
 		"seoTitle": "Community",
@@ -1697,7 +1703,10 @@
 		"tickets": "Tickets",
 		"logOut": "Log out",
 		"logIn": "Log in",
-		"login": "Login"
+		"login": "Login",
+		"mapUnsupportedTitle": "The map can't load here",
+		"mapUnsupportedBody": "Your browser or device doesn't support WebGL2, which the map needs to draw. Try another browser, or turn on hardware acceleration in your browser settings.",
+		"mapUnsupportedLink": "Why does the map need WebGL2?"
 	},
 	"footer": {
 		"navLabel": "Legal links",

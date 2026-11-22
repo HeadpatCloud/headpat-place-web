@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { HeartHandshakeIcon, PlusIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { StorageImage } from "@/components/StorageImage";
 import { Button } from "@/components/ui/button";
@@ -35,6 +35,15 @@ export function ServerPanel({
 	const myRole = useQuery(
 		orpc.community.myRoleIn.queryOptions({ input: { communityId } }),
 	);
+	// seed each channel's byId cache from the list, so opening a channel for
+	// the first time renders its header and sidebar at once instead of
+	// flashing while channel.byId loads
+	useEffect(() => {
+		for (const ch of channels.data ?? []) {
+			const key = orpc.channel.byId.queryKey({ input: { channelId: ch.id } });
+			if (!qc.getQueryData(key)) qc.setQueryData(key, ch);
+		}
+	}, [channels.data, qc]);
 	const role = myRole.data?.role;
 	const staff = role === "owner" || role === "admin" || role === "moderator";
 
@@ -60,7 +69,7 @@ export function ServerPanel({
 
 	return (
 		<div className="flex h-full min-h-0 flex-col">
-			<div className="group flex h-13 shrink-0 items-center gap-3 border-b border-border px-3.5">
+			<div className="group flex h-14 shrink-0 items-center gap-3 border-b border-border px-3.5">
 				<StorageImage
 					kind="community-avatar"
 					fileId={community.data?.avatarFileId}

@@ -90,6 +90,42 @@ export function tileLayer(_L: typeof LType, dark: boolean): LType.Layer {
 	return layer;
 }
 
+let webgl2: boolean | undefined;
+/** Whether this browser can create the WebGL2 context the vector map needs. */
+export function supportsWebGL2(): boolean {
+	if (webgl2 === undefined) {
+		try {
+			webgl2 = !!document.createElement("canvas").getContext("webgl2");
+		} catch {
+			webgl2 = false;
+		}
+	}
+	return webgl2;
+}
+
+export const MAP_UNSUPPORTED_EVENT = "headpat:map-unsupported";
+
+/**
+ * Adds the base tiles to `map`. Without WebGL2 (or when MapLibre fails to
+ * start) it adds an empty layer instead and announces it, so the map shows
+ * an explanation rather than an uncaught error and a grey box.
+ */
+export function addTiles(
+	L: typeof LType,
+	map: LType.Map,
+	dark: boolean,
+): LType.Layer {
+	if (supportsWebGL2()) {
+		try {
+			return tileLayer(L, dark).addTo(map);
+		} catch {
+			// fall through to the unsupported state below
+		}
+	}
+	window.dispatchEvent(new Event(MAP_UNSUPPORTED_EVENT));
+	return L.layerGroup().addTo(map);
+}
+
 type MapPosition = { center: [number, number]; zoom: number };
 
 // Rough country/region anchors so a fresh map opens near the visitor instead of

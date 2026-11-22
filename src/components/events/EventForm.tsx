@@ -11,13 +11,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { InputTags } from "@/components/ui/input-tags";
 import { Label } from "@/components/ui/label";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useTranslations } from "@/lib/i18n";
@@ -26,6 +19,7 @@ import {
 	useLocalizedNavigate as useNavigate,
 } from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
+import { CommunityCombobox } from "./CommunityCombobox";
 
 export type EventFormInitial = {
 	id: string;
@@ -130,6 +124,7 @@ export function EventForm({
 					{
 						id: initial.communityId,
 						name: currentCommunity.data?.name ?? t("currentCommunity"),
+						avatarFileId: currentCommunity.data?.avatarFileId ?? null,
 					},
 					...communities,
 				]
@@ -325,25 +320,13 @@ export function EventForm({
 				<CardContent className="space-y-4 pt-6">
 					<div className="space-y-2">
 						<Label htmlFor="ev-community">{t("communityLabel")}</Label>
-						<Select
+						<CommunityCombobox
+							id="ev-community"
 							value={form.communityId}
-							onValueChange={(v) => setField("communityId", v)}
-						>
-							<SelectTrigger id="ev-community">
-								<SelectValue
-									placeholder={
-										mine.isPending ? c("loading") : t("communityPlaceholder")
-									}
-								/>
-							</SelectTrigger>
-							<SelectContent>
-								{options.map((opt) => (
-									<SelectItem key={opt.id} value={opt.id}>
-										{opt.name}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
+							options={options}
+							loading={mine.isPending}
+							onChange={(v) => setField("communityId", v)}
+						/>
 						<p className="text-xs text-muted-foreground">
 							{t("communityHelp")}
 						</p>

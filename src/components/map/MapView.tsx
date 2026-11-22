@@ -9,6 +9,7 @@ import { useSession } from "@/lib/auth-client";
 import { client, orpc } from "@/lib/orpc";
 import {
 	ACCENT,
+	addTiles,
 	clusterIcon,
 	loadLeaflet,
 	loadMarkerCluster,
@@ -17,9 +18,9 @@ import {
 	parseLatLng,
 	personIcon,
 	pinIcon,
-	tileLayer,
 	timezoneToView,
 } from "./leaflet-shared";
+import { MapUnsupported, useMapUnsupported } from "./MapUnsupported";
 
 function escapeHtml(s: string): string {
 	return s.replace(
@@ -49,6 +50,7 @@ export function MapView() {
 	const peopleRef = useRef<LType.LayerGroup | null>(null);
 	const fittedRef = useRef(false);
 	const [mapReady, setMapReady] = useState(false);
+	const unsupported = useMapUnsupported();
 	// Resolved presigned avatar URLs keyed by fileId (fetched once per fileId).
 	const [avatarUrls, setAvatarUrls] = useState<Record<string, string>>({});
 	const requestedAvatars = useRef<Set<string>>(new Set());
@@ -126,7 +128,7 @@ export function MapView() {
 
 			// tile layer follows the app theme
 			if (tileRef.current) map.removeLayer(tileRef.current);
-			tileRef.current = tileLayer(L, dark).addTo(map);
+			tileRef.current = addTiles(L, map, dark);
 
 			// event zones + pins (pins cluster when they overlap at low zoom)
 			const group = groupRef.current;
@@ -278,7 +280,8 @@ export function MapView() {
 	return (
 		<div className="relative h-full w-full">
 			<div ref={containerRef} className="h-full w-full" />
-			{events.isSuccess && (events.data ?? []).length === 0 ? (
+			{unsupported ? <MapUnsupported /> : null}
+			{!unsupported && events.isSuccess && (events.data ?? []).length === 0 ? (
 				<div className="pointer-events-none absolute inset-x-0 bottom-6 z-[500] flex justify-center">
 					<div className="rounded-full border border-border bg-background/90 px-4 py-2 text-sm text-muted-foreground backdrop-blur">
 						No upcoming events have a location yet.

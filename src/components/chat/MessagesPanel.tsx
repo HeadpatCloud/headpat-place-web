@@ -43,11 +43,11 @@ export function MessagesPanel() {
 
 	return (
 		<div className="flex h-full min-h-0 flex-col">
-			<div className="flex h-13 shrink-0 items-center border-b border-border px-3.5">
+			<div className="flex h-14 shrink-0 items-center border-b border-border px-3.5">
 				<button
 					type="button"
 					onClick={() => setPaletteOpen(true)}
-					className="flex w-full items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-left text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+					className="flex h-8.5 w-full items-center gap-2 rounded-md border border-border bg-card px-3 text-left text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
 				>
 					<SearchIcon className="size-4 shrink-0 opacity-80" />
 					<span className="truncate">{t("findOrStart")}</span>

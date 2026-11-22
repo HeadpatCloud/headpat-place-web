@@ -9,14 +9,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import {
+	addTiles,
 	loadGeoman,
 	loadLeaflet,
 	localTimezone,
 	parseLatLng,
-	tileLayer,
 	timezoneToView,
 	ZONE_STYLE,
 } from "./leaflet-shared";
+import { MapUnsupported, useMapUnsupported } from "./MapUnsupported";
 
 export type LocationZoneMethod = "virtual" | "circle" | "polygon";
 
@@ -66,6 +67,7 @@ export function LocationPicker({
 	darkRef.current = dark;
 
 	const [search, setSearch] = useState("");
+	const unsupported = useMapUnsupported();
 	const [searching, setSearching] = useState(false);
 	const hasShape = value.coordinates.length > 0;
 
@@ -85,7 +87,7 @@ export function LocationPicker({
 			mapRef.current = map;
 			// darkRef (not the closure) so a theme that resolved/flipped during the
 			// async import is honored, avoiding a light→dark tile flash
-			tileRef.current = tileLayer(L, darkRef.current).addTo(map);
+			tileRef.current = addTiles(L, map, darkRef.current);
 
 			const capture = (layer: LType.Layer) => {
 				if (method === "circle") {
@@ -188,7 +190,7 @@ export function LocationPicker({
 		const map = mapRef.current;
 		if (!L || !map) return;
 		if (tileRef.current) map.removeLayer(tileRef.current);
-		tileRef.current = tileLayer(L, dark).addTo(map);
+		tileRef.current = addTiles(L, map, dark);
 	}, [dark]);
 
 	const startDraw = () => {
@@ -292,6 +294,7 @@ export function LocationPicker({
 
 					<div className="relative h-72 overflow-hidden rounded-xl border border-border">
 						<div ref={containerRef} className="h-full w-full" />
+						{unsupported ? <MapUnsupported compact /> : null}
 					</div>
 
 					<div className="flex flex-wrap items-center gap-2">

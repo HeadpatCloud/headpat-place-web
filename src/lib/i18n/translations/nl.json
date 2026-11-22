@@ -586,7 +586,10 @@
 		"bellUnread": {
 			"one": "Meldingen, 1 ongelezen",
 			"other": "Meldingen, %{count} ongelezen"
-		}
+		},
+		"delete": "Verwijderen",
+		"today": "Vandaag",
+		"yesterday": "Gisteren"
 	},
 	"account": {
 		"guest": {
@@ -1123,7 +1126,10 @@
 		"paidLabel": "Betaald evenement",
 		"paidHelp": "Markeert het evenement als betaalde toegang.",
 		"saving": "Bezig met opslaan…",
-		"saveChanges": "Wijzigingen opslaan"
+		"saveChanges": "Wijzigingen opslaan",
+		"communitySearch": "Zoek in je communities…",
+		"noCommunityFound": "Geen community gevonden.",
+		"communityMoreHint": "%{shown} van %{total} getoond. Typ om de lijst te verfijnen."
 	},
 	"communityPages": {
 		"seoTitle": "Community",
@@ -1698,7 +1704,10 @@
 		"tickets": "Tickets",
 		"logOut": "Uitloggen",
 		"logIn": "Inloggen",
-		"login": "Inloggen"
+		"login": "Inloggen",
+		"mapUnsupportedTitle": "De kaart kan hier niet laden",
+		"mapUnsupportedBody": "Je browser of apparaat ondersteunt geen WebGL2, wat de kaart nodig heeft om te tekenen. Probeer een andere browser of zet hardwareversnelling aan in je browserinstellingen.",
+		"mapUnsupportedLink": "Waarom heeft de kaart WebGL2 nodig?"
 	},
 	"footer": {
 		"navLabel": "Juridische links",

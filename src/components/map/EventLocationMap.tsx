@@ -3,12 +3,13 @@ import type * as LType from "leaflet";
 import { useTheme } from "next-themes";
 import { useEffect, useRef } from "react";
 import {
+	addTiles,
 	loadLeaflet,
 	parseLatLng,
 	pinIcon,
-	tileLayer,
 	ZONE_STYLE,
 } from "./leaflet-shared";
+import { MapUnsupported, useMapUnsupported } from "./MapUnsupported";
 
 export function EventLocationMap({
 	method,
@@ -22,6 +23,7 @@ export function EventLocationMap({
 	const { resolvedTheme } = useTheme();
 	const dark = resolvedTheme === "dark";
 	const containerRef = useRef<HTMLDivElement>(null);
+	const unsupported = useMapUnsupported();
 	const LRef = useRef<typeof LType | null>(null);
 	const mapRef = useRef<LType.Map | null>(null);
 	const tileRef = useRef<LType.Layer | null>(null);
@@ -53,7 +55,7 @@ export function EventLocationMap({
 			const map = mapRef.current;
 
 			if (tileRef.current) map.removeLayer(tileRef.current);
-			tileRef.current = tileLayer(L, dark).addTo(map);
+			tileRef.current = addTiles(L, map, dark);
 
 			const group = groupRef.current;
 			if (!group) return;
@@ -86,8 +88,9 @@ export function EventLocationMap({
 	}, [dark, method, coordinates, circleRadius]);
 
 	return (
-		<div className="h-64 overflow-hidden rounded-xl border border-border">
+		<div className="relative h-64 overflow-hidden rounded-xl border border-border">
 			<div ref={containerRef} className="h-full w-full" />
+			{unsupported ? <MapUnsupported compact /> : null}
 		</div>
 	);
 }

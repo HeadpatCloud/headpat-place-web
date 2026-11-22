@@ -67,6 +67,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@/components/ui/popover";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useSession } from "@/lib/auth-client";
 import {
 	type UploadedAttachment,
@@ -622,7 +623,7 @@ export function MessagePane({ source }: { source: Source }) {
 
 	return (
 		<div className="flex h-full flex-col bg-background text-foreground">
-			<header className="flex h-15 shrink-0 items-center gap-3 border-b border-border px-4 md:px-5">
+			<header className="flex h-14 shrink-0 items-center gap-3 border-b border-border px-4 md:px-5">
 				<button
 					type="button"
 					onClick={() => navigate({ to: "/chat" })}
@@ -679,7 +680,7 @@ export function MessagePane({ source }: { source: Source }) {
 							<UsersIcon className="size-4" />
 						</button>
 					) : null}
-					<div className="hidden w-48 cursor-text items-center gap-2 rounded-md border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground md:flex">
+					<div className="hidden h-8.5 w-48 cursor-text items-center gap-2 rounded-md border border-border bg-card px-3 text-sm text-muted-foreground md:flex">
 						<SearchIcon className="size-3.5 opacity-80" />
 						<span>{c("search")}</span>
 					</div>
@@ -705,9 +706,23 @@ export function MessagePane({ source }: { source: Source }) {
 				>
 					<div ref={contentRef} className="flex min-h-full flex-col">
 						{messages.isPending ? (
-							<p className="py-4 text-muted-foreground">
-								{t("loadingMessages")}
-							</p>
+							<output
+								aria-label={t("loadingMessages")}
+								className="mt-auto flex flex-col gap-5 py-4"
+							>
+								{[0.9, 0.6, 0.75, 0.45].map((w) => (
+									<div key={w} className="flex items-start gap-3">
+										<Skeleton className="size-10 shrink-0 rounded-full" />
+										<div className="flex flex-1 flex-col gap-2 pt-1">
+											<Skeleton className="h-3 w-24" />
+											<Skeleton
+												className="h-3"
+												style={{ width: `${w * 60}%` }}
+											/>
+										</div>
+									</div>
+								))}
+							</output>
 						) : list.length === 0 && outgoing.length === 0 ? (
 							<p className="py-8 text-center text-muted-foreground">
 								{t("noMessagesYet")}
