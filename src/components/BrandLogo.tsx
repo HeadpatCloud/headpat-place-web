@@ -48,11 +48,12 @@ export function BrandLogo({
 }
 
 const LOCKUP = {
-	dark: "/logos/place_dark",
-	light: "/logos/place_light",
+	dark: "/logos/place_dark.svg",
+	light: "/logos/place_light.svg",
 };
 
-/** The headpat.place wordmark next to the paw, themed like BrandLogo. */
+/** The headpat.place wordmark next to the paw, themed like BrandLogo. Vector,
+ *  because the paw's fine detail turned soft in any raster at sidebar size. */
 export function BrandLockup({
 	alt,
 	className = "",
@@ -65,8 +66,7 @@ export function BrandLockup({
 			{(["dark", "light"] as const).map((ink) => (
 				<img
 					key={ink}
-					src={`${LOCKUP[ink]}_x250.webp`}
-					srcSet={`${LOCKUP[ink]}_x250.webp 1x, ${LOCKUP[ink]}_x500.webp 2x`}
+					src={LOCKUP[ink]}
 					alt={alt}
 					width={1586}
 					height={546}
