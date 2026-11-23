@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { BellIcon, BellOffIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
+import { EventAttendees } from "@/components/events/EventAttendees";
 import { EventLocationMap } from "@/components/map/EventLocationMap";
 import {
 	AlertDialog,
@@ -115,6 +116,7 @@ function EventDetailPage() {
 			qc.invalidateQueries({
 				queryKey: orpc.event.byId.queryKey({ input: { eventId } }),
 			});
+			qc.invalidateQueries({ queryKey: orpc.event.attendees.key() });
 		},
 		onError: (e: Error) => toast.error(e.message),
 	});
@@ -300,6 +302,10 @@ function EventDetailPage() {
 					)}
 				</CardContent>
 			</Card>
+
+			{session?.user ? (
+				<EventAttendees eventId={eventId} isPast={isPast} />
+			) : null}
 		</main>
 	);
 }
