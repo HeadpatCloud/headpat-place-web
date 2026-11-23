@@ -12,6 +12,7 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 import { UserAuditLog } from "@/components/admin/UserAuditLog";
+import { UserBadgesCard } from "@/components/admin/UserBadgesCard";
 import { StorageImage } from "@/components/StorageImage";
 import {
 	AlertDialog,
@@ -112,6 +113,8 @@ function UserDetail() {
 		mine.has("*:*") || mine.has("users:*") || mine.has("users:delete");
 	const canNotes =
 		mine.has("*:*") || mine.has("users:*") || mine.has("users:notes");
+	const canEdit =
+		mine.has("*:*") || mine.has("users:*") || mine.has("users:edit");
 
 	const userQ = useQuery(
 		orpc.adminUser.get.queryOptions({ input: { userId } }),
@@ -347,11 +350,7 @@ function UserDetail() {
 				</CardContent>
 			</Card>
 
-			{u.bio ||
-			u.pronouns ||
-			u.location ||
-			socials.length ||
-			u.badges?.length ? (
+			{u.bio || u.pronouns || u.location || socials.length ? (
 				<Card>
 					<CardHeader>
 						<CardTitle>{t("profileInfo")}</CardTitle>
@@ -389,13 +388,6 @@ function UserDetail() {
 								))}
 							</div>
 						) : null}
-						{u.badges?.length ? (
-							<div className="flex flex-wrap gap-1.5">
-								{u.badges.map((b) => (
-									<Badge key={b}>{b}</Badge>
-								))}
-							</div>
-						) : null}
 						<div className="flex flex-wrap gap-1.5">
 							{u.nsfwEnabled ? (
 								<Badge variant="secondary">{t("nsfwEnabled")}</Badge>
@@ -407,6 +399,12 @@ function UserDetail() {
 					</CardContent>
 				</Card>
 			) : null}
+
+			<UserBadgesCard
+				userId={userId}
+				stored={u.badges ?? []}
+				canEdit={canEdit}
+			/>
 
 			<Card>
 				<CardHeader className="flex flex-row items-center justify-between gap-2">

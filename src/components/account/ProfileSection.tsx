@@ -382,7 +382,7 @@ export function ProfileSection({ profile, onSave, saving }: Props) {
 					bannerFileId={profile.bannerFileId}
 					followersCount={profile.followersCount}
 					followingCount={profile.followingCount}
-					badges={profile.badges}
+					userId={profile.userId}
 				/>
 			</aside>
 		</div>

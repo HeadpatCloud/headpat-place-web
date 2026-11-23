@@ -1,5 +1,6 @@
 import { CakeIcon } from "lucide-react";
 import { GradientBanner } from "@/components/GradientBanner";
+import { ProfileBadges } from "@/components/profile/ProfileBadges";
 import { RichBio } from "@/components/profile/RichBio";
 import { useStorageUrl } from "@/components/StorageImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -33,7 +34,7 @@ type Props = {
 	bannerFileId?: string | null;
 	followersCount: number;
 	followingCount: number;
-	badges?: string[] | null;
+	userId: string;
 };
 
 function socialPills(d: PreviewData) {
@@ -54,7 +55,7 @@ export function ProfilePreviewCard({
 	bannerFileId,
 	followersCount,
 	followingCount,
-	badges,
+	userId,
 }: Props) {
 	const t = useTranslations("accountPages");
 	const avatarUrl = useStorageUrl("avatar", avatarFileId, "md");
@@ -111,11 +112,9 @@ export function ProfilePreviewCard({
 									})}
 								</Badge>
 							) : null}
-							{(badges ?? []).map((b) => (
-								<Badge key={b}>{b}</Badge>
-							))}
 						</div>
 					) : null}
+					<ProfileBadges userId={userId} />
 					<Separator />
 					<div className="flex gap-6 text-sm">
 						<span>

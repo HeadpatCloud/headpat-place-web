@@ -3,9 +3,9 @@ import { format } from "date-fns";
 import { Copy, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { GradientBanner } from "@/components/GradientBanner";
+import { ProfileBadges } from "@/components/profile/ProfileBadges";
 import { useStorageUrl } from "@/components/StorageImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useTranslations } from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
@@ -132,13 +132,7 @@ export function AccountHero({ profile, onChangeMedia }: Props) {
 					</Link>
 				</div>
 
-				{(profile.badges ?? []).length > 0 ? (
-					<div className="mt-3 flex flex-wrap gap-2">
-						{(profile.badges ?? []).map((b) => (
-							<Badge key={b}>{b}</Badge>
-						))}
-					</div>
-				) : null}
+				<ProfileBadges userId={profile.userId} className="mt-3" />
 			</div>
 		</div>
 	);

@@ -5,6 +5,7 @@ import { CakeIcon, CalendarDaysIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { GradientBanner } from "@/components/GradientBanner";
+import { ProfileBadges } from "@/components/profile/ProfileBadges";
 import { RichBio } from "@/components/profile/RichBio";
 import { StorageImage, useStorageUrl } from "@/components/StorageImage";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -206,10 +207,8 @@ function UserProfilePage() {
 									{t("joinedLabel", { date: formatJoined(p.registeredAt) })}
 								</Badge>
 							) : null}
-							{(p.badges ?? []).map((b) => (
-								<Badge key={b}>{b}</Badge>
-							))}
 						</div>
+						<ProfileBadges userId={p.userId} />
 						<Separator />
 						<div className="flex gap-6 text-sm">
 							<Link

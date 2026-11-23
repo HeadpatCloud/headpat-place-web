@@ -1728,5 +1728,67 @@
 		"acceptableUse": "Acceptable use",
 		"imprint": "Impressum",
 		"legal": "Legal"
+	},
+	"badges": {
+		"title": "Badges",
+		"staff": {
+			"name": "Staff",
+			"description": "Part of the headpat.place team."
+		},
+		"communityFounder": {
+			"name": "Community founder",
+			"description": {
+				"one": "Founded %{count} community.",
+				"other": "Founded %{count} communities."
+			},
+			"more": {
+				"one": "and %{count} more",
+				"other": "and %{count} more"
+			}
+		},
+		"eventHost": {
+			"name": "Event host",
+			"description": {
+				"one": "Hosted %{count} event.",
+				"other": "Hosted %{count} events."
+			}
+		},
+		"eventGoer": {
+			"name": {
+				"1": "Event-goer",
+				"2": "Regular",
+				"3": "Event veteran"
+			},
+			"description": {
+				"one": "Went to %{count} event.",
+				"other": "Went to %{count} events."
+			},
+			"next": {
+				"one": "%{count} more event to level up.",
+				"other": "%{count} more events to level up."
+			},
+			"level": "Level %{level}"
+		},
+		"earlyMember": {
+			"name": "Early member",
+			"description": "Joined headpat.place in the early days."
+		},
+		"supporter": {
+			"name": "Supporter",
+			"description": "Helps keep headpat.place running."
+		},
+		"betaTester": {
+			"name": "Beta tester",
+			"description": "Tried new features before everyone else."
+		},
+		"admin": {
+			"title": "Badges",
+			"earned": "Earned from activity",
+			"granted": "Given by staff",
+			"none": "No badges earned yet.",
+			"saved": "Badges updated",
+			"failed": "Could not update badges",
+			"legacy": "Old values, not shown on profiles: %{values}. Saving replaces them."
+		}
 	}
 }
