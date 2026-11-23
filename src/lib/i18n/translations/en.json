@@ -2029,6 +2029,18 @@
 		},
 		"reciprocal": "Only people who are visible too can see me",
 		"start": "Make me visible",
+		"pickOnMap": "Pick my area on the map",
+		"moveOnMap": "Move my spot on the map",
+		"picker": {
+			"title": "Pick your area",
+			"hint": "Tap the map where you are, or search for a place. Others only ever see a rough area, never this exact spot.",
+			"search": "Search a place…",
+			"find": "Find",
+			"noResult": "No place found for that search.",
+			"searchFailed": "Couldn't search right now. Try again.",
+			"cancel": "Cancel",
+			"confirm": "Use this spot"
+		},
 		"stop": "Hide me",
 		"privacy": "People you blocked or who blocked you never see you, and you never see them.",
 		"visibleOpen": "You are visible to people nearby.",
@@ -2043,7 +2055,8 @@
 		"geo": {
 			"unsupported": "Your browser can't share a location.",
 			"denied": "Location access is blocked. Allow it for this site to become visible.",
-			"unavailable": "Couldn't get your location. Please try again."
+			"unavailable": "Your browser couldn't find your location. You can pick your area on the map instead.",
+			"timeout": "Finding your location took too long. Try again, or pick your area on the map."
 		}
 	},
 	"nearbyPage": {
@@ -2054,8 +2067,9 @@
 		"sortRecent": "Recently active",
 		"filterOnline": "Online now",
 		"filterEvent": "At %{event}",
-		"noLocation": "Allow location access to see how far away people are.",
+		"noLocation": "Share your location or pick a spot to see how far away people are.",
 		"tryLocation": "Use my location",
+		"pickOnMap": "Pick on the map",
 		"loading": "Looking around…",
 		"empty": "Nobody around right now",
 		"emptyHint": "Make yourself visible so others can find you too.",

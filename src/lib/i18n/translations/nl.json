@@ -2030,6 +2030,18 @@
 		},
 		"reciprocal": "Alleen mensen die zelf zichtbaar zijn kunnen mij zien",
 		"start": "Maak me zichtbaar",
+		"pickOnMap": "Mijn omgeving op de kaart kiezen",
+		"moveOnMap": "Mijn plek op de kaart verplaatsen",
+		"picker": {
+			"title": "Kies je omgeving",
+			"hint": "Tik op de kaart waar je bent, of zoek een plaats. Anderen zien altijd alleen een ruwe omgeving, nooit precies deze plek.",
+			"search": "Zoek een plaats…",
+			"find": "Zoeken",
+			"noResult": "Geen plaats gevonden voor deze zoekopdracht.",
+			"searchFailed": "Zoeken lukt nu niet. Probeer het opnieuw.",
+			"cancel": "Annuleren",
+			"confirm": "Deze plek gebruiken"
+		},
 		"stop": "Verberg me",
 		"privacy": "Mensen die jij hebt geblokkeerd of die jou hebben geblokkeerd zien je nooit, en jij ziet hen nooit.",
 		"visibleOpen": "Je bent zichtbaar voor mensen in de buurt.",
@@ -2044,7 +2056,8 @@
 		"geo": {
 			"unsupported": "Je browser kan geen locatie delen.",
 			"denied": "Locatietoegang is geblokkeerd. Sta het toe voor deze site om zichtbaar te worden.",
-			"unavailable": "Je locatie kon niet worden bepaald. Probeer het opnieuw."
+			"unavailable": "Je browser kon je locatie niet vinden. Je kunt je omgeving ook op de kaart kiezen.",
+			"timeout": "Het zoeken naar je locatie duurde te lang. Probeer het opnieuw of kies je omgeving op de kaart."
 		}
 	},
 	"nearbyPage": {
@@ -2055,8 +2068,9 @@
 		"sortRecent": "Recent actief",
 		"filterOnline": "Nu online",
 		"filterEvent": "Bij %{event}",
-		"noLocation": "Sta locatietoegang toe om te zien hoe ver mensen weg zijn.",
+		"noLocation": "Deel je locatie of kies een plek om te zien hoe ver mensen weg zijn.",
 		"tryLocation": "Mijn locatie gebruiken",
+		"pickOnMap": "Kiezen op de kaart",
 		"loading": "Even rondkijken…",
 		"empty": "Er is nu niemand in de buurt",
 		"emptyHint": "Maak jezelf zichtbaar zodat anderen jou ook kunnen vinden.",

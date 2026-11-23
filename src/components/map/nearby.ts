@@ -6,15 +6,33 @@ import { client, orpc } from "@/lib/orpc";
 // refreshes your own cell. Cells are 1 to 5 km wide, so minutes are plenty.
 export const NEARBY_REFRESH_MS = 2 * 60 * 1000;
 
+export type LatLng = { lat: number; lng: number };
+
 export class GeolocationError extends Error {
-	constructor(readonly reason: "unsupported" | "denied" | "unavailable") {
+	constructor(
+		readonly reason: "unsupported" | "denied" | "unavailable" | "timeout",
+	) {
 		super(reason);
 	}
 }
 
+// A spot picked by hand on the map, for browsers that can't locate you (for
+// example Chromium-based browsers on Linux without a location service). Kept
+// in memory for this tab only, so refreshes and precision changes reuse it.
+let pickedPosition: LatLng | null = null;
+
+export function rememberPickedPosition(pos: LatLng | null) {
+	pickedPosition = pos;
+}
+
+/** The hand-picked spot if there is one, otherwise a fresh browser fix. */
+export function ownPosition(): Promise<LatLng> {
+	return pickedPosition ? Promise.resolve(pickedPosition) : currentPosition();
+}
+
 /** One position fix from the browser. The exact value only goes to the API,
  *  which snaps it to a grid cell before storing anything. */
-export function currentPosition(): Promise<{ lat: number; lng: number }> {
+export function currentPosition(): Promise<LatLng> {
 	return new Promise((resolve, reject) => {
 		if (typeof navigator === "undefined" || !navigator.geolocation) {
 			reject(new GeolocationError("unsupported"));
@@ -25,7 +43,11 @@ export function currentPosition(): Promise<{ lat: number; lng: number }> {
 			(e) =>
 				reject(
 					new GeolocationError(
-						e.code === e.PERMISSION_DENIED ? "denied" : "unavailable",
+						e.code === e.PERMISSION_DENIED
+							? "denied"
+							: e.code === e.TIMEOUT
+								? "timeout"
+								: "unavailable",
 					),
 				),
 			{ enableHighAccuracy: false, maximumAge: 5 * 60 * 1000, timeout: 20000 },
@@ -64,7 +86,7 @@ export function useRefreshOwnCell(visible: boolean) {
 		if (!visible) return;
 		let cancelled = false;
 		const tick = () => {
-			currentPosition()
+			ownPosition()
 				.then((pos) => {
 					if (!cancelled) return client.nearby.updatePosition(pos);
 				})

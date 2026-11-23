@@ -3,8 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { MapPinIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { AreaPickerDialog } from "@/components/map/AreaPickerDialog";
 import { NearbyPanel } from "@/components/map/NearbyPanel";
-import { currentPosition, NEARBY_REFRESH_MS } from "@/components/map/nearby";
+import { NEARBY_REFRESH_MS, ownPosition } from "@/components/map/nearby";
 import { StorageImage } from "@/components/StorageImage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,9 +64,10 @@ function NearbyPage() {
 	const [near, setNear] = useState<Near | null>(null);
 	const [locating, setLocating] = useState(false);
 	const [locationFailed, setLocationFailed] = useState(false);
+	const [pickerOpen, setPickerOpen] = useState(false);
 	const locate = () => {
 		setLocating(true);
-		currentPosition()
+		ownPosition()
 			.then((p) => {
 				setNear(roundNear(p));
 				setLocationFailed(false);
@@ -264,8 +266,20 @@ function NearbyPage() {
 					>
 						{t("tryLocation")}
 					</Button>
+					<Button size="sm" variant="ghost" onClick={() => setPickerOpen(true)}>
+						{t("pickOnMap")}
+					</Button>
 				</div>
 			) : null}
+			<AreaPickerDialog
+				open={pickerOpen}
+				onOpenChange={setPickerOpen}
+				onPick={(pos) => {
+					setNear(roundNear(pos));
+					setLocationFailed(false);
+					setPickerOpen(false);
+				}}
+			/>
 
 			{list.isPending ? (
 				<p className="text-muted-foreground">{t("loading")}</p>

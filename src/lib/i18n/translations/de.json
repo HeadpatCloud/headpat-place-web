@@ -2030,6 +2030,18 @@
 		},
 		"reciprocal": "Nur Leute, die selbst sichtbar sind, können mich sehen",
 		"start": "Mich sichtbar machen",
+		"pickOnMap": "Meine Gegend auf der Karte wählen",
+		"moveOnMap": "Meinen Punkt auf der Karte verschieben",
+		"picker": {
+			"title": "Wähle deine Gegend",
+			"hint": "Tippe auf die Karte, wo du bist, oder such nach einem Ort. Andere sehen immer nur eine ungefähre Gegend, nie genau diesen Punkt.",
+			"search": "Ort suchen…",
+			"find": "Suchen",
+			"noResult": "Für diese Suche wurde kein Ort gefunden.",
+			"searchFailed": "Die Suche hat gerade nicht geklappt. Versuch es noch einmal.",
+			"cancel": "Abbrechen",
+			"confirm": "Diesen Punkt nutzen"
+		},
 		"stop": "Mich verbergen",
 		"privacy": "Leute, die du blockiert hast oder die dich blockiert haben, sehen dich nie, und du siehst sie nie.",
 		"visibleOpen": "Du bist für Leute in der Nähe sichtbar.",
@@ -2044,7 +2056,8 @@
 		"geo": {
 			"unsupported": "Dein Browser kann keinen Standort teilen.",
 			"denied": "Der Standortzugriff ist blockiert. Erlaube ihn für diese Seite, um sichtbar zu werden.",
-			"unavailable": "Dein Standort konnte nicht ermittelt werden. Bitte versuch es noch einmal."
+			"unavailable": "Dein Browser konnte deinen Standort nicht finden. Du kannst deine Gegend stattdessen auf der Karte wählen.",
+			"timeout": "Die Standortsuche hat zu lange gedauert. Versuch es noch einmal oder wähle deine Gegend auf der Karte."
 		}
 	},
 	"nearbyPage": {
@@ -2055,8 +2068,9 @@
 		"sortRecent": "Zuletzt aktiv",
 		"filterOnline": "Jetzt online",
 		"filterEvent": "Bei %{event}",
-		"noLocation": "Erlaube den Standortzugriff, um zu sehen, wie weit Leute entfernt sind.",
+		"noLocation": "Teile deinen Standort oder wähle einen Punkt, um zu sehen, wie weit Leute entfernt sind.",
 		"tryLocation": "Meinen Standort nutzen",
+		"pickOnMap": "Auf der Karte wählen",
 		"loading": "Schaue mich um…",
 		"empty": "Gerade ist niemand in der Nähe",
 		"emptyHint": "Mach dich sichtbar, damit andere dich auch finden.",

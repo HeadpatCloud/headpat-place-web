@@ -19,9 +19,13 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { useLocale, useTranslations } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
+import { AreaPickerDialog } from "./AreaPickerDialog";
 import {
 	currentPosition,
 	GeolocationError,
+	type LatLng,
+	ownPosition,
+	rememberPickedPosition,
 	useInvalidateNearby,
 	useNearbyStatus,
 } from "./nearby";
@@ -58,6 +62,12 @@ export function NearbyPanel({ showLayer, onShowLayerChange }: Props) {
 	const [reciprocal, setReciprocal] = useState(false);
 	const [precision, setPrecision] = useState<Precision>("rough");
 	const [busy, setBusy] = useState(false);
+	// the area picker, plus the precision to apply when it was opened from a
+	// precision change that couldn't get a fix
+	const [pickerOpen, setPickerOpen] = useState(false);
+	const [pendingPrecision, setPendingPrecision] = useState<Precision | null>(
+		null,
+	);
 	const ids = {
 		layer: useId(),
 		reciprocal: useId(),
@@ -73,49 +83,91 @@ export function NearbyPanel({ showLayer, onShowLayerChange }: Props) {
 			minute: "2-digit",
 		});
 
-	async function run(action: () => Promise<unknown>) {
+	function openPicker(nextPrecision: Precision | null = null) {
+		setPendingPrecision(nextPrecision);
+		setOpen(false);
+		setPickerOpen(true);
+	}
+
+	/** Runs an action and reports how it went. When the browser can't give a
+	 *  position, the error toast offers the map picker instead. */
+	async function run(
+		action: () => Promise<unknown>,
+		nextPrecision: Precision | null = null,
+	): Promise<boolean> {
 		setBusy(true);
 		try {
 			await action();
 			await invalidate();
+			return true;
 		} catch (e) {
-			if (e instanceof GeolocationError) toast.error(t(`geo.${e.reason}`));
-			else toast.error(t("error"));
+			if (e instanceof GeolocationError) {
+				toast.error(t(`geo.${e.reason}`), {
+					action: {
+						label: t("pickOnMap"),
+						onClick: () => openPicker(nextPrecision),
+					},
+				});
+			} else {
+				toast.error(t("error"));
+			}
+			return false;
 		} finally {
 			setBusy(false);
 		}
 	}
 
+	const enableFromForm = (pos: LatLng) => {
+		const ms = DURATIONS[duration];
+		return client.nearby.enable({
+			...pos,
+			scope: scope === "open" ? "open" : "event",
+			eventId: scope === "open" ? undefined : scope,
+			expiresAt: ms === null ? null : new Date(Date.now() + ms).toISOString(),
+			reciprocalOnly: reciprocal,
+			precision,
+		});
+	};
+
+	// Re-enables at a new spot or precision with everything else kept as it is.
+	const reEnable = async (pos: LatLng, next: Precision) => {
+		const s = status.data;
+		if (!s?.visible) return;
+		await client.nearby.enable({
+			...pos,
+			scope: s.scope,
+			eventId: s.eventId ?? undefined,
+			expiresAt: s.expiresAt ? new Date(s.expiresAt).toISOString() : null,
+			reciprocalOnly: s.reciprocalOnly,
+			precision: next,
+		});
+	};
+
 	const goVisible = () =>
 		run(async () => {
 			const pos = await currentPosition();
-			const ms = DURATIONS[duration];
-			await client.nearby.enable({
-				...pos,
-				scope: scope === "open" ? "open" : "event",
-				eventId: scope === "open" ? undefined : scope,
-				expiresAt: ms === null ? null : new Date(Date.now() + ms).toISOString(),
-				reciprocalOnly: reciprocal,
-				precision,
-			});
+			await enableFromForm(pos);
+			// a real fix works here, so stop reusing an older hand-picked spot
+			rememberPickedPosition(null);
 		});
 
-	// Changing precision needs a fresh fix to snap to the new cell size, so it
-	// re-enables with everything else kept as it is.
+	// Changing precision needs a position to snap to the new cell size: the
+	// hand-picked spot if there is one, otherwise a fresh fix.
 	const changePrecision = (next: Precision) =>
 		run(async () => {
-			const s = status.data;
-			if (!s?.visible) return;
-			const pos = await currentPosition();
-			await client.nearby.enable({
-				...pos,
-				scope: s.scope,
-				eventId: s.eventId ?? undefined,
-				expiresAt: s.expiresAt ? new Date(s.expiresAt).toISOString() : null,
-				reciprocalOnly: s.reciprocalOnly,
-				precision: next,
-			});
+			const pos = await ownPosition();
+			await reEnable(pos, next);
+		}, next);
+
+	const confirmPickedSpot = async (pos: LatLng) => {
+		const s = status.data;
+		const ok = await run(async () => {
+			if (s?.visible) await reEnable(pos, pendingPrecision ?? s.precision);
+			else await enableFromForm(pos);
+			rememberPickedPosition(pos);
 		});
+		if (ok) setPickerOpen(false);
+	};
 
 	const precisionSelect = (
 		value: Precision,
@@ -145,150 +197,186 @@ export function NearbyPanel({ showLayer, onShowLayerChange }: Props) {
 			: t(`duration.${d}`);
 
 	return (
-		<Popover open={open} onOpenChange={setOpen}>
-			<PopoverTrigger asChild>
-				<Button
-					variant={visible ? "default" : "secondary"}
-					size="sm"
-					className="shadow-md"
-				>
-					<UsersIcon className="size-4" />
-					{visible ? t("buttonVisible") : t("button")}
-				</Button>
-			</PopoverTrigger>
-			<PopoverContent align="end" className="w-80 space-y-4">
-				<div>
-					<p className="font-semibold">{t("title")}</p>
-					<p className="mt-1 text-sm text-muted-foreground">{t("intro")}</p>
-				</div>
-
-				{onShowLayerChange ? (
-					<div className="flex items-center justify-between gap-3 border-b border-border pb-4">
-						<Label htmlFor={ids.layer}>{t("showLayer")}</Label>
-						<Switch
-							id={ids.layer}
-							checked={showLayer ?? true}
-							onCheckedChange={onShowLayerChange}
-						/>
+		<>
+			<Popover open={open} onOpenChange={setOpen}>
+				<PopoverTrigger asChild>
+					<Button
+						variant={visible ? "default" : "secondary"}
+						size="sm"
+						className="shadow-md"
+					>
+						<UsersIcon className="size-4" />
+						{visible ? t("buttonVisible") : t("button")}
+					</Button>
+				</PopoverTrigger>
+				<PopoverContent align="end" className="w-80 space-y-4">
+					<div>
+						<p className="font-semibold">{t("title")}</p>
+						<p className="mt-1 text-sm text-muted-foreground">{t("intro")}</p>
 					</div>
-				) : null}
 
-				<div>
-					{status.data?.visible ? (
-						<div className="space-y-3">
-							<p className="text-sm">
-								{status.data.scope === "event"
-									? t("visibleEvent", { event: status.data.eventTitle ?? "" })
-									: t("visibleOpen")}
-							</p>
-							<p className="text-xs text-muted-foreground">
-								{(() => {
-									const ends = [status.data.expiresAt, status.data.eventEndsAt]
-										.filter((d): d is Date => !!d)
-										.map((d) => new Date(d))
-										.sort((a, b) => a.getTime() - b.getTime())[0];
-									return ends ? t("until", { time: fmt(ends) }) : t("untilOff");
-								})()}
-							</p>
-							{precisionSelect(status.data.precision, changePrecision)}
-							<div className="flex items-center justify-between gap-3">
-								<Label htmlFor={ids.reciprocal} className="font-normal">
-									{t("reciprocal")}
-								</Label>
-								<Switch
-									id={ids.reciprocal}
-									checked={status.data.reciprocalOnly}
-									disabled={busy}
-									onCheckedChange={(v) =>
-										run(() =>
-											client.nearby.updateSettings({ reciprocalOnly: v }),
-										)
-									}
-								/>
-							</div>
-							<Button
-								variant="outline"
-								className="w-full"
-								disabled={busy}
-								onClick={() => run(() => client.nearby.disable({}))}
-							>
-								{t("stop")}
-							</Button>
+					{onShowLayerChange ? (
+						<div className="flex items-center justify-between gap-3 border-b border-border pb-4">
+							<Label htmlFor={ids.layer}>{t("showLayer")}</Label>
+							<Switch
+								id={ids.layer}
+								checked={showLayer ?? true}
+								onCheckedChange={onShowLayerChange}
+							/>
 						</div>
-					) : (
-						<div className="space-y-3">
-							<div className="space-y-1.5">
-								<Label htmlFor={ids.scope}>{t("whoSees")}</Label>
-								<Select
-									value={scope}
-									onValueChange={(v) => {
-										setScope(v);
-										// 24h only exists for open scope
-										if (v !== "open" && duration === "24h") setDuration("4h");
-									}}
-								>
-									<SelectTrigger id={ids.scope}>
-										<SelectValue />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value="open">{t("scopeOpen")}</SelectItem>
-										{(events.data ?? []).map((e) => (
-											<SelectItem key={e.id} value={e.id}>
-												{t("scopeEvent", { event: e.title })}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-								<p className="text-xs text-muted-foreground">
-									{scope === "open" ? t("audienceOpen") : t("audienceEvent")}
+					) : null}
+
+					<div>
+						{status.data?.visible ? (
+							<div className="space-y-3">
+								<p className="text-sm">
+									{status.data.scope === "event"
+										? t("visibleEvent", { event: status.data.eventTitle ?? "" })
+										: t("visibleOpen")}
 								</p>
-							</div>
-							{precisionSelect(precision, setPrecision)}
-							<p className="text-xs text-muted-foreground">
-								{precision === "precise"
-									? t("fuzzPrecise")
-									: scope === "open"
-										? t("fuzzOpen")
-										: t("fuzzEvent")}
-							</p>
-							<div className="space-y-1.5">
-								<Label>{t("howLong")}</Label>
-								<Select
-									value={duration}
-									onValueChange={(v) => setDuration(v as Duration)}
+								<p className="text-xs text-muted-foreground">
+									{(() => {
+										const ends = [
+											status.data.expiresAt,
+											status.data.eventEndsAt,
+										]
+											.filter((d): d is Date => !!d)
+											.map((d) => new Date(d))
+											.sort((a, b) => a.getTime() - b.getTime())[0];
+										return ends
+											? t("until", { time: fmt(ends) })
+											: t("untilOff");
+									})()}
+								</p>
+								{precisionSelect(status.data.precision, changePrecision)}
+								<div className="flex items-center justify-between gap-3">
+									<Label htmlFor={ids.reciprocal} className="font-normal">
+										{t("reciprocal")}
+									</Label>
+									<Switch
+										id={ids.reciprocal}
+										checked={status.data.reciprocalOnly}
+										disabled={busy}
+										onCheckedChange={(v) =>
+											run(() =>
+												client.nearby.updateSettings({ reciprocalOnly: v }),
+											)
+										}
+									/>
+								</div>
+								<Button
+									variant="ghost"
+									size="sm"
+									className="w-full"
+									disabled={busy}
+									onClick={() => openPicker()}
 								>
-									<SelectTrigger>
-										<SelectValue />
-									</SelectTrigger>
-									<SelectContent>
-										{(Object.keys(DURATIONS) as Duration[])
-											.filter((d) => scope === "open" || d !== "24h")
-											.map((d) => (
-												<SelectItem key={d} value={d}>
-													{durationLabel(d)}
+									{t("moveOnMap")}
+								</Button>
+								<Button
+									variant="outline"
+									className="w-full"
+									disabled={busy}
+									onClick={() =>
+										run(async () => {
+											await client.nearby.disable({});
+											rememberPickedPosition(null);
+										})
+									}
+								>
+									{t("stop")}
+								</Button>
+							</div>
+						) : (
+							<div className="space-y-3">
+								<div className="space-y-1.5">
+									<Label htmlFor={ids.scope}>{t("whoSees")}</Label>
+									<Select
+										value={scope}
+										onValueChange={(v) => {
+											setScope(v);
+											// 24h only exists for open scope
+											if (v !== "open" && duration === "24h") setDuration("4h");
+										}}
+									>
+										<SelectTrigger id={ids.scope}>
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value="open">{t("scopeOpen")}</SelectItem>
+											{(events.data ?? []).map((e) => (
+												<SelectItem key={e.id} value={e.id}>
+													{t("scopeEvent", { event: e.title })}
 												</SelectItem>
 											))}
-									</SelectContent>
-								</Select>
+										</SelectContent>
+									</Select>
+									<p className="text-xs text-muted-foreground">
+										{scope === "open" ? t("audienceOpen") : t("audienceEvent")}
+									</p>
+								</div>
+								{precisionSelect(precision, setPrecision)}
+								<p className="text-xs text-muted-foreground">
+									{precision === "precise"
+										? t("fuzzPrecise")
+										: scope === "open"
+											? t("fuzzOpen")
+											: t("fuzzEvent")}
+								</p>
+								<div className="space-y-1.5">
+									<Label>{t("howLong")}</Label>
+									<Select
+										value={duration}
+										onValueChange={(v) => setDuration(v as Duration)}
+									>
+										<SelectTrigger>
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											{(Object.keys(DURATIONS) as Duration[])
+												.filter((d) => scope === "open" || d !== "24h")
+												.map((d) => (
+													<SelectItem key={d} value={d}>
+														{durationLabel(d)}
+													</SelectItem>
+												))}
+										</SelectContent>
+									</Select>
+								</div>
+								<div className="flex items-center justify-between gap-3">
+									<Label htmlFor={ids.reciprocal} className="font-normal">
+										{t("reciprocal")}
+									</Label>
+									<Switch
+										id={ids.reciprocal}
+										checked={reciprocal}
+										onCheckedChange={setReciprocal}
+									/>
+								</div>
+								<Button className="w-full" disabled={busy} onClick={goVisible}>
+									{t("start")}
+								</Button>
+								<Button
+									variant="ghost"
+									size="sm"
+									className="w-full"
+									disabled={busy}
+									onClick={() => openPicker()}
+								>
+									{t("pickOnMap")}
+								</Button>
+								<p className="text-xs text-muted-foreground">{t("privacy")}</p>
 							</div>
-							<div className="flex items-center justify-between gap-3">
-								<Label htmlFor={ids.reciprocal} className="font-normal">
-									{t("reciprocal")}
-								</Label>
-								<Switch
-									id={ids.reciprocal}
-									checked={reciprocal}
-									onCheckedChange={setReciprocal}
-								/>
-							</div>
-							<Button className="w-full" disabled={busy} onClick={goVisible}>
-								{t("start")}
-							</Button>
-							<p className="text-xs text-muted-foreground">{t("privacy")}</p>
-						</div>
-					)}
-				</div>
-			</PopoverContent>
-		</Popover>
+						)}
+					</div>
+				</PopoverContent>
+			</Popover>
+			<AreaPickerDialog
+				open={pickerOpen}
+				onOpenChange={setPickerOpen}
+				onPick={confirmPickedSpot}
+				busy={busy}
+			/>
+		</>
 	);
 }
