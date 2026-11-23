@@ -295,7 +295,12 @@ function NearbyPage() {
 								<StorageImage
 									kind="avatar"
 									fileId={p.avatarFileId}
-									className="h-full w-full object-cover transition-[scale] group-hover:scale-105"
+									className={cn(
+										"h-full w-full object-cover transition-[scale] group-hover:scale-105",
+										// 18+ pictures stay blurred in the grid; the profile shows them
+										mode === "adult" &&
+											"scale-110 blur-xl group-hover:scale-110",
+									)}
 									fallback={
 										<div className="flex h-full w-full items-center justify-center font-display text-3xl text-muted-foreground">
 											{name.charAt(0).toUpperCase()}
