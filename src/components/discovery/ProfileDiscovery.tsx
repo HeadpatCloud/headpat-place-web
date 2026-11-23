@@ -149,14 +149,15 @@ function RefSheet({ fileId }: { fileId: string }) {
 			<button
 				type="button"
 				onClick={() => setOpen(true)}
-				className="block w-full overflow-hidden rounded-xl border border-border"
+				className="flex w-full cursor-zoom-in justify-center overflow-hidden rounded-xl border border-border bg-muted"
 				aria-label={t("sonaRefSheet")}
 			>
+				{/* Whole sheet at its own shape: ref sheets are wide, tall or square. */}
 				<StorageImage
 					kind="gallery"
 					fileId={fileId}
-					variant="640"
-					className="max-h-56 w-full object-cover"
+					variant="1280"
+					className="block h-auto max-h-[28rem] w-auto max-w-full"
 					fallback={null}
 				/>
 			</button>

@@ -25,6 +25,7 @@ import { useDiscoveryOptions } from "@/lib/discovery-options";
 import { useTranslations } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
 import { uploadImage } from "@/lib/upload-image";
+import { cn } from "@/lib/utils";
 
 type Sona = {
 	id: string;
@@ -80,7 +81,10 @@ export function ImagePick({
 						kind={kind}
 						fileId={fileId}
 						variant={kind === "avatar" ? "sm" : "320"}
-						className="h-full w-full object-cover"
+						className={cn(
+							"h-full w-full",
+							square ? "object-cover" : "object-contain",
+						)}
 						fallback={null}
 					/>
 				</div>
