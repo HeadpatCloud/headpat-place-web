@@ -129,7 +129,7 @@ function UsersList() {
 										</Link>
 									</Td>
 									<Td className="max-w-56 truncate text-muted-foreground">
-										{u.email}
+										{u.email ?? t("privateHidden")}
 									</Td>
 									<Td>
 										<div className="flex flex-wrap gap-1.5">

@@ -6,6 +6,7 @@ import {
 	CalendarIcon,
 	FileCheckIcon,
 	FileIcon,
+	FlagIcon,
 	HeartHandshakeIcon,
 	HomeIcon,
 	KeyRoundIcon,
@@ -31,10 +32,10 @@ import {
 	SidebarFooter,
 	SidebarHeader,
 } from "@/components/ui/sidebar";
+import { adminAccessQuery, permits } from "@/lib/admin-access";
 import { useSession } from "@/lib/auth-client";
 import { useTranslations } from "@/lib/i18n";
 import { LocalizedLink as Link } from "@/lib/localized-nav";
-import { orpc } from "@/lib/orpc";
 import { NavList } from "./nav-list";
 import { SiteSwitcher } from "./site-switcher";
 
@@ -47,12 +48,19 @@ export function AppSidebar({
 	const { data: session } = useSession();
 	const { signedIn, pending } = useAuthState();
 	const signedOut = !pending && !signedIn;
-	const adminPerms = useQuery({
-		...orpc.adminRole.myPermissions.queryOptions({ input: undefined }),
+	const adminAccess = useQuery({
+		...adminAccessQuery(),
 		enabled: !!session?.user,
-		staleTime: 5 * 60_000,
+		staleTime: 60_000,
 	});
-	const isStaff = (adminPerms.data?.length ?? 0) > 0;
+	const isStaff = adminAccess.data?.isStaff ?? false;
+	const myPerms = new Set(adminAccess.data?.permissions ?? []);
+	/** Admin nav shows only the pages the caller can open. */
+	function allowed<T extends { perm: string }>(items: T[]): Omit<T, "perm">[] {
+		return items
+			.filter((i) => permits(myPerms, i.perm))
+			.map(({ perm: _perm, ...rest }) => rest);
+	}
 
 	const data = {
 		navMain: [
@@ -116,73 +124,95 @@ export function AppSidebar({
 				disabled: signedOut,
 			},
 		],
-		adminOverview: [
+		adminOverview: allowed([
 			{
 				name: nav("adminDashboard"),
 				url: "/admin",
+				perm: "stats:view",
 				icon: LayoutDashboardIcon,
 				exact: true,
 			},
-		],
-		adminPeople: [
+		]),
+		adminPeople: allowed([
 			{
 				name: nav("adminUsers"),
 				url: "/admin/users",
+				perm: "users:view",
 				icon: UserSearchIcon,
 			},
-			{ name: nav("roles"), url: "/admin/roles", icon: ShieldIcon },
+			{
+				name: nav("roles"),
+				url: "/admin/roles",
+				perm: "roles:view",
+				icon: ShieldIcon,
+			},
 			{
 				name: nav("adminApiKeys"),
 				url: "/admin/api-keys",
+				perm: "apikeys:manage",
 				icon: KeyRoundIcon,
 			},
-		],
-		adminModeration: [
+		]),
+		adminModeration: allowed([
 			{
 				name: nav("reports"),
 				url: "/admin/reports",
+				perm: "reports:view",
 				icon: FileCheckIcon,
 			},
 			{
 				name: nav("tickets"),
 				url: "/admin/tickets",
+				perm: "tickets:view",
 				icon: BadgeHelpIcon,
 			},
 			{
 				name: nav("adminGallery"),
 				url: "/admin/gallery",
+				perm: "gallery:view",
 				icon: LayoutPanelLeftIcon,
 			},
 			{
 				name: nav("adminCommunities"),
 				url: "/admin/communities",
+				perm: "communities:view",
 				icon: HeartHandshakeIcon,
 			},
 			{
 				name: nav("adminEvents"),
 				url: "/admin/events",
+				perm: "events:view",
 				icon: CalendarIcon,
 			},
-		],
-		adminContent: [
+		]),
+		adminContent: allowed([
 			{
 				name: nav("adminChangelog"),
 				url: "/admin/changelog",
+				perm: "changelog:manage",
 				icon: PencilIcon,
 			},
 			{
 				name: nav("adminAnnouncements"),
 				url: "/admin/announcements",
+				perm: "announcements:manage",
 				icon: MegaphoneIcon,
 			},
-		],
-		adminSystem: [
+		]),
+		adminSystem: allowed([
 			{
 				name: nav("adminAudit"),
 				url: "/admin/audit",
+				perm: "audit:view",
 				icon: ScrollTextIcon,
 			},
-		],
+			{
+				name: nav("adminFlags"),
+				url: "/admin/flags",
+				perm: "flags:manage",
+				icon: FlagIcon,
+			},
+		]),
 		adminBack: [{ name: nav("backToHeadpat"), url: "/", icon: HomeIcon }],
 		navSecondary: [
 			{
@@ -233,23 +263,21 @@ export function AppSidebar({
 			<SidebarContent className="gap-5 px-3 py-3">
 				{mode === "admin" ? (
 					<>
-						<NavList projects={data.adminOverview} />
-						<NavList
-							label={nav("adminGroupPeople")}
-							projects={data.adminPeople}
-						/>
-						<NavList
-							label={nav("adminGroupModeration")}
-							projects={data.adminModeration}
-						/>
-						<NavList
-							label={nav("adminGroupContent")}
-							projects={data.adminContent}
-						/>
-						<NavList
-							label={nav("adminGroupSystem")}
-							projects={data.adminSystem}
-						/>
+						{data.adminOverview.length ? (
+							<NavList projects={data.adminOverview} />
+						) : null}
+						{(
+							[
+								["adminGroupPeople", data.adminPeople],
+								["adminGroupModeration", data.adminModeration],
+								["adminGroupContent", data.adminContent],
+								["adminGroupSystem", data.adminSystem],
+							] as const
+						).map(([label, items]) =>
+							items.length ? (
+								<NavList key={label} label={nav(label)} projects={items} />
+							) : null,
+						)}
 						<NavList projects={data.adminBack} />
 						<NavSecondary items={data.navSecondary} className="mt-auto" />
 					</>

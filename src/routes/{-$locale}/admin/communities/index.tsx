@@ -41,7 +41,8 @@ function CommunitiesAdmin() {
 		placeholderData: keepPreviousData,
 	});
 	const remove = useMutation({
-		mutationFn: (id: string) => client.adminContent.communityDelete({ id }),
+		mutationFn: (vars: { id: string; reason: string }) =>
+			client.adminContent.communityDelete(vars),
 		onSuccess: () => {
 			toast.success(t("deletedToast"));
 			qc.invalidateQueries({ queryKey: orpc.adminContent.communityList.key() });
@@ -87,7 +88,7 @@ function CommunitiesAdmin() {
 								<Tr key={x.id}>
 									<Td>
 										<Link
-											to={`/community/${x.id}`}
+											to={`/admin/communities/${x.id}` as never}
 											className="flex items-center gap-3"
 										>
 											<StorageImage
@@ -129,9 +130,12 @@ function CommunitiesAdmin() {
 									</Td>
 									<Td className="text-right">
 										<ConfirmDelete
+											typeToConfirm
 											name={x.name}
 											disabled={remove.isPending}
-											onConfirm={() => remove.mutate(x.id)}
+											onConfirm={(reason) =>
+												remove.mutate({ id: x.id, reason })
+											}
 										/>
 									</Td>
 								</Tr>

@@ -2,9 +2,13 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export function TableCard({ children }: { children: ReactNode }) {
+	// The zero-minimum grid track stops a wide table from stretching the page;
+	// it scrolls inside its card instead.
 	return (
-		<div className="overflow-x-auto rounded-3xl border border-border bg-card shadow-sm">
-			<table className="w-full text-left text-sm">{children}</table>
+		<div className="grid grid-cols-[minmax(0,1fr)]">
+			<div className="overflow-x-auto rounded-3xl border border-border bg-card shadow-sm">
+				<table className="w-full text-left text-sm">{children}</table>
+			</div>
 		</div>
 	);
 }

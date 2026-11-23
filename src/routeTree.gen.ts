@@ -36,6 +36,7 @@ import { Route as Char123LocaleChar125AdminTicketsIndexRouteImport } from './rou
 import { Route as Char123LocaleChar125AdminRolesIndexRouteImport } from './routes/{-$locale}/admin/roles/index'
 import { Route as Char123LocaleChar125AdminReportsIndexRouteImport } from './routes/{-$locale}/admin/reports/index'
 import { Route as Char123LocaleChar125AdminGalleryIndexRouteImport } from './routes/{-$locale}/admin/gallery/index'
+import { Route as Char123LocaleChar125AdminFlagsIndexRouteImport } from './routes/{-$locale}/admin/flags/index'
 import { Route as Char123LocaleChar125AdminEventsIndexRouteImport } from './routes/{-$locale}/admin/events/index'
 import { Route as Char123LocaleChar125AdminCommunitiesIndexRouteImport } from './routes/{-$locale}/admin/communities/index'
 import { Route as Char123LocaleChar125AdminChangelogIndexRouteImport } from './routes/{-$locale}/admin/changelog/index'
@@ -53,6 +54,10 @@ import { Route as Char123LocaleChar125ChatCChannelIdRouteImport } from './routes
 import { Route as Char123LocaleChar125AdminUsersUserIdRouteImport } from './routes/{-$locale}/admin/users/$userId'
 import { Route as Char123LocaleChar125AdminTicketsTicketIdRouteImport } from './routes/{-$locale}/admin/tickets/$ticketId'
 import { Route as Char123LocaleChar125AdminRolesRoleIdRouteImport } from './routes/{-$locale}/admin/roles/$roleId'
+import { Route as Char123LocaleChar125AdminReportsReportIdRouteImport } from './routes/{-$locale}/admin/reports/$reportId'
+import { Route as Char123LocaleChar125AdminGalleryGalleryItemIdRouteImport } from './routes/{-$locale}/admin/gallery/$galleryItemId'
+import { Route as Char123LocaleChar125AdminEventsEventIdRouteImport } from './routes/{-$locale}/admin/events/$eventId'
+import { Route as Char123LocaleChar125AdminCommunitiesCommunityIdRouteImport } from './routes/{-$locale}/admin/communities/$communityId'
 import { Route as Char123LocaleChar125AdminChangelogChangelogIdRouteImport } from './routes/{-$locale}/admin/changelog/$changelogId'
 import { Route as Char123LocaleChar125AdminAnnouncementsAnnouncementIdRouteImport } from './routes/{-$locale}/admin/announcements/$announcementId'
 import { Route as Char123LocaleChar125AuthLoginMfaRouteImport } from './routes/{-$locale}/_auth/login/mfa'
@@ -237,6 +242,12 @@ const Char123LocaleChar125AdminGalleryIndexRoute =
     path: '/gallery/',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
+const Char123LocaleChar125AdminFlagsIndexRoute =
+  Char123LocaleChar125AdminFlagsIndexRouteImport.update({
+    id: '/flags/',
+    path: '/flags/',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
 const Char123LocaleChar125AdminEventsIndexRoute =
   Char123LocaleChar125AdminEventsIndexRouteImport.update({
     id: '/events/',
@@ -337,6 +348,30 @@ const Char123LocaleChar125AdminRolesRoleIdRoute =
   Char123LocaleChar125AdminRolesRoleIdRouteImport.update({
     id: '/roles/$roleId',
     path: '/roles/$roleId',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AdminReportsReportIdRoute =
+  Char123LocaleChar125AdminReportsReportIdRouteImport.update({
+    id: '/reports/$reportId',
+    path: '/reports/$reportId',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AdminGalleryGalleryItemIdRoute =
+  Char123LocaleChar125AdminGalleryGalleryItemIdRouteImport.update({
+    id: '/gallery/$galleryItemId',
+    path: '/gallery/$galleryItemId',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AdminEventsEventIdRoute =
+  Char123LocaleChar125AdminEventsEventIdRouteImport.update({
+    id: '/events/$eventId',
+    path: '/events/$eventId',
+    getParentRoute: () => Char123LocaleChar125AdminRoute,
+  } as any)
+const Char123LocaleChar125AdminCommunitiesCommunityIdRoute =
+  Char123LocaleChar125AdminCommunitiesCommunityIdRouteImport.update({
+    id: '/communities/$communityId',
+    path: '/communities/$communityId',
     getParentRoute: () => Char123LocaleChar125AdminRoute,
   } as any)
 const Char123LocaleChar125AdminChangelogChangelogIdRoute =
@@ -535,6 +570,10 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/login/mfa': typeof Char123LocaleChar125AuthLoginMfaRoute
   '/{-$locale}/admin/announcements/$announcementId': typeof Char123LocaleChar125AdminAnnouncementsAnnouncementIdRoute
   '/{-$locale}/admin/changelog/$changelogId': typeof Char123LocaleChar125AdminChangelogChangelogIdRoute
+  '/{-$locale}/admin/communities/$communityId': typeof Char123LocaleChar125AdminCommunitiesCommunityIdRoute
+  '/{-$locale}/admin/events/$eventId': typeof Char123LocaleChar125AdminEventsEventIdRoute
+  '/{-$locale}/admin/gallery/$galleryItemId': typeof Char123LocaleChar125AdminGalleryGalleryItemIdRoute
+  '/{-$locale}/admin/reports/$reportId': typeof Char123LocaleChar125AdminReportsReportIdRoute
   '/{-$locale}/admin/roles/$roleId': typeof Char123LocaleChar125AdminRolesRoleIdRoute
   '/{-$locale}/admin/tickets/$ticketId': typeof Char123LocaleChar125AdminTicketsTicketIdRoute
   '/{-$locale}/admin/users/$userId': typeof Char123LocaleChar125AdminUsersUserIdRoute
@@ -552,6 +591,7 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/admin/changelog/': typeof Char123LocaleChar125AdminChangelogIndexRoute
   '/{-$locale}/admin/communities/': typeof Char123LocaleChar125AdminCommunitiesIndexRoute
   '/{-$locale}/admin/events/': typeof Char123LocaleChar125AdminEventsIndexRoute
+  '/{-$locale}/admin/flags/': typeof Char123LocaleChar125AdminFlagsIndexRoute
   '/{-$locale}/admin/gallery/': typeof Char123LocaleChar125AdminGalleryIndexRoute
   '/{-$locale}/admin/reports/': typeof Char123LocaleChar125AdminReportsIndexRoute
   '/{-$locale}/admin/roles/': typeof Char123LocaleChar125AdminRolesIndexRoute
@@ -602,6 +642,10 @@ export interface FileRoutesByTo {
   '/{-$locale}/login/mfa': typeof Char123LocaleChar125AuthLoginMfaRoute
   '/{-$locale}/admin/announcements/$announcementId': typeof Char123LocaleChar125AdminAnnouncementsAnnouncementIdRoute
   '/{-$locale}/admin/changelog/$changelogId': typeof Char123LocaleChar125AdminChangelogChangelogIdRoute
+  '/{-$locale}/admin/communities/$communityId': typeof Char123LocaleChar125AdminCommunitiesCommunityIdRoute
+  '/{-$locale}/admin/events/$eventId': typeof Char123LocaleChar125AdminEventsEventIdRoute
+  '/{-$locale}/admin/gallery/$galleryItemId': typeof Char123LocaleChar125AdminGalleryGalleryItemIdRoute
+  '/{-$locale}/admin/reports/$reportId': typeof Char123LocaleChar125AdminReportsReportIdRoute
   '/{-$locale}/admin/roles/$roleId': typeof Char123LocaleChar125AdminRolesRoleIdRoute
   '/{-$locale}/admin/tickets/$ticketId': typeof Char123LocaleChar125AdminTicketsTicketIdRoute
   '/{-$locale}/admin/users/$userId': typeof Char123LocaleChar125AdminUsersUserIdRoute
@@ -619,6 +663,7 @@ export interface FileRoutesByTo {
   '/{-$locale}/admin/changelog': typeof Char123LocaleChar125AdminChangelogIndexRoute
   '/{-$locale}/admin/communities': typeof Char123LocaleChar125AdminCommunitiesIndexRoute
   '/{-$locale}/admin/events': typeof Char123LocaleChar125AdminEventsIndexRoute
+  '/{-$locale}/admin/flags': typeof Char123LocaleChar125AdminFlagsIndexRoute
   '/{-$locale}/admin/gallery': typeof Char123LocaleChar125AdminGalleryIndexRoute
   '/{-$locale}/admin/reports': typeof Char123LocaleChar125AdminReportsIndexRoute
   '/{-$locale}/admin/roles': typeof Char123LocaleChar125AdminRolesIndexRoute
@@ -675,6 +720,10 @@ export interface FileRoutesById {
   '/{-$locale}/_auth/login/mfa': typeof Char123LocaleChar125AuthLoginMfaRoute
   '/{-$locale}/admin/announcements/$announcementId': typeof Char123LocaleChar125AdminAnnouncementsAnnouncementIdRoute
   '/{-$locale}/admin/changelog/$changelogId': typeof Char123LocaleChar125AdminChangelogChangelogIdRoute
+  '/{-$locale}/admin/communities/$communityId': typeof Char123LocaleChar125AdminCommunitiesCommunityIdRoute
+  '/{-$locale}/admin/events/$eventId': typeof Char123LocaleChar125AdminEventsEventIdRoute
+  '/{-$locale}/admin/gallery/$galleryItemId': typeof Char123LocaleChar125AdminGalleryGalleryItemIdRoute
+  '/{-$locale}/admin/reports/$reportId': typeof Char123LocaleChar125AdminReportsReportIdRoute
   '/{-$locale}/admin/roles/$roleId': typeof Char123LocaleChar125AdminRolesRoleIdRoute
   '/{-$locale}/admin/tickets/$ticketId': typeof Char123LocaleChar125AdminTicketsTicketIdRoute
   '/{-$locale}/admin/users/$userId': typeof Char123LocaleChar125AdminUsersUserIdRoute
@@ -692,6 +741,7 @@ export interface FileRoutesById {
   '/{-$locale}/admin/changelog/': typeof Char123LocaleChar125AdminChangelogIndexRoute
   '/{-$locale}/admin/communities/': typeof Char123LocaleChar125AdminCommunitiesIndexRoute
   '/{-$locale}/admin/events/': typeof Char123LocaleChar125AdminEventsIndexRoute
+  '/{-$locale}/admin/flags/': typeof Char123LocaleChar125AdminFlagsIndexRoute
   '/{-$locale}/admin/gallery/': typeof Char123LocaleChar125AdminGalleryIndexRoute
   '/{-$locale}/admin/reports/': typeof Char123LocaleChar125AdminReportsIndexRoute
   '/{-$locale}/admin/roles/': typeof Char123LocaleChar125AdminRolesIndexRoute
@@ -747,6 +797,10 @@ export interface FileRouteTypes {
     | '/{-$locale}/login/mfa'
     | '/{-$locale}/admin/announcements/$announcementId'
     | '/{-$locale}/admin/changelog/$changelogId'
+    | '/{-$locale}/admin/communities/$communityId'
+    | '/{-$locale}/admin/events/$eventId'
+    | '/{-$locale}/admin/gallery/$galleryItemId'
+    | '/{-$locale}/admin/reports/$reportId'
     | '/{-$locale}/admin/roles/$roleId'
     | '/{-$locale}/admin/tickets/$ticketId'
     | '/{-$locale}/admin/users/$userId'
@@ -764,6 +818,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/changelog/'
     | '/{-$locale}/admin/communities/'
     | '/{-$locale}/admin/events/'
+    | '/{-$locale}/admin/flags/'
     | '/{-$locale}/admin/gallery/'
     | '/{-$locale}/admin/reports/'
     | '/{-$locale}/admin/roles/'
@@ -814,6 +869,10 @@ export interface FileRouteTypes {
     | '/{-$locale}/login/mfa'
     | '/{-$locale}/admin/announcements/$announcementId'
     | '/{-$locale}/admin/changelog/$changelogId'
+    | '/{-$locale}/admin/communities/$communityId'
+    | '/{-$locale}/admin/events/$eventId'
+    | '/{-$locale}/admin/gallery/$galleryItemId'
+    | '/{-$locale}/admin/reports/$reportId'
     | '/{-$locale}/admin/roles/$roleId'
     | '/{-$locale}/admin/tickets/$ticketId'
     | '/{-$locale}/admin/users/$userId'
@@ -831,6 +890,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/changelog'
     | '/{-$locale}/admin/communities'
     | '/{-$locale}/admin/events'
+    | '/{-$locale}/admin/flags'
     | '/{-$locale}/admin/gallery'
     | '/{-$locale}/admin/reports'
     | '/{-$locale}/admin/roles'
@@ -886,6 +946,10 @@ export interface FileRouteTypes {
     | '/{-$locale}/_auth/login/mfa'
     | '/{-$locale}/admin/announcements/$announcementId'
     | '/{-$locale}/admin/changelog/$changelogId'
+    | '/{-$locale}/admin/communities/$communityId'
+    | '/{-$locale}/admin/events/$eventId'
+    | '/{-$locale}/admin/gallery/$galleryItemId'
+    | '/{-$locale}/admin/reports/$reportId'
     | '/{-$locale}/admin/roles/$roleId'
     | '/{-$locale}/admin/tickets/$ticketId'
     | '/{-$locale}/admin/users/$userId'
@@ -903,6 +967,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/admin/changelog/'
     | '/{-$locale}/admin/communities/'
     | '/{-$locale}/admin/events/'
+    | '/{-$locale}/admin/flags/'
     | '/{-$locale}/admin/gallery/'
     | '/{-$locale}/admin/reports/'
     | '/{-$locale}/admin/roles/'
@@ -1114,6 +1179,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125AdminGalleryIndexRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
+    '/{-$locale}/admin/flags/': {
+      id: '/{-$locale}/admin/flags/'
+      path: '/flags'
+      fullPath: '/{-$locale}/admin/flags/'
+      preLoaderRoute: typeof Char123LocaleChar125AdminFlagsIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
+    }
     '/{-$locale}/admin/events/': {
       id: '/{-$locale}/admin/events/'
       path: '/events'
@@ -1231,6 +1303,34 @@ declare module '@tanstack/react-router' {
       path: '/roles/$roleId'
       fullPath: '/{-$locale}/admin/roles/$roleId'
       preLoaderRoute: typeof Char123LocaleChar125AdminRolesRoleIdRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
+    }
+    '/{-$locale}/admin/reports/$reportId': {
+      id: '/{-$locale}/admin/reports/$reportId'
+      path: '/reports/$reportId'
+      fullPath: '/{-$locale}/admin/reports/$reportId'
+      preLoaderRoute: typeof Char123LocaleChar125AdminReportsReportIdRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
+    }
+    '/{-$locale}/admin/gallery/$galleryItemId': {
+      id: '/{-$locale}/admin/gallery/$galleryItemId'
+      path: '/gallery/$galleryItemId'
+      fullPath: '/{-$locale}/admin/gallery/$galleryItemId'
+      preLoaderRoute: typeof Char123LocaleChar125AdminGalleryGalleryItemIdRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
+    }
+    '/{-$locale}/admin/events/$eventId': {
+      id: '/{-$locale}/admin/events/$eventId'
+      path: '/events/$eventId'
+      fullPath: '/{-$locale}/admin/events/$eventId'
+      preLoaderRoute: typeof Char123LocaleChar125AdminEventsEventIdRouteImport
+      parentRoute: typeof Char123LocaleChar125AdminRoute
+    }
+    '/{-$locale}/admin/communities/$communityId': {
+      id: '/{-$locale}/admin/communities/$communityId'
+      path: '/communities/$communityId'
+      fullPath: '/{-$locale}/admin/communities/$communityId'
+      preLoaderRoute: typeof Char123LocaleChar125AdminCommunitiesCommunityIdRouteImport
       parentRoute: typeof Char123LocaleChar125AdminRoute
     }
     '/{-$locale}/admin/changelog/$changelogId': {
@@ -1581,6 +1681,10 @@ interface Char123LocaleChar125AdminRouteChildren {
   Char123LocaleChar125AdminIndexRoute: typeof Char123LocaleChar125AdminIndexRoute
   Char123LocaleChar125AdminAnnouncementsAnnouncementIdRoute: typeof Char123LocaleChar125AdminAnnouncementsAnnouncementIdRoute
   Char123LocaleChar125AdminChangelogChangelogIdRoute: typeof Char123LocaleChar125AdminChangelogChangelogIdRoute
+  Char123LocaleChar125AdminCommunitiesCommunityIdRoute: typeof Char123LocaleChar125AdminCommunitiesCommunityIdRoute
+  Char123LocaleChar125AdminEventsEventIdRoute: typeof Char123LocaleChar125AdminEventsEventIdRoute
+  Char123LocaleChar125AdminGalleryGalleryItemIdRoute: typeof Char123LocaleChar125AdminGalleryGalleryItemIdRoute
+  Char123LocaleChar125AdminReportsReportIdRoute: typeof Char123LocaleChar125AdminReportsReportIdRoute
   Char123LocaleChar125AdminRolesRoleIdRoute: typeof Char123LocaleChar125AdminRolesRoleIdRoute
   Char123LocaleChar125AdminTicketsTicketIdRoute: typeof Char123LocaleChar125AdminTicketsTicketIdRoute
   Char123LocaleChar125AdminUsersUserIdRoute: typeof Char123LocaleChar125AdminUsersUserIdRoute
@@ -1590,6 +1694,7 @@ interface Char123LocaleChar125AdminRouteChildren {
   Char123LocaleChar125AdminChangelogIndexRoute: typeof Char123LocaleChar125AdminChangelogIndexRoute
   Char123LocaleChar125AdminCommunitiesIndexRoute: typeof Char123LocaleChar125AdminCommunitiesIndexRoute
   Char123LocaleChar125AdminEventsIndexRoute: typeof Char123LocaleChar125AdminEventsIndexRoute
+  Char123LocaleChar125AdminFlagsIndexRoute: typeof Char123LocaleChar125AdminFlagsIndexRoute
   Char123LocaleChar125AdminGalleryIndexRoute: typeof Char123LocaleChar125AdminGalleryIndexRoute
   Char123LocaleChar125AdminReportsIndexRoute: typeof Char123LocaleChar125AdminReportsIndexRoute
   Char123LocaleChar125AdminRolesIndexRoute: typeof Char123LocaleChar125AdminRolesIndexRoute
@@ -1604,6 +1709,14 @@ const Char123LocaleChar125AdminRouteChildren: Char123LocaleChar125AdminRouteChil
       Char123LocaleChar125AdminAnnouncementsAnnouncementIdRoute,
     Char123LocaleChar125AdminChangelogChangelogIdRoute:
       Char123LocaleChar125AdminChangelogChangelogIdRoute,
+    Char123LocaleChar125AdminCommunitiesCommunityIdRoute:
+      Char123LocaleChar125AdminCommunitiesCommunityIdRoute,
+    Char123LocaleChar125AdminEventsEventIdRoute:
+      Char123LocaleChar125AdminEventsEventIdRoute,
+    Char123LocaleChar125AdminGalleryGalleryItemIdRoute:
+      Char123LocaleChar125AdminGalleryGalleryItemIdRoute,
+    Char123LocaleChar125AdminReportsReportIdRoute:
+      Char123LocaleChar125AdminReportsReportIdRoute,
     Char123LocaleChar125AdminRolesRoleIdRoute:
       Char123LocaleChar125AdminRolesRoleIdRoute,
     Char123LocaleChar125AdminTicketsTicketIdRoute:
@@ -1622,6 +1735,8 @@ const Char123LocaleChar125AdminRouteChildren: Char123LocaleChar125AdminRouteChil
       Char123LocaleChar125AdminCommunitiesIndexRoute,
     Char123LocaleChar125AdminEventsIndexRoute:
       Char123LocaleChar125AdminEventsIndexRoute,
+    Char123LocaleChar125AdminFlagsIndexRoute:
+      Char123LocaleChar125AdminFlagsIndexRoute,
     Char123LocaleChar125AdminGalleryIndexRoute:
       Char123LocaleChar125AdminGalleryIndexRoute,
     Char123LocaleChar125AdminReportsIndexRoute:

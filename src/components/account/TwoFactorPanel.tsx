@@ -68,10 +68,71 @@ function BackupCodes({ codes }: { codes: string[] }) {
 	);
 }
 
+/**
+ * Password re-entry as a real login-style form, so password managers
+ * (Bitwarden, 1Password, browsers) recognise and fill it: a <form>, a hidden
+ * username carrying the account email, and autocomplete="current-password".
+ */
+function PasswordConfirm({
+	id,
+	label,
+	email,
+	value,
+	onChange,
+	onSubmit,
+	submitLabel,
+	disabled,
+	variant,
+	size,
+}: {
+	id: string;
+	label: string;
+	email: string;
+	value: string;
+	onChange: (v: string) => void;
+	onSubmit: () => void;
+	submitLabel: string;
+	disabled: boolean;
+	variant?: "destructive";
+	size?: "sm";
+}) {
+	return (
+		<form
+			className="flex flex-col gap-2"
+			onSubmit={(e) => {
+				e.preventDefault();
+				if (!disabled) onSubmit();
+			}}
+		>
+			<input
+				type="email"
+				name="username"
+				autoComplete="username"
+				value={email}
+				readOnly
+				hidden
+			/>
+			<Label htmlFor={id}>{label}</Label>
+			<Input
+				id={id}
+				name="password"
+				type="password"
+				autoComplete="current-password"
+				value={value}
+				onChange={(e) => onChange(e.target.value)}
+			/>
+			<Button type="submit" variant={variant} size={size} disabled={disabled}>
+				{submitLabel}
+			</Button>
+		</form>
+	);
+}
+
 export function TwoFactorPanel() {
 	const t = useTranslations("accountPages");
 	const { data: session, refetch } = useSession();
 	const enabled = session?.user?.twoFactorEnabled;
+	const email = session?.user?.email ?? "";
 
 	const [password, setPassword] = useState("");
 	const [setupUri, setSetupUri] = useState<string | null>(null);
@@ -205,38 +266,34 @@ export function TwoFactorPanel() {
 					</Button>
 				</div>
 				{regenOpen ? (
-					<div className="flex max-w-sm flex-col gap-2">
-						<Label>{t("confirmPassword")}</Label>
-						<Input
-							type="password"
+					<div className="max-w-sm">
+						<PasswordConfirm
+							id="twofactor-regen-password"
+							label={t("confirmPassword")}
+							email={email}
 							value={regenPw}
-							onChange={(e) => setRegenPw(e.target.value)}
-						/>
-						<Button
-							size="sm"
+							onChange={setRegenPw}
+							onSubmit={regenerate}
+							submitLabel={t("generateNewCodes")}
 							disabled={busy || regenPw.length < 8}
-							onClick={regenerate}
-						>
-							{t("generateNewCodes")}
-						</Button>
+							size="sm"
+						/>
 					</div>
 				) : null}
 
-				<div className="flex max-w-sm flex-col gap-2 border-t border-border pt-4">
-					<Label>{t("disableTwoFactorLabel")}</Label>
-					<Input
-						type="password"
+				<div className="max-w-sm border-t border-border pt-4">
+					<PasswordConfirm
+						id="twofactor-disable-password"
+						label={t("disableTwoFactorLabel")}
+						email={email}
 						value={password}
-						onChange={(e) => setPassword(e.target.value)}
-					/>
-					<Button
+						onChange={setPassword}
+						onSubmit={disable}
+						submitLabel={t("disableTwoFactor")}
+						disabled={busy || password.length < 8}
 						variant="destructive"
 						size="sm"
-						disabled={busy || password.length < 8}
-						onClick={disable}
-					>
-						{t("disableTwoFactor")}
-					</Button>
+					/>
 				</div>
 			</div>
 		);
@@ -245,15 +302,16 @@ export function TwoFactorPanel() {
 	return (
 		<div className="flex max-w-sm flex-col gap-2">
 			<p className="text-sm text-muted-foreground">{t("twoFactorIntro")}</p>
-			<Label>{t("confirmPassword")}</Label>
-			<Input
-				type="password"
+			<PasswordConfirm
+				id="twofactor-enable-password"
+				label={t("confirmPassword")}
+				email={email}
 				value={password}
-				onChange={(e) => setPassword(e.target.value)}
+				onChange={setPassword}
+				onSubmit={startEnroll}
+				submitLabel={t("enableTwoFactor")}
+				disabled={busy || password.length < 8}
 			/>
-			<Button disabled={busy || password.length < 8} onClick={startEnroll}>
-				{t("enableTwoFactor")}
-			</Button>
 		</div>
 	);
 }

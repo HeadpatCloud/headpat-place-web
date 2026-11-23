@@ -5,14 +5,24 @@ import {
 	HistoryIcon,
 	KeyIcon,
 	MonitorIcon,
+	ScrollTextIcon,
 	ShieldCheckIcon,
 	Trash2Icon,
 	XIcon,
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { ConfirmDelete } from "@/components/admin/ConfirmDelete";
+import { useStepUp } from "@/components/admin/StepUp";
 import { UserAuditLog } from "@/components/admin/UserAuditLog";
 import { UserBadgesCard } from "@/components/admin/UserBadgesCard";
+import { AccountEditor } from "@/components/admin/user/AccountEditor";
+import { ProfileEditor } from "@/components/admin/user/ProfileEditor";
+import {
+	UserActivity,
+	UserDevices,
+	UserLocation,
+} from "@/components/admin/user/UserSections";
 import { StorageImage } from "@/components/StorageImage";
 import {
 	AlertDialog,
@@ -38,6 +48,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
+import { isStepUpCancelled, useAdminAccess } from "@/lib/admin-access";
 import { useDateFormat } from "@/lib/datetime";
 import { useTranslations } from "@/lib/i18n";
 import {
@@ -102,33 +113,43 @@ function UserDetail() {
 	const navigate = useNavigate();
 	const fmt = useDateFormat();
 	const [reason, setReason] = useState("");
+	const [banDays, setBanDays] = useState("permanent");
 	const [roleToAdd, setRoleToAdd] = useState("");
 	const [noteBody, setNoteBody] = useState("");
 
-	const permsQ = useQuery(
-		orpc.adminRole.myPermissions.queryOptions({ input: undefined }),
-	);
-	const mine = new Set(permsQ.data ?? []);
-	const canDelete =
-		mine.has("*:*") || mine.has("users:*") || mine.has("users:delete");
-	const canNotes =
-		mine.has("*:*") || mine.has("users:*") || mine.has("users:notes");
-	const canEdit =
-		mine.has("*:*") || mine.has("users:*") || mine.has("users:edit");
+	const { can } = useAdminAccess();
+	const { withStepUp } = useStepUp();
+	const canDelete = can("users:delete");
+	const canNotes = can("users:notes");
+	const canBadges = can("badges:assign");
+	const canPrivate = can("users:viewPrivate");
+	const canEditAccount = can("users:editAccount");
+	const canBan = can("users:ban");
+	const canAssign = can("roles:assign");
+	/** Toast real failures; a dismissed code prompt is not an error. */
+	const onError = (e: Error) => {
+		if (!isStepUpCancelled(e)) toast.error(e.message);
+	};
 
 	const userQ = useQuery(
 		orpc.adminUser.get.queryOptions({ input: { userId } }),
 	);
-	const rolesQ = useQuery(orpc.adminRole.list.queryOptions({ input: {} }));
-	const sessionsQ = useQuery(
-		orpc.adminUser.sessions.queryOptions({ input: { userId } }),
-	);
-	const accountsQ = useQuery(
-		orpc.adminUser.connectedAccounts.queryOptions({ input: { userId } }),
-	);
-	const keysQ = useQuery(
-		orpc.adminUser.apiKeys.queryOptions({ input: { userId } }),
-	);
+	const rolesQ = useQuery({
+		...orpc.adminRole.list.queryOptions({ input: {} }),
+		enabled: can("roles:view"),
+	});
+	const sessionsQ = useQuery({
+		...orpc.adminUser.sessions.queryOptions({ input: { userId } }),
+		enabled: canPrivate,
+	});
+	const accountsQ = useQuery({
+		...orpc.adminUser.connectedAccounts.queryOptions({ input: { userId } }),
+		enabled: canPrivate,
+	});
+	const keysQ = useQuery({
+		...orpc.adminUser.apiKeys.queryOptions({ input: { userId } }),
+		enabled: canPrivate,
+	});
 	const notesQ = useQuery({
 		...orpc.adminUser.notes.queryOptions({ input: { userId } }),
 		enabled: canNotes,
@@ -147,30 +168,34 @@ function UserDetail() {
 	}
 
 	const setBanned = useMutation({
-		mutationFn: (vars: { banned: boolean; reason?: string }) =>
-			client.adminUser.setBanned({ userId, ...vars }),
+		mutationFn: (vars: {
+			banned: boolean;
+			reason?: string;
+			expiresInDays?: number;
+		}) => withStepUp(() => client.adminUser.setBanned({ userId, ...vars })),
 		onSuccess: () => {
 			setReason("");
 			invalidateUser();
 			invalidateSessions();
 		},
-		onError: (e: Error) => toast.error(e.message),
+		onError,
 	});
 
 	const assign = useMutation({
-		mutationFn: (roleId: string) => client.adminRole.assign({ userId, roleId }),
+		mutationFn: (roleId: string) =>
+			withStepUp(() => client.adminRole.assign({ userId, roleId })),
 		onSuccess: () => {
 			setRoleToAdd("");
 			invalidateUser();
 		},
-		onError: (e: Error) => toast.error(e.message),
+		onError,
 	});
 
 	const unassign = useMutation({
 		mutationFn: (roleId: string) =>
-			client.adminRole.unassign({ userId, roleId }),
+			withStepUp(() => client.adminRole.unassign({ userId, roleId })),
 		onSuccess: () => invalidateUser(),
-		onError: (e: Error) => toast.error(e.message),
+		onError,
 	});
 
 	const revokeSession = useMutation({
@@ -180,7 +205,7 @@ function UserDetail() {
 			toast.success(t("sessionRevoked"));
 			invalidateSessions();
 		},
-		onError: (e: Error) => toast.error(e.message),
+		onError,
 	});
 
 	const revokeAll = useMutation({
@@ -189,16 +214,16 @@ function UserDetail() {
 			toast.success(t("allSessionsRevoked", { count: r.revoked }));
 			invalidateSessions();
 		},
-		onError: (e: Error) => toast.error(e.message),
+		onError,
 	});
 
 	const disable2fa = useMutation({
-		mutationFn: () => client.adminUser.disable2fa({ userId }),
+		mutationFn: () => withStepUp(() => client.adminUser.disable2fa({ userId })),
 		onSuccess: () => {
 			toast.success(t("disable2faDone"));
 			invalidateUser();
 		},
-		onError: (e: Error) => toast.error(e.message),
+		onError,
 	});
 
 	const verifyEmail = useMutation({
@@ -207,16 +232,17 @@ function UserDetail() {
 			toast.success(t("emailVerifiedDone"));
 			invalidateUser();
 		},
-		onError: (e: Error) => toast.error(e.message),
+		onError,
 	});
 
 	const deleteUser = useMutation({
-		mutationFn: () => client.adminUser.deleteUser({ userId }),
+		mutationFn: (reason: string) =>
+			withStepUp(() => client.adminUser.deleteUser({ userId, reason })),
 		onSuccess: () => {
 			toast.success(t("userDeletedDone"));
 			navigate({ to: "/admin/users" as never });
 		},
-		onError: (e: Error) => toast.error(e.message),
+		onError,
 	});
 
 	function invalidateNotes() {
@@ -230,12 +256,12 @@ function UserDetail() {
 			setNoteBody("");
 			invalidateNotes();
 		},
-		onError: (e: Error) => toast.error(e.message),
+		onError,
 	});
 	const deleteNote = useMutation({
 		mutationFn: (noteId: string) => client.adminUser.deleteNote({ noteId }),
 		onSuccess: () => invalidateNotes(),
-		onError: (e: Error) => toast.error(e.message),
+		onError,
 	});
 
 	if (userQ.isError)
@@ -288,7 +314,11 @@ function UserDetail() {
 						<p className="truncate text-xs text-muted-foreground">
 							@{u.profileUrl}
 						</p>
-						<p className="truncate text-xs text-muted-foreground">{u.email}</p>
+						{u.email ? (
+							<p className="truncate text-xs text-muted-foreground">
+								{u.email}
+							</p>
+						) : null}
 						<p className="text-xs text-muted-foreground">
 							{t("joined", { date: fmt.date(u.createdAt) })}
 						</p>
@@ -302,6 +332,19 @@ function UserDetail() {
 								</Link>
 							</Button>
 						) : null}
+						{can("audit:view") ? (
+							<Button asChild variant="outline" size="sm">
+								<Link
+									to={"/admin/audit" as never}
+									search={{ user: userId } as never}
+								>
+									<ScrollTextIcon className="size-4" />
+									{t("staffActions")}
+								</Link>
+							</Button>
+						) : null}
+						{can("users:edit") ? <ProfileEditor u={u} /> : null}
+						{canEditAccount ? <AccountEditor u={u} /> : null}
 						<UserAuditLog
 							userId={userId}
 							trigger={
@@ -322,7 +365,7 @@ function UserDetail() {
 				<CardContent className="divide-y divide-border">
 					<Row label={t("email")}>
 						<span className="inline-flex items-center gap-1.5">
-							{u.email}
+							{u.email ?? t("privateHidden")}
 							<Badge variant={u.emailVerified ? "secondary" : "destructive"}>
 								{u.emailVerified ? t("emailVerified") : t("emailUnverified")}
 							</Badge>
@@ -400,86 +443,94 @@ function UserDetail() {
 				</Card>
 			) : null}
 
+			<UserActivity userId={userId} />
+			{canPrivate ? <UserDevices userId={userId} /> : null}
+			{can("location:view") ? (
+				<UserLocation userId={userId} canRevoke={can("location:revoke")} />
+			) : null}
+
 			<UserBadgesCard
 				userId={userId}
 				stored={u.badges ?? []}
-				canEdit={canEdit}
+				canEdit={canBadges}
 			/>
 
-			<Card>
-				<CardHeader className="flex flex-row items-center justify-between gap-2">
-					<CardTitle className="flex items-center gap-2">
-						<MonitorIcon className="size-4" />
-						{t("sessions")}
-					</CardTitle>
-					{(sessionsQ.data ?? []).length > 0 ? (
-						<AlertDialog>
-							<AlertDialogTrigger asChild>
-								<Button
-									variant="outline"
-									size="sm"
-									disabled={revokeAll.isPending}
-								>
-									{t("revokeAllSessions")}
-								</Button>
-							</AlertDialogTrigger>
-							<AlertDialogContent>
-								<AlertDialogHeader>
-									<AlertDialogTitle>
-										{t("revokeAllConfirmTitle")}
-									</AlertDialogTitle>
-									<AlertDialogDescription>
-										{t("revokeAllConfirmBody")}
-									</AlertDialogDescription>
-								</AlertDialogHeader>
-								<AlertDialogFooter>
-									<AlertDialogCancel>{c("cancel")}</AlertDialogCancel>
-									<AlertDialogAction onClick={() => revokeAll.mutate()}>
+			{canPrivate ? (
+				<Card>
+					<CardHeader className="flex flex-row items-center justify-between gap-2">
+						<CardTitle className="flex items-center gap-2">
+							<MonitorIcon className="size-4" />
+							{t("sessions")}
+						</CardTitle>
+						{(sessionsQ.data ?? []).length > 0 ? (
+							<AlertDialog>
+								<AlertDialogTrigger asChild>
+									<Button
+										variant="outline"
+										size="sm"
+										disabled={revokeAll.isPending}
+									>
 										{t("revokeAllSessions")}
-									</AlertDialogAction>
-								</AlertDialogFooter>
-							</AlertDialogContent>
-						</AlertDialog>
-					) : null}
-				</CardHeader>
-				<CardContent className="space-y-2">
-					{sessionsQ.isPending ? (
-						<p className="text-sm text-muted-foreground">{c("loading")}</p>
-					) : (sessionsQ.data ?? []).length === 0 ? (
-						<p className="text-sm text-muted-foreground">{t("noSessions")}</p>
-					) : (
-						(sessionsQ.data ?? []).map((s) => (
-							<div
-								key={s.id}
-								className="flex items-center justify-between gap-3 rounded-md border border-border p-2.5"
-							>
-								<div className="min-w-0 space-y-0.5">
-									<p className="truncate text-sm font-medium">
-										{deviceLabel(s.userAgent, t("sessionUnknownDevice"))}
-										{s.impersonatedBy ? (
-											<Badge variant="destructive" className="ml-2">
-												{t("impersonated")}
-											</Badge>
-										) : null}
-									</p>
-									<p className="truncate text-xs text-muted-foreground">
-										{s.ipAddress || "-"} ·{" "}
-										{t("sessionExpires", { date: fmt.date(s.expiresAt) })}
-									</p>
-								</div>
-								<Button
-									variant="ghost"
-									size="sm"
-									disabled={revokeSession.isPending}
-									onClick={() => revokeSession.mutate(s.id)}
+									</Button>
+								</AlertDialogTrigger>
+								<AlertDialogContent>
+									<AlertDialogHeader>
+										<AlertDialogTitle>
+											{t("revokeAllConfirmTitle")}
+										</AlertDialogTitle>
+										<AlertDialogDescription>
+											{t("revokeAllConfirmBody")}
+										</AlertDialogDescription>
+									</AlertDialogHeader>
+									<AlertDialogFooter>
+										<AlertDialogCancel>{c("cancel")}</AlertDialogCancel>
+										<AlertDialogAction onClick={() => revokeAll.mutate()}>
+											{t("revokeAllSessions")}
+										</AlertDialogAction>
+									</AlertDialogFooter>
+								</AlertDialogContent>
+							</AlertDialog>
+						) : null}
+					</CardHeader>
+					<CardContent className="space-y-2">
+						{sessionsQ.isPending ? (
+							<p className="text-sm text-muted-foreground">{c("loading")}</p>
+						) : (sessionsQ.data ?? []).length === 0 ? (
+							<p className="text-sm text-muted-foreground">{t("noSessions")}</p>
+						) : (
+							(sessionsQ.data ?? []).map((s) => (
+								<div
+									key={s.id}
+									className="flex items-center justify-between gap-3 rounded-md border border-border p-2.5"
 								>
-									{t("revokeSession")}
-								</Button>
-							</div>
-						))
-					)}
-				</CardContent>
-			</Card>
+									<div className="min-w-0 space-y-0.5">
+										<p className="truncate text-sm font-medium">
+											{deviceLabel(s.userAgent, t("sessionUnknownDevice"))}
+											{s.impersonatedBy ? (
+												<Badge variant="destructive" className="ml-2">
+													{t("impersonated")}
+												</Badge>
+											) : null}
+										</p>
+										<p className="truncate text-xs text-muted-foreground">
+											{s.ipAddress || "-"} ·{" "}
+											{t("sessionExpires", { date: fmt.date(s.expiresAt) })}
+										</p>
+									</div>
+									<Button
+										variant="ghost"
+										size="sm"
+										disabled={revokeSession.isPending}
+										onClick={() => revokeSession.mutate(s.id)}
+									>
+										{t("revokeSession")}
+									</Button>
+								</div>
+							))
+						)}
+					</CardContent>
+				</Card>
+			) : null}
 
 			<Card>
 				<CardHeader>
@@ -493,13 +544,13 @@ function UserDetail() {
 						<div className="min-w-0">
 							<p className="text-sm font-medium">{t("email")}</p>
 							<p className="truncate text-xs text-muted-foreground">
-								{u.email} ·{" "}
+								{u.email ?? t("privateHidden")} ·{" "}
 								{u.emailVerified ? t("emailVerified") : t("emailUnverified")}
 							</p>
 						</div>
 						{u.emailVerified ? (
 							<Badge variant="secondary">{t("emailVerified")}</Badge>
-						) : (
+						) : !canEditAccount ? null : (
 							<AlertDialog>
 								<AlertDialogTrigger asChild>
 									<Button
@@ -537,7 +588,7 @@ function UserDetail() {
 								{u.twoFactorEnabled ? t("twoFactorOn") : t("twoFactorOff")}
 							</p>
 						</div>
-						{u.twoFactorEnabled ? (
+						{u.twoFactorEnabled && canEditAccount ? (
 							<AlertDialog>
 								<AlertDialogTrigger asChild>
 									<Button
@@ -570,75 +621,83 @@ function UserDetail() {
 							</AlertDialog>
 						) : null}
 					</div>
-					<Separator />
-					<div className="space-y-2">
-						<p className="text-sm font-medium">{t("loginMethods")}</p>
-						{accountsQ.isPending ? (
-							<p className="text-sm text-muted-foreground">{c("loading")}</p>
-						) : (accountsQ.data ?? []).length === 0 ? (
-							<p className="text-sm text-muted-foreground">
-								{t("noLoginMethods")}
-							</p>
-						) : (
-							<div className="flex flex-wrap gap-1.5">
-								{(accountsQ.data ?? []).map((a) => (
-									<Badge key={a.id} variant="secondary">
-										{a.providerId === "credential"
-											? t("providerCredential")
-											: a.providerId}
-									</Badge>
-								))}
-							</div>
-						)}
-					</div>
+					{canPrivate ? <Separator /> : null}
+					{canPrivate ? (
+						<div className="space-y-2">
+							<p className="text-sm font-medium">{t("loginMethods")}</p>
+							{accountsQ.isPending ? (
+								<p className="text-sm text-muted-foreground">{c("loading")}</p>
+							) : (accountsQ.data ?? []).length === 0 ? (
+								<p className="text-sm text-muted-foreground">
+									{t("noLoginMethods")}
+								</p>
+							) : (
+								<div className="flex flex-wrap gap-1.5">
+									{(accountsQ.data ?? []).map((a) => (
+										<Badge key={a.id} variant="secondary">
+											{a.providerId === "credential"
+												? t("providerCredential")
+												: a.providerId}
+										</Badge>
+									))}
+								</div>
+							)}
+						</div>
+					) : null}
 				</CardContent>
 			</Card>
 
-			<Card>
-				<CardHeader>
-					<CardTitle className="flex items-center gap-2">
-						<KeyIcon className="size-4" />
-						{t("apiKeysUser")}
-					</CardTitle>
-				</CardHeader>
-				<CardContent className="space-y-2">
-					{keysQ.isPending ? (
-						<p className="text-sm text-muted-foreground">{c("loading")}</p>
-					) : (keysQ.data ?? []).length === 0 ? (
-						<p className="text-sm text-muted-foreground">{t("apiKeysNone")}</p>
-					) : (
-						(keysQ.data ?? []).map((k) => (
-							<div
-								key={k.id}
-								className="flex items-center justify-between gap-3 rounded-md border border-border p-2.5"
-							>
-								<div className="min-w-0">
-									<p className="truncate text-sm font-medium">
-										{k.name || k.prefix || k.id}
-										<Badge variant="secondary" className="ml-2">
-											{k.kind}
-										</Badge>
-										{!k.enabled ? (
-											<Badge variant="destructive" className="ml-1">
-												{t("apiKeyDisabled")}
+			{canPrivate ? (
+				<Card>
+					<CardHeader>
+						<CardTitle className="flex items-center gap-2">
+							<KeyIcon className="size-4" />
+							{t("apiKeysUser")}
+						</CardTitle>
+					</CardHeader>
+					<CardContent className="space-y-2">
+						{keysQ.isPending ? (
+							<p className="text-sm text-muted-foreground">{c("loading")}</p>
+						) : (keysQ.data ?? []).length === 0 ? (
+							<p className="text-sm text-muted-foreground">
+								{t("apiKeysNone")}
+							</p>
+						) : (
+							(keysQ.data ?? []).map((k) => (
+								<div
+									key={k.id}
+									className="flex items-center justify-between gap-3 rounded-md border border-border p-2.5"
+								>
+									<div className="min-w-0">
+										<p className="truncate text-sm font-medium">
+											{k.name || k.prefix || k.id}
+											<Badge variant="secondary" className="ml-2">
+												{k.kind}
 											</Badge>
-										) : null}
-									</p>
-									<p className="truncate text-xs text-muted-foreground">
-										{k.lastRequest
-											? t("apiKeysLastUsed", { date: fmt.date(k.lastRequest) })
-											: t("apiKeysNeverUsed")}
-										{" · "}
-										{k.expiresAt
-											? t("apiKeysExpiresAt", { date: fmt.date(k.expiresAt) })
-											: t("apiKeysNeverExpires")}
-									</p>
+											{!k.enabled ? (
+												<Badge variant="destructive" className="ml-1">
+													{t("apiKeyDisabled")}
+												</Badge>
+											) : null}
+										</p>
+										<p className="truncate text-xs text-muted-foreground">
+											{k.lastRequest
+												? t("apiKeysLastUsed", {
+														date: fmt.date(k.lastRequest),
+													})
+												: t("apiKeysNeverUsed")}
+											{" · "}
+											{k.expiresAt
+												? t("apiKeysExpiresAt", { date: fmt.date(k.expiresAt) })
+												: t("apiKeysNeverExpires")}
+										</p>
+									</div>
 								</div>
-							</div>
-						))
-					)}
-				</CardContent>
-			</Card>
+							))
+						)}
+					</CardContent>
+				</Card>
+			) : null}
 
 			<Card>
 				<CardHeader>
@@ -659,6 +718,8 @@ function UserDetail() {
 									{r.name}
 									<button
 										type="button"
+										aria-label={t("removeRole", { name: r.name })}
+										hidden={!canAssign}
 										disabled={unassign.isPending}
 										onClick={() => unassign.mutate(r.id)}
 										className="hover:opacity-70"
@@ -669,73 +730,109 @@ function UserDetail() {
 							))
 						)}
 					</div>
-					<div className="flex gap-2">
-						<Select value={roleToAdd} onValueChange={setRoleToAdd}>
-							<SelectTrigger className="flex-1">
-								<SelectValue placeholder={t("addRole")} />
-							</SelectTrigger>
-							<SelectContent>
-								{available.map((r) => (
-									<SelectItem key={r.id} value={r.id}>
-										{r.name}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-						<Button
-							disabled={!roleToAdd || assign.isPending}
-							onClick={() => assign.mutate(roleToAdd)}
-							className="bg-primary text-primary-foreground hover:bg-primary/90 shrink-0"
-						>
-							{t("add")}
-						</Button>
-					</div>
+					{canAssign ? (
+						<div className="flex gap-2">
+							<Select value={roleToAdd} onValueChange={setRoleToAdd}>
+								<SelectTrigger className="flex-1">
+									<SelectValue placeholder={t("addRole")} />
+								</SelectTrigger>
+								<SelectContent>
+									{available.map((r) => (
+										<SelectItem key={r.id} value={r.id}>
+											{r.name}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+							<Button
+								disabled={!roleToAdd || assign.isPending}
+								onClick={() => assign.mutate(roleToAdd)}
+								className="bg-primary text-primary-foreground hover:bg-primary/90 shrink-0"
+							>
+								{t("add")}
+							</Button>
+						</div>
+					) : null}
 				</CardContent>
 			</Card>
 
-			<Card>
-				<CardHeader>
-					<CardTitle>{t("moderation")}</CardTitle>
-				</CardHeader>
-				<CardContent className="space-y-3">
-					{u.banned ? (
-						<>
-							{u.banReason ? (
+			{canBan ? (
+				<Card>
+					<CardHeader>
+						<CardTitle>{t("moderation")}</CardTitle>
+					</CardHeader>
+					<CardContent className="space-y-3">
+						{u.banned ? (
+							<>
+								{u.banReason ? (
+									<p className="text-sm text-muted-foreground">
+										{t("banReasonLabel", { reason: u.banReason })}
+									</p>
+								) : null}
 								<p className="text-sm text-muted-foreground">
-									{t("banReasonLabel", { reason: u.banReason })}
+									{u.banExpires
+										? t("banUntil", { date: fmt.dateTime(u.banExpires) })
+										: t("banPermanent")}
 								</p>
-							) : null}
-							<Button
-								variant="outline"
-								disabled={setBanned.isPending}
-								onClick={() => setBanned.mutate({ banned: false })}
-							>
-								{t("unban")}
-							</Button>
-						</>
-					) : (
-						<div className="flex gap-2">
-							<Input
-								value={reason}
-								onChange={(e) => setReason(e.target.value)}
-								placeholder={t("banReasonPlaceholder")}
-							/>
-							<Button
-								disabled={setBanned.isPending}
-								onClick={() =>
-									setBanned.mutate({
-										banned: true,
-										reason: reason.trim() || undefined,
-									})
-								}
-								className="bg-primary text-primary-foreground hover:bg-primary/90 shrink-0"
-							>
-								{t("ban")}
-							</Button>
-						</div>
-					)}
-				</CardContent>
-			</Card>
+								<Button
+									variant="outline"
+									disabled={setBanned.isPending}
+									onClick={() => setBanned.mutate({ banned: false })}
+								>
+									{t("unban")}
+								</Button>
+							</>
+						) : (
+							<div className="space-y-1.5">
+								<div className="flex flex-wrap gap-2">
+									<Input
+										value={reason}
+										onChange={(e) => setReason(e.target.value)}
+										placeholder={t("banReasonPlaceholder")}
+										maxLength={500}
+										className="min-w-48 flex-1"
+									/>
+									<Select value={banDays} onValueChange={setBanDays}>
+										<SelectTrigger
+											className="w-40"
+											aria-label={t("banDuration")}
+										>
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value="permanent">
+												{t("banPermanent")}
+											</SelectItem>
+											{["1", "7", "30", "90"].map((d) => (
+												<SelectItem key={d} value={d}>
+													{t("banDays", { count: Number(d) })}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+									<Button
+										disabled={setBanned.isPending || !reason.trim()}
+										onClick={() =>
+											setBanned.mutate({
+												banned: true,
+												reason: reason.trim(),
+												expiresInDays:
+													banDays === "permanent" ? undefined : Number(banDays),
+											})
+										}
+										className="bg-primary text-primary-foreground hover:bg-primary/90 shrink-0"
+									>
+										{t("ban")}
+									</Button>
+								</div>
+								<p className="text-xs text-muted-foreground">
+									{t("reasonHint")}
+								</p>
+							</div>
+						)}
+					</CardContent>
+				</Card>
+			) : null}
 
 			{canNotes ? (
 				<Card>
@@ -810,8 +907,11 @@ function UserDetail() {
 						<p className="text-sm text-muted-foreground">
 							{t("deleteUserHint")}
 						</p>
-						<AlertDialog>
-							<AlertDialogTrigger asChild>
+						<ConfirmDelete
+							name={u.profileUrl || u.name}
+							typeToConfirm
+							onConfirm={(r) => deleteUser.mutate(r)}
+							trigger={
 								<Button
 									variant="destructive"
 									disabled={deleteUser.isPending}
@@ -820,29 +920,8 @@ function UserDetail() {
 									<Trash2Icon className="size-4" />
 									{t("deleteUser")}
 								</Button>
-							</AlertDialogTrigger>
-							<AlertDialogContent>
-								<AlertDialogHeader>
-									<AlertDialogTitle>
-										{t("deleteUserConfirmTitle")}
-									</AlertDialogTitle>
-									<AlertDialogDescription>
-										{t("deleteUserConfirmBody", {
-											name: u.displayName || u.name || u.profileUrl,
-										})}
-									</AlertDialogDescription>
-								</AlertDialogHeader>
-								<AlertDialogFooter>
-									<AlertDialogCancel>{c("cancel")}</AlertDialogCancel>
-									<AlertDialogAction
-										onClick={() => deleteUser.mutate()}
-										className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-									>
-										{t("deleteUser")}
-									</AlertDialogAction>
-								</AlertDialogFooter>
-							</AlertDialogContent>
-						</AlertDialog>
+							}
+						/>
 					</CardContent>
 				</Card>
 			) : null}

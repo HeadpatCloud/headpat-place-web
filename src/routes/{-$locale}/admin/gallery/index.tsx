@@ -48,7 +48,8 @@ function GalleryModeration() {
 		placeholderData: keepPreviousData,
 	});
 	const remove = useMutation({
-		mutationFn: (id: string) => client.adminContent.galleryDelete({ id }),
+		mutationFn: (vars: { id: string; reason: string }) =>
+			client.adminContent.galleryDelete(vars),
 		onSuccess: () => {
 			toast.success(t("deletedToast"));
 			qc.invalidateQueries({ queryKey: orpc.adminContent.galleryList.key() });
@@ -105,7 +106,7 @@ function GalleryModeration() {
 								<Tr key={g.id}>
 									<Td>
 										<Link
-											to={`/gallery/${g.id}`}
+											to={`/admin/gallery/${g.id}` as never}
 											className="flex items-center gap-3"
 										>
 											<span className="size-14 shrink-0 overflow-hidden rounded-2xl bg-muted">
@@ -145,7 +146,9 @@ function GalleryModeration() {
 										<ConfirmDelete
 											name={g.name}
 											disabled={remove.isPending}
-											onConfirm={() => remove.mutate(g.id)}
+											onConfirm={(reason) =>
+												remove.mutate({ id: g.id, reason })
+											}
 										/>
 									</Td>
 								</Tr>

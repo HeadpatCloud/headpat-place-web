@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Check, Copy, KeyRound, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useStepUp } from "@/components/admin/StepUp";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -35,6 +36,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { isStepUpCancelled } from "@/lib/admin-access";
 import { useDateFormat } from "@/lib/datetime";
 import { useTranslations } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
@@ -57,6 +59,7 @@ function AdminApiKeys() {
 	const c = useTranslations("common");
 	const fmt = useDateFormat();
 	const qc = useQueryClient();
+	const { withStepUp } = useStepUp();
 
 	const catalog = useQuery(
 		orpc.adminApiKey.catalog.queryOptions({ input: undefined }),
@@ -85,16 +88,20 @@ function AdminApiKeys() {
 
 	const create = useMutation({
 		mutationFn: () =>
-			client.adminApiKey.create({
-				name: name.trim(),
-				permissions: [...perms],
-				expiresInDays: expiry === "never" ? null : Number(expiry),
-			}),
+			withStepUp(() =>
+				client.adminApiKey.create({
+					name: name.trim(),
+					permissions: [...perms],
+					expiresInDays: expiry === "never" ? null : Number(expiry),
+				}),
+			),
 		onSuccess: (key) => {
 			setCreated(key);
 			qc.invalidateQueries({ queryKey: orpc.adminApiKey.list.queryKey() });
 		},
-		onError: (e: Error) => toast.error(e.message),
+		onError: (e: Error) => {
+			if (!isStepUpCancelled(e)) toast.error(e.message);
+		},
 	});
 
 	const revoke = useMutation({

@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useStepUp } from "@/components/admin/StepUp";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -18,6 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { isStepUpCancelled } from "@/lib/admin-access";
 import { useTranslations } from "@/lib/i18n";
 import { useLocalizedNavigate as useNavigate } from "@/lib/localized-nav";
 import { client, orpc } from "@/lib/orpc";
@@ -32,6 +34,10 @@ function RoleEditor() {
 	const { roleId } = Route.useParams();
 	const qc = useQueryClient();
 	const navigate = useNavigate();
+	const { withStepUp } = useStepUp();
+	const onError = (e: Error) => {
+		if (!isStepUpCancelled(e)) toast.error(e.message);
+	};
 	const catalog = useQuery(
 		orpc.adminRole.catalog.queryOptions({ input: undefined }),
 	);
@@ -68,21 +74,23 @@ function RoleEditor() {
 			invalidate();
 			toast.success(t("saved"));
 		},
-		onError: (e: Error) => toast.error(e.message),
+		onError,
 	});
 
 	const savePermissions = useMutation({
 		mutationFn: () =>
-			client.adminRole.setPermissions({ roleId, permissions: [...selected] }),
+			withStepUp(() =>
+				client.adminRole.setPermissions({ roleId, permissions: [...selected] }),
+			),
 		onSuccess: () => {
 			invalidate();
 			toast.success(t("saved"));
 		},
-		onError: (e: Error) => toast.error(e.message),
+		onError,
 	});
 
 	const remove = useMutation({
-		mutationFn: () => client.adminRole.delete({ roleId }),
+		mutationFn: () => withStepUp(() => client.adminRole.delete({ roleId })),
 		onSuccess: () => {
 			qc.invalidateQueries({
 				queryKey: orpc.adminRole.list.queryKey({ input: {} }),
@@ -90,7 +98,7 @@ function RoleEditor() {
 			toast.success(t("roleDeleted"));
 			navigate({ to: "/admin/roles" as never });
 		},
-		onError: (e: Error) => toast.error(e.message),
+		onError,
 	});
 
 	if (role.isPending || catalog.isPending)

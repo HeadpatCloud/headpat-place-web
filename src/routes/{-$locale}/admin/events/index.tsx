@@ -42,7 +42,8 @@ function EventsAdmin() {
 		placeholderData: keepPreviousData,
 	});
 	const remove = useMutation({
-		mutationFn: (id: string) => client.adminContent.eventDelete({ id }),
+		mutationFn: (vars: { id: string; reason: string }) =>
+			client.adminContent.eventDelete(vars),
 		onSuccess: () => {
 			toast.success(t("deletedToast"));
 			qc.invalidateQueries({ queryKey: orpc.adminContent.eventList.key() });
@@ -100,7 +101,7 @@ function EventsAdmin() {
 								<Tr key={e.id}>
 									<Td>
 										<Link
-											to={`/events/${e.id}`}
+											to={`/admin/events/${e.id}` as never}
 											className="block max-w-64 truncate font-extrabold hover:underline"
 										>
 											{e.title}
@@ -139,7 +140,9 @@ function EventsAdmin() {
 										<ConfirmDelete
 											name={e.title}
 											disabled={remove.isPending}
-											onConfirm={() => remove.mutate(e.id)}
+											onConfirm={(reason) =>
+												remove.mutate({ id: e.id, reason })
+											}
 										/>
 									</Td>
 								</Tr>
