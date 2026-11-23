@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StorageImage } from "@/components/StorageImage";
 import {
 	Popover,
@@ -27,41 +27,91 @@ export function useBadgeText() {
 	};
 }
 
-function BadgePill({ badge }: { badge: EarnedBadge }) {
+type BadgeCardControls = {
+	open: boolean;
+	hoverOpen: (e: React.PointerEvent) => void;
+	hoverClose: (e: React.PointerEvent) => void;
+	toggle: () => void;
+	onOpenChange: (next: boolean) => void;
+	onEscape: () => void;
+	onCloseAutoFocus: (e: Event) => void;
+};
+
+// One card open at a time, shared by the whole row, so moving the mouse from
+// one badge to the next swaps the card instead of closing both.
+function useBadgeCards() {
+	const [openId, setOpenId] = useState<string | null>(null);
+	// Hover opens it for mice; a click pins it open (and is the only way on touch).
+	const pinned = useRef(false);
+	const escaped = useRef(false);
+	const closeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+	useEffect(() => () => clearTimeout(closeTimer.current), []);
+	return (id: string): BadgeCardControls => ({
+		open: openId === id,
+		hoverOpen(e) {
+			if (e.pointerType !== "mouse") return;
+			clearTimeout(closeTimer.current);
+			if (openId === id) return;
+			pinned.current = false;
+			setOpenId(id);
+		},
+		hoverClose(e) {
+			if (e.pointerType !== "mouse" || pinned.current) return;
+			clearTimeout(closeTimer.current);
+			closeTimer.current = setTimeout(
+				() => setOpenId((cur) => (cur === id ? null : cur)),
+				120,
+			);
+		},
+		toggle() {
+			clearTimeout(closeTimer.current);
+			if (openId === id && pinned.current) {
+				pinned.current = false;
+				setOpenId(null);
+			} else {
+				pinned.current = true;
+				setOpenId(id);
+			}
+		},
+		onOpenChange(next) {
+			if (next || openId !== id) return;
+			pinned.current = false;
+			setOpenId(null);
+		},
+		onEscape() {
+			escaped.current = true;
+		},
+		// Radix moves focus back to the trigger on close. That focus lands
+		// outside the card that just opened and would dismiss it, so only do
+		// it for Escape, where keyboard users need it.
+		onCloseAutoFocus(e) {
+			if (!escaped.current) e.preventDefault();
+			escaped.current = false;
+		},
+	});
+}
+
+function BadgePill({
+	badge,
+	card,
+}: {
+	badge: EarnedBadge;
+	card: BadgeCardControls;
+}) {
 	const t = useTranslations("badges");
 	const text = useBadgeText();
 	const { icon: Icon, tone } = BADGE_STYLE[badge.id];
-	const [open, setOpen] = useState(false);
-	// Hover opens it for mice; a click pins it open (and is the only way on touch).
-	const pinned = useRef(false);
-	const closeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
-	const hoverOpen = (e: React.PointerEvent) => {
-		if (e.pointerType !== "mouse") return;
-		clearTimeout(closeTimer.current);
-		setOpen(true);
-	};
-	const hoverClose = (e: React.PointerEvent) => {
-		if (e.pointerType !== "mouse" || pinned.current) return;
-		closeTimer.current = setTimeout(() => setOpen(false), 120);
-	};
 	const name = text.name(badge);
 	return (
-		<Popover
-			open={open}
-			onOpenChange={(next) => {
-				if (!next) pinned.current = false;
-				setOpen(next);
-			}}
-		>
+		<Popover open={card.open} onOpenChange={card.onOpenChange}>
 			<PopoverTrigger
 				type="button"
 				aria-label={name}
-				onPointerEnter={hoverOpen}
-				onPointerLeave={hoverClose}
+				onPointerEnter={card.hoverOpen}
+				onPointerLeave={card.hoverClose}
 				onClick={(e) => {
 					e.preventDefault();
-					pinned.current = !pinned.current || !open;
-					setOpen(pinned.current);
+					card.toggle();
 				}}
 				className={cn(
 					"inline-flex size-8 items-center justify-center rounded-full ring-1 ring-inset transition-[scale] hover:scale-110 focus-visible:outline-hidden focus-visible:ring-2",
@@ -73,9 +123,11 @@ function BadgePill({ badge }: { badge: EarnedBadge }) {
 			<PopoverContent
 				className="w-64 space-y-2 rounded-xl p-3"
 				align="start"
-				onPointerEnter={hoverOpen}
-				onPointerLeave={hoverClose}
+				onPointerEnter={card.hoverOpen}
+				onPointerLeave={card.hoverClose}
 				onOpenAutoFocus={(e) => e.preventDefault()}
+				onEscapeKeyDown={card.onEscape}
+				onCloseAutoFocus={card.onCloseAutoFocus}
 			>
 				<div className="flex items-center gap-2">
 					<span
@@ -146,11 +198,12 @@ export function BadgeList({
 	badges: EarnedBadge[];
 	className?: string;
 }) {
+	const cardFor = useBadgeCards();
 	if (badges.length === 0) return null;
 	return (
 		<div className={cn("flex flex-wrap gap-1.5", className)}>
 			{badges.map((b) => (
-				<BadgePill key={b.id} badge={b} />
+				<BadgePill key={b.id} badge={b} card={cardFor(b.id)} />
 			))}
 		</div>
 	);
