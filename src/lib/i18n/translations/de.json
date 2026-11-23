@@ -1935,6 +1935,7 @@
 		"adultUnavailable": "Dieses Profil ist nicht verfügbar.",
 		"blurAdult": "18+-Bilder verschwimmen lassen",
 		"blurAdultHint": "18+-Bilder bleiben verschwommen, bis du sie öffnest. Gilt auf all deinen Geräten.",
+		"unavailable": "Das konnte nicht vom Server geladen werden, daher lassen sich Änderungen gerade nicht speichern. Versuch es später noch einmal.",
 		"showPhoto": "Foto anzeigen"
 	}
 }

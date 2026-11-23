@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSession } from "@/lib/auth-client";
 import { useBlurAdult } from "@/lib/blur-adult";
+import { useDiscoveryOptions } from "@/lib/discovery-options";
 import {
 	DEFAULT_LOCALE,
 	type Locale,
@@ -89,13 +90,11 @@ function NearbyPage() {
 		...orpc.discovery.mine.queryOptions({ input: {} }),
 		enabled: signedIn,
 	});
-	const options = useQuery(orpc.discovery.options.queryOptions());
+	const options = useDiscoveryOptions();
 	const canAdult = mine.data?.canAdult === true;
 	const blurAdult = useBlurAdult();
 	const lookingForOptions: readonly AnyLookingFor[] =
-		mode === "adult"
-			? (options.data?.adultLookingFor ?? [])
-			: (options.data?.lookingFor ?? []);
+		mode === "adult" ? options.adultLookingFor : options.lookingFor;
 
 	const list = useQuery({
 		...orpc.nearby.list.queryOptions({

@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useBlurAdult, useSetBlurAdult } from "@/lib/blur-adult";
+import { useDiscoveryOptions } from "@/lib/discovery-options";
 import { useTranslations } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
 import { uploadImage } from "@/lib/upload-image";
@@ -25,7 +26,7 @@ export function AdultProfileEditor() {
 	const t = useTranslations("discovery");
 	const qc = useQueryClient();
 	const mine = useQuery(orpc.discovery.adult.mine.queryOptions({ input: {} }));
-	const options = useQuery(orpc.discovery.options.queryOptions());
+	const options = useDiscoveryOptions();
 	const [enabled, setEnabled] = useState(false);
 	const [displayName, setDisplayName] = useState("");
 	const [avatarFileId, setAvatarFileId] = useState<string | null>(null);
@@ -73,7 +74,7 @@ export function AdultProfileEditor() {
 	};
 
 	const photos = mine.data?.photos ?? [];
-	const maxPhotos = options.data?.maxAdultPhotos ?? 12;
+	const maxPhotos = options.maxAdultPhotos;
 
 	return (
 		<div className="space-y-6">
@@ -132,7 +133,7 @@ export function AdultProfileEditor() {
 					kind="into"
 					value={into}
 					onChange={setInto}
-					max={options.data?.maxInto ?? 30}
+					max={options.maxInto}
 					placeholder={t("intoPlaceholder")}
 					label={t("into")}
 				/>
@@ -140,7 +141,7 @@ export function AdultProfileEditor() {
 			<div className="space-y-2">
 				<Label>{t("lookingForTitle")}</Label>
 				<ToggleChips
-					options={options.data?.adultLookingFor ?? []}
+					options={options.adultLookingFor}
 					value={lookingFor}
 					onChange={setLookingFor}
 					label={(k) => t(`adultLookingFor.${k}`)}

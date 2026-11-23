@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { useDiscoveryOptions } from "@/lib/discovery-options";
 import { useTranslations } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
 import { cn } from "@/lib/utils";
@@ -52,7 +53,7 @@ export function InterestsEditor() {
 	const t = useTranslations("discovery");
 	const qc = useQueryClient();
 	const mine = useQuery(orpc.discovery.mine.queryOptions({ input: {} }));
-	const options = useQuery(orpc.discovery.options.queryOptions());
+	const options = useDiscoveryOptions();
 	const [interests, setInterests] = useState<string[]>([]);
 	const [lookingFor, setLookingFor] = useState<LookingFor[]>([]);
 	const [saving, setSaving] = useState(false);
@@ -79,6 +80,9 @@ export function InterestsEditor() {
 
 	return (
 		<div className="space-y-6">
+			{mine.isError ? (
+				<p className="text-sm text-destructive">{t("unavailable")}</p>
+			) : null}
 			<div className="space-y-2">
 				<p className="text-sm font-semibold">{t("interestsTitle")}</p>
 				<p className="text-sm text-muted-foreground">{t("interestsHint")}</p>
@@ -86,7 +90,7 @@ export function InterestsEditor() {
 					kind="interest"
 					value={interests}
 					onChange={setInterests}
-					max={options.data?.maxInterests ?? 20}
+					max={options.maxInterests}
 					placeholder={t("interestsPlaceholder")}
 					label={t("interestsTitle")}
 				/>
@@ -94,13 +98,13 @@ export function InterestsEditor() {
 			<div className="space-y-2">
 				<p className="text-sm font-semibold">{t("lookingForTitle")}</p>
 				<ToggleChips
-					options={options.data?.lookingFor ?? []}
+					options={options.lookingFor}
 					value={lookingFor}
 					onChange={setLookingFor}
 					label={(k) => t(`lookingFor.${k}`)}
 				/>
 			</div>
-			<Button onClick={save} disabled={saving || mine.isPending}>
+			<Button onClick={save} disabled={saving || !mine.isSuccess}>
 				{t("save")}
 			</Button>
 		</div>

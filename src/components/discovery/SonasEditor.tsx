@@ -21,6 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useDiscoveryOptions } from "@/lib/discovery-options";
 import { useTranslations } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
 import { uploadImage } from "@/lib/upload-image";
@@ -295,9 +296,9 @@ export function SonasEditor() {
 	const t = useTranslations("discovery");
 	const qc = useQueryClient();
 	const mine = useQuery(orpc.discovery.mine.queryOptions({ input: {} }));
-	const options = useQuery(orpc.discovery.options.queryOptions());
+	const options = useDiscoveryOptions();
 	const sonas: Sona[] = mine.data?.sonas ?? [];
-	const max = options.data?.maxSonas ?? 20;
+	const max = options.maxSonas;
 	// null = closed, "new" = adding, otherwise the sona being edited
 	const [editing, setEditing] = useState<Sona | "new" | null>(null);
 
@@ -315,6 +316,9 @@ export function SonasEditor() {
 
 	return (
 		<div className="space-y-3">
+			{mine.isError ? (
+				<p className="text-sm text-destructive">{t("unavailable")}</p>
+			) : null}
 			{sonas.length === 0 ? (
 				<p className="text-sm text-muted-foreground">{t("noSonas")}</p>
 			) : (
@@ -401,7 +405,7 @@ export function SonasEditor() {
 					key={editing === "new" ? "new" : editing.id}
 					open
 					initial={editing === "new" ? EMPTY : editing}
-					maxColors={options.data?.maxSonaColors ?? 8}
+					maxColors={options.maxSonaColors}
 					onClose={() => setEditing(null)}
 					onSave={async (d) => {
 						if (editing === "new") await client.discovery.sonas.create(d);
