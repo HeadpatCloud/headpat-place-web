@@ -28,6 +28,7 @@ import { Route as Char123LocaleChar125AppSearchRouteImport } from './routes/{-$l
 import { Route as Char123LocaleChar125AppProfileRouteImport } from './routes/{-$locale}/_app/profile'
 import { Route as Char123LocaleChar125AppPawcraftRouteImport } from './routes/{-$locale}/_app/pawcraft'
 import { Route as Char123LocaleChar125AppNotificationsRouteImport } from './routes/{-$locale}/_app/notifications'
+import { Route as Char123LocaleChar125AppNearbyRouteImport } from './routes/{-$locale}/_app/nearby'
 import { Route as Char123LocaleChar125AppMapRouteImport } from './routes/{-$locale}/_app/map'
 import { Route as Char123LocaleChar125AppChangelogRouteImport } from './routes/{-$locale}/_app/changelog'
 import { Route as Char123LocaleChar125AdminUsersIndexRouteImport } from './routes/{-$locale}/admin/users/index'
@@ -186,6 +187,12 @@ const Char123LocaleChar125AppNotificationsRoute =
   Char123LocaleChar125AppNotificationsRouteImport.update({
     id: '/notifications',
     path: '/notifications',
+    getParentRoute: () => Char123LocaleChar125AppRoute,
+  } as any)
+const Char123LocaleChar125AppNearbyRoute =
+  Char123LocaleChar125AppNearbyRouteImport.update({
+    id: '/nearby',
+    path: '/nearby',
     getParentRoute: () => Char123LocaleChar125AppRoute,
   } as any)
 const Char123LocaleChar125AppMapRoute =
@@ -496,6 +503,7 @@ export interface FileRoutesByFullPath {
   '/{-$locale}/chat': typeof Char123LocaleChar125ChatRouteWithChildren
   '/{-$locale}/changelog': typeof Char123LocaleChar125AppChangelogRoute
   '/{-$locale}/map': typeof Char123LocaleChar125AppMapRoute
+  '/{-$locale}/nearby': typeof Char123LocaleChar125AppNearbyRoute
   '/{-$locale}/notifications': typeof Char123LocaleChar125AppNotificationsRoute
   '/{-$locale}/pawcraft': typeof Char123LocaleChar125AppPawcraftRoute
   '/{-$locale}/profile': typeof Char123LocaleChar125AppProfileRoute
@@ -563,6 +571,7 @@ export interface FileRoutesByTo {
   '/{-$locale}': typeof Char123LocaleChar125AppIndexRoute
   '/{-$locale}/changelog': typeof Char123LocaleChar125AppChangelogRoute
   '/{-$locale}/map': typeof Char123LocaleChar125AppMapRoute
+  '/{-$locale}/nearby': typeof Char123LocaleChar125AppNearbyRoute
   '/{-$locale}/notifications': typeof Char123LocaleChar125AppNotificationsRoute
   '/{-$locale}/pawcraft': typeof Char123LocaleChar125AppPawcraftRoute
   '/{-$locale}/profile': typeof Char123LocaleChar125AppProfileRoute
@@ -634,6 +643,7 @@ export interface FileRoutesById {
   '/{-$locale}/chat': typeof Char123LocaleChar125ChatRouteWithChildren
   '/{-$locale}/_app/changelog': typeof Char123LocaleChar125AppChangelogRoute
   '/{-$locale}/_app/map': typeof Char123LocaleChar125AppMapRoute
+  '/{-$locale}/_app/nearby': typeof Char123LocaleChar125AppNearbyRoute
   '/{-$locale}/_app/notifications': typeof Char123LocaleChar125AppNotificationsRoute
   '/{-$locale}/_app/pawcraft': typeof Char123LocaleChar125AppPawcraftRoute
   '/{-$locale}/_app/profile': typeof Char123LocaleChar125AppProfileRoute
@@ -705,6 +715,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/chat'
     | '/{-$locale}/changelog'
     | '/{-$locale}/map'
+    | '/{-$locale}/nearby'
     | '/{-$locale}/notifications'
     | '/{-$locale}/pawcraft'
     | '/{-$locale}/profile'
@@ -772,6 +783,7 @@ export interface FileRouteTypes {
     | '/{-$locale}'
     | '/{-$locale}/changelog'
     | '/{-$locale}/map'
+    | '/{-$locale}/nearby'
     | '/{-$locale}/notifications'
     | '/{-$locale}/pawcraft'
     | '/{-$locale}/profile'
@@ -842,6 +854,7 @@ export interface FileRouteTypes {
     | '/{-$locale}/chat'
     | '/{-$locale}/_app/changelog'
     | '/{-$locale}/_app/map'
+    | '/{-$locale}/_app/nearby'
     | '/{-$locale}/_app/notifications'
     | '/{-$locale}/_app/pawcraft'
     | '/{-$locale}/_app/profile'
@@ -1043,6 +1056,13 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/{-$locale}/notifications'
       preLoaderRoute: typeof Char123LocaleChar125AppNotificationsRouteImport
+      parentRoute: typeof Char123LocaleChar125AppRoute
+    }
+    '/{-$locale}/_app/nearby': {
+      id: '/{-$locale}/_app/nearby'
+      path: '/nearby'
+      fullPath: '/{-$locale}/nearby'
+      preLoaderRoute: typeof Char123LocaleChar125AppNearbyRouteImport
       parentRoute: typeof Char123LocaleChar125AppRoute
     }
     '/{-$locale}/_app/map': {
@@ -1401,6 +1421,7 @@ declare module '@tanstack/react-router' {
 interface Char123LocaleChar125AppRouteChildren {
   Char123LocaleChar125AppChangelogRoute: typeof Char123LocaleChar125AppChangelogRoute
   Char123LocaleChar125AppMapRoute: typeof Char123LocaleChar125AppMapRoute
+  Char123LocaleChar125AppNearbyRoute: typeof Char123LocaleChar125AppNearbyRoute
   Char123LocaleChar125AppNotificationsRoute: typeof Char123LocaleChar125AppNotificationsRoute
   Char123LocaleChar125AppPawcraftRoute: typeof Char123LocaleChar125AppPawcraftRoute
   Char123LocaleChar125AppProfileRoute: typeof Char123LocaleChar125AppProfileRoute
@@ -1442,6 +1463,7 @@ const Char123LocaleChar125AppRouteChildren: Char123LocaleChar125AppRouteChildren
     Char123LocaleChar125AppChangelogRoute:
       Char123LocaleChar125AppChangelogRoute,
     Char123LocaleChar125AppMapRoute: Char123LocaleChar125AppMapRoute,
+    Char123LocaleChar125AppNearbyRoute: Char123LocaleChar125AppNearbyRoute,
     Char123LocaleChar125AppNotificationsRoute:
       Char123LocaleChar125AppNotificationsRoute,
     Char123LocaleChar125AppPawcraftRoute: Char123LocaleChar125AppPawcraftRoute,

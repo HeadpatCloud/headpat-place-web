@@ -4,6 +4,11 @@ import confetti from "canvas-confetti";
 import { CakeIcon, CalendarDaysIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import {
+	DiscoveryChips,
+	SonaList,
+	useProfileDiscovery,
+} from "@/components/discovery/ProfileDiscovery";
 import { GradientBanner } from "@/components/GradientBanner";
 import { ProfileBadges } from "@/components/profile/ProfileBadges";
 import { RichBio } from "@/components/profile/RichBio";
@@ -104,6 +109,9 @@ function UserProfilePage() {
 		retry: retryUnlessNotFound,
 	});
 	const avatarUrl = useStorageUrl("avatar", profile.data?.avatarFileId, "md");
+	const discovery = useProfileDiscovery(profile.data?.userId);
+	const sonas = discovery.data?.sonas ?? [];
+	const d = useTranslations("discovery");
 
 	if (profile.isPending)
 		return (
@@ -233,10 +241,23 @@ function UserProfilePage() {
 							</Link>
 						</div>
 						<SocialLinks profile={p} />
+						<DiscoveryChips
+							userId={p.userId}
+							name={p.displayName || p.name || p.profileUrl}
+						/>
 						<Separator />
 						<Tabs defaultValue="about">
-							<TabsList className="grid w-full grid-cols-2">
+							<TabsList
+								className={
+									sonas.length
+										? "grid w-full grid-cols-3"
+										: "grid w-full grid-cols-2"
+								}
+							>
 								<TabsTrigger value="about">{t("profileAbout")}</TabsTrigger>
+								{sonas.length ? (
+									<TabsTrigger value="sonas">{d("sonasTab")}</TabsTrigger>
+								) : null}
 								<TabsTrigger value="gallery">{t("profileGallery")}</TabsTrigger>
 							</TabsList>
 							<TabsContent value="about" className="pt-4">
@@ -248,6 +269,11 @@ function UserProfilePage() {
 									<p className="text-muted-foreground">{t("usersNoBio")}</p>
 								)}
 							</TabsContent>
+							{sonas.length ? (
+								<TabsContent value="sonas" className="pt-4">
+									<SonaList sonas={sonas} />
+								</TabsContent>
+							) : null}
 							<TabsContent value="gallery" className="pt-4">
 								<ProfileGallery userId={p.userId} />
 							</TabsContent>

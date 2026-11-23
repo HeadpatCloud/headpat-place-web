@@ -4,10 +4,13 @@ import {
 	AtSign,
 	Bell,
 	Eye,
+	Flame,
 	KeyRound,
 	Link2,
 	Palette,
+	PawPrint,
 	ShieldCheck,
+	Sparkles,
 	TriangleAlert,
 	UserRound,
 } from "lucide-react";
@@ -28,6 +31,9 @@ import { ProfileSection } from "@/components/account/ProfileSection";
 import { Section } from "@/components/account/Section";
 import { SecuritySection } from "@/components/account/SecuritySection";
 import type { AccountProfile } from "@/components/account/types";
+import { AdultProfileEditor } from "@/components/discovery/AdultProfileEditor";
+import { InterestsEditor } from "@/components/discovery/InterestsEditor";
+import { SonasEditor } from "@/components/discovery/SonasEditor";
 import { authClient, useSession } from "@/lib/auth-client";
 import { useTranslations } from "@/lib/i18n";
 import { useLocalizedNavigate as useNavigate } from "@/lib/localized-nav";
@@ -41,6 +47,9 @@ export const Route = createFileRoute("/{-$locale}/_app/account/")({
 
 const SECTION_IDS = [
 	"profile",
+	"sonas",
+	"discovery",
+	"adult",
 	"account",
 	"security",
 	"connections",
@@ -53,6 +62,9 @@ const SECTION_IDS = [
 
 const SECTION_ICONS = {
 	profile: UserRound,
+	sonas: PawPrint,
+	discovery: Sparkles,
+	adult: Flame,
 	account: AtSign,
 	security: ShieldCheck,
 	connections: Link2,
@@ -72,9 +84,23 @@ function AccountPage() {
 	const queryClient = useQueryClient();
 	const [active, setActive] = useState("profile");
 
-	const SECTIONS: NavItem[] = SECTION_IDS.map((id) => ({
+	const d = useTranslations("discovery");
+	const discovery = useQuery({
+		...orpc.discovery.mine.queryOptions({ input: {} }),
+		enabled: !!session?.user,
+	});
+	// the 18+ section only exists for known adults with NSFW on
+	const canAdult = discovery.data?.canAdult === true;
+	const DISCOVERY_LABELS: Record<string, string> = {
+		sonas: d("sonasTitle"),
+		discovery: d("discoveryTitle"),
+		adult: d("adultTitle"),
+	};
+	const SECTIONS: NavItem[] = SECTION_IDS.filter(
+		(id) => id !== "adult" || canAdult,
+	).map((id) => ({
 		id,
-		label: t(`nav_${id}`),
+		label: DISCOVERY_LABELS[id] ?? t(`nav_${id}`),
 		icon: SECTION_ICONS[id],
 	}));
 
@@ -197,6 +223,32 @@ function AccountPage() {
 							</div>
 						</div>
 					</Section>
+
+					<Section
+						id="sonas"
+						title={d("sonasTitle")}
+						description={d("sonasDescription")}
+					>
+						<SonasEditor />
+					</Section>
+
+					<Section
+						id="discovery"
+						title={d("discoveryTitle")}
+						description={d("discoveryDescription")}
+					>
+						<InterestsEditor />
+					</Section>
+
+					{canAdult ? (
+						<Section
+							id="adult"
+							title={d("adultTitle")}
+							description={d("adultDescription")}
+						>
+							<AdultProfileEditor />
+						</Section>
+					) : null}
 
 					<Section
 						id="account"

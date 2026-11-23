@@ -15,6 +15,7 @@ import {
 	MegaphoneIcon,
 	MessagesSquareIcon,
 	PencilIcon,
+	RadarIcon,
 	RocketIcon,
 	ScrollTextIcon,
 	ShieldIcon,
@@ -84,6 +85,11 @@ export function AppSidebar({
 				name: nav("map"),
 				url: "/map",
 				icon: MapIcon,
+			},
+			{
+				name: nav("nearby"),
+				url: "/nearby",
+				icon: RadarIcon,
 			},
 			{
 				name: nav("users"),

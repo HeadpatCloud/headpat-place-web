@@ -6,6 +6,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useRef, useState } from "react";
 import { useLiveLocations } from "@/components/contexts/PresenceProvider";
 import { useSession } from "@/lib/auth-client";
+import { useI18n } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
 import {
 	ACCENT,
@@ -21,12 +22,24 @@ import {
 	timezoneToView,
 } from "./leaflet-shared";
 import { MapUnsupported, useMapUnsupported } from "./MapUnsupported";
+import { NearbyPanel } from "./NearbyPanel";
+import { useNearbyList, useNearbyStatus, useRefreshOwnCell } from "./nearby";
 
 function escapeHtml(s: string): string {
 	return s.replace(
 		/[&<>"]/g,
 		(c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c] ?? c,
 	);
+}
+
+const SHOW_NEARBY_KEY = "map.showNearby";
+
+function readShowNearby(): boolean {
+	try {
+		return window.localStorage.getItem(SHOW_NEARBY_KEY) !== "0";
+	} catch {
+		return true;
+	}
 }
 
 type MapEvent = {
@@ -48,6 +61,8 @@ export function MapView() {
 	const groupRef = useRef<LType.LayerGroup | null>(null);
 	const clusterRef = useRef<LType.MarkerClusterGroup | null>(null);
 	const peopleRef = useRef<LType.LayerGroup | null>(null);
+	const nearbyRef = useRef<LType.MarkerClusterGroup | null>(null);
+	const nearbyCellsRef = useRef<LType.LayerGroup | null>(null);
 	const fittedRef = useRef(false);
 	const [mapReady, setMapReady] = useState(false);
 	const unsupported = useMapUnsupported();
@@ -56,6 +71,22 @@ export function MapView() {
 	const requestedAvatars = useRef<Set<string>>(new Set());
 
 	const { data: session } = useSession();
+	const signedIn = !!session?.user;
+	// stable per locale, unlike useTranslations, so it can sit in effect deps
+	const { t, locale } = useI18n();
+	const [showNearby, setShowNearby] = useState(true);
+	useEffect(() => setShowNearby(readShowNearby()), []);
+	const changeShowNearby = (v: boolean) => {
+		setShowNearby(v);
+		try {
+			window.localStorage.setItem(SHOW_NEARBY_KEY, v ? "1" : "0");
+		} catch {
+			// per-browser convenience only
+		}
+	};
+	const nearby = useNearbyList(signedIn && showNearby);
+	const nearbyStatus = useNearbyStatus(signedIn);
+	useRefreshOwnCell(nearbyStatus.data?.visible === true);
 	const liveLocations = useLiveLocations();
 	const events = useQuery(
 		orpc.event.mapList.queryOptions({ input: undefined }),
@@ -117,6 +148,14 @@ export function MapView() {
 						clusterIcon(L, cluster.getChildCount()),
 				}).addTo(mapRef.current);
 				peopleRef.current = L.layerGroup().addTo(mapRef.current);
+				nearbyCellsRef.current = L.layerGroup().addTo(mapRef.current);
+				// Everyone in one grid cell shares a point, so they cluster and
+				// spread out (spiderfy) when the cluster is opened.
+				nearbyRef.current = L.markerClusterGroup({
+					showCoverageOnHover: false,
+					maxClusterRadius: 40,
+					iconCreateFunction: (c) => clusterIcon(L, c.getChildCount()),
+				}).addTo(mapRef.current);
 				setTimeout(() => mapRef.current?.invalidateSize(), 80);
 				// re-measure after a zoom so the map always repaints to fill its box
 				mapRef.current.on("zoomend", () =>
@@ -203,7 +242,7 @@ export function MapView() {
 	useEffect(() => {
 		const ids = [
 			...new Set(
-				(shared.data ?? [])
+				[...(shared.data ?? []), ...(nearby.data ?? [])]
 					.map((p) => p.avatarFileId)
 					.filter((x): x is string => !!x),
 			),
@@ -234,7 +273,7 @@ export function MapView() {
 		return () => {
 			cancelled = true;
 		};
-	}, [shared.data]);
+	}, [shared.data, nearby.data]);
 
 	// Shared-user markers: merge the initial visibleLocations set with live
 	// websocket deltas (null delta = the share ended). Own layer so frequent
@@ -277,9 +316,71 @@ export function MapView() {
 		}
 	}, [mapReady, shared.data, liveLocations, avatarUrls]);
 
+	// Who's around: people at their fuzzed grid cell, never an exact position.
+	// The faint circle shows the cell so nobody reads the pin as precise.
+	useEffect(() => {
+		const L = LRef.current;
+		const cluster = nearbyRef.current;
+		const cells = nearbyCellsRef.current;
+		if (!mapReady || !L || !cluster || !cells) return;
+		cluster.clearLayers();
+		cells.clearLayers();
+		if (!showNearby) return;
+		// someone you already see through a direct share keeps that marker
+		const sharedIds = new Set((shared.data ?? []).map((p) => p.userId));
+		const drawn = new Set<string>();
+		for (const p of nearby.data ?? []) {
+			if (sharedIds.has(p.userId)) continue;
+			const cellKey = `${p.lat},${p.lng}`;
+			if (!drawn.has(cellKey)) {
+				drawn.add(cellKey);
+				L.circle([p.lat, p.lng], {
+					radius: (p.cellKm * 1000) / 2,
+					color: PERSON_COLOR,
+					weight: 1,
+					dashArray: "4 4",
+					fillColor: PERSON_COLOR,
+					fillOpacity: 0.08,
+					interactive: false,
+				}).addTo(cells);
+			}
+			const label = p.displayName || p.name || "?";
+			const where = p.eventTitle
+				? `<br><span style="opacity:.7;font-size:12px">${escapeHtml(t("nearby.atEvent", { event: p.eventTitle }))}</span>`
+				: "";
+			const link = p.profileUrl
+				? `<br><a href="/user/${encodeURIComponent(p.profileUrl)}" style="color:${PERSON_COLOR}">${escapeHtml(t("nearby.viewProfile"))}</a>`
+				: "";
+			const popup = `<div style="min-width:150px"><strong>${escapeHtml(label)}</strong>${where}<br><span style="opacity:.55;font-size:11px">${escapeHtml(
+				t("nearby.aroundHere", { km: p.cellKm }),
+			)}<br>${escapeHtml(
+				t("nearby.updated", {
+					time: new Date(p.updatedAt).toLocaleTimeString(locale, {
+						hour: "2-digit",
+						minute: "2-digit",
+					}),
+				}),
+			)}</span>${link}</div>`;
+			const avatarUrl = p.avatarFileId ? avatarUrls[p.avatarFileId] : undefined;
+			cluster.addLayer(
+				L.marker([p.lat, p.lng], {
+					icon: personIcon(L, label, avatarUrl),
+				}).bindPopup(popup),
+			);
+		}
+	}, [mapReady, showNearby, nearby.data, shared.data, avatarUrls, locale, t]);
+
 	return (
 		<div className="relative h-full w-full">
 			<div ref={containerRef} className="h-full w-full" />
+			{signedIn && !unsupported ? (
+				<div className="absolute top-3 right-3 z-[500]">
+					<NearbyPanel
+						showLayer={showNearby}
+						onShowLayerChange={changeShowNearby}
+					/>
+				</div>
+			) : null}
 			{unsupported ? <MapUnsupported /> : null}
 			{!unsupported && events.isSuccess && (events.data ?? []).length === 0 ? (
 				<div className="pointer-events-none absolute inset-x-0 bottom-6 z-[500] flex justify-center">
