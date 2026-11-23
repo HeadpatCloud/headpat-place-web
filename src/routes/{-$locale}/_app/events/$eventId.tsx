@@ -4,6 +4,7 @@ import { BellIcon, BellOffIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 import { EventAttendees } from "@/components/events/EventAttendees";
 import { EventLocationMap } from "@/components/map/EventLocationMap";
+import { UserText } from "@/components/UserText";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -228,7 +229,11 @@ function EventDetailPage() {
 						{e.isPaid ? <Badge variant="default">{t("paid")}</Badge> : null}
 					</div>
 					{e.label ? <p className="text-muted-foreground">{e.label}</p> : null}
-					{e.description ? <p>{e.description}</p> : null}
+					{e.description ? (
+						<p className="whitespace-pre-wrap">
+							<UserText text={e.description} />
+						</p>
+					) : null}
 					{e.website ? (
 						<p className="text-sm">
 							<a href={e.website} className="text-link hover:underline">

@@ -4,21 +4,25 @@
 @custom-variant dark (&:is(.dark *));
 
 @font-face {
-  font-family: "Nunito Variable";
-  font-style: normal;
-  font-display: optional;
-  font-weight: 200 1000;
-  src: url(../../node_modules/@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2) format("woff2-variations");
-  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+	font-family: "Nunito Variable";
+	font-style: normal;
+	font-display: optional;
+	font-weight: 200 1000;
+	src: url(../../node_modules/@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2)
+		format("woff2-variations");
+	unicode-range:
+		U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
-  font-family: "Fredoka Variable";
-  font-style: normal;
-  font-display: optional;
-  font-weight: 300 700;
-  src: url(../../node_modules/@fontsource-variable/fredoka/files/fredoka-latin-wght-normal.woff2) format("woff2-variations");
-  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+	font-family: "Fredoka Variable";
+	font-style: normal;
+	font-display: optional;
+	font-weight: 300 700;
+	src: url(../../node_modules/@fontsource-variable/fredoka/files/fredoka-latin-wght-normal.woff2)
+		format("woff2-variations");
+	unicode-range:
+		U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @theme inline {
@@ -200,25 +204,25 @@
 
 :where(:root),
 [data-theme="headpat"] {
-	--background: #F2FAF5;
-	--foreground: #17332A;
-	--muted: #E3F4EA;
-	--muted-foreground: #4A6358;
-	--popover: #FFFFFF;
-	--popover-foreground: #17332A;
-	--card: #FFFFFF;
-	--card-foreground: #17332A;
-	--border: #D3E8DC;
+	--background: #f2faf5;
+	--foreground: #17332a;
+	--muted: #e3f4ea;
+	--muted-foreground: #4a6358;
+	--popover: #ffffff;
+	--popover-foreground: #17332a;
+	--card: #ffffff;
+	--card-foreground: #17332a;
+	--border: #d3e8dc;
 	--border-primary: hsl(153, 60%, 53%, 0.7);
 	--border-secondary: hsl(0 0% 79%);
 	--border-destructive: hsl(0 100% 60%);
-	--input: #D3E8DC;
-	--primary: #0B6B45;
-	--primary-foreground: #FFFFFF;
-	--secondary: #17332A;
-	--secondary-foreground: #FFFFFF;
-	--accent: #1FA37A;
-	--accent-foreground: #17332A;
+	--input: #d3e8dc;
+	--primary: #0b6b45;
+	--primary-foreground: #ffffff;
+	--secondary: #17332a;
+	--secondary-foreground: #ffffff;
+	--accent: #1fa37a;
+	--accent-foreground: #17332a;
 	--destructive: hsl(0 100% 30%);
 	--destructive-foreground: hsl(0 0% 100%);
 	--ring: hsl(160 100% 45%);
@@ -229,15 +233,15 @@
 	--chart-4: hsl(160 100% 15%);
 	--chart-5: hsl(160 100% 5%);
 	--code-block: hsl(160 100% 15%);
-	--link: #0B6B45;
+	--link: #0b6b45;
 	--loading: hsl(240 3.7% 40.9%);
-	--sidebar: #FFFFFF;
-	--sidebar-foreground: #2F4B41;
+	--sidebar: #ffffff;
+	--sidebar-foreground: #2f4b41;
 	--sidebar-primary: hsl(240 5.9% 10%);
 	--sidebar-primary-foreground: hsl(0 0% 98%);
-	--sidebar-accent: #E3F4EA;
-	--sidebar-accent-foreground: #17332A;
-	--sidebar-border: #D3E8DC;
+	--sidebar-accent: #e3f4ea;
+	--sidebar-accent-foreground: #17332a;
+	--sidebar-border: #d3e8dc;
 	--sidebar-ring: hsl(160 100% 45%);
 }
 
@@ -440,7 +444,7 @@ pre {
 .rich-bio strong {
 	@apply font-semibold;
 }
-.rich-bio a:not(.bio-cta) {
+.rich-bio a:not(.bio-cta):not(.mention-chip) {
 	@apply text-link underline underline-offset-2;
 }
 .rich-bio a.bio-cta {
@@ -448,6 +452,9 @@ pre {
 }
 .rich-bio img {
 	@apply my-3 h-auto max-w-full rounded-lg;
+}
+.rich-bio .mention-chip img {
+	@apply my-0 rounded-full;
 }
 .rich-bio img.ProseMirror-selectednode {
 	@apply ring-2 ring-primary;
@@ -586,5 +593,6 @@ pre {
 }
 
 .map-tiles-dark {
-  filter: invert(1) hue-rotate(180deg) saturate(0.6) brightness(0.9) contrast(0.9);
+	filter: invert(1) hue-rotate(180deg) saturate(0.6) brightness(0.9)
+		contrast(0.9);
 }

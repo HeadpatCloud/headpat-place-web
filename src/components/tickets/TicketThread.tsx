@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import { UserText } from "@/components/UserText";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -134,7 +135,7 @@ export function TicketThread({ ticketId }: { ticketId: string }) {
 										: "bg-primary text-primary-foreground",
 								)}
 							>
-								{m.body}
+								<UserText text={m.body} />
 							</div>
 						) : null}
 						{(m.attachments ?? []).length > 0 ? (

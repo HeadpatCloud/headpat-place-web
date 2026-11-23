@@ -3,6 +3,7 @@ import { GradientBanner } from "@/components/GradientBanner";
 import { ProfileBadges } from "@/components/profile/ProfileBadges";
 import { RichBio } from "@/components/profile/RichBio";
 import { useStorageUrl } from "@/components/StorageImage";
+import { UserText } from "@/components/UserText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -93,7 +94,9 @@ export function ProfilePreviewCard({
 					{data.bioHtml?.trim() ? (
 						<RichBio html={data.bioHtml} className="text-sm" />
 					) : data.bio?.trim() ? (
-						<p className="whitespace-pre-wrap text-sm">{data.bio}</p>
+						<p className="whitespace-pre-wrap text-sm">
+							<UserText text={data.bio} />
+						</p>
 					) : null}
 					{data.pronouns?.trim() || data.location?.trim() || data.birthday ? (
 						<div className="flex flex-wrap gap-2">

@@ -7,6 +7,7 @@ import { EditGalleryItemDialog } from "@/components/gallery/EditGalleryItemDialo
 import { ResponsiveImage } from "@/components/ResponsiveImage";
 import { useStorageUrl } from "@/components/StorageImage";
 import { UserCard } from "@/components/UserCard";
+import { UserText } from "@/components/UserText";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -162,7 +163,9 @@ function GalleryItemPage() {
 						</div>
 					) : null}
 					{g.longText ? (
-						<p className="whitespace-pre-wrap">{g.longText}</p>
+						<p className="whitespace-pre-wrap">
+							<UserText text={g.longText} />
+						</p>
 					) : null}
 					<div className="flex items-center gap-3">
 						<Button
@@ -302,7 +305,9 @@ function CommentsSection({
 								>
 									<div className="min-w-0 flex-1 space-y-1">
 										{c.author ? <UserCard user={c.author} /> : null}
-										<p className="whitespace-pre-wrap text-sm">{c.body}</p>
+										<p className="whitespace-pre-wrap text-sm">
+											<UserText text={c.body} />
+										</p>
 										<p className="text-xs text-muted-foreground">
 											{fmt.dateTime(c.createdAt)}
 										</p>

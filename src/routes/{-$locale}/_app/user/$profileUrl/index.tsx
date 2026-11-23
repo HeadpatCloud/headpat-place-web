@@ -13,6 +13,7 @@ import { GradientBanner } from "@/components/GradientBanner";
 import { ProfileBadges } from "@/components/profile/ProfileBadges";
 import { RichBio } from "@/components/profile/RichBio";
 import { StorageImage, useStorageUrl } from "@/components/StorageImage";
+import { UserText } from "@/components/UserText";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -264,7 +265,9 @@ function UserProfilePage() {
 								{p.bioHtml ? (
 									<RichBio html={p.bioHtml} />
 								) : p.bio ? (
-									<p className="whitespace-pre-wrap">{p.bio}</p>
+									<p className="whitespace-pre-wrap">
+										<UserText text={p.bio} />
+									</p>
 								) : (
 									<p className="text-muted-foreground">{t("usersNoBio")}</p>
 								)}

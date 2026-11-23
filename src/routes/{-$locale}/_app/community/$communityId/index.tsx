@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { GradientBanner } from "@/components/GradientBanner";
 import { StorageImage } from "@/components/StorageImage";
+import { UserText } from "@/components/UserText";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -143,7 +144,11 @@ function CommunityDetailPage() {
 							{t("viewEvents")}
 						</Link>
 					</div>
-					{c.description ? <p className="mb-4">{c.description}</p> : null}
+					{c.description ? (
+						<p className="mb-4 whitespace-pre-wrap">
+							<UserText text={c.description} />
+						</p>
+					) : null}
 					<div className="flex gap-2 flex-wrap">
 						{(c.tags ?? []).map((t) => (
 							<Badge

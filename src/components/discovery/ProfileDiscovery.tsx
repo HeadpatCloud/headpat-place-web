@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FlameIcon } from "lucide-react";
 import { useState } from "react";
 import { StorageImage } from "@/components/StorageImage";
+import { UserText } from "@/components/UserText";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -131,7 +132,9 @@ export function SonaList({ sonas }: { sonas: Sona[] }) {
 							</ul>
 						) : null}
 						{s.description ? (
-							<p className="whitespace-pre-wrap text-sm">{s.description}</p>
+							<p className="whitespace-pre-wrap text-sm">
+								<UserText text={s.description} />
+							</p>
 						) : null}
 						{s.refSheetFileId ? <RefSheet fileId={s.refSheetFileId} /> : null}
 					</div>
@@ -221,7 +224,9 @@ function AdultProfileDialog({
 								}
 							/>
 							{a.bio ? (
-								<p className="whitespace-pre-wrap text-sm">{a.bio}</p>
+								<p className="whitespace-pre-wrap text-sm">
+									<UserText text={a.bio} />
+								</p>
 							) : null}
 						</div>
 						{a.lookingFor.length ? (

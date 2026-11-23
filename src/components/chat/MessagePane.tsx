@@ -40,6 +40,7 @@ import { UserContextMenu } from "@/components/chat/UserContextMenu";
 import { VoiceComposerBar } from "@/components/chat/VoiceComposerBar";
 import { usePresence } from "@/components/contexts/PresenceProvider";
 import { StorageImage } from "@/components/StorageImage";
+import { UserText } from "@/components/UserText";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -998,7 +999,7 @@ export function MessagePane({ source }: { source: Source }) {
 															</form>
 														) : (
 															<div className="whitespace-pre-wrap break-words text-sm leading-relaxed text-foreground">
-																{m.body}
+																<UserText text={m.body} />
 																{m.editedAt ? (
 																	<span className="ml-1.5 text-[10px] text-muted-foreground">
 																		{t("edited")}
