@@ -42,7 +42,12 @@
 		"phasePreparing": "Voorbereiden…",
 		"phaseUploading": "Uploaden… %{pct}%",
 		"phaseProcessing": "Verwerken…",
-		"phaseSaving": "Opslaan…"
+		"phaseSaving": "Opslaan…",
+		"edit": "Bewerken",
+		"editTitle": "Bericht bewerken",
+		"editDescription": "Wijzig de titel, beschrijving, tags of de 18+-markering. De afbeelding zelf blijft hetzelfde.",
+		"saving": "Opslaan…",
+		"saved": "Opgeslagen."
 	},
 	"nav": {
 		"adminGroupPeople": "Mensen",

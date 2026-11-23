@@ -1,16 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import InputField from "@/components/fields/InputField";
+import { TagChipsInput } from "@/components/gallery/TagChipsInput";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormField } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
@@ -92,7 +91,6 @@ function UploadPage() {
 	const [file, setFile] = useState<File | null>(null);
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 	const [tags, setTags] = useState<string[]>([]);
-	const [tagInput, setTagInput] = useState("");
 	const [phase, setPhase] = useState<Phase>("idle");
 	const [uploadPct, setUploadPct] = useState(0);
 
@@ -125,12 +123,6 @@ function UploadPage() {
 			return f ? URL.createObjectURL(f) : null;
 		});
 		setFile(f);
-	}
-
-	function addTag(raw: string) {
-		const t = raw.trim().replace(/,+$/, "").trim().slice(0, 40);
-		if (t && !tags.includes(t) && tags.length < 20) setTags([...tags, t]);
-		setTagInput("");
 	}
 
 	const form = useForm<z.infer<typeof schema>>({
@@ -285,49 +277,11 @@ function UploadPage() {
 								)}
 							/>
 							<div className="space-y-2">
-								<p className="text-sm font-medium">{t("tagsLabel")}</p>
-								{tags.length > 0 ? (
-									<div className="flex flex-wrap gap-2">
-										{tags.map((tagName) => (
-											<span
-												key={tagName}
-												className="inline-flex items-center gap-1 rounded-full bg-primary/15 py-1 pl-3 pr-1.5 text-sm text-primary"
-											>
-												{tagName}
-												<button
-													type="button"
-													onClick={() =>
-														setTags(tags.filter((x) => x !== tagName))
-													}
-													className="rounded-full p-0.5 hover:bg-primary/20"
-													aria-label={t("removeTag", { tag: tagName })}
-												>
-													<X className="size-3.5" />
-												</button>
-											</span>
-										))}
-									</div>
-								) : null}
-								<Input
-									value={tagInput}
-									placeholder={t("tagInputPlaceholder")}
-									disabled={tags.length >= 20}
-									onChange={(e) => {
-										if (e.target.value.includes(",")) addTag(e.target.value);
-										else setTagInput(e.target.value);
-									}}
-									onKeyDown={(e) => {
-										if (e.key === "Enter") {
-											e.preventDefault();
-											addTag(tagInput);
-										} else if (
-											e.key === "Backspace" &&
-											!tagInput &&
-											tags.length
-										) {
-											setTags(tags.slice(0, -1));
-										}
-									}}
+								<Label htmlFor="gallery-tags">{t("tagsLabel")}</Label>
+								<TagChipsInput
+									id="gallery-tags"
+									tags={tags}
+									onChange={setTags}
 								/>
 							</div>
 							<FormField

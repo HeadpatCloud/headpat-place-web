@@ -1,8 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { HeartIcon, Trash2Icon } from "lucide-react";
+import { HeartIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { EditGalleryItemDialog } from "@/components/gallery/EditGalleryItemDialog";
 import { ResponsiveImage } from "@/components/ResponsiveImage";
 import { useStorageUrl } from "@/components/StorageImage";
 import { UserCard } from "@/components/UserCard";
@@ -114,30 +115,41 @@ function GalleryItemPage() {
 				<CardHeader className="flex flex-row items-start justify-between gap-4">
 					<CardTitle>{g.name}</CardTitle>
 					{isOwner ? (
-						<AlertDialog>
-							<AlertDialogTrigger asChild>
-								<Button variant="destructive" size="sm">
-									{c("delete")}
-								</Button>
-							</AlertDialogTrigger>
-							<AlertDialogContent>
-								<AlertDialogHeader>
-									<AlertDialogTitle>{t("deleteImageTitle")}</AlertDialogTitle>
-									<AlertDialogDescription>
-										{t("deleteImageBody")}
-									</AlertDialogDescription>
-								</AlertDialogHeader>
-								<AlertDialogFooter>
-									<AlertDialogCancel>{c("cancel")}</AlertDialogCancel>
-									<AlertDialogAction
-										onClick={() => deleteMut.mutate()}
-										disabled={deleteMut.isPending}
-									>
-										{deleteMut.isPending ? t("deleting") : c("delete")}
-									</AlertDialogAction>
-								</AlertDialogFooter>
-							</AlertDialogContent>
-						</AlertDialog>
+						<div className="flex shrink-0 gap-2">
+							<EditGalleryItemDialog
+								item={g}
+								trigger={
+									<Button variant="outline" size="sm">
+										<PencilIcon className="size-4" />
+										{t("edit")}
+									</Button>
+								}
+							/>
+							<AlertDialog>
+								<AlertDialogTrigger asChild>
+									<Button variant="destructive" size="sm">
+										{c("delete")}
+									</Button>
+								</AlertDialogTrigger>
+								<AlertDialogContent>
+									<AlertDialogHeader>
+										<AlertDialogTitle>{t("deleteImageTitle")}</AlertDialogTitle>
+										<AlertDialogDescription>
+											{t("deleteImageBody")}
+										</AlertDialogDescription>
+									</AlertDialogHeader>
+									<AlertDialogFooter>
+										<AlertDialogCancel>{c("cancel")}</AlertDialogCancel>
+										<AlertDialogAction
+											onClick={() => deleteMut.mutate()}
+											disabled={deleteMut.isPending}
+										>
+											{deleteMut.isPending ? t("deleting") : c("delete")}
+										</AlertDialogAction>
+									</AlertDialogFooter>
+								</AlertDialogContent>
+							</AlertDialog>
+						</div>
 					) : null}
 				</CardHeader>
 				<CardContent className="space-y-4">

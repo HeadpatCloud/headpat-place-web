@@ -42,7 +42,12 @@
 		"phasePreparing": "Wird vorbereitet…",
 		"phaseUploading": "Wird hochgeladen… %{pct}%",
 		"phaseProcessing": "Wird verarbeitet…",
-		"phaseSaving": "Wird gespeichert…"
+		"phaseSaving": "Wird gespeichert…",
+		"edit": "Bearbeiten",
+		"editTitle": "Beitrag bearbeiten",
+		"editDescription": "Ändere Titel, Beschreibung, Tags oder die 18+-Markierung. Das Bild selbst bleibt gleich.",
+		"saving": "Wird gespeichert…",
+		"saved": "Gespeichert."
 	},
 	"nav": {
 		"adminGroupPeople": "Personen",

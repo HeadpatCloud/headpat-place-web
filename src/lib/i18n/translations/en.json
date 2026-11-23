@@ -42,7 +42,12 @@
 		"phasePreparing": "Preparing…",
 		"phaseUploading": "Uploading… %{pct}%",
 		"phaseProcessing": "Processing…",
-		"phaseSaving": "Saving…"
+		"phaseSaving": "Saving…",
+		"edit": "Edit",
+		"editTitle": "Edit post",
+		"editDescription": "Change the title, description, tags or 18+ flag. The image itself stays the same.",
+		"saving": "Saving…",
+		"saved": "Saved."
 	},
 	"nav": {
 		"adminGroupPeople": "People",
