@@ -1934,7 +1934,7 @@
 		"adultBadge": "18+-profiel",
 		"adultUnavailable": "Dit profiel is niet beschikbaar.",
 		"blurAdult": "18+-afbeeldingen vervagen",
-		"blurAdultHint": "Op dit apparaat blijven 18+-afbeeldingen vervaagd tot je ze opent.",
+		"blurAdultHint": "18+-afbeeldingen blijven vervaagd tot je ze opent. Geldt op al je apparaten.",
 		"showPhoto": "Foto tonen"
 	}
 }

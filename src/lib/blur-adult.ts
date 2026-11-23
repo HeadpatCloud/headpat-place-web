@@ -1,34 +1,32 @@
-import { useSyncExternalStore } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { useSession } from "@/lib/auth-client";
+import { client, orpc } from "@/lib/orpc";
 
-// Per-browser "blur 18+ pictures" switch, on unless turned off. Like the
-// show-NSFW switch it stays on this device: a shared screen keeps its blur.
-const KEY = "hp-blur-adult";
-const listeners = new Set<() => void>();
-
-function read(): boolean {
-	try {
-		return localStorage.getItem(KEY) !== "false";
-	} catch {
-		return true;
-	}
-}
-
-export function setBlurAdult(on: boolean): void {
-	try {
-		localStorage.setItem(KEY, on ? "true" : "false");
-	} catch {
-		// storage blocked: the switch just won't stick
-	}
-	for (const l of listeners) l();
-}
-
+// "Blur 18+ pictures" follows the account, on unless turned off. Signed-out
+// visitors never see 18+ content, so they just get the default.
 export function useBlurAdult(): boolean {
-	return useSyncExternalStore(
-		(cb) => {
-			listeners.add(cb);
-			return () => listeners.delete(cb);
-		},
-		read,
-		() => true,
-	);
+	const { data: session } = useSession();
+	const mine = useQuery({
+		...orpc.discovery.mine.queryOptions({ input: {} }),
+		enabled: !!session?.user,
+	});
+	return mine.data?.blurAdult ?? true;
+}
+
+export function useSetBlurAdult() {
+	const qc = useQueryClient();
+	const key = orpc.discovery.mine.queryKey({ input: {} });
+	return async (blurAdult: boolean) => {
+		type Mine = Awaited<ReturnType<typeof client.discovery.mine>>;
+		const before = qc.getQueryData<Mine>(key);
+		// flip right away; the switch shouldn't wait for the round trip
+		if (before) qc.setQueryData<Mine>(key, { ...before, blurAdult });
+		try {
+			await client.discovery.setBlurAdult({ blurAdult });
+		} catch (e) {
+			if (before) qc.setQueryData<Mine>(key, before);
+			toast.error((e as Error).message);
+		}
+	};
 }

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { setBlurAdult, useBlurAdult } from "@/lib/blur-adult";
+import { useBlurAdult, useSetBlurAdult } from "@/lib/blur-adult";
 import { useTranslations } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
 import { uploadImage } from "@/lib/upload-image";
@@ -36,6 +36,7 @@ export function AdultProfileEditor() {
 	const [uploading, setUploading] = useState(false);
 	const fileRef = useRef<HTMLInputElement>(null);
 	const blurAdult = useBlurAdult();
+	const setBlurAdult = useSetBlurAdult();
 
 	useEffect(() => {
 		const a = mine.data;

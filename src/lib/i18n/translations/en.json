@@ -1933,7 +1933,7 @@
 		"adultBadge": "18+ profile",
 		"adultUnavailable": "This profile isn't available.",
 		"blurAdult": "Blur 18+ pictures",
-		"blurAdultHint": "On this device, 18+ pictures stay blurred until you open them.",
+		"blurAdultHint": "18+ pictures stay blurred until you open them. Applies on all your devices.",
 		"showPhoto": "Show photo"
 	}
 }

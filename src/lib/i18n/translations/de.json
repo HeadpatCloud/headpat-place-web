@@ -1934,7 +1934,7 @@
 		"adultBadge": "18+-Profil",
 		"adultUnavailable": "Dieses Profil ist nicht verfügbar.",
 		"blurAdult": "18+-Bilder verschwimmen lassen",
-		"blurAdultHint": "Auf diesem Gerät bleiben 18+-Bilder verschwommen, bis du sie öffnest.",
+		"blurAdultHint": "18+-Bilder bleiben verschwommen, bis du sie öffnest. Gilt auf all deinen Geräten.",
 		"showPhoto": "Foto anzeigen"
 	}
 }
