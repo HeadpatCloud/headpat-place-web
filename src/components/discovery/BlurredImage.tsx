@@ -7,6 +7,7 @@ import {
 	DialogDescription,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import { useBlurAdult } from "@/lib/blur-adult";
 import { useTranslations } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -23,6 +24,7 @@ export function BlurredImage({
 }) {
 	const t = useTranslations("discovery");
 	const [open, setOpen] = useState(false);
+	const blur = useBlurAdult();
 	return (
 		<>
 			<button
@@ -38,13 +40,18 @@ export function BlurredImage({
 					kind="gallery"
 					fileId={fileId}
 					variant="320"
-					className="h-full w-full scale-110 object-cover blur-2xl"
+					className={cn(
+						"h-full w-full object-cover",
+						blur && "scale-110 blur-2xl",
+					)}
 					fallback={null}
 				/>
-				<span className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-black/30 text-xs font-semibold text-white">
-					<EyeIcon className="size-5" />
-					{t("showPhoto")}
-				</span>
+				{blur ? (
+					<span className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-black/30 text-xs font-semibold text-white">
+						<EyeIcon className="size-5" />
+						{t("showPhoto")}
+					</span>
+				) : null}
 			</button>
 			<Dialog open={open} onOpenChange={setOpen}>
 				<DialogContent className="max-w-3xl p-2">

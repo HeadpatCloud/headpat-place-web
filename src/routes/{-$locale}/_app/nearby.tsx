@@ -9,6 +9,7 @@ import { StorageImage } from "@/components/StorageImage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useSession } from "@/lib/auth-client";
+import { useBlurAdult } from "@/lib/blur-adult";
 import {
 	DEFAULT_LOCALE,
 	type Locale,
@@ -90,6 +91,7 @@ function NearbyPage() {
 	});
 	const options = useQuery(orpc.discovery.options.queryOptions());
 	const canAdult = mine.data?.canAdult === true;
+	const blurAdult = useBlurAdult();
 	const lookingForOptions: readonly AnyLookingFor[] =
 		mode === "adult"
 			? (options.data?.adultLookingFor ?? [])
@@ -299,6 +301,7 @@ function NearbyPage() {
 										"h-full w-full object-cover transition-[scale] group-hover:scale-105",
 										// 18+ pictures stay blurred in the grid; the profile shows them
 										mode === "adult" &&
+											blurAdult &&
 											"scale-110 blur-xl group-hover:scale-110",
 									)}
 									fallback={

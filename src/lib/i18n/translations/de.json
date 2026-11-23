@@ -1933,6 +1933,8 @@
 		"openAdult": "18+-Profil",
 		"adultBadge": "18+-Profil",
 		"adultUnavailable": "Dieses Profil ist nicht verfügbar.",
+		"blurAdult": "18+-Bilder verschwimmen lassen",
+		"blurAdultHint": "Auf diesem Gerät bleiben 18+-Bilder verschwommen, bis du sie öffnest.",
 		"showPhoto": "Foto anzeigen"
 	}
 }

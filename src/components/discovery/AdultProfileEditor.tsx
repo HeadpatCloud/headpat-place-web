@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { setBlurAdult, useBlurAdult } from "@/lib/blur-adult";
 import { useTranslations } from "@/lib/i18n";
 import { client, orpc } from "@/lib/orpc";
 import { uploadImage } from "@/lib/upload-image";
@@ -34,6 +35,7 @@ export function AdultProfileEditor() {
 	const [saving, setSaving] = useState(false);
 	const [uploading, setUploading] = useState(false);
 	const fileRef = useRef<HTMLInputElement>(null);
+	const blurAdult = useBlurAdult();
 
 	useEffect(() => {
 		const a = mine.data;
@@ -77,6 +79,17 @@ export function AdultProfileEditor() {
 			<p className="rounded-xl border border-border bg-muted/40 px-4 py-3 text-sm text-muted-foreground">
 				{t("adultIntro")}
 			</p>
+			<div className="flex items-center justify-between gap-3">
+				<div>
+					<Label htmlFor="adult-blur">{t("blurAdult")}</Label>
+					<p className="text-sm text-muted-foreground">{t("blurAdultHint")}</p>
+				</div>
+				<Switch
+					id="adult-blur"
+					checked={blurAdult}
+					onCheckedChange={setBlurAdult}
+				/>
+			</div>
 			<div className="flex items-center justify-between gap-3">
 				<Label htmlFor="adult-enabled">{t("adultEnabled")}</Label>
 				<Switch
