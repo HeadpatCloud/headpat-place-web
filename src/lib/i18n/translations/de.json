@@ -1278,7 +1278,20 @@
 		"transferOwnershipConfirmBody": "%{name} wird Eigentümer dieser Gruppe und du wirst zum Moderator herabgestuft. Das kannst du nicht allein rückgängig machen.",
 		"removeFromGroup": "Aus Gruppe entfernen",
 		"removeFromGroupConfirmTitle": "Aus Gruppe entfernen?",
-		"removeFromGroupConfirmBody": "%{name} wird aus dieser Gruppe entfernt und kann nicht wieder beitreten, es sei denn, jemand fügt die Person erneut hinzu."
+		"removeFromGroupConfirmBody": "%{name} wird aus dieser Gruppe entfernt und kann nicht wieder beitreten, es sei denn, jemand fügt die Person erneut hinzu.",
+		"voiceRecord": "Sprachnachricht aufnehmen",
+		"voiceStop": "Aufnahme beenden",
+		"voiceDiscard": "Sprachnachricht verwerfen",
+		"voiceSend": "Sprachnachricht senden",
+		"voicePlay": "Sprachnachricht abspielen",
+		"voicePause": "Sprachnachricht pausieren",
+		"voiceMessage": "Sprachnachricht",
+		"voiceSpeed": "Wiedergabegeschwindigkeit %{speed}x",
+		"voiceRecording": "Aufnahme läuft",
+		"voiceStarting": "Mikrofon wird gestartet…",
+		"voiceMicDenied": "Der Zugriff aufs Mikrofon ist blockiert. Erlaube ihn in deinem Browser, um Sprachnachrichten aufzunehmen.",
+		"voiceUnsupported": "Dieser Browser kann keine Sprachnachrichten aufnehmen.",
+		"voiceFailed": "Das Mikrofon konnte nicht gestartet werden."
 	},
 	"adminPanel": {
 		"auditActor": "Von",

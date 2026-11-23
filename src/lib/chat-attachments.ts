@@ -1,4 +1,5 @@
 import { client } from "@/lib/orpc";
+import { baseMime } from "@/lib/voice";
 
 function makeFileId(): string {
 	return crypto.randomUUID().replace(/-/g, "").slice(0, 20);
@@ -37,4 +38,31 @@ export async function uploadAttachment(
 		name: file.name,
 		size: file.size,
 	};
+}
+
+// Upload a recorded voice note. The API converts it to AAC and measures its
+// length and waveform before it can be sent as a voice message.
+export async function uploadVoiceNote(
+	scopeId: string,
+	blob: Blob,
+): Promise<{ key: string; durationMs: number | null }> {
+	const fileId = makeFileId();
+	const contentType = baseMime(blob.type);
+	const { uploadUrl, key } = await client.storage.attachmentUploadInit({
+		scopeId,
+		fileId,
+		contentType,
+	});
+	const put = await fetch(uploadUrl, {
+		method: "PUT",
+		headers: { "Content-Type": contentType },
+		body: blob,
+	});
+	if (!put.ok) throw new Error(`Upload failed (${put.status})`);
+	const res = await client.storage.attachmentFinalize({
+		scopeId,
+		fileId,
+		voice: true,
+	});
+	return { key, durationMs: res.durationMs };
 }

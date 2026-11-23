@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { FileIcon } from "lucide-react";
+import { VoicePlayer } from "@/components/chat/VoicePlayer";
 import { useTranslations } from "@/lib/i18n";
 import { orpc } from "@/lib/orpc";
 
@@ -19,14 +20,21 @@ function humanSize(bytes: number | null): string {
 
 export function MessageAttachment({
 	attachmentKey,
+	voice,
 }: {
 	attachmentKey: string;
+	/** A voice message: loads as a short player-sized placeholder. */
+	voice?: boolean;
 }) {
 	const t = useTranslations("chatUi");
 	const q = useAttachmentUrl(attachmentKey, "md");
 	const mime = q.data?.mimeType ?? "";
 
 	if (q.isPending) {
+		if (voice)
+			return (
+				<div className="h-12 w-full max-w-xs animate-pulse rounded-2xl bg-muted" />
+			);
 		return <div className="h-32 w-48 animate-pulse rounded-lg bg-muted" />;
 	}
 	if (!q.data) return null;
@@ -46,6 +54,15 @@ export function MessageAttachment({
 					loading="lazy"
 				/>
 			</a>
+		);
+	}
+	if (mime.startsWith("audio/")) {
+		return (
+			<VoicePlayer
+				src={q.data.url}
+				durationMs={q.data.durationMs}
+				waveform={q.data.waveform}
+			/>
 		);
 	}
 	if (mime.startsWith("video/")) {

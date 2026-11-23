@@ -1278,7 +1278,20 @@
 		"transferOwnershipConfirmBody": "%{name} will become the owner of this group and you'll be demoted to moderator. This can't be undone by you alone.",
 		"removeFromGroup": "Remove from group",
 		"removeFromGroupConfirmTitle": "Remove from group?",
-		"removeFromGroupConfirmBody": "%{name} will be removed from this group and won't be able to rejoin unless someone adds them back."
+		"removeFromGroupConfirmBody": "%{name} will be removed from this group and won't be able to rejoin unless someone adds them back.",
+		"voiceRecord": "Record a voice message",
+		"voiceStop": "Stop recording",
+		"voiceDiscard": "Discard voice message",
+		"voiceSend": "Send voice message",
+		"voicePlay": "Play voice message",
+		"voicePause": "Pause voice message",
+		"voiceMessage": "Voice message",
+		"voiceSpeed": "Playback speed %{speed}x",
+		"voiceRecording": "Recording",
+		"voiceStarting": "Starting microphone…",
+		"voiceMicDenied": "Microphone access is blocked. Allow it in your browser to record voice messages.",
+		"voiceUnsupported": "This browser can't record voice messages.",
+		"voiceFailed": "Couldn't start the microphone."
 	},
 	"adminPanel": {
 		"auditActor": "By",

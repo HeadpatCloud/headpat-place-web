@@ -12,6 +12,7 @@ import {
 	HashIcon,
 	Loader2Icon,
 	LogOutIcon,
+	MicIcon,
 	PencilIcon,
 	PlusIcon,
 	SearchIcon,
@@ -36,6 +37,7 @@ import {
 import { ReactionPill } from "@/components/chat/ReactionPill";
 import { ReactionsModal } from "@/components/chat/ReactionsModal";
 import { UserContextMenu } from "@/components/chat/UserContextMenu";
+import { VoiceComposerBar } from "@/components/chat/VoiceComposerBar";
 import { usePresence } from "@/components/contexts/PresenceProvider";
 import { StorageImage } from "@/components/StorageImage";
 import {
@@ -68,10 +70,15 @@ import {
 	PopoverTrigger,
 } from "@/components/ui/popover";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+	useVoiceRecorder,
+	VoiceRecorderFailure,
+} from "@/hooks/use-voice-recorder";
 import { useSession } from "@/lib/auth-client";
 import {
 	type UploadedAttachment,
 	uploadAttachment,
+	uploadVoiceNote,
 } from "@/lib/chat-attachments";
 import { dayKey, dayLabel, daySeparatorIndexes } from "@/lib/chat-day";
 import { useDateFormat } from "@/lib/datetime";
@@ -182,6 +189,8 @@ export function MessagePane({ source }: { source: Source }) {
 	const scrollRef = useRef<HTMLDivElement>(null);
 	const contentRef = useRef<HTMLDivElement>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const voice = useVoiceRecorder();
+	const [voiceSending, setVoiceSending] = useState(false);
 	// keep the view pinned to the newest message unless the user scrolled up
 	const stickToBottomRef = useRef(true);
 	// while an older page loads we anchor on the saved height instead of
@@ -601,6 +610,50 @@ export function MessagePane({ source }: { source: Source }) {
 		sendMut.mutate({ body, attachments, tempId });
 	}
 
+	async function startVoice() {
+		try {
+			await voice.start();
+		} catch (e) {
+			const reason = e instanceof VoiceRecorderFailure ? e.reason : "failed";
+			toast.error(
+				t(
+					reason === "denied"
+						? "voiceMicDenied"
+						: reason === "unsupported"
+							? "voiceUnsupported"
+							: "voiceFailed",
+				),
+			);
+		}
+	}
+
+	async function sendVoice() {
+		const rec = voice.recording;
+		if (!rec || voiceSending) return;
+		setVoiceSending(true);
+		try {
+			const { key } = await uploadVoiceNote(sourceId, rec.blob);
+			if (source.kind === "dm")
+				await client.message.send({
+					conversationId: source.conversationId,
+					messageType: "voice",
+					attachments: [key],
+				});
+			else
+				await client.channel.send({
+					channelId: source.channelId,
+					messageType: "voice",
+					attachments: [key],
+				});
+			voice.discard();
+			await invalidateThread();
+		} catch (e) {
+			toast.error(e instanceof Error ? e.message : String(e));
+		} finally {
+			setVoiceSending(false);
+		}
+	}
+
 	async function sendGif(url: string) {
 		try {
 			if (source.kind === "dm")
@@ -834,7 +887,9 @@ export function MessagePane({ source }: { source: Source }) {
 																	</EmojiPicker>
 																</PopoverContent>
 															</Popover>
-															{isMine && m.messageType !== "gif" ? (
+															{isMine &&
+															m.messageType !== "gif" &&
+															m.messageType !== "voice" ? (
 																<button
 																	type="button"
 																	onClick={() => {
@@ -957,6 +1012,7 @@ export function MessagePane({ source }: { source: Source }) {
 																	<MessageAttachment
 																		key={k}
 																		attachmentKey={k}
+																		voice={m.messageType === "voice"}
 																	/>
 																))}
 															</div>
@@ -1231,6 +1287,16 @@ export function MessagePane({ source }: { source: Source }) {
 							{t("unblockUser")}
 						</Button>
 					</div>
+				) : voice.status !== "idle" ? (
+					<VoiceComposerBar
+						status={voice.status}
+						elapsedMs={voice.elapsedMs}
+						recording={voice.recording}
+						sending={voiceSending}
+						onStop={voice.stop}
+						onDiscard={voice.discard}
+						onSend={sendVoice}
+					/>
 				) : (
 					<form
 						className="flex items-center gap-3 rounded-2xl border border-border bg-card px-1.5 py-1.5 transition-colors focus-within:border-ring"
@@ -1283,18 +1349,29 @@ export function MessagePane({ source }: { source: Source }) {
 									</EmojiPicker>
 								</PopoverContent>
 							</Popover>
-							<button
-								type="submit"
-								disabled={
-									sendMut.isPending ||
-									(!draft.trim() &&
-										pending.filter((p) => p.status === "done").length === 0)
-								}
-								className="flex size-9.5 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-[filter,transform] hover:brightness-110 disabled:opacity-50"
-								aria-label={t("send")}
-							>
-								<SendHorizontalIcon className="size-4" />
-							</button>
+							{!draft.trim() && pending.length === 0 ? (
+								<button
+									type="button"
+									onClick={startVoice}
+									className="flex size-9.5 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-[filter,transform] hover:brightness-110"
+									aria-label={t("voiceRecord")}
+								>
+									<MicIcon className="size-4" />
+								</button>
+							) : (
+								<button
+									type="submit"
+									disabled={
+										sendMut.isPending ||
+										(!draft.trim() &&
+											pending.filter((p) => p.status === "done").length === 0)
+									}
+									className="flex size-9.5 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-[filter,transform] hover:brightness-110 disabled:opacity-50"
+									aria-label={t("send")}
+								>
+									<SendHorizontalIcon className="size-4" />
+								</button>
+							)}
 						</div>
 					</form>
 				)}

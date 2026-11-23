@@ -1278,7 +1278,20 @@
 		"transferOwnershipConfirmBody": "%{name} wordt eigenaar van deze groep en jij wordt gedegradeerd tot moderator. Dit kun je niet alleen ongedaan maken.",
 		"removeFromGroup": "Uit groep verwijderen",
 		"removeFromGroupConfirmTitle": "Uit groep verwijderen?",
-		"removeFromGroupConfirmBody": "%{name} wordt uit deze groep verwijderd en kan niet opnieuw deelnemen, tenzij iemand de persoon weer toevoegt."
+		"removeFromGroupConfirmBody": "%{name} wordt uit deze groep verwijderd en kan niet opnieuw deelnemen, tenzij iemand de persoon weer toevoegt.",
+		"voiceRecord": "Spraakbericht opnemen",
+		"voiceStop": "Opname stoppen",
+		"voiceDiscard": "Spraakbericht weggooien",
+		"voiceSend": "Spraakbericht versturen",
+		"voicePlay": "Spraakbericht afspelen",
+		"voicePause": "Spraakbericht pauzeren",
+		"voiceMessage": "Spraakbericht",
+		"voiceSpeed": "Afspeelsnelheid %{speed}x",
+		"voiceRecording": "Opnemen",
+		"voiceStarting": "Microfoon starten…",
+		"voiceMicDenied": "Toegang tot de microfoon is geblokkeerd. Sta het toe in je browser om spraakberichten op te nemen.",
+		"voiceUnsupported": "Deze browser kan geen spraakberichten opnemen.",
+		"voiceFailed": "De microfoon kon niet worden gestart."
 	},
 	"adminPanel": {
 		"auditActor": "Door",
